@@ -770,6 +770,12 @@ to initiate the booking workflow.
 ### Creating a new order (`/orders`)
 
         <div class="issue" 
+            title="Explain why brokers are included in order creation" 
+            data-number="38">    
+            e.g. lease durations, default behaviour, etc
+        </div>
+        
+        <div class="issue" 
             title="Clarify use of proposed beta:anonymousLeaseDuration property" 
             data-number="25">    
             e.g. lease durations, default behaviour, etc
@@ -781,6 +787,11 @@ to initiate the booking workflow.
             e.g. verifying user, etc.
         </div>
     
+        <div class="issue" 
+            title="Can `orderQuantity` have a value other than 1?" 
+            data-number="40">    
+        </div>
+            
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
@@ -924,6 +935,16 @@ A `DELETE` request to an `Order` URI will delete the order.
              data-number="35">
         </div>  
             
+        <div class="issue"
+             title="Are we supporting partial payments?"
+             data-number="41">
+        </div> 
+               
+        <div class="issue"
+             title="POSTing to /order rather than sub-resources"
+             data-number="16">
+        </div> 
+                            
 An order is not considered complete until payment has occurred. 
 
 Brokers MUST update the booking system to indicate that payment has been taken.
