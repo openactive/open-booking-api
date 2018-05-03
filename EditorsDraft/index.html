@@ -918,51 +918,51 @@ A `DELETE` request to an `Order` URI will delete the order.
 
 A POST to the `orderItems` collection of the order will append a new item.
 
-        <div class="issue"
+    <div class="issue"
              title="Rescope to include multi-item orders?"
              data-number="28">
              Shopping cart models were originally out of scope.
-        </div>     
+    </div>     
 
 ## Completing an order (`/orders/{orderId}/payments`)
 
 An Order is completed by the client submitting a payment.
 
-        <div class="issue"
+    <div class="issue"
              title="Discovery of /payments endpoint"
              data-number="29">
-             How does a client find this? E.g. via `potentialAction`?
-        </div>
+        How does a client find this? E.g. via `potentialAction`?
+    </div>
 
-        <div class="issue"
+    <div class="issue"
              title="Clarify use of `paymentMethod` when completing an order"
              data-number="30">
             What does `paymentMethod` refer to?
-        </div>         
+    </div>         
     
-        <div class="issue"
+    <div class="issue"
              title="Lease timeout behaviour"
              data-number="34">
              What happens when a lease times out?
-        </div>  
+    </div>  
 
-        <div class="issue"
+    <div class="issue"
              title="Document order state transitions"
              data-number="35">
              How does an order change state?
-        </div>  
+    </div>  
             
-        <div class="issue"
+    <div class="issue"
              title="Are we supporting partial payments?"
              data-number="41">
              Can a broker make multiple payments?
-        </div> 
-               
-        <div class="issue"
+    </div> 
+    
+    <div class="issue"
              title="POSTing to /order rather than sub-resources"
              data-number="16">
              Should we post to order instead?
-        </div> 
+    </div> 
                             
 An order is not considered complete until payment has occurred. 
 
