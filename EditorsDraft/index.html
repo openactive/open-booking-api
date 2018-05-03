@@ -128,7 +128,15 @@
                     "href": "https://www.openactive.io/ns/",
                     "title": "OpenActive Vocabulary",
                     "publisher": "OpenActive Community Group",
-                }
+                },
+                "OAuth2" : {
+                    "href": "https://oauth.net/2/",
+                    "title": "OAuth 2.0",
+                },
+                "OpenIdConnect" : {
+                    "href": "http://openid.net/connect/",
+                    "title": "OpenID Connect",
+                }                
             }
         };
     </script>
@@ -417,15 +425,241 @@ The content of the example is in monospace font and may be syntax colored.
     </section>
 
     <section>
-# Concepts  
-    </section>
+# Key Concepts  
 
-    <section>
-# General Recommendations  
-    </section>
+        <dl class="typography">
+            <dt>__*booking system*__</dt>
+            <dd>The platform or service that provides a server-side 
+            implementation of this API.
+            </dd>
+            <dt>__*broker*__</dt>
+            <dd>The organisation or developer providing an application that 
+            allows customers to make bookings. Those applications will be 
+            clients of the API defined in this specification</dd>
+            <dt>__*confirmation*__</dt>
+            <dd>The process of contacting a customer following the placement 
+            of a successful order, e.g. to provide tickets, attendance details, 
+            etc. This specification does not define this process</dd>
+            <dt>__*customer*__</dt>
+            <dd>The user who places a booking using an application provided by 
+            a broker.</dd>
+            <dt>__*event*__</dt>
+            <dd>An [Event](https://www.openactive.io/modelling-opportunity-data/#events) 
+                is an opportunity to take part in a physical activity. Events 
+                take place at a specific location and at an agreed date 
+                and time.</dd>
+            <dt>__*facility*__</dt>
+            <dd>A sporting facility, e.g. a squash court, table tennis table or 
+            football pitch.</dd>            
+            <dt>__*lease*__</dt>
+            <dd>A temporary reservation of a space at an event or for the use 
+            of a facility. Leases provide a limited time window during which 
+            a customer can place a booking and still be guaranteed a place at 
+            an event (or use of the facility).</dd>
+            <dt>__*offer*__</dt>
+            <dd>An [Offer](https://www.openactive.io/modelling-opportunity-data/#offers) 
+                describes the terms under which a customer may participate in an 
+                event or use a facility.</dd>
+            <dt>__*order*__</dt>
+            <dd>Describes the in-process or completed booking. An order may be 
+            made up of several order items. An order results in a customer 
+            having a confirmed reservation.</dd>
+            <dt>__*payment*__</dt>
+            <dd>The process of taking funds from a customer in order to place 
+            an order. Payment is managed between the customer and the broker.</dd>
+            <dt>__*reconciliation*__</dt>
+            <dd>The process by which brokers and booking systems confirm that 
+            payment(s) have been taken on behalf of customers, to ensure that 
+            money is appropriately exchanged between the brokers, booking systems
+            and sellers. This specification does not define this process.</dd>
+            <dt>__*refund*__</dt>
+            <dd>The process of returning funds to a customer, e.g. if an order 
+            is cancelled. This specification does not define this process.</dd>
+            <dt>__*reservation*__</dt>
+            <dd>A reservation for a customer to attend an event or for the use 
+            of a facility. A reservation is created for every item in an order.</dd>
+            <dt>__*seller*__</dt>
+            <dd>The organisation providing access to events or use of facilities 
+            via a booking system. E.g. a leisure provider running yoga classes.</dd>
+        </dl>
 
+    </section>
+    
     <section>
 # Booking Flow  
+
+## High-level summary of the API
+
+This API defines a means for a **booking system** to expose an HTTP API that 
+may be used by a **broker** to place bookings on behalf of a **customer**. By 
+exposing this API the booking system can support a **seller** in reaching a wider 
+audience.
+
+A broker provides customers with an application that helps them to discover 
+opportunities to be physically active. The customer may then choose to make 
+a booking to attend an **event** or to make use of a **facility**.
+
+The broker will check the availability of event or facility in order to check 
+whether the customer can still attend. The broker will also present the customer 
+with information about any costs associated with participating in the event 
+or using a facility. This involves identifying the applicable *offers* and 
+presenting them to the user.
+
+If there is still availability and the customer is happy to accept an offer, 
+then the customer can proceed to make a booking. The broker creates 
+an **order** on behalf of the user. 
+
+Creating the order will also create a temporary **lease** that will reserve a 
+space for the customer to attend the event (or use the facility) while the 
+rest of the workflow completes.
+
+If the **offers** for an event or use of a facility indicate that the user must 
+pay, then the broker will take the customer through a separate **payment** 
+workflow. This workflow is not defined by this specification. 
+
+Once payment has been completed, the broker will update the booking platform to 
+indicate that payment has been taken. The booking process is then completed.
+
+The completion of the order will result in the lease being removed and a 
+permanent **reservation** being created on behalf of the customer. The customer 
+may receive **confirmation** from either the broker or booking system (or both) 
+that provides details about how and when they can attend the event or use the 
+booked facility.
+
+Separately the broker and booking system will go through a **reconciliation** 
+process to transfer funds or otherwise report on successful transactions. A 
+customer might also cancel an order and will then receive a **refund**. Neither 
+of these processes are defined by this specification. The details will depend on 
+the business model and agreements in place between the broker and booking system.
+
+## Sequence diagrams
+
+TODO
+
+## Step-by-step process description
+
+TODO
+
+    </section>
+
+    <section>
+# Common Requirements  
+
+This section defines some common functionality that applies to the design of the 
+whole API.
+
+## Media types
+
+        <div class="issue" 
+           title="Decide approach towards media type versioning and 
+           content negotiation" data-number="21">
+        This approach is inspired by github approach, should we keep it?
+        Should servers be expected to support backwards compatible media types?
+        </div>
+
+Custom media types are used in this API to allow clients to choose the format 
+of the data they receive. 
+
+Servers MAY choose to support additional media types but MUST support the 
+media type(s) defined by this specification.
+
+Media types will conform to the following pattern:
+ 
+```
+application/vnd.openactive[.version]+json
+```
+
+The current media type is:
+
+```
+application/vnd.openactive.0.5+json
+```
+
+## Response formats
+
+Requests and response documents exchanged via this API will all be valid 
+[[JSON-LD]] documents.
+
+The documents MUST include a [[JSON-LD]] `context` that refers to the 
+[[OpenActive-Vocabulary]] as follows:
+
+<pre class="example" title="minimal JSON-LD document">
+{
+  "@context": "https://www.openactive.io/ns/oa.jsonld"
+}
+</pre>
+
+Unless otherwise specified the request and response documents MUST conform to 
+the [[Modelling-Opportunity-Data]] data model.
+
+## Error handling
+
+        <div class="issue" 
+           title="Decide whether to keep use of RFC7807" data-number="22">
+        Requests and responses will be valid JSON-LD except for errors which uses 
+        [[RFC7807]]. Should we keep this, because its standard or define something 
+        bespoke?
+        </div>
+
+Error responses MUST be served using an appropriate HTTP 4XX status code. 
+
+All error responses from this API MUST conform to [[RFC7807]], and 
+have media type of `application/problem+json`.
+
+        <pre class="example" title="Error response format">
+        {
+          "type": "string",
+          "title": "string",
+          "status": "string",
+          "instance": "string",
+          "requestId": "string"
+        }
+        </pre>
+
+* `type` – a URI reference [[RFC3986]] that identifies the problem type. This 
+specification encourages that, when dereferenced, it provide human-readable 
+documentation for the problem type. 
+When this member is not present, its value is assumed to be "about:blank".
+* `title` – a short, human-readable summary of the problem type. It 
+SHOULD NOT change from occurrence to occurrence of the problem, except for 
+purposes of localization (e.g., using proactive content negotiation; see 
+[[RFC7231]], Section 3.4).
+* `status`  – the HTTP status code ([[RFC7231]], Section 6) generated by the 
+origin server for this occurrence of the problem. 
+* `instance`  – a URI reference that identifies the specific occurrence of 
+the problem. It may or may not yield further information if dereferenced.
+* `requestId`  – used by technical support for diagnostics purposes.
+
+        <div class="issue" 
+           title="Define URIs for common errors" data-number="23">
+        The specification recommends use of RFC 7807 which suggests that type in 
+        responses should be a pre-defined URI. We should define and document these.
+        </div>
+    
+    </section>
+
+    <section class="informative">
+# General Recommendations  
+
+This section includes some general recommendations for implementers.
+
+## Security
+
+All HTTP requests and responses SHOULD be secured using SSL.
+
+## Authentication
+
+All of the API transactions described in this document SHOULD require 
+authentication. 
+
+This standard does not mandate a particular authentication method, but 
+recommendation is that implementers SHOULD consider using [[OAuth2]] as it is 
+well-defined, widely supported and can be used in a variety of different 
+application flows (e.g. via a Javascript web application or between servers).
+
+Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard 
+way of verifying the identity of customer. It is a thin layer that sits 
+atop OAuth2.
     </section>
 
     <section>
