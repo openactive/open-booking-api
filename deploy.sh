@@ -10,6 +10,7 @@ git config --global push.default matching
 rm -rf respec || exit 0;
 
 # get existing gh-pages
+# for reference, develop was here https://github.com/w3c/respec/commit/3c77821b925b3230257ebf1a16b83a3ff6b90b6f
 git clone -b develop "https://github.com/w3c/respec.git"
 #git clone -b develop "https://github.com/openactive/respec.git"
 
