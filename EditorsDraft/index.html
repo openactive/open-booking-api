@@ -1,54 +1,59 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
-  <head>
-    <meta charset='utf-8'/>
+
+<head>
+    <meta charset='utf-8' />
     <title>Open Booking API 0.5</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
-          // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
-          specStatus:           "CG-DRAFT",
+            // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+            specStatus: "CG-DRAFT",
 
-          // the specification's short name, as in http://www.w3.org/TR/short-name/
-          shortName:            "open-booking-api",
+            // the specification's short name, as in http://www.w3.org/TR/short-name/
+            shortName: "open-booking-api",
 
-          // if you wish the publication date to be other than today, set this
-          // publishDate:  "2009-08-06",
+            // if you wish the publication date to be other than today, set this
+            // publishDate:  "2009-08-06",
 
-          // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-          // and its maturity status
-          // previousPublishDate:  "1977-03-15",
-          previousMaturity:  "ED",
-          previousPublishDate:  "2018-05-03",
+            // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+            // and its maturity status
+            // previousPublishDate:  "1977-03-15",
+            previousMaturity: "ED",
+            previousPublishDate: "2018-05-03",
 
-          // if there a publicly available Editor's Draft, this is the link
-          edDraftURI:   "https://www.openactive.io/modelling-opportunity-data/EditorsDraft/",
-          //prevED:  "https://www.openactive.io/spec-template/",
-          //previousURI:  "https://www.openactive.io/realtime-paged-data-exchange/0.2.3/",
-          //testSuiteURI: "https://www.openactive.io/endpoint-validator/",
-          copyrightStart: 2018,
+            // if there a publicly available Editor's Draft, this is the link
+            edDraftURI: "https://www.openactive.io/modelling-opportunity-data/EditorsDraft/",
+            //prevED:  "https://www.openactive.io/spec-template/",
+            //previousURI:  "https://www.openactive.io/realtime-paged-data-exchange/0.2.3/",
+            //testSuiteURI: "https://www.openactive.io/endpoint-validator/",
+            copyrightStart: 2018,
 
-          // if this is a LCWD, uncomment and set the end of its review period
-          // lcEnd: "2009-08-05",
+            // if this is a LCWD, uncomment and set the end of its review period
+            // lcEnd: "2009-08-05",
 
-          // editors, add as many as you like
-          // only "name" is required
-          editors: [
-              { name: "Leigh Dodds", url: "http://ldodds.com",
-                company: "Open Data Institute", companyURL: "http://theodi.org",
-                w3cid: 55359 },
-              { name: "Nick Evans", url: "http://nickevans.me/",
-                company: "Open Data Institute", companyURL: "http://theodi.org"}
-          ],
+            // editors, add as many as you like
+            // only "name" is required
+            editors: [{
+                name: "Leigh Dodds",
+                url: "http://ldodds.com",
+                company: "Open Data Institute",
+                companyURL: "http://theodi.org",
+                w3cid: 55359
+            }, {
+                name: "Nick Evans",
+                url: "http://nickevans.me/",
+                company: "Open Data Institute",
+                companyURL: "http://theodi.org"
+            }],
 
-          // authors, add as many as you like.
-          // This is optional, uncomment if you have authors as well as editors.
-          // only "name" is required. Same format as editors.
+            // authors, add as many as you like.
+            // This is optional, uncomment if you have authors as well as editors.
+            // only "name" is required. Same format as editors.
 
-          authors: [
-          ],
+            authors: [],
 
-          otherLinks: [{
+            otherLinks: [{
                 key: "Repo",
                 value: "We are on Github",
                 href: "https://github.com/openactive/open-booking-api/",
@@ -59,198 +64,381 @@
             }, {
                 key: "Version",
                 value: "Candidate Specification"
+            }],
+
+            logos: [{
+                src: 'https://www.openactive.io/assets/openactive-logo-large.png',
+                href: "https://www.openactive.io",
+                alt: "openactive.io",
+                width: 255, //170
+                height: 43, //22
+                id: 'logo'
+            }],
+
+            // extend the bibliography entries
+            //localBiblio: {},
+
+            // name of the WG
+            wg: "OpenActive Community Group",
+
+            // URI of the public WG page
+            wgURI: "https://www.w3.org/community/openactive/",
+
+            // name (with the @w3c.org) of the public mailing to which comments are due
+            wgPublicList: "public-openactive",
+
+            // URI of the patent status for this WG, for Rec-track documents
+            // !!!! IMPORTANT !!!!
+            // This is important for Rec-track documents, do not copy a patent URI from a random
+            // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+            // Team Contact.
+            maxTocLevel: 4,
+            preProcess: [],
+            alternateFormats: [{
+                uri: "diff-previous.html",
+                label: "diff to previous version"
+            }],
+            isRecTrack: true,
+            isNoTrack: true,
+            issueBase: "https://github.com/openactive/open-booking-api/issues/",
+            format: "markdown",
+            localBiblio: {
+                "JSON-LD": {
+                    "href": "https://www.w3.org/TR/json-ld/",
+                    "title": "JSON-LD 1.0",
+                    "status": "REC",
+                    "publisher": "W3C",
+                },
+                "SCHEMA-ORG": {
+                    "href": "http://schema.org/",
+                    "title": "Schema.org"
+
+                },
+                "Modelling-Opportunity-Data": {
+                    "href": "https://www.openactive.io/modelling-opportunity-data/",
+                    "title": "Modelling Opportunity Data",
+                    "publisher": "OpenActive Community Group",
+                },
+                "RPDE": {
+                    "href": "https://www.openactive.io/realtime-paged-data-exchange/",
+                    "title": "Realtime Paged Data Exchange",
+                    "publisher": "OpenActive Community Group",
+                },
+                "OpenActive-Vocabulary": {
+                    "href": "https://www.openactive.io/ns/",
+                    "title": "OpenActive Vocabulary",
+                    "publisher": "OpenActive Community Group",
+                }
             }
-          ],
-
-          logos: [
-            {
-              src: 'https://www.openactive.io/assets/openactive-logo-large.png',
-              href: "https://www.openactive.io",
-              alt: "openactive.io",
-              width: 255, //170
-              height: 43, //22
-              id: 'logo'
-            }
-          ],
-
-          // extend the bibliography entries
-          //localBiblio: {},
-
-          // name of the WG
-          wg:           "OpenActive Community Group",
-
-          // URI of the public WG page
-          wgURI:        "https://www.w3.org/community/openactive/",
-
-          // name (with the @w3c.org) of the public mailing to which comments are due
-          wgPublicList: "public-openactive",
-
-          // URI of the patent status for this WG, for Rec-track documents
-          // !!!! IMPORTANT !!!!
-          // This is important for Rec-track documents, do not copy a patent URI from a random
-          // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-          // Team Contact.
-          maxTocLevel: 4,
-          preProcess: [ ] ,
-          alternateFormats: [ {uri: "diff-previous.html", label: "diff to previous version"} ],
-          isRecTrack:   true,
-          isNoTrack:    true,
-          issueBase:    "https://github.com/openactive/open-booking-api/issues/",
-          format: "markdown",
-          localBiblio: {
-            "JSON-LD": {
-                "href": "https://www.w3.org/TR/json-ld/",
-                "title": "JSON-LD 1.0",
-                "status": "REC",
-                "publisher": "W3C",
-            },
-            "SCHEMA-ORG": {
-                "href": "http://schema.org/",
-                "title": "Schema.org"
-                
-            },
-            "Modelling-Opportunity-Data": {
-                "href": "https://www.openactive.io/modelling-opportunity-data/",
-                "title": "Modelling Opportunity Data",
-                "publisher": "OpenActive Community Group",            
-            },                                  
-            "OpenActive-Vocabulary": {
-                "href": "https://www.openactive.io/ns/",
-                "title": "OpenActive Vocabulary",
-                "publisher": "OpenActive Community Group",            
-            }                        
-          }
         };
     </script>
 
-<!--
+    <!--
 	<script src='https://www.openactive.io/respec/builds/respec-w3c-common.js' class='remove'></script>
 -->
-    <script 
-     src='https://www.w3.org/Tools/respec/respec-w3c-common' 
-     class='remove'></script>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class='remove'></script>
 
     <style>
-    table {border-collapse: collapse; border: 1px solid #bec9d9}
-    td, th {padding: 3px 0.5em; border-left:1px solid black; border-right: 1px solid black; border-bottom:1px solid #E2EDFE;}
-    tr th[colspan] {color: #005A9C; background-color: #FEEDE2; text-align: center}
-    th {color: #005A9C; background-color: #E2EDFE; font-weight: normal;border-bottom:1px solid #BEC9D9;}
-    tbody tr th {text-align: left;}
-    td.nb { font-size: smaller;}
-    .rec, .pr {color: #005A9C; background-color: #99EE99}
-    .ext {background-color: #FFFFFF}
-    .cr, .lcwd {color: #005A9C; background-color: #EEEE99}
-    .wd {color: #005A9C; background-color: #EE9999}
-    .ed, .fpwd  {color: #005A9C; background-color: #FF7777}
-    code {white-space: pre;}
-
-    html {
-      background-image: none !important;
-    }
-    body {
-      background: white top left fixed no-repeat !important;
-      background-size: 25px auto !important;
-      background-image: url('https://www.openactive.io/assets/openactive-label-specification.png') !important;
-    }
-    h1 {
-      font-family: 'Open Sans',sans-serif !important;
-      font-weight: 300 !important;
-      color: #69b9ff !important;
-      font-size: 220%;
-    }
-    #toc {
-      padding-top: 0px !important;
-    }
-    .remove {
-      background-colour: yellow;
-    }
-    code {
-        color: #C83500;
-    }
-    em.rfc2119 { 
-      font-variant: small-caps;
-    }
-
+        table {
+            border-collapse: collapse;
+            border: 1px solid #bec9d9
+        }
+        
+        td,
+        th {
+            padding: 3px 0.5em;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            border-bottom: 1px solid #E2EDFE;
+        }
+        
+        tr th[colspan] {
+            color: #005A9C;
+            background-color: #FEEDE2;
+            text-align: center
+        }
+        
+        th {
+            color: #005A9C;
+            background-color: #E2EDFE;
+            font-weight: normal;
+            border-bottom: 1px solid #BEC9D9;
+        }
+        
+        tbody tr th {
+            text-align: left;
+        }
+        
+        td.nb {
+            font-size: smaller;
+        }
+        
+        .rec,
+        .pr {
+            color: #005A9C;
+            background-color: #99EE99
+        }
+        
+        .ext {
+            background-color: #FFFFFF
+        }
+        
+        .cr,
+        .lcwd {
+            color: #005A9C;
+            background-color: #EEEE99
+        }
+        
+        .wd {
+            color: #005A9C;
+            background-color: #EE9999
+        }
+        
+        .ed,
+        .fpwd {
+            color: #005A9C;
+            background-color: #FF7777
+        }
+        
+        code {
+            white-space: pre;
+        }
+        
+        html {
+            background-image: none !important;
+        }
+        
+        body {
+            background: white top left fixed no-repeat !important;
+            background-size: 25px auto !important;
+            background-image: 
+                url('https://www.openactive.io/assets/openactive-label-specification.png') !important;
+        }
+        
+        h1 {
+            font-family: 'Open Sans', sans-serif !important;
+            font-weight: 300 !important;
+            color: #69b9ff !important;
+            font-size: 220%;
+        }
+        
+        #toc {
+            padding-top: 0px !important;
+        }
+        
+        .remove {
+            background-colour: yellow;
+        }
+        
+        code {
+            color: #C83500;
+        }
+        
+        em.rfc2119 {
+            font-variant: small-caps;
+        }
     </style>
 
-  </head>
-  <body >
+</head>
+
+<body>
     <style>
-    body {
-      background-size: 25px auto !important;
-    }
-    body.toc-sidebar #toc {
-      background-size: 25px auto !important;
-      background-attachment: fixed !important;
-    }
+        body {
+            background-size: 25px auto !important;
+        }
+        
+        body.toc-sidebar #toc {
+            background-size: 25px auto !important;
+            background-attachment: fixed !important;
+        }
     </style>
     <section id='abstract'>
-This specification...TODO
-
-The specification is an output of the [OpenActive Community Group](http://www.w3.org/community/openactive/) 
-and serves as a common reference point for other specifications and outputs of that activity.
+This document specifies an HTTP API for placing bookings to participate in 
+physical activities, either by attending events or through the use of leisure 
+or sports facilities.
     </section>
 
     <section id='sotd'>
-Contributions to this document are not only welcomed but are actively solicited and 
-should be made via [GitHub Issues](https://github.com/openactive/open-booking-api/issues) 
-and pull requests. The source code is available on [GitHub](https://github.com/openactive/open-booking-api).
+Contributions to this document are not only welcomed but are actively solicited 
+and should be made via 
+[GitHub Issues](https://github.com/openactive/open-booking-api/issues) and 
+pull requests. The source code is available 
+on [GitHub](https://github.com/openactive/open-booking-api).
+
+        <div class="warning">
+This document represents an early draft of the planned API design. It is highly 
+likely to change completely between now and the first published version. These 
+early drafts are intended to help developers provide feedback by developing 
+early proof-of-concept implementations.
+        </div>
+
     </section>
 
-  <section class="informative">
-    TODO
-  </section>
+    <section class="informative">
+# Introduction
 
-<section id="conformance">
-This specification makes use of the compact IRI Syntax; please refer to the [Compact IRIs](http://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
-</section>
+The document is an output of the 
+[OpenActive Community Group](http://www.w3.org/community/openactive/). As part 
+of the [OpenActive](https://openactive.io) initiative, the community group is 
+developing standards that will promote the publication and use of open 
+[opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data) 
+in helping people to become more physically active.
 
-  <section>
+The Community Group have already published specifications that define standard 
+data models ([[Modelling-Opportunity-Data]]) and support the publication and 
+harvesting of data in standard formats ([[RPDE]]). 
+
+This existing work helps increase the discovery of opportunities for people to 
+be active. This specification builds on that work by defining an HTTP API that 
+can be implemented by booking systems that are publishing opportunity data. By 
+allowing third-party applications to place bookings in their systems, it becomes
+ possible for more people to participate in events or make use of leisure and 
+ sporting facilities.
+
+The specification defines the flow of HTTP requests and responses between the 
+booking system (server) and the third-party application (client). This includes 
+definitions of the overall application flow, detailed request and response 
+formats and the potential error conditions that applications may encounter.
+
+## Scope and requirements
+
+The current scope of the specification should conform to a set of 
+[use cases and requirements](https://docs.google.com/document/d/1fsCr071V12i_2g0DK818OAGlEAJFLWwkBp9bpgx4fo8/edit?usp=sharing) 
+that have previously been identified and discussed with the OpenActive 
+community.
+
+The focus of the initial versions of this specification will be on the simplest 
+use cases that will support making bookings on behalf of users. This core 
+functionality includes:
+
+* __Pricing and availability__ – checking the price and current availabilty of 
+an event or for the use of a facility
+* __Leasing__ – temporarily reserving spaces for a user to attend an event or 
+make use of a facility, whilst placing a booking
+* __Booking__ – placing and viewing bookings, and where necessary, confirming 
+receipt of payment from users
+
+A number of additional requirements that relate to the booking of events and 
+facilities are currently out of scope:
+
+* creating and managing accounts for users
+* more complex pricing options, e.g. membership based pricing
+* handling bookings for multiple events ("shopping carts") or for groups of users
+* waiting lists for events
+
+It is possible that future versions of this specification may include support 
+for these or other features. Revisions will be driven by the needs of the 
+community.
+
+### Functionality that is out of scope
+
+By design this specification will not define some types of functionality. 
+
+These have been declared as permanently out of scope because they are either 
+adequately covered by existing specifications, or will be covered by future 
+work of the OpenActive Community Group. 
+
+The functionality that is currrently defined as out of scope includes:
+
+* __API authentication and security__ – while the specification recommends some 
+best practices relating to authentication and security it does not mandate a 
+specific means of securing an API. Implementers are free to choose the system 
+that offers the best security for their platform and users
+* __Payment processing__ – the design assumes that all payment handling will 
+be carried out by the third-party application, in a separate payment flow. 
+Booking systems and application developers are able to use the payment and 
+reconciliation mechanisms that provide the best options for their customers
+* __API business models__ – the design is agnostic to any business models that 
+might govern the use of the API, e.g. revenue-sharing or transaction processing 
+fees
+* __Discovery__  – finding, filtering and searching for opportunity data. This 
+specification assumes that the client and server applications have already 
+shared data about the relevant opportunities. Additional functionality in this 
+area will be addressed by future specifications from the Community Group
+
+## Audience
+
+The document is primarily intended for the following audiences:
+
+* Software developers who want to implement the API, e.g. as part of a booking 
+system
+* Software developers building client libraries or applications that will use 
+the API
+
+The following sections introduce terminology, concepts and requirements that 
+underpin the design of the API. This content might also be useful for a wider 
+audience, e.g. business analysts or product managers looking for a high-level 
+overview of the API functionality.
+
+    </section>
+
+    <section id="conformance">
+The key words may, must, must not, should, and should not are to be interpreted 
+as described in [[RFC2119]].
+
+This specification makes use of the compact IRI Syntax; please refer to the 
+[Compact IRIs](http://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
+
+    </section>
+
+    <section>
 # Typographical Conventions   
 
 The following typographic conventions are used in this specification:
 
-<dl class="typography">
-<dt>`markup`</dt>
-<dd>Markup (elements, attributes, properties), machine processable values (string, characters, media types), property name, or a file name is in a monospace font.</dd>
-<dt>__*definition*__</dt>
-<dd>A definition of a term, to be used elsewhere in this or other specifications, is in bold and italics.</dd>
-<dt>[hyperlink]()</dt>
-<dd>A hyperlink is underlined and in blue.</dd>
-<dt>[[reference]]()</dt>
-<dd>A document reference (normative or informative) is enclosed in square brackets and links to the references section.</dd>
-</dl>
 
-<div class="note">
-Notes are in light green boxes with a green left border and with a "Note" header in green. Notes are normative or informative depending on the whether they are in a normative or informative section, respectively.
-</div>
-<pre class="example">
+        <dl class="typography">
+            <dt>`markup`</dt>
+            <dd>Markup (elements, attributes, properties), machine processable 
+                values (string, characters, media types), property name, or a 
+                file name is in a monospace font.</dd>
+            <dt>__*definition*__</dt>
+            <dd>A definition of a term, to be used elsewhere in this or other 
+                specifications, is in bold and italics.</dd>
+            <dt>[hyperlink]()</dt>
+            <dd>A hyperlink is underlined and in blue.</dd>
+            <dt>[[reference]]()</dt>
+            <dd>A document reference (normative or informative) is enclosed in 
+                square brackets and links to the references section.</dd>
+        </dl>
+
+        <div class="note">
+Notes are in light green boxes with a green left border and with a "Note" 
+header in green. Notes are normative or informative depending on the whether 
+they are in a normative or informative section, respectively.
+
+        </div>
+        <pre class="example">
 Examples are in light khaki boxes, with khaki left border, and with a 
 numbered "Example" header in khaki. Examples are always informative. 
 The content of the example is in monospace font and may be syntax colored.
 </pre>
 
-  </section>
-  
-  <section>
-  <h2>Examples</h2>
-     <div class="issue" title="Issue name"  data-number="1">
-Test issue
-     </div>
-             <pre class="example" title="Authenticated GET">
-GET /foo HTTP/1.1
-Host: example.org
-Date: Tue, 07 Jun 2017 20:51:35 GMT
-Accept: application/json
-        </pre>
-       
-  </section>
-
-    <section class='appendix informative'>
-    Acknowledgements
-    ================
-
-    The editors thank [all members](http://www.w3.org/community/openactive/participants) of the OpenActive CG for contributions of various kinds.
     </section>
-  </body>
+
+    <section>
+# Concepts  
+    </section>
+
+    <section>
+# General Recommendations  
+    </section>
+
+    <section>
+# Booking Flow  
+    </section>
+
+    <section>
+# Operations  
+    </section>
+    
+    <section class='appendix informative'>
+# Acknowledgements
+
+The editors thank 
+[all members](http://www.w3.org/community/openactive/participants) of the 
+OpenActive Communkity Group for their contributions.
+    </section>
+</body>
+
 </html>
