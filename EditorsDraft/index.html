@@ -694,14 +694,14 @@ and/or facilities depending on what decide they expose from their platform.
 To check the availability of an event a broker will issue a GET request to the 
 URI specified in the `id` of the Event: 
 
-    <pre class="example" title="Viewing event availability">
+        <pre class="example" title="Viewing event availability">
 GET /sessions/9209 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
-    </pre>
+        </pre>
     
-    <pre class="example" title="Event response">
+        <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
@@ -737,50 +737,50 @@ Content-Length: ...
     ...
   }
 }    
-    </pre>
+        </pre>
     
-    <div class="issue" 
-        title="Define processing model for selecting an Order" 
-        data-number="13">    
-    </div>
-        
-    <div class="issue" 
-        title="Clarify use of proposed beta:anonymousLeaseDuration property" 
-        data-number="25">    
-    </div>
+        <div class="issue" 
+            title="Define processing model for selecting an Order" 
+            data-number="13">    
+        </div>
+            
+        <div class="issue" 
+            title="Clarify use of proposed beta:anonymousLeaseDuration property" 
+            data-number="25">    
+        </div>
 
 
 ### Checking availability and offers for use of a facility
 
-    <div class="issue" 
-         title="Describe booking workflow for facilities" data-number="26">        
-    </div>
+        <div class="issue" 
+             title="Describe booking workflow for facilities" data-number="26">        
+        </div>
 
 ## Creating and updating orders
 
-    <div class="issue"
-         title="potentialAction" data-number="5">
-         How does a client discover the `/orders` endpoint?
-    </div>
+        <div class="issue"
+             title="potentialAction" data-number="5">
+             How does a client discover the `/orders` endpoint?
+        </div>
 
 Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers 
 to initiate the booking workflow.
 
 ### Creating a new order (`/orders`)
 
-    <div class="issue" 
-        title="Clarify use of proposed beta:anonymousLeaseDuration property" 
-        data-number="25">    
-        e.g. lease durations, default behaviour, etc
-    </div>
+        <div class="issue" 
+            title="Clarify use of proposed beta:anonymousLeaseDuration property" 
+            data-number="25">    
+            e.g. lease durations, default behaviour, etc
+        </div>
 
-    <div class="issue" 
-        title="Review order pre-condition checks from 0.4" 
-        data-number="27">    
-        e.g. verifying user, etc.
-    </div>
+        <div class="issue" 
+            title="Review order pre-condition checks from 0.4" 
+            data-number="27">    
+            e.g. verifying user, etc.
+        </div>
     
-    <pre class="example" title="Creating an order - request">
+        <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
@@ -803,39 +803,119 @@ Accept: application/vnd.openactive+json
     "orderedItem": "https://example.com/sessions/9209"
   }
 }
-    </pre>
+        </pre>
 
 If successful the server will response with the location of a newly created 
 `Order` resource:
 
-    <pre class="example" title="Creating an order - response">    
+        <pre class="example" title="Creating an order - response">    
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
 Location: /orders/123
-    </pre>
+        </pre>
+
+### Viewing an order (`/orders/{orderId}`)
+
+            <pre class="example" title="Viewing an order - request">
+GET /orders/535 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive+json
+            </pre>
+
+            <pre class="example" title="Viewing an order - response">
+HTTP/1.1 200 Created
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive+json
+Content-Length: ...
+
+{
+  "type": "Order",
+  "id": "https://example.com/orders/535",
+  "identifier": 535,
+  "orderedItem": [
+    {
+      "type": "OrderItem",
+      "id": "https://example.com/orders/535/orderitems/987",
+      "identifier": 987,
+      "customer": "https://example.com/customers/472",
+      "orderedItem": {
+        "type": "OrderItem",
+        "orderQuantity": 1,
+        "customer": "https://example.com/customers/472",
+        "acceptedOffer": "https://example.com/sessions/9209",
+        "orderedItem": "https://example.com/sessions/9209"
+      },
+      "amount": {
+        "type": "MonetaryAmount",
+        "value": "10.00",
+        "currency": "GBP"
+      },
+      "subTotalPrice": {
+        "type": "MonetaryAmount",
+        "value": "5.00",
+        "currency": "GBP"
+      }
+    }
+  ],
+  "orderStatus": "OrderPaymentDue",
+  "paymentDueDate": "2018-02-20T11:00:00Z",
+  "orderDate": "2018-02-20T11:00:00Z",
+  "partOfInvoice": {
+    "type": "Invoice",
+    "paymentStatus": "PaymentDue",
+    "totalPaymentDue": {
+      "type": "MonetaryAmount",
+      "value": "10.00",
+      "currency": "GBP"
+    }
+  },
+  "potentialAction": [
+    {
+      "type": "PayAction",
+      "name": "Pay",
+      "target": {
+        "type": "EntryPoint",
+        "url": "https://example.com/orders/535/payment",
+        "encodingType": "application/vnd.openactive.v0.4+json",
+        "httpMethod": "POST"
+      }
+    }
+  ]
+}
+            </pre>
+
+### Deleting an order
+
+A `DELETE` request to an `Order` URI will delete the order.
 
 ### Adding further items to an order
 
-    <div class="issue"
-         title="Rescope to include multi-item orders?"
-         data-number="28">
-    </div>     
+        <div class="issue"
+             title="Rescope to include multi-item orders?"
+             data-number="28">
+        </div>     
 
 ## Completing an order (`/orders/{orderId}/payments`)
 
-    <div class="issue"
-         title="Discovery of /payments endpoint"
-         data-number="29">
-         How does a client find this?
-    </div>
+        <div class="issue"
+             title="Discovery of /payments endpoint"
+             data-number="29">
+             How does a client find this? E.g. via `potentialAction`?
+        </div>
 
-    <div class="issue"
-         title="Clarify use of `paymentMethod` when completing an order"
-         data-number="30">
-        What does `paymentMethod` refer to?
-    </div>         
+        <div class="issue"
+             title="Clarify use of `paymentMethod` when completing an order"
+             data-number="30">
+            What does `paymentMethod` refer to?
+        </div>         
     
+        <div class="issue"
+             title="Lease timeout behaviour"
+             data-number="25">
+        </div>  
+            
 An order is not considered complete until payment has occurred. 
 
 Brokers MUST update the booking system to indicate that payment has been taken.
@@ -865,14 +945,25 @@ Accept: application/vnd.openactive+json
 }
     </pre>
 
-## Viewing orders
+## Viewing customer orders and reservations
 
-TODO: Include content from [here](https://docs.google.com/document/d/1Of5FMIFrxzHpwd0QSXQLRZB5iwIhiai4VktK6LkKgQo/edit#bookmark=id.icvgjxkgkko0)
+        <div class="issue" 
+            title="How and when are customers and reservations created?"
+            data-number="31">
+       </div>     
 
-## Viewing reservations
+## Post order events: confirmations and refunds
 
-TODO: Include content from [here](https://docs.google.com/document/d/1Of5FMIFrxzHpwd0QSXQLRZB5iwIhiai4VktK6LkKgQo/edit#bookmark=id.kjs4o6i3b24t)
-    
+        <div class="issue"
+             title="Document how and when confirmation happens"
+             data-number="32">
+        </div>
+
+        <div class="issue"
+             title="Document any responsibilities and interactions around refunds"
+             data-number="33">
+        </div>
+             
     </section>
     
     <section class='appendix informative'>
