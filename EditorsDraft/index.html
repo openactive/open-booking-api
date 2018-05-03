@@ -673,6 +673,12 @@ atop OAuth2.
 
 ## Checking availability and offers
 
+    <div class="issue" 
+            title="Write a definition of 'bookable'" 
+            data-number="12">
+        How does a client know which events it can book?    
+    </div>
+
 This specification assumes that a *broker* has already obtained opportunity 
 data from a *booking system* that includes descriptions of events, facilities, 
 etc. For example by harvesting data via an [[RPDE]] feed.
@@ -733,27 +739,28 @@ Content-Length: ...
   }
 }    
         </pre>
-    
-    <div class="issue" 
-            title="Define processing model for selecting an Order" 
-            data-number="13">    
-    </div>
 
     <div class="issue" 
-            title="Write a definition of 'bookable'" 
-            data-number="12">
-        How does a client know which events it can book?    
-    </div>
-                    
-    <div class="issue" 
-            title="Clarify use of proposed beta:anonymousLeaseDuration property" 
-            data-number="25">    
+         title="Clarify use of proposed beta:anonymousLeaseDuration property" 
+         data-number="25">    
         How does this inform lease duration?
     </div>
 
     <div class="issue" 
-             title="Describe booking workflow for facilities" data-number="26">        
+         title="Describe booking workflow for facilities" data-number="26">        
+       How does this work for facilities?  
     </div>
+
+The client may then present the updated availability and suitable offers to 
+the customer.
+    
+    <div class="issue" 
+            title="Define processing model for selecting an Order" 
+            data-number="13">    
+       How does a client select between multiple orders?
+    </div>
+
+                    
 
 ## Creating and updating orders
 
@@ -761,11 +768,9 @@ Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers
 to initiate the booking workflow.
 
     <div class="issue"
-             title="potentialAction" data-number="5">
-             How does a client discover the <code>/orders</code> endpoint?
-
+        title="potentialAction" data-number="5">
+        How does a client discover the right endpoint?
     </div>
-
 
 ### Creating a new order (`/orders`)
 
@@ -794,6 +799,7 @@ in the Order.
         <div class="issue" 
             title="Can `orderQuantity` have a value other than 1?" 
             data-number="40">    
+            Are we supporting booking multiple places in v1?
         </div>
             
         <pre class="example" title="Creating an order - request">
@@ -915,6 +921,7 @@ A POST to the `orderItems` collection of the order will append a new item.
         <div class="issue"
              title="Rescope to include multi-item orders?"
              data-number="28">
+             Shopping cart models were originally out of scope.
         </div>     
 
 ## Completing an order (`/orders/{orderId}/payments`)
@@ -936,21 +943,25 @@ An Order is completed by the client submitting a payment.
         <div class="issue"
              title="Lease timeout behaviour"
              data-number="34">
+             What happens when a lease times out?
         </div>  
 
         <div class="issue"
              title="Document order state transitions"
              data-number="35">
+             How does an order change state?
         </div>  
             
         <div class="issue"
              title="Are we supporting partial payments?"
              data-number="41">
+             Can a broker make multiple payments?
         </div> 
                
         <div class="issue"
              title="POSTing to /order rather than sub-resources"
              data-number="16">
+             Should we post to order instead?
         </div> 
                             
 An order is not considered complete until payment has occurred. 
@@ -990,6 +1001,7 @@ about previously placed orders and reservations.
     <div class="issue" 
             title="How and when are customers and reservations created?"
             data-number="31">
+        The creation of customers is not described yet
     </div>     
 
 ### Viewing customer orders (`/customers/{customerId}/orders`)
@@ -1000,6 +1012,7 @@ a paged list of orders.
     <div class="issue"
              title="List endpoints should return JSON-LD"
              data-number="7">
+        Need to update this to ensure spec is consistent
     </div>
         
         <pre class="example" title="Viewing customer orders - request">    
@@ -1041,6 +1054,7 @@ a paged list of reservations.
     <div class="issue"
              title="List endpoints should return JSON-LD"
              data-number="7">
+        Need to update this to ensure spec is consistent
     </div>
         
     <pre class="example" title="Viewing customer reservations - request">    
@@ -1095,11 +1109,13 @@ completing an order. This section describes some potential interactions.
     <div class="issue"
              title="Document how and when confirmation happens"
              data-number="32">
+        Should a broker be informed or be able to check when confirmation has happened?
     </div>
 
     <div class="issue"
              title="Document any responsibilities and interactions around refunds"
              data-number="33">
+        How are refunds handled and who gets notified?     
     </div>
              
     </section>

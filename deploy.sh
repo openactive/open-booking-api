@@ -47,7 +47,7 @@ function respec2html {
 
 echo Copying static files
 #cp -r ../Latest .
-cp -r ../EditorsDraft .
+cp -r ../EditorsDraft/*.png .
 #cp -r ../Latest/* .
 
 cd ..
