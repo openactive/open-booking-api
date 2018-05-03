@@ -1,0 +1,12 @@
+sudo: false
+language: node_js
+node_js:
+- '6'
+script: bash ./deploy.sh
+branches:
+  only:
+  - master
+env:
+  global:
+  - GH_REF: github.com/openactive/open-booking-api.git
+  - secure: dtArWe+5OsXx1P1/yO+VsUAUAHyWAvMTI0NERrX11dUkR0R5SXo36a+GodOhzt12dJI8eJTK5ddeXmqTPBwDkgVF948437hUJ/DgGDufrNN8ywqx92CMv5wNpSe4IDH+dZ0tfMq6FNSoYxWxQN+tzb2/V0x/6iSCqnaC3FKJXQMkOm2wwYDYSnXIqMP5SD4RXWWmgLeMLkhlqV9kpLkhOAZUF1oEitphJJ2ysTDYUQqLhqEaAZXoiaF3SHhQIvjz8XROZJ/vGAIsMe7obcOQM/2TmOkyW4cQumN+ThSvsySDPntteHczrty3Lbnv8HE6P4GOOeln4lKO9/buEXrRhln1F0C1RP3kOdiinzsEXiisyAba8E5AmVbIp/D3dAZLOjtG8n9nd6Kuu2mVVbGXtHHVKxHxxRiROCRvjEvYEJJx+92ID+YFGSUzxgXlXRUarQ9tKMJhPIxlxWom/m/ra1GOEsTqMv+b9Z1cSnaoUuMhRqPpLZQMjb59ypoumBL01peF0arpm+ayOYbu7XCZ7xXlMUrfuNL9uNL7FUOrdJt3hH/AjPJuS5smKSVIePzyXaqDekmfblKJdtL6opyGICC6mRRGmhDvSWoWWxuM9BuGyXHyteBSkRbBG4odkL+TDy5gYApC1Uimhjt4YJAZEZUXaOdOsguL+H9CDqcODL8=
