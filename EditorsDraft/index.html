@@ -750,19 +750,18 @@ Content-Length: ...
             data-number="25">    
         </div>
 
-
 ### Checking availability and offers for use of a facility
 
-        <div class="issue" 
+    <div class="issue" 
              title="Describe booking workflow for facilities" data-number="26">        
-        </div>
+    </div>
 
 ## Creating and updating orders
 
-        <div class="issue"
+    <div class="issue"
              title="potentialAction" data-number="5">
              How does a client discover the `/orders` endpoint?
-        </div>
+    </div>
 
 Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers 
 to initiate the booking workflow.
@@ -976,17 +975,17 @@ Accept: application/vnd.openactive+json
 
 ## Viewing customer orders and reservations
 
-        <div class="issue" 
+    <div class="issue" 
             title="How and when are customers and reservations created?"
             data-number="31">
-       </div>     
+    </div>     
 
 ### Viewing customer orders (`/customers/{customerId}/orders`)
 
-        <div class="issue"
+    <div class="issue"
              title="List endpoints should return JSON-LD"
              data-number="7">
-        </div>
+    </div>
         
         <pre class="example" title="Viewing customer orders - request">    
 GET /customers/472/orders HTTP/1.1
@@ -1021,19 +1020,19 @@ Content-Length: ...
 
 ### Viewing customer reservations (`/customers/{customerId}/reservations`)
 
-        <div class="issue"
+    <div class="issue"
              title="List endpoints should return JSON-LD"
              data-number="7">
-        </div>
+    </div>
         
-        <pre class="example" title="Viewing customer reservations - request">    
+    <pre class="example" title="Viewing customer reservations - request">    
 GET /customers/472/reservations HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
-        </pre>
+    </pre>
 
-        <pre class="example" title="Viewing customer reservations - response">  
+    <pre class="example" title="Viewing customer reservations - response">  
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
@@ -1066,21 +1065,21 @@ Content-Length: ...
     ...
   ]
 }
-        </pre>
+    </pre>
 
 
 
 ## Post order events: confirmations and refunds
 
-        <div class="issue"
+    <div class="issue"
              title="Document how and when confirmation happens"
              data-number="32">
-        </div>
+    </div>
 
-        <div class="issue"
+    <div class="issue"
              title="Document any responsibilities and interactions around refunds"
              data-number="33">
-        </div>
+    </div>
              
     </section>
     
