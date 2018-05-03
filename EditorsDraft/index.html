@@ -734,21 +734,23 @@ Content-Length: ...
 }    
         </pre>
     
-        <div class="issue" 
+    <div class="issue" 
             title="Define processing model for selecting an Order" 
             data-number="13">    
-        </div>
+    </div>
 
-        <div class="issue" 
+    <div class="issue" 
             title="Write a definition of 'bookable'" 
             data-number="12">
-            How does a client know which events it can book?    
-        </div>
+        How does a client know which events it can book?    
+    </div>
                     
-        <div class="issue" 
+    <div class="issue" 
             title="Clarify use of proposed beta:anonymousLeaseDuration property" 
             data-number="25">    
-        </div>
+        How does this inform lease duration?
+    </div>
+
 
 ### Checking availability and offers for use of a facility
 
@@ -758,15 +760,20 @@ Content-Length: ...
 
 ## Creating and updating orders
 
-    <div class="issue"
-             title="potentialAction" data-number="5">
-             How does a client discover the `/orders` endpoint?
-    </div>
-
 Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers 
 to initiate the booking workflow.
 
+    <div class="issue"
+             title="potentialAction" data-number="5">
+             How does a client discover the <code>/orders</code> endpoint?
+    </div>
+
+
 ### Creating a new order (`/orders`)
+
+A POST request to the `/orders` collection will ask the server to create an 
+new Order. A time limited lease will be created for the events referenced 
+in the Order.
 
         <div class="issue" 
             title="Explain why brokers are included in order creation" 
@@ -905,12 +912,16 @@ A `DELETE` request to an `Order` URI will delete the order.
 
 ### Adding further items to an order
 
+A POST to the `orderItems` collection of the order will append a new item.
+
         <div class="issue"
              title="Rescope to include multi-item orders?"
              data-number="28">
         </div>     
 
 ## Completing an order (`/orders/{orderId}/payments`)
+
+An Order is completed by the client submitting a payment.
 
         <div class="issue"
              title="Discovery of /payments endpoint"
@@ -975,12 +986,18 @@ Accept: application/vnd.openactive+json
 
 ## Viewing customer orders and reservations
 
+A server SHOULD provide endpoints to allow clients to retrieve information 
+about previously placed orders and reservations.
+
     <div class="issue" 
             title="How and when are customers and reservations created?"
             data-number="31">
     </div>     
 
 ### Viewing customer orders (`/customers/{customerId}/orders`)
+
+A GET request to the orders collection associated with a customer will return 
+a paged list of orders.
 
     <div class="issue"
              title="List endpoints should return JSON-LD"
@@ -1019,6 +1036,9 @@ Content-Length: ...
         </pre>
 
 ### Viewing customer reservations (`/customers/{customerId}/reservations`)
+
+A GET request to the reservations collection associated with a customer will return 
+a paged list of reservations.
 
     <div class="issue"
              title="List endpoints should return JSON-LD"
@@ -1069,7 +1089,10 @@ Content-Length: ...
 
 
 
-## Post order events: confirmations and refunds
+## Events after order completion: confirmations and refunds
+
+Both the broker and booking system may need to take further actions after 
+completing an order. This section describes some potential interactions.
 
     <div class="issue"
              title="Document how and when confirmation happens"
