@@ -657,6 +657,9 @@ All HTTP requests and responses SHOULD be secured using SSL.
 
 ## Authentication
 
+    <div class="issue" title="More detailed recommendations for auth" data-number="1">    
+    </div>
+    
 All of the API transactions described in this document SHOULD require 
 authentication. 
 
@@ -672,6 +675,204 @@ atop OAuth2.
 
     <section>
 # Operations  
+
+## Checking availability and offers
+
+This specification assumes that a *broker* has already obtained opportunity 
+data from a *booking system* that includes descriptions of events, facilities, 
+etc. For example by harvesting data via an [[RPDE]] feed.
+
+The availability of an event or facility may change at any time.
+
+The offers available to a customer might also change over time.
+
+A booking system that MUST allow a broker to check the current state of events 
+and/or facilities depending on what decide they expose from their platform.
+
+### Checking availability and offers for an event
+
+To check the availability of an event a broker will issue a GET request to the 
+URI specified in the `id` of the Event: 
+
+    <pre class="example" title="Viewing event availability">
+GET /sessions/9209 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive+json
+    </pre>
+    
+    <pre class="example" title="Event response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive+json
+Content-Length: ...
+
+
+{
+  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "type": "Event",
+  "identifier": 9209,
+  "id": "https://example.com/sessions/9209",
+  "name": "Speedball",
+  "offers": [
+    {
+      "type": "Offer",
+      "identifier": 2134,
+      "name": "Speedball winger position",
+      "price": "33.00",
+      "priceCurrency": "GBP",
+      "availabilityStarts": "2014-04-29T12:14:35",
+      "availabilityEnds": "2014-04-29T12:14:35",
+      "description": "Winger space for Speedball."
+    }
+  ],
+  "beta:anonymousLeaseDuration": "PT15M",
+  "eventStatus": "http://schema.org/EventScheduled",
+  "maximumAttendeeCapacity": 30,
+  "remainingAttendeeCapacity": 20,
+  "startDate": "2018-01-27T11:00:00Z",
+  "endDate": "2018-01-27T12:00:00Z",
+  "duration": "PT1H",
+  "location": {
+    ...
+  }
+}    
+    </pre>
+    
+    <div class="issue" 
+        title="Define processing model for selecting an Order" 
+        data-number="13">    
+    </div>
+        
+    <div class="issue" 
+        title="Clarify use of proposed beta:anonymousLeaseDuration property" 
+        data-number="25">    
+    </div>
+
+
+### Checking availability and offers for use of a facility
+
+    <div class="issue" 
+         title="Describe booking workflow for facilities" data-number="26">        
+    </div>
+
+## Creating and updating orders
+
+    <div class="issue"
+         title="potentialAction" data-number="5">
+         How does a client discover the `/orders` endpoint?
+    </div>
+
+Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers 
+to initiate the booking workflow.
+
+### Creating a new order (`/orders`)
+
+    <div class="issue" 
+        title="Clarify use of proposed beta:anonymousLeaseDuration property" 
+        data-number="25">    
+        e.g. lease durations, default behaviour, etc
+    </div>
+
+    <div class="issue" 
+        title="Review order pre-condition checks from 0.4" 
+        data-number="27">    
+        e.g. verifying user, etc.
+    </div>
+    
+    <pre class="example" title="Creating an order - request">
+POST /orders HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive+json
+
+{
+  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "type": "Order",
+  "customer": "https://example.com/customers/472",
+  "broker": {
+    "type": "Organization",
+    "name": "MyFitnessApp",
+    "url": "https://myfitnessapp.example.com"
+  },
+  "orderedItem": {
+    "type": "OrderItem",
+    "orderQuantity": 1,
+    "customer": "https://example.com/customers/472",
+    "acceptedOffer": "https://example.com/sessions/9209",
+    "orderedItem": "https://example.com/sessions/9209"
+  }
+}
+    </pre>
+
+If successful the server will response with the location of a newly created 
+`Order` resource:
+
+    <pre class="example" title="Creating an order - response">    
+HTTP/1.1 201 Created
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive+json
+Location: /orders/123
+    </pre>
+
+### Adding further items to an order
+
+    <div class="issue"
+         title="Rescope to include multi-item orders?"
+         data-number="28">
+    </div>     
+
+## Completing an order (`/orders/{orderId}/payments`)
+
+    <div class="issue"
+         title="Discovery of /payments endpoint"
+         data-number="29">
+         How does a client find this?
+    </div>
+
+    <div class="issue"
+         title="Clarify use of `paymentMethod` when completing an order"
+         data-number="30">
+        What does `paymentMethod` refer to?
+    </div>         
+    
+An order is not considered complete until payment has occurred. 
+
+Brokers MUST update the booking system to indicate that payment has been taken.
+
+Once the seller is content with the payments, it then sets the `orderStatus` 
+property of the `Order` to `OrderDelivered`.
+
+    <pre class="example" title="Completing an order - request">
+POST /orders/123/payments HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive+json
+
+{
+  "type": "Payment",
+  "paymentMethod": "https://www.example.com/customers/472/paymentmethods/9765",
+  "totalPaidToProvider": {
+    "type": "MonetaryAmount",
+    "value": "8.00",
+    "currency": "GBP"
+  },
+  "totalPaidByCustomer": {
+    "type": "MonetaryAmount",
+    "value": "5.00",
+    "currency": "GBP"
+  }
+}
+    </pre>
+
+## Viewing orders
+
+TODO: Include content from [here](https://docs.google.com/document/d/1Of5FMIFrxzHpwd0QSXQLRZB5iwIhiai4VktK6LkKgQo/edit#bookmark=id.icvgjxkgkko0)
+
+## Viewing reservations
+
+TODO: Include content from [here](https://docs.google.com/document/d/1Of5FMIFrxzHpwd0QSXQLRZB5iwIhiai4VktK6LkKgQo/edit#bookmark=id.kjs4o6i3b24t)
+    
     </section>
     
     <section class='appendix informative'>
