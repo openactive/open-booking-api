@@ -19,18 +19,15 @@
             // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
             // and its maturity status
             // previousPublishDate:  "1977-03-15",
-            previousMaturity: "ED",
-            previousPublishDate: "2018-05-03",
+            //previousMaturity: "ED",
+            //previousPublishDate: "2018-05-03",
 
             // if there a publicly available Editor's Draft, this is the link
-            edDraftURI: "https://www.openactive.io/modelling-opportunity-data/EditorsDraft/",
+            edDraftURI: "https://www.openactive.io/open-booking-api/EditorsDraft/",
             //prevED:  "https://www.openactive.io/spec-template/",
             //previousURI:  "https://www.openactive.io/realtime-paged-data-exchange/0.2.3/",
             //testSuiteURI: "https://www.openactive.io/endpoint-validator/",
             copyrightStart: 2018,
-
-            // if this is a LCWD, uncomment and set the end of its review period
-            // lcEnd: "2009-08-05",
 
             // editors, add as many as you like
             // only "name" is required
@@ -47,12 +44,6 @@
                 companyURL: "http://theodi.org"
             }],
 
-            // authors, add as many as you like.
-            // This is optional, uncomment if you have authors as well as editors.
-            // only "name" is required. Same format as editors.
-
-            authors: [],
-
             otherLinks: [{
                 key: "Repo",
                 value: "We are on Github",
@@ -60,10 +51,8 @@
                 class: "repo"
             }, {
                 key: "Issues",
+                value: "Report an issue",
                 href: "https://github.com/openactive/open-booking-api/issues/"
-            }, {
-                key: "Version",
-                value: "Candidate Specification"
             }],
 
             logos: [{
@@ -75,9 +64,6 @@
                 id: 'logo'
             }],
 
-            // extend the bibliography entries
-            //localBiblio: {},
-
             // name of the WG
             wg: "OpenActive Community Group",
 
@@ -87,19 +73,9 @@
             // name (with the @w3c.org) of the public mailing to which comments are due
             wgPublicList: "public-openactive",
 
-            // URI of the patent status for this WG, for Rec-track documents
-            // !!!! IMPORTANT !!!!
-            // This is important for Rec-track documents, do not copy a patent URI from a random
-            // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-            // Team Contact.
             maxTocLevel: 4,
             preProcess: [],
-            alternateFormats: [{
-                uri: "diff-previous.html",
-                label: "diff to previous version"
-            }],
-            isRecTrack: true,
-            isNoTrack: true,
+            noRecTrack: true,
             issueBase: "https://github.com/openactive/open-booking-api/issues/",
             format: "markdown",
             localBiblio: {
