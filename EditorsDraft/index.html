@@ -112,7 +112,7 @@
                 "OpenIdConnect" : {
                     "href": "http://openid.net/connect/",
                     "title": "OpenID Connect",
-                }                
+                }
             }
         };
     </script>
@@ -124,7 +124,7 @@
             border-collapse: collapse;
             border: 1px solid #bec9d9
         }
-        
+
         td,
         th {
             padding: 3px 0.5em;
@@ -132,89 +132,89 @@
             border-right: 1px solid black;
             border-bottom: 1px solid #E2EDFE;
         }
-        
+
         tr th[colspan] {
             color: #005A9C;
             background-color: #FEEDE2;
             text-align: center
         }
-        
+
         th {
             color: #005A9C;
             background-color: #E2EDFE;
             font-weight: normal;
             border-bottom: 1px solid #BEC9D9;
         }
-        
+
         tbody tr th {
             text-align: left;
         }
-        
+
         td.nb {
             font-size: smaller;
         }
-        
+
         .rec,
         .pr {
             color: #005A9C;
             background-color: #99EE99
         }
-        
+
         .ext {
             background-color: #FFFFFF
         }
-        
+
         .cr,
         .lcwd {
             color: #005A9C;
             background-color: #EEEE99
         }
-        
+
         .wd {
             color: #005A9C;
             background-color: #EE9999
         }
-        
+
         .ed,
         .fpwd {
             color: #005A9C;
             background-color: #FF7777
         }
-        
+
         code {
             white-space: pre;
         }
-        
+
         html {
             background-image: none !important;
         }
-        
+
         body {
             background: white top left fixed no-repeat !important;
             background-size: 25px auto !important;
-            background-image: 
+            background-image:
                 url('https://www.openactive.io/assets/openactive-label-specification.png') !important;
         }
-        
+
         h1 {
             font-family: 'Open Sans', sans-serif !important;
             font-weight: 300 !important;
             color: #69b9ff !important;
             font-size: 220%;
         }
-        
+
         #toc {
             padding-top: 0px !important;
         }
-        
+
         .remove {
             background-colour: yellow;
         }
-        
+
         code {
             color: #C83500;
         }
-        
+
         em.rfc2119 {
             font-variant: small-caps;
         }
@@ -227,29 +227,29 @@
         body {
             background-size: 25px auto !important;
         }
-        
+
         body.toc-sidebar #toc {
             background-size: 25px auto !important;
             background-attachment: fixed !important;
         }
     </style>
     <section id='abstract'>
-This document specifies an HTTP API for placing bookings to participate in 
-physical activities, either by attending events or through the use of leisure 
+This document specifies an HTTP API for placing bookings to participate in
+physical activities, either by attending events or through the use of leisure
 or sports facilities.
     </section>
 
     <section id='sotd'>
-Contributions to this document are not only welcomed but are actively solicited 
-and should be made via 
-[GitHub Issues](https://github.com/openactive/open-booking-api/issues) and 
-pull requests. The source code is available 
+Contributions to this document are not only welcomed but are actively solicited
+and should be made via
+[GitHub Issues](https://github.com/openactive/open-booking-api/issues) and
+pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
         <div class="warning">
-This document represents an early draft of the planned API design. It is highly 
-likely to change completely between now and the first published version. These 
-early drafts are intended to help developers provide feedback by developing 
+This document represents an early draft of the planned API design. It is highly
+likely to change completely between now and the first published version. These
+early drafts are intended to help developers provide feedback by developing
 early proof-of-concept implementations.
         </div>
 
@@ -258,48 +258,48 @@ early proof-of-concept implementations.
     <section class="informative">
 # Introduction
 
-The document is an output of the 
-[OpenActive Community Group](http://www.w3.org/community/openactive/). As part 
-of the [OpenActive](https://openactive.io) initiative, the community group is 
-developing standards that will promote the publication and use of open 
-[opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data) 
+The document is an output of the
+[OpenActive Community Group](http://www.w3.org/community/openactive/). As part
+of the [OpenActive](https://openactive.io) initiative, the community group is
+developing standards that will promote the publication and use of open
+[opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
 in helping people to become more physically active.
 
-The Community Group have already published specifications that define standard 
-data models ([[!Modelling-Opportunity-Data]]) and support the publication and 
-harvesting of data in standard formats ([[RPDE]]). 
+The Community Group have already published specifications that define standard
+data models ([[!Modelling-Opportunity-Data]]) and support the publication and
+harvesting of data in standard formats ([[RPDE]]).
 
-This existing work helps increase the discovery of opportunities for people to 
-be active. This specification builds on that work by defining an HTTP API that 
-can be implemented by booking systems that are publishing opportunity data. By 
+This existing work helps increase the discovery of opportunities for people to
+be active. This specification builds on that work by defining an HTTP API that
+can be implemented by booking systems that are publishing opportunity data. By
 allowing third-party applications to place bookings in their systems, it becomes
- possible for more people to participate in events or make use of leisure and 
+ possible for more people to participate in events or make use of leisure and
  sporting facilities.
 
-The specification defines the flow of HTTP requests and responses between the 
-booking system (server) and the third-party application (client). This includes 
-definitions of the overall application flow, detailed request and response 
+The specification defines the flow of HTTP requests and responses between the
+booking system (server) and the third-party application (client). This includes
+definitions of the overall application flow, detailed request and response
 formats and the potential error conditions that applications may encounter.
 
 ## Scope and requirements
 
-The current scope of the specification should conform to a set of 
-[use cases and requirements](https://docs.google.com/document/d/1fsCr071V12i_2g0DK818OAGlEAJFLWwkBp9bpgx4fo8/edit?usp=sharing) 
-that have previously been identified and discussed with the OpenActive 
+The current scope of the specification should conform to a set of
+[use cases and requirements](https://docs.google.com/document/d/1fsCr071V12i_2g0DK818OAGlEAJFLWwkBp9bpgx4fo8/edit?usp=sharing)
+that have previously been identified and discussed with the OpenActive
 community.
 
-The focus of the initial versions of this specification will be on the simplest 
-use cases that will support making bookings on behalf of users. This core 
+The focus of the initial versions of this specification will be on the simplest
+use cases that will support making bookings on behalf of users. This core
 functionality includes:
 
-* __Pricing and availability__ – checking the price and current availabilty of 
+* __Pricing and availability__ – checking the price and current availabilty of
 an event or for the use of a facility
-* __Leasing__ – temporarily reserving spaces for a user to attend an event or 
+* __Leasing__ – temporarily reserving spaces for a user to attend an event or
 make use of a facility, whilst placing a booking
-* __Booking__ – placing and viewing bookings, and where necessary, confirming 
+* __Booking__ – placing and viewing bookings, and where necessary, confirming
 receipt of payment from users
 
-A number of additional requirements that relate to the booking of events and 
+A number of additional requirements that relate to the booking of events and
 facilities are currently out of scope:
 
 * creating and managing accounts for users
@@ -307,198 +307,198 @@ facilities are currently out of scope:
 * handling bookings for multiple events ("shopping carts") or for groups of users
 * waiting lists for events
 
-It is possible that future versions of this specification may include support 
-for these or other features. Revisions will be driven by the needs of the 
+It is possible that future versions of this specification may include support
+for these or other features. Revisions will be driven by the needs of the
 community.
 
 ### Functionality that is out of scope
 
-By design this specification will not define some types of functionality. 
+By design this specification will not define some types of functionality.
 
-These have been declared as permanently out of scope because they are either 
-adequately covered by existing specifications, or will be covered by future 
-work of the OpenActive Community Group. 
+These have been declared as permanently out of scope because they are either
+adequately covered by existing specifications, or will be covered by future
+work of the OpenActive Community Group.
 
 The functionality that is currrently defined as out of scope includes:
 
-* __API authentication and security__ – while the specification recommends some 
-best practices relating to authentication and security it does not mandate a 
-specific means of securing an API. Implementers are free to choose the system 
+* __API authentication and security__ – while the specification recommends some
+best practices relating to authentication and security it does not mandate a
+specific means of securing an API. Implementers are free to choose the system
 that offers the best security for their platform and users
-* __Payment processing__ – the design assumes that all payment handling will 
-be carried out by the third-party application, in a separate payment flow. 
-Booking systems and application developers are able to use the payment and 
+* __Payment processing__ – the design assumes that all payment handling will
+be carried out by the third-party application, in a separate payment flow.
+Booking systems and application developers are able to use the payment and
 reconciliation mechanisms that provide the best options for their customers
-* __API business models__ – the design is agnostic to any business models that 
-might govern the use of the API, e.g. revenue-sharing or transaction processing 
+* __API business models__ – the design is agnostic to any business models that
+might govern the use of the API, e.g. revenue-sharing or transaction processing
 fees
-* __Discovery__  – finding, filtering and searching for opportunity data. This 
-specification assumes that the client and server applications have already 
-shared data about the relevant opportunities. Additional functionality in this 
+* __Discovery__  – finding, filtering and searching for opportunity data. This
+specification assumes that the client and server applications have already
+shared data about the relevant opportunities. Additional functionality in this
 area will be addressed by future specifications from the Community Group
 
 ## Audience
 
 The document is primarily intended for the following audiences:
 
-* Software developers who want to implement the API, e.g. as part of a booking 
+* Software developers who want to implement the API, e.g. as part of a booking
 system
-* Software developers building client libraries or applications that will use 
+* Software developers building client libraries or applications that will use
 the API
 
-The following sections introduce terminology, concepts and requirements that 
-underpin the design of the API. This content might also be useful for a wider 
-audience, e.g. business analysts or product managers looking for a high-level 
+The following sections introduce terminology, concepts and requirements that
+underpin the design of the API. This content might also be useful for a wider
+audience, e.g. business analysts or product managers looking for a high-level
 overview of the API functionality.
 
     </section>
 
     <section id="conformance">
-This specification makes use of the compact IRI Syntax; please refer to the 
+This specification makes use of the compact IRI Syntax; please refer to the
 [Compact IRIs](http://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
     </section>
 
     <section>
-# Typographical Conventions   
+# Typographical Conventions
 
 The following typographic conventions are used in this specification:
 
 
         <dl class="typography">
             <dt>`markup`</dt>
-            <dd>Markup (elements, attributes, properties), machine processable 
-                values (string, characters, media types), property name, or a 
+            <dd>Markup (elements, attributes, properties), machine processable
+                values (string, characters, media types), property name, or a
                 file name is in a monospace font.</dd>
             <dt>__*definition*__</dt>
-            <dd>A definition of a term, to be used elsewhere in this or other 
+            <dd>A definition of a term, to be used elsewhere in this or other
                 specifications, is in bold and italics.</dd>
             <dt>[hyperlink]()</dt>
             <dd>A hyperlink is underlined and in blue.</dd>
             <dt>[[reference]]()</dt>
-            <dd>A document reference (normative or informative) is enclosed in 
+            <dd>A document reference (normative or informative) is enclosed in
                 square brackets and links to the references section.</dd>
         </dl>
 
         <div class="note">
-Notes are in light green boxes with a green left border and with a "Note" 
-header in green. Notes are normative or informative depending on the whether 
+Notes are in light green boxes with a green left border and with a "Note"
+header in green. Notes are normative or informative depending on the whether
 they are in a normative or informative section, respectively.
 
         </div>
         <pre class="example">
-Examples are in light khaki boxes, with khaki left border, and with a 
-numbered "Example" header in khaki. Examples are always informative. 
+Examples are in light khaki boxes, with khaki left border, and with a
+numbered "Example" header in khaki. Examples are always informative.
 The content of the example is in monospace font and may be syntax colored.
 </pre>
 
     </section>
 
     <section>
-# Key Concepts  
+# Key Concepts
 
         <dl class="typography">
             <dt>__*booking system*__</dt>
-            <dd>The platform or service that provides a server-side 
+            <dd>The platform or service that provides a server-side
             implementation of this API.
             </dd>
             <dt>__*broker*__</dt>
-            <dd>The organisation or developer providing an application that 
-            allows customers to make bookings. Those applications will be 
+            <dd>The organisation or developer providing an application that
+            allows customers to make bookings. Those applications will be
             clients of the API defined in this specification</dd>
             <dt>__*confirmation*__</dt>
-            <dd>The process of contacting a customer following the placement 
-            of a successful order, e.g. to provide tickets, attendance details, 
+            <dd>The process of contacting a customer following the placement
+            of a successful order, e.g. to provide tickets, attendance details,
             etc. This specification does not define this process</dd>
             <dt>__*customer*__</dt>
-            <dd>The user who places a booking using an application provided by 
+            <dd>The user who places a booking using an application provided by
             a broker.</dd>
             <dt>__*event*__</dt>
-            <dd>An [Event](https://www.openactive.io/modelling-opportunity-data/#events) 
-                is an opportunity to take part in a physical activity. Events 
-                take place at a specific location and at an agreed date 
+            <dd>An [Event](https://www.openactive.io/modelling-opportunity-data/#events)
+                is an opportunity to take part in a physical activity. Events
+                take place at a specific location and at an agreed date
                 and time.</dd>
             <dt>__*facility*__</dt>
-            <dd>A sporting facility, e.g. a squash court, table tennis table or 
-            football pitch.</dd>            
+            <dd>A sporting facility, e.g. a squash court, table tennis table or
+            football pitch.</dd>
             <dt>__*lease*__</dt>
-            <dd>A temporary reservation of a space at an event or for the use 
-            of a facility. Leases provide a limited time window during which 
-            a customer can place a booking and still be guaranteed a place at 
+            <dd>A temporary reservation of a space at an event or for the use
+            of a facility. Leases provide a limited time window during which
+            a customer can place a booking and still be guaranteed a place at
             an event (or use of the facility).</dd>
             <dt>__*offer*__</dt>
-            <dd>An [Offer](https://www.openactive.io/modelling-opportunity-data/#offers) 
-                describes the terms under which a customer may participate in an 
+            <dd>An [Offer](https://www.openactive.io/modelling-opportunity-data/#offers)
+                describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
             <dt>__*order*__</dt>
-            <dd>Describes the in-process or completed booking. An order may be 
-            made up of several order items. An order results in a customer 
+            <dd>Describes the in-process or completed booking. An order may be
+            made up of several order items. An order results in a customer
             having a confirmed reservation.</dd>
             <dt>__*payment*__</dt>
-            <dd>The process of taking funds from a customer in order to place 
+            <dd>The process of taking funds from a customer in order to place
             an order. Payment is managed between the customer and the broker.</dd>
             <dt>__*reconciliation*__</dt>
-            <dd>The process by which brokers and booking systems confirm that 
-            payment(s) have been taken on behalf of customers, to ensure that 
+            <dd>The process by which brokers and booking systems confirm that
+            payment(s) have been taken on behalf of customers, to ensure that
             money is appropriately exchanged between the brokers, booking systems
             and sellers. This specification does not define this process.</dd>
             <dt>__*refund*__</dt>
-            <dd>The process of returning funds to a customer, e.g. if an order 
+            <dd>The process of returning funds to a customer, e.g. if an order
             is cancelled. This specification does not define this process.</dd>
             <dt>__*reservation*__</dt>
-            <dd>A reservation for a customer to attend an event or for the use 
+            <dd>A reservation for a customer to attend an event or for the use
             of a facility. A reservation is created for every item in an order.</dd>
             <dt>__*seller*__</dt>
-            <dd>The organisation providing access to events or use of facilities 
+            <dd>The organisation providing access to events or use of facilities
             via a booking system. E.g. a leisure provider running yoga classes.</dd>
         </dl>
 
     </section>
-    
+
     <section class="normative">
-# Booking Flow  
+# Booking Flow
 
 ## High-level summary of the API
 
-This API defines a means for a **booking system** to expose an HTTP API that 
-may be used by a **broker** to place bookings on behalf of a **customer**. By 
-exposing this API the booking system can support a **seller** in reaching a wider 
+This API defines a means for a **booking system** to expose an HTTP API that
+may be used by a **broker** to place bookings on behalf of a **customer**. By
+exposing this API the booking system can support a **seller** in reaching a wider
 audience.
 
-A broker provides customers with an application that helps them to discover 
-opportunities to be physically active. The customer may then choose to make 
+A broker provides customers with an application that helps them to discover
+opportunities to be physically active. The customer may then choose to make
 a booking to attend an **event** or to make use of a **facility**.
 
-The broker will check the availability of event or facility in order to check 
-whether the customer can still attend. The broker will also present the customer 
-with information about any costs associated with participating in the event 
-or using a facility. This involves identifying the applicable *offers* and 
+The broker will check the availability of event or facility in order to check
+whether the customer can still attend. The broker will also present the customer
+with information about any costs associated with participating in the event
+or using a facility. This involves identifying the applicable *offers* and
 presenting them to the user.
 
-If there is still availability and the customer is happy to accept an offer, 
-then the customer can proceed to make a booking. The broker creates 
-an **order** on behalf of the user. 
+If there is still availability and the customer is happy to accept an offer,
+then the customer can proceed to make a booking. The broker creates
+an **order** on behalf of the user.
 
-Creating the order will also create a temporary **lease** that will reserve a 
-space for the customer to attend the event (or use the facility) while the 
+Creating the order will also create a temporary **lease** that will reserve a
+space for the customer to attend the event (or use the facility) while the
 rest of the workflow completes.
 
-If the **offers** for an event or use of a facility indicate that the user must 
-pay, then the broker will take the customer through a separate **payment** 
-workflow. This workflow is not defined by this specification. 
+If the **offers** for an event or use of a facility indicate that the user must
+pay, then the broker will take the customer through a separate **payment**
+workflow. This workflow is not defined by this specification.
 
-Once payment has been completed, the broker will update the booking platform to 
+Once payment has been completed, the broker will update the booking platform to
 indicate that payment has been taken. The booking process is then completed.
 
-The completion of the order will result in the lease being removed and a 
-permanent **reservation** being created on behalf of the customer. The customer 
-may receive **confirmation** from either the broker or booking system (or both) 
-that provides details about how and when they can attend the event or use the 
+The completion of the order will result in the lease being removed and a
+permanent **reservation** being created on behalf of the customer. The customer
+may receive **confirmation** from either the broker or booking system (or both)
+that provides details about how and when they can attend the event or use the
 booked facility.
 
-Separately the broker and booking system will go through a **reconciliation** 
-process to transfer funds or otherwise report on successful transactions. A 
-customer might also cancel an order and will then receive a **refund**. Neither 
-of these processes are defined by this specification. The details will depend on 
+Separately the broker and booking system will go through a **reconciliation**
+process to transfer funds or otherwise report on successful transactions. A
+customer might also cancel an order and will then receive a **refund**. Neither
+of these processes are defined by this specification. The details will depend on
 the business model and agreements in place between the broker and booking system.
 
 ## Sequence diagram
@@ -528,28 +528,28 @@ the business model and agreements in place between the broker and booking system
     </section>
 
     <section class="normative">
-# Common Requirements  
+# Common Requirements
 
-This section defines some common functionality that applies to the design of the 
+This section defines some common functionality that applies to the design of the
 whole API.
 
 ## Media types
 
-        <div class="issue" 
-           title="Decide approach towards media type versioning and 
+        <div class="issue"
+           title="Decide approach towards media type versioning and
            content negotiation" data-number="21">
         This approach is inspired by github approach, should we keep it?
         Should servers be expected to support backwards compatible media types?
         </div>
 
-Custom media types are used in this API to allow clients to choose the format 
-of the data they receive. 
+Custom media types are used in this API to allow clients to choose the format
+of the data they receive.
 
-Servers MAY choose to support additional media types but MUST support the 
+Servers MAY choose to support additional media types but MUST support the
 media type(s) defined by this specification.
 
 Media types will conform to the following pattern:
- 
+
 ```
 application/vnd.openactive[.version]+json
 ```
@@ -562,10 +562,10 @@ application/vnd.openactive.0.5+json
 
 ## Response formats
 
-Requests and response documents exchanged via this API will all be valid 
+Requests and response documents exchanged via this API will all be valid
 [[!JSON-LD]] documents.
 
-The documents MUST include a [[!JSON-LD]] `context` that refers to the 
+The documents MUST include a [[!JSON-LD]] `context` that refers to the
 [[!OpenActive-Vocabulary]] as follows:
 
 <pre class="example" title="minimal JSON-LD document">
@@ -574,21 +574,21 @@ The documents MUST include a [[!JSON-LD]] `context` that refers to the
 }
 </pre>
 
-Unless otherwise specified the request and response documents MUST conform to 
+Unless otherwise specified the request and response documents MUST conform to
 the [[!Modelling-Opportunity-Data]] data model.
 
 ## Error handling
 
-        <div class="issue" 
+        <div class="issue"
            title="Decide whether to keep use of RFC7807" data-number="22">
-        Requests and responses will be valid JSON-LD except for errors which uses 
-        [[RFC7807]]. Should we keep this, because its standard or define something 
+        Requests and responses will be valid JSON-LD except for errors which uses
+        [[RFC7807]]. Should we keep this, because its standard or define something
         bespoke?
         </div>
 
-Error responses MUST be served using an appropriate HTTP 4XX status code. 
+Error responses MUST be served using an appropriate HTTP 4XX status code.
 
-All error responses from this API MUST conform to [[!RFC7807]], and 
+All error responses from this API MUST conform to [[!RFC7807]], and
 have media type of `application/problem+json`.
 
         <pre class="example" title="Error response format">
@@ -601,23 +601,23 @@ have media type of `application/problem+json`.
         }
         </pre>
 
-* `type` – a URI reference [[!RFC3986]] that identifies the problem type. This 
-specification encourages that, when dereferenced, it provide human-readable 
-documentation for the problem type. 
+* `type` – a URI reference [[!RFC3986]] that identifies the problem type. This
+specification encourages that, when dereferenced, it provide human-readable
+documentation for the problem type.
 When this member is not present, its value is assumed to be "about:blank".
-* `title` – a short, human-readable summary of the problem type. It 
-SHOULD NOT change from occurrence to occurrence of the problem, except for 
-purposes of localization (e.g., using proactive content negotiation; see 
+* `title` – a short, human-readable summary of the problem type. It
+SHOULD NOT change from occurrence to occurrence of the problem, except for
+purposes of localization (e.g., using proactive content negotiation; see
 [[RFC7231]], Section 3.4).
-* `status`  – the HTTP status code ([[!RFC7231]], Section 6) generated by the 
-origin server for this occurrence of the problem. 
-* `instance`  – a URI reference that identifies the specific occurrence of 
+* `status`  – the HTTP status code ([[!RFC7231]], Section 6) generated by the
+origin server for this occurrence of the problem.
+* `instance`  – a URI reference that identifies the specific occurrence of
 the problem. It may or may not yield further information if dereferenced.
 * `requestId`  – used by technical support for diagnostics purposes.
 
-        <div class="issue" 
+        <div class="issue"
            title="Define URIs for common errors" data-number="23">
-        The specification recommends use of RFC 7807 which suggests that type in 
+        The specification recommends use of RFC 7807 which suggests that type in
         responses should be a pre-defined URI. We should define and document these.
         </div>
 
@@ -627,49 +627,49 @@ All HTTP requests and responses SHOULD be secured using SSL.
 
 ## Authentication
 
-    <div class="issue" title="More detailed recommendations for auth" data-number="1">    
+    <div class="issue" title="More detailed recommendations for auth" data-number="1">
     </div>
-    
-All of the API transactions described in this document SHOULD require 
-authentication. 
 
-This standard does not mandate a particular authentication method, but 
-recommendation is that implementers SHOULD consider using [[OAuth2]] as it is 
-well-defined, widely supported and can be used in a variety of different 
+All of the API transactions described in this document SHOULD require
+authentication.
+
+This standard does not mandate a particular authentication method, but
+recommendation is that implementers SHOULD consider using [[OAuth2]] as it is
+well-defined, widely supported and can be used in a variety of different
 application flows (e.g. via a Javascript web application or between servers).
 
-Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard 
-way of verifying the identity of customer. It is a thin layer that sits 
+Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
+way of verifying the identity of customer. It is a thin layer that sits
 atop OAuth2.
-    
+
     </section>
 
     <section>
-# Operations  
+# Operations
 
 ## Checking availability and offers
 
-    <div class="issue" 
-            title="Write a definition of 'bookable'" 
+    <div class="issue"
+            title="Write a definition of 'bookable'"
             data-number="12">
-        How does a client know which events it can book?    
+        How does a client know which events it can book?
     </div>
 
-This specification assumes that a *broker* has already obtained opportunity 
-data from a *booking system* that includes descriptions of events, facilities, 
+This specification assumes that a *broker* has already obtained opportunity
+data from a *booking system* that includes descriptions of events, facilities,
 etc. For example by harvesting data via an [[RPDE]] feed.
 
 The availability of an event or facility may change at any time.
 
 The offers available to a customer might also change over time.
 
-A booking system that MUST allow a broker to check the current state of events 
+A booking system that MUST allow a broker to check the current state of events
 and/or facilities depending on what decide they expose from their platform.
 
 ### Checking availability and offers for an event
 
-To check the availability of an event a broker will issue a GET request to the 
-URI specified in the `id` of the Event: 
+To check the availability of an event a broker will issue a GET request to the
+URI specified in the `id` of the Event:
 
         <pre class="example" title="Viewing event availability">
 GET /sessions/9209 HTTP/1.1
@@ -677,7 +677,7 @@ Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
         </pre>
-    
+
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
@@ -713,34 +713,34 @@ Content-Length: ...
   "location": {
     ...
   }
-}    
+}
         </pre>
 
-    <div class="issue" 
-         title="Clarify use of proposed beta:anonymousLeaseDuration property" 
-         data-number="25">    
+    <div class="issue"
+         title="Clarify use of proposed beta:anonymousLeaseDuration property"
+         data-number="25">
         How does this inform lease duration?
     </div>
 
-    <div class="issue" 
-         title="Describe booking workflow for facilities" data-number="26">        
-       How does this work for facilities?  
+    <div class="issue"
+         title="Describe booking workflow for facilities" data-number="26">
+       How does this work for facilities?
     </div>
 
-The client may then present the updated availability and suitable offers to 
+The client may then present the updated availability and suitable offers to
 the customer.
-    
-    <div class="issue" 
-            title="Define processing model for selecting an Order" 
-            data-number="13">    
+
+    <div class="issue"
+            title="Define processing model for selecting an Order"
+            data-number="13">
        How does a client select between multiple orders?
     </div>
 
-                    
+
 
 ## Creating and updating orders
 
-Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers 
+Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers
 to initiate the booking workflow.
 
     <div class="issue"
@@ -750,34 +750,34 @@ to initiate the booking workflow.
 
 ### Creating a new order (`/orders`)
 
-A POST request to the `/orders` collection will ask the server to create an 
-new Order. A time limited lease will be created for the events referenced 
+A POST request to the `/orders` collection will ask the server to create an
+new Order. A time limited lease will be created for the events referenced
 in the Order.
 
-        <div class="issue" 
-            title="Explain why brokers are included in order creation" 
-            data-number="38">    
-            e.g. lease durations, default behaviour, etc
-        </div>
-        
-        <div class="issue" 
-            title="Clarify use of proposed beta:anonymousLeaseDuration property" 
-            data-number="25">    
+        <div class="issue"
+            title="Explain why brokers are included in order creation"
+            data-number="38">
             e.g. lease durations, default behaviour, etc
         </div>
 
-        <div class="issue" 
-            title="Review order pre-condition checks from 0.4" 
-            data-number="27">    
+        <div class="issue"
+            title="Clarify use of proposed beta:anonymousLeaseDuration property"
+            data-number="25">
+            e.g. lease durations, default behaviour, etc
+        </div>
+
+        <div class="issue"
+            title="Review order pre-condition checks from 0.4"
+            data-number="27">
             e.g. verifying user, etc.
         </div>
-    
-        <div class="issue" 
-            title="Can `orderQuantity` have a value other than 1?" 
-            data-number="40">    
+
+        <div class="issue"
+            title="Can `orderQuantity` have a value other than 1?"
+            data-number="40">
             Are we supporting booking multiple places in v1?
         </div>
-            
+
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
@@ -803,10 +803,10 @@ Accept: application/vnd.openactive+json
 }
         </pre>
 
-If successful the server will response with the location of a newly created 
+If successful the server will response with the location of a newly created
 `Order` resource:
 
-        <pre class="example" title="Creating an order - response">    
+        <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
@@ -898,7 +898,7 @@ A POST to the `orderItems` collection of the order will append a new item.
              title="Rescope to include multi-item orders?"
              data-number="28">
              Shopping cart models were originally out of scope.
-    </div>     
+    </div>
 
 ## Completing an order (`/orders/{orderId}/payments`)
 
@@ -914,37 +914,37 @@ An Order is completed by the client submitting a payment.
              title="Clarify use of `paymentMethod` when completing an order"
              data-number="30">
             What does `paymentMethod` refer to?
-    </div>         
-    
+    </div>
+
     <div class="issue"
              title="Lease timeout behaviour"
              data-number="34">
              What happens when a lease times out?
-    </div>  
+    </div>
 
     <div class="issue"
              title="Document order state transitions"
              data-number="35">
              How does an order change state?
-    </div>  
-            
+    </div>
+
     <div class="issue"
              title="Are we supporting partial payments?"
              data-number="41">
              Can a broker make multiple payments?
-    </div> 
-    
+    </div>
+
     <div class="issue"
              title="POSTing to /order rather than sub-resources"
              data-number="16">
              Should we post to order instead?
-    </div> 
-                            
-An order is not considered complete until payment has occurred. 
+    </div>
+
+An order is not considered complete until payment has occurred.
 
 Brokers MUST update the booking system to indicate that payment has been taken.
 
-Once the seller is content with the payments, it then sets the `orderStatus` 
+Once the seller is content with the payments, it then sets the `orderStatus`
 property of the `Order` to `OrderDelivered`.
 
     <pre class="example" title="Completing an order - request">
@@ -971,18 +971,18 @@ Accept: application/vnd.openactive+json
 
 ## Viewing customer orders and reservations
 
-A server SHOULD provide endpoints to allow clients to retrieve information 
+A server SHOULD provide endpoints to allow clients to retrieve information
 about previously placed orders and reservations.
 
-    <div class="issue" 
+    <div class="issue"
             title="How and when are customers and reservations created?"
             data-number="31">
         The creation of customers is not described yet
-    </div>     
+    </div>
 
 ### Viewing customer orders (`/customers/{customerId}/orders`)
 
-A GET request to the orders collection associated with a customer will return 
+A GET request to the orders collection associated with a customer will return
 a paged list of orders.
 
     <div class="issue"
@@ -990,15 +990,15 @@ a paged list of orders.
              data-number="7">
         Need to update this to ensure spec is consistent
     </div>
-        
-        <pre class="example" title="Viewing customer orders - request">    
+
+        <pre class="example" title="Viewing customer orders - request">
 GET /customers/472/orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
         </pre>
 
-        <pre class="example" title="Viewing customer orders - response">  
+        <pre class="example" title="Viewing customer orders - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
@@ -1019,12 +1019,12 @@ Content-Length: ...
     },
     ...
   ]
-}          
+}
         </pre>
 
 ### Viewing customer reservations (`/customers/{customerId}/reservations`)
 
-A GET request to the reservations collection associated with a customer will return 
+A GET request to the reservations collection associated with a customer will return
 a paged list of reservations.
 
     <div class="issue"
@@ -1032,15 +1032,15 @@ a paged list of reservations.
              data-number="7">
         Need to update this to ensure spec is consistent
     </div>
-        
-    <pre class="example" title="Viewing customer reservations - request">    
+
+    <pre class="example" title="Viewing customer reservations - request">
 GET /customers/472/reservations HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
     </pre>
 
-    <pre class="example" title="Viewing customer reservations - response">  
+    <pre class="example" title="Viewing customer reservations - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
@@ -1079,7 +1079,7 @@ Content-Length: ...
 
 ## Events after order completion: confirmations and refunds
 
-Both the broker and booking system may need to take further actions after 
+Both the broker and booking system may need to take further actions after
 completing an order. This section describes some potential interactions.
 
     <div class="issue"
@@ -1091,16 +1091,16 @@ completing an order. This section describes some potential interactions.
     <div class="issue"
              title="Document any responsibilities and interactions around refunds"
              data-number="33">
-        How are refunds handled and who gets notified?     
+        How are refunds handled and who gets notified?
     </div>
-             
+
     </section>
-    
+
     <section class='appendix informative'>
 # Acknowledgements
 
-The editors thank 
-[all members](http://www.w3.org/community/openactive/participants) of the 
+The editors thank
+[all members](http://www.w3.org/community/openactive/participants) of the
 OpenActive Community Group for their contributions.
     </section>
 </body>
