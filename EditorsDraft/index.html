@@ -501,7 +501,16 @@ customer might also cancel an order and will then receive a **refund**. Neither
 of these processes are defined by this specification. The details will depend on
 the business model and agreements in place between the broker and booking system.
 
-## Sequence diagram
+## URLs used in the description of the API
+
+The following sections contain URIs which are for guidance, and are used as
+examples only. For example, /event/452 is used to represent the canonical
+reference to the web representation of an Event with an id of 452. The URI could
+alternatively be /session/452 if session is the term used to describe the
+specific type of Event in an implementation of this API and associated APIs such
+as RDPE in an Open Active compliant **booking system**.
+
+## Workflow diagram
 
         <div class="issue"
              title="Update diagrams to use consistent terminology"
@@ -512,6 +521,9 @@ the business model and agreements in place between the broker and booking system
      <img src="flow-diagram.png" alt="Flow diagram">
      <figcaption>Simple illustration of booking workflow</figcaption>
     </figure>
+
+
+## Sequence diagram
 
     <figure>
      <img src="sequence-diagram.png" alt="Sequence diagram">
