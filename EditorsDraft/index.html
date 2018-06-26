@@ -806,6 +806,21 @@ Content-Length: ...
         How does this inform lease duration?
     </div>
 
+### Obtaining a lease on a space within an **event**
+
+The `beta:anonymousLeaseDuration` property is declared on the **event** and
+notifies the **broker** about the length of time for which a space will be
+reserved by the **booking system** whilst payment for the **event** is taken by
+the third-party payment system.
+
+This lease is NOT designed as a pause for a shopping cart system which is out
+of scope for v1.0 of this specification.
+
+The **broker** MUST ensure that it has obtained all of the relevant details
+about a **customer** before getting to the point where it attempts to place an
+**order**. The lease is not designed as a pause in the process whilst a
+**customer** is registered by a **broker**.
+
     <div class="issue"
          title="Describe booking workflow for facilities" data-number="26">
        How does this work for facilities?
