@@ -1102,112 +1102,18 @@ Accept: application/vnd.openactive+json
 }
     </pre>
 
-## Viewing customer orders and reservations
+## Viewing previously placed orders
 
-A server SHOULD provide endpoints to allow clients to retrieve information
-about previously placed orders and reservations.
+A server MUST provide endpoints to allow **brokers** to retrieve information
+about previously placed **orders**.
+
+
 
     <div class="issue"
             title="How and when are customers and reservations created?"
             data-number="31">
         The creation of customers is not described yet
     </div>
-
-### Viewing customer orders (`/customers/{customerId}/orders`)
-
-A GET request to the orders collection associated with a customer will return
-a paged list of orders.
-
-    <div class="issue"
-             title="List endpoints should return JSON-LD"
-             data-number="7">
-        Need to update this to ensure spec is consistent
-    </div>
-
-        <pre class="example" title="Viewing customer orders - request">
-GET /customers/472/orders HTTP/1.1
-Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
-        </pre>
-
-        <pre class="example" title="Viewing customer orders - response">
-HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
-Content-Length: ...
-
-
-{
-  "links": {
-    "self": "https://example.com/customers/472/orders",
-    "next": "https://example.com/customers/472/orders?next=9210",
-    "last": "https://example.com/customers/472/orders?next=20000"
-  },
-  "data": [
-    {
-      "type": "Order",
-      "id": "https://example.com/orders/535",
-      ...
-    },
-    ...
-  ]
-}
-        </pre>
-
-### Viewing customer reservations (`/customers/{customerId}/reservations`)
-
-A GET request to the reservations collection associated with a customer will return
-a paged list of reservations.
-
-    <div class="issue"
-             title="List endpoints should return JSON-LD"
-             data-number="7">
-        Need to update this to ensure spec is consistent
-    </div>
-
-    <pre class="example" title="Viewing customer reservations - request">
-GET /customers/472/reservations HTTP/1.1
-Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
-    </pre>
-
-    <pre class="example" title="Viewing customer reservations - response">
-HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
-Content-Length: ...
-
-
-{
-  "links": {
-    "self": "https://example.com/customers/472/reservations",
-    "next": "https://example.com/customers/472/reservations?next=9210",
-    "last": "https://example.com/customers/472/reservations?next=20000"
-  },
-  "data": [
-    {
-      "@context": "https://www.openactive.io/ns/oa.jsonld",
-      "type": "EventReservation",
-      "id": "https://www.example.com/customers/472/reservations/9765",
-      "underName": "https://example.com/customers/472",
-      "reservationStatus": "http://schema.org/ReservationConfirmed",
-      "description": "Event successfully booked.",
-      "cancelUntil": "2018-03-27T11:18:55.181Z",
-      "reservationFor": {
-        "type": "Event",
-        "identifier": 9209,
-        "id": "https://example.com/sessions/9209"
-        ...
-      },
-      ...
-    }
-    ...
-  ]
-}
-    </pre>
-
 
 
 ## Events after order completion: confirmations and refunds
