@@ -707,6 +707,49 @@ The offers available to a customer might also change over time.
 A booking system that MUST allow a broker to check the current state of events
 and/or facilities depending on what decide they expose from their platform.
 
+### Definition of 'bookable'
+
+An **event** is deemed to be 'bookable' if:
+
+- The **event** has not already occurred
+
+- The `eventStatus` of the **event** does not indicate that it has been
+cancelled or postponed
+
+- The gender of the **customer** taking up the opportunity is compatible with
+the `genderRestriction` of the **event**
+
+- The age of the **customer** taking up the opportunity is compatible with the
+`ageRange` of the **event**
+
+- The `remainingAttendeeCapacity` of the **event** is greater than the number
+of places required
+
+- The `potentialAction` of the **event** contains one or more appropriate
+ReserveAction objects
+
+- There are one or more valid bookable **offers** for the **event**
+
+- The temporary lease on the space in the **event** (defined in
+`Beta:anonymousLeaseDuration`) has not expired before the **payment** is taken
+by the **broker** and the **seller** is notified by the **broker** that payment
+has taken place.
+
+- The **event** contains a deep link to a URL where the user can book the
+**event** independently
+
+The above set of restrictions are at the level of the **event** and the data
+contained within the content of the API returns.
+
+On a **booking system** level, an **event** is 'bookable', mediated by a
+specific **broker**, if that **broker** has machine readable permission to
+access the relevant instance of the Booking API provided by the **booking**
+system via an API key or similar token.
+
+For the purposes of this specification, the **event** is only bookable if the
+data describing the the **event** is published via a **booking system** which
+is compliant with and supports the Open Active Booking API.
+
 ### Checking availability and offers for an event
 
 To check the availability of an event a broker will issue a GET request to the
