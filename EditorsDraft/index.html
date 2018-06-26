@@ -881,11 +881,22 @@ An example is below:
       ]
 </pre>
 
+
+### Pre-conditions for creating an order
+
+Before creating an **order** the **broker** SHOULD have, in some form,
+registered the **customer** and MUST know at least the `email` address of the
+customer and ideally their `givenName` and `familyName` so that minimal
+schema:Person object can be provided as a mandatory part of the POST request to
+the `/orders` endpoint.
+
 ### Creating a new order (`/orders`)
 
-A POST request to the `/orders` collection will ask the server to create an
-new Order. A time limited lease will be created for the events referenced
-in the Order.
+A POST request to the `/orders` endpoint of the **booking system** will result
+in server creating an new **Order**. A time limited lease will be created for
+the **events** referenced in the **Order**.
+
+
 
         <div class="issue"
             title="Explain why brokers are included in order creation"
@@ -920,7 +931,12 @@ Accept: application/vnd.openactive+json
 {
   "@context": "https://www.openactive.io/ns/oa.jsonld",
   "type": "Order",
-  "customer": "https://example.com/customers/472",
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@shotput.com",
+    "givenName": "Geoff",
+    "familyName": "Capes",
+  }
   "broker": {
     "type": "Organization",
     "name": "MyFitnessApp",
