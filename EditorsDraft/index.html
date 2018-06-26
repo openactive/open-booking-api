@@ -525,6 +525,47 @@ the business model and agreements in place between the broker and booking system
 
 ## Step-by-step process description
 
+1. The **broker** requests details on a specific **event** from the **booking
+system** (/events/452 in example) in order to discover available **offers**.
+These offers are subsequently presented to the **customer**.
+2. The **customer** chooses an bookable **offer** (see definition of a bookable
+event).
+3. If the **offer** for the **event** is bookable, the broker makes a POST
+request to the **orders** endpoint (/orders in the examples) containing a
+Person object describing the **customer**. At a minimum, this object should
+contain the `email` address for the **customer**, if possible the `givenName`
+and `familyName`. The **booking system** creates a timed **lease** on the space
+in the **event** which is being booked. At this point the **offer** is deemed to
+be accepted and an **order** is created. The **booking system** sends a 201
+status code, with a representation of the **order** in the body of the response,
+and with a Location header set containing the URI for the web representation of
+the created **Order** object.
+4. If there is a price for the **offer**, the **broker** takes payment from the
+**customer** via a third party payment provider.
+5. The **broker** notifies the **seller** of the payment by making a PATCH
+request to the specific order endpoint (/orders/789 in the example) of the
+**booking system**. This should include details of the `paymentMethod` and the
+`paymentMethodId` (commonly the last four digits of the card which can be used
+by the **seller** to identify the **customer**). The **broker** should store any
+details about the transaction which are needed for processing refunds or in the
+case of chargebacks. This is out of scope for the Booking API spec and is the
+responsibility of the **broker**.
+6. The **booking system** notifies the **broker** of a successful order
+completion by returning a response with a 200 status code and an object with an
+appropriate value for the `confirmationCode` field.
+
+## Notes and assumptions on step-by-step description
+
+- Assumption: since the **broker** is in control of taking the payment and is the
+merchant in the transaction that they should be responsible for storing things
+such as authentication codes. This is out of scope for this API.
+
+- Since the schema:Order definition only has support for a `paymentMethodId` and
+a `paymontMethod`, multipart payments are not supported in this iteration of <thead>
+  Booking API specification as an array of an appropriate payment object would
+  need to be appended to the Order object.
+</thead>
+
     </section>
 
     <section class="normative">
