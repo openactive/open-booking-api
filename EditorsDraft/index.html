@@ -806,7 +806,7 @@ Content-Length: ...
         How does this inform lease duration?
     </div>
 
-### Obtaining a lease on a space within an **event**
+### Obtaining a lease on a space within an event
 
 The `beta:anonymousLeaseDuration` property is declared on the **event** and
 notifies the **broker** about the length of time for which a space will be
@@ -1113,6 +1113,27 @@ about previously placed **orders**.
             data-number="31">
         The creation of customers is not described yet
     </div>
+
+## Creation of customers on the booking system
+
+In this current iteration of the Booking API specification, the programmatic
+creation of **customers** on the **booking system** by the **broker** is
+considered to be out of scope.
+
+## Providing customer details to the booking system
+
+The **broker** MUST ensure that they have adaquate details about a **customer**
+before initiating the creation of an **order**. These details MUST be
+provided to the **order** endpoint in the form of a schema:Person object and
+MUST include an `email` address for the **customer**. Ideally, the Person object
+SHOULD include a `givenName` and `familyName` for the **customer**.
+
+## Deletion of personal data of the customer if the order is not
+completed
+
+If an **order** is not completed, the **booking system** SHOULD delete the
+personal information of the **customer** provided to it as part of the **order**
+creation process.
 
 
 ## Events after order completion: confirmations and refunds
