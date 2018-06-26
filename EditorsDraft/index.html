@@ -832,6 +832,40 @@ to initiate the booking workflow.
         How does a client discover the right endpoint?
     </div>
 
+### Discovering the order endpoint
+
+**Booking systems** MUST expose an orders endpoint, e.g. /orders to allow
+**brokers** to initiate and enter the **booking** workflow.
+
+To initiate the **booking workflow**, the **booking system** must include a
+`potentialAction` field within each **bookable** **event**. The
+`potentialAction` field MUST contain one or more objects of type ReserveAction.
+
+These ReserveAction objects must contain a `target` field containing an
+EntryPoint object.
+
+The EntryPoint object MUST state the `url` of the orders endpoint, and SHOULD
+contain the `encodingType` and the `httpMethod` which must be POST as a new
+**order** object will be created on successful invocation.
+
+An example is below:
+
+<pre class="example" title="Example of a potentialAction">
+
+"potentialAction": [
+        {
+          "type": "ReserveAction",
+          "name": "Book",
+          "target": {
+            "type": "EntryPoint",
+            "url": "https://example.com/orders",
+            "encodingType": "application/vnd.openactive.v0.5+json",
+            "httpMethod": "POST"
+          }
+        }
+      ]
+</pre>
+
 ### Creating a new order (`/orders`)
 
 A POST request to the `/orders` collection will ask the server to create an
