@@ -1057,14 +1057,20 @@ Content-Length: ...
 
 A `DELETE` request to an `Order` URI will delete the order.
 
-### Adding further items to an order
 
-A POST to the `orderItems` collection of the order will append a new item.
+<div class="issue"
+         title="Document order state transitions"
+         data-number="35">
+         How does an order change state?
+</div>
+
+
 
     <div class="issue"
              title="Rescope to include multi-item orders?"
              data-number="28">
              Shopping cart models were originally out of scope.
+             Section relating to adding items to an order has been deleted
     </div>
 
 ## Completing an order (`/orders/{orderId}/payments`)
@@ -1077,12 +1083,6 @@ An Order is completed by the client submitting a payment.
         How does a client find this? E.g. via `potentialAction`?
     </div>
 
-
-    <div class="issue"
-             title="Document order state transitions"
-             data-number="35">
-             How does an order change state?
-    </div>
 
     <div class="issue"
              title="Are we supporting partial payments?"
