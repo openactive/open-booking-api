@@ -845,6 +845,7 @@ to initiate the booking workflow.
     <div class="issue"
         title="potentialAction" data-number="5">
         How does a client discover the right endpoint?
+        WIP below
     </div>
 
 ### Discovering the order endpoint
@@ -882,6 +883,14 @@ An example is below:
 </pre>
 
 
+<div class="issue"
+    title="Review order pre-condition checks from 0.4"
+    data-number="27">
+    e.g. verifying user, etc.
+    WIP below
+</div>
+
+
 ### Pre-conditions for creating an order
 
 Before creating an **order** the **broker** SHOULD have, in some form,
@@ -905,21 +914,10 @@ the **events** referenced in the **Order**.
         </div>
 
         <div class="issue"
-            title="Clarify use of proposed beta:anonymousLeaseDuration property"
-            data-number="25">
-            e.g. lease durations, default behaviour, etc
-        </div>
-
-        <div class="issue"
-            title="Review order pre-condition checks from 0.4"
-            data-number="27">
-            e.g. verifying user, etc.
-        </div>
-
-        <div class="issue"
             title="Can `orderQuantity` have a value other than 1?"
             data-number="40">
             Are we supporting booking multiple places in v1?
+            Note : Certainly not in 0.5
         </div>
 
         <pre class="example" title="Creating an order - request">
@@ -961,6 +959,15 @@ Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive+json
 Location: /orders/123
         </pre>
+
+
+        <div class="issue"
+            title="Clarify use of proposed beta:anonymousLeaseDuration property"
+            data-number="25">
+            e.g. lease durations, default behaviour, etc
+            WIP below
+        </div>
+
 
 ### Viewing an order (`/orders/{orderId}`)
 
