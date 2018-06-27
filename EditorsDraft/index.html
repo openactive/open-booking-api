@@ -889,6 +889,15 @@ An example is below:
 
 
 <div class="issue"
+    title="Explain why brokers are included in order creation"
+    data-number="38">
+    e.g. lease durations, default behaviour, etc
+</div>
+
+
+
+
+<div class="issue"
     title="Review order pre-condition checks from 0.4"
     data-number="27">
     e.g. verifying user, etc.
@@ -902,7 +911,8 @@ Before creating an **order** the **broker** SHOULD have, in some form,
 registered the **customer** and MUST know at least the `email` address of the
 customer and ideally their `givenName` and `familyName` so that minimal
 schema:Person object can be provided as a mandatory part of the POST request to
-the `/orders` endpoint.
+the `/orders` endpoint to create an order.
+
 
 ### Creating a new order (`/orders`)
 
@@ -911,12 +921,6 @@ in server creating an new **Order**. A time limited lease will be created for
 the **events** referenced in the **Order**.
 
 
-
-        <div class="issue"
-            title="Explain why brokers are included in order creation"
-            data-number="38">
-            e.g. lease durations, default behaviour, etc
-        </div>
 
         <div class="issue"
             title="Can `orderQuantity` have a value other than 1?"
@@ -971,14 +975,6 @@ Location: /orders/123
                  data-number="34">
                  What happens when a lease times out?
         </div>
-
-### Leases and the beta:anonymousLeaseDuration property
-
-If the lease expires during **payment**, the current **order** should be deleted
-(see below) and a new **order** created to generate a new lease. Before
-creating a new order, the **event** and **offers** should be checked to ensure
-that a space still exists within the **event**. If no space exists, the
-**customer** should be refunded if payment has been taken.
 
 ### Viewing an order (`/orders/{orderId}`)
 
@@ -1058,21 +1054,6 @@ Content-Length: ...
 A `DELETE` request to an `Order` URI will delete the order.
 
 
-<div class="issue"
-         title="Document order state transitions"
-         data-number="35">
-         How does an order change state?
-</div>
-
-
-
-    <div class="issue"
-             title="Rescope to include multi-item orders?"
-             data-number="28">
-             Shopping cart models were originally out of scope.
-             Section relating to adding items to an order has been deleted
-    </div>
-
 ## Completing an order (`/orders/{orderId}/payments`)
 
 An Order is completed by the client submitting a payment.
@@ -1133,6 +1114,35 @@ Accept: application/vnd.openactive+json
 }
     </pre>
 
+
+### Leases and the beta:anonymousLeaseDuration property
+
+If the lease expires during **payment**, the current **order** should be deleted
+(see below) and a new **order** created to generate a new lease. Before
+creating a new order, the **event** and **offers** should be checked to ensure
+that a space still exists within the **event**. If no space exists, the
+**customer** should be refunded if payment has been taken.
+
+
+<div class="issue"
+         title="Document order state transitions"
+         data-number="35">
+         How does an order change state?
+</div>
+
+
+
+
+    <div class="issue"
+             title="Rescope to include multi-item orders?"
+             data-number="28">
+             Shopping cart models were originally out of scope.
+             Section relating to adding items to an order has been deleted
+    </div>
+
+
+
+
 ## Viewing previously placed orders
 
 A server MUST provide endpoints to allow **brokers** to retrieve information
@@ -1143,6 +1153,7 @@ about previously placed **orders**.
             title="How and when are customers and reservations created?"
             data-number="31">
         The creation of customers is not described yet
+        WIP below
     </div>
 
 ## Creation of customers on the booking system
@@ -1150,14 +1161,6 @@ about previously placed **orders**.
 In this current iteration of the Booking API specification, the programmatic
 creation of **customers** on the **booking system** by the **broker** is
 considered to be out of scope.
-
-## Providing customer details to the booking system
-
-The **broker** MUST ensure that they have adaquate details about a **customer**
-before initiating the creation of an **order**. These details MUST be
-provided to the **order** endpoint in the form of a schema:Person object and
-MUST include an `email` address for the **customer**. Ideally, the Person object
-SHOULD include a `givenName` and `familyName` for the **customer**.
 
 ## Deletion of personal data of the customer if the order is not
 completed
