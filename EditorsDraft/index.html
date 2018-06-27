@@ -660,7 +660,84 @@ the problem. It may or may not yield further information if dereferenced.
            title="Define URIs for common errors" data-number="23">
         The specification recommends use of RFC 7807 which suggests that type in
         responses should be a pre-defined URI. We should define and document these.
+
+        WIP below
         </div>
+
+### Standard URIs for common errors
+
+https://www.openactive.io/probs/incomplete_customer_details
+
+Use cases:
+
+- if the `email` address of the customer is not supplied within a schema:Person
+object.
+
+- if the `customer` property supplied is not a valid schema:Person object.
+
+https://www.openactive.io/probs/incomplete_broker_details
+
+Use cases:
+
+- if there is insuffficient detail in the schema:Organisation object describing
+the **broker**
+
+- if the `broker` property supplied is not a valid schema:Organisation object.
+
+
+https://www.openactive.io/probs/incomplete_offer_details
+
+Use cases:
+
+- if there is no `acceptedOffer` property on the schema:OrderItem
+
+- if the `acceptedOffer` is not a URL which corresponds to an **offer** on the
+**booking system**
+
+
+https://www.openactive.io/probs/incomplete_event_details
+
+Use cases:
+
+- if there is no `orderedItem` property on the schema:OrderItem
+
+- if the `orderedItem` is not a URL which corresponds to an **event** on the
+**booking system**
+
+
+https://www.openactive.io/probs/unavailable_offer
+
+Use cases:
+
+- if the **offer** contained in the `acceptedOffer` property is not bookable
+
+https://www.openactive.io/probs/unavailable_event
+
+Use cases:
+
+- if the **event** contained in the `orderedItem` property is not bookable
+
+https://www.openactive.io/probs/event_is_full
+
+Use cases:
+
+- if there are no available spaces for the **event** contained in the
+`orderedItem` property
+
+https://www.openactive.io/probs/incomplete_payment_details
+
+Use cases:
+
+- if the `paymentMethod` or `paymentMethodId` properties are missing or
+incorrect
+
+https://www.openactive.io/probs/anonymous_lease_expired
+
+Use cases:
+
+- if **broker** did not supply **payment** details between the creation of the
+**order** and the expiration of the lease.
+
 
 ## Security
 
