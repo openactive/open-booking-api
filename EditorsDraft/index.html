@@ -804,14 +804,19 @@ Content-Length: ...
          title="Clarify use of proposed beta:anonymousLeaseDuration property"
          data-number="25">
         How does this inform lease duration?
+        WIP below
     </div>
+
 
 ### Obtaining a lease on a space within an event
 
-The `beta:anonymousLeaseDuration` property is declared on the **event** and
-notifies the **broker** about the length of time for which a space will be
-reserved by the **booking system** whilst payment for the **event** is taken by
-the third-party payment system.
+**Events** MAY contain a `beta:anonymousLeaseDuration` property. This property
+MUST contain an ISO 8601 formatted duration for the lease.
+
+
+The `beta:anonymousLeaseDuration` property notifies the **broker** about the
+length of time for which a space will be reserved by the **booking system**
+whilst payment for the **event** is taken by the third-party payment system.
 
 This lease is NOT designed as a pause for a shopping cart system which is out
 of scope for v1.0 of this specification.
@@ -962,12 +967,18 @@ Location: /orders/123
 
 
         <div class="issue"
-            title="Clarify use of proposed beta:anonymousLeaseDuration property"
-            data-number="25">
-            e.g. lease durations, default behaviour, etc
-            WIP below
+                 title="Lease timeout behaviour"
+                 data-number="34">
+                 What happens when a lease times out?
         </div>
 
+### Leases and the beta:anonymousLeaseDuration property
+
+If the lease expires during **payment**, the current **order** should be deleted
+(see below) and a new **order** created to generate a new lease. Before
+creating a new order, the **event** and **offers** should be checked to ensure
+that a space still exists within the **event**. If no space exists, the
+**customer** should be refunded if payment has been taken.
 
 ### Viewing an order (`/orders/{orderId}`)
 
@@ -1066,17 +1077,6 @@ An Order is completed by the client submitting a payment.
         How does a client find this? E.g. via `potentialAction`?
     </div>
 
-    <div class="issue"
-             title="Clarify use of `paymentMethod` when completing an order"
-             data-number="30">
-            What does `paymentMethod` refer to?
-    </div>
-
-    <div class="issue"
-             title="Lease timeout behaviour"
-             data-number="34">
-             What happens when a lease times out?
-    </div>
 
     <div class="issue"
              title="Document order state transitions"
@@ -1102,6 +1102,14 @@ Brokers MUST update the booking system to indicate that payment has been taken.
 
 Once the seller is content with the payments, it then sets the `orderStatus`
 property of the `Order` to `OrderDelivered`.
+
+<div class="issue"
+         title="Clarify use of `paymentMethod` when completing an order"
+         data-number="30">
+        What does `paymentMethod` refer to?
+        WIP see below for fix.
+</div>
+
 
     <pre class="example" title="Completing an order - request">
 POST /orders/123/payments HTTP/1.1
