@@ -1186,9 +1186,11 @@ completing an order. This section describes some potential interactions.
 
 The **broker** SHOULD provide the **customer** with confirmation of a successful
 payment having been made through the third-party system and that the **order**
-has been completed successfully. The **booking system** SHOULD provide the
-**customer** with a confirmation that the space at the **event** has been booked
-on their behalf.
+has been completed successfully. The **broker** will have access to a completed
+**order** which will contain a `confirmationCode` property.
+
+The **booking system** may also provide the **customer** with a confirmation that
+the space at the **event** has been booked on their behalf.
 
 
     <div class="issue"
