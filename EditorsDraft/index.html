@@ -1128,10 +1128,41 @@ that a space still exists within the **event**. If no space exists, the
          title="Document order state transitions"
          data-number="35">
          How does an order change state?
+         WIP below
 </div>
 
 
+### The state transitions durint the order process
 
+1. An **order** object is created by a **broker** invoking the orders endpoint
+with a POST request containing details of the **broker** (represented as a
+schema:Organisation), **customer** (represented as a schema:Person) and details
+of the selected **event** and **offer** as components of a schema:OrderItem
+object.
+The **booking system** returns a representation of the **order** object to the
+**broker** in a response with a 201 status and the URL for the object in the
+`Location` header. The `orderStatus` of the **order** at this point in the flow
+should be https://schema.org/OrderPaymentDue
+2. Concurrently the **booking system** also creates a lease for a space in the
+**event** for the **customer** for the duration specified in the
+`beta:anonymousLeaseDuration` property of the **event**.
+3. The **broker** directs the customer into the flow of the third-party
+**payment** provider.
+4. If the **customer** successfully completes the payment within the duration
+of the lease, the **broker** sends notification of the payment with a PATCH
+request to the specific order end point (/orders/123 in the examples) with
+details of the **payment** in the `paymentMethod` and `paymentMethodId`
+properties. At this point the **order** is deemed to be completed. The
+`orderStatus` property should be currently set to
+`https://schema.org/OrderDelivered` and the `confirmationNumber`
+property set to an appropriate unique value by the **booking system**. At this
+point in the flow, the **order** is deemed to be complete.
+
+If the lease expires before the payment is made, the **order** should either be
+deleted by the **broker** or be deleted by the **booking system** at some point
+after expiry. The `orderStatus` property should be set to
+https://schema.org/OrderCancelled to indicate that the **order** cannot proceed
+to completion.
 
     <div class="issue"
              title="Rescope to include multi-item orders?"
