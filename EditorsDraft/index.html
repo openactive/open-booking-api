@@ -860,6 +860,40 @@ Use cases:
 
 - if **broker** supplied an invalid API key, either malformed or expired
 
+https://openactive.io/errors/temporarily_unable_to_create_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to create an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/temporarily_unable_to_update_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to update an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/temporarily_unable_to_delete_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to delete an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/unknown_or_incorrect_offer
+
+Status code: 404
+
+Use cases:
+
+- where a **booking platform** has no **offer** matching the offer requested
 
 ## Security
 
