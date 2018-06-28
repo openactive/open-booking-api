@@ -1043,14 +1043,6 @@ in server creating an new **Order**. A time limited lease will be created for
 the **events** referenced in the **Order**.
 
 
-
-        <div class="issue"
-            title="Can `orderQuantity` have a value other than 1?"
-            data-number="40">
-            Are we supporting booking multiple places in v1?
-            Note : Certainly not in 0.5
-        </div>
-
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
@@ -1186,7 +1178,10 @@ Content-Length: ...
 
 ### Deleting an order
 
-A `DELETE` request to an `Order` URI will delete the order.
+A `DELETE` request to an **Order** URI will delete the order. Deletion may only
+be used in the specific case for cancelling an **order** and the associated
+lease on a space in an **event** if the **customer** no longer wishes to take
+up the opportunity.
 
 
 ## Completing an order (`/orders/{orderId}/payments`)
