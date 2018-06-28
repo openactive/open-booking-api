@@ -600,6 +600,16 @@ example) of the **booking system**. The **booking system** SHOULD release the
 space in the **event** and delete the underlying resource. Any subsequent
 requests to this resource should result in a 404 response.
 
+### Handling lease expiry
+
+If the lease has expired during the **payment** process, the **broker** SHOULD
+check whether the **event** is still bookable and if the selected **offer** is
+still available. If they are, the **broker** should create a new **order** using
+the workflow described above. The **booking system** should respond to requests
+for **orders** with an expired lease with a 410 status code with an error
+specifying the `errorType` as
+http://openactive.io/errors/anonymous_lease_expired until the underlying
+**order** resource is removed.
 
     </section>
 
