@@ -756,6 +756,8 @@ the problem. It may or may not yield further information if dereferenced.
 
 https://openactive.io/errors/incomplete_customer_details
 
+Status code: 400
+
 Use cases:
 
 - if the `email` address of the customer is not supplied within a schema:Person
@@ -764,6 +766,8 @@ object.
 - if the `customer` property supplied is not a valid schema:Person object.
 
 https://openactive.io/errors/incomplete_broker_details
+
+Status code: 400
 
 Use cases:
 
@@ -775,6 +779,8 @@ the **broker**
 
 https://openactive.io/errors/incomplete_offer_details
 
+Status code: 400
+
 Use cases:
 
 - if there is no `acceptedOffer` property on the schema:OrderItem
@@ -784,6 +790,8 @@ Use cases:
 
 
 https://openactive.io/errors/incomplete_event_details
+
+Status code: 400
 
 Use cases:
 
@@ -795,17 +803,23 @@ Use cases:
 
 https://openactive.io/errors/unavailable_offer
 
+Status code: 400
+
 Use cases:
 
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
 https://openactive.io/errors/unavailable_event
 
+Status code: 400
+
 Use cases:
 
 - if the **event** contained in the `orderedItem` property is not bookable
 
 https://openactive.io/errors/event_is_full
+
+Status code: 400
 
 Use cases:
 
@@ -814,6 +828,8 @@ Use cases:
 
 https://openactive.io/errors/incomplete_payment_details
 
+Status code: 400
+
 Use cases:
 
 - if the `paymentMethod` or `paymentMethodId` properties are missing or
@@ -821,10 +837,29 @@ incorrect
 
 https://openactive.io/errors/anonymous_lease_expired
 
+Status code: 410
+
 Use cases:
 
 - if **broker** did not supply **payment** details between the creation of the
 **order** and the expiration of the lease.
+
+https://openactive.io/errors/no_api_token_provided
+
+Status code: 403
+
+Use cases:
+
+- if **broker** did not supply an API key
+
+https://openactive.io/errors/invalid_api_token_provided
+
+Status code: 401
+
+Use cases:
+
+- if **broker** supplied an invalid API key, either malformed or expired
+
 
 ## Security
 
