@@ -23,10 +23,10 @@
             //previousPublishDate: "2018-05-03",
 
             // if there a publicly available Editor's Draft, this is the link
-            edDraftURI: "https://www.openactive.io/open-booking-api/EditorsDraft/",
-            //prevED:  "https://www.openactive.io/spec-template/",
-            //previousURI:  "https://www.openactive.io/realtime-paged-data-exchange/0.2.3/",
-            //testSuiteURI: "https://www.openactive.io/endpoint-validator/",
+            edDraftURI: "http://openactive.io/open-booking-api/EditorsDraft/",
+            //prevED:  "http://openactive.io/spec-template/",
+            //previousURI:  "http://openactive.io/realtime-paged-data-exchange/0.2.3/",
+            //testSuiteURI: "http://openactive.io/endpoint-validator/",
             copyrightStart: 2018,
 
             // editors, add as many as you like
@@ -56,8 +56,8 @@
             }],
 
             logos: [{
-                src: 'https://www.openactive.io/assets/openactive-logo-large.png',
-                href: "https://www.openactive.io",
+                src: 'http://openactive.io/assets/openactive-logo-large.png',
+                href: "http://openactive.io",
                 alt: "openactive.io",
                 width: 255, //170
                 height: 43, //22
@@ -91,17 +91,17 @@
 
                 },
                 "Modelling-Opportunity-Data": {
-                    "href": "https://www.openactive.io/modelling-opportunity-data/",
+                    "href": "http://openactive.io/modelling-opportunity-data/",
                     "title": "Modelling Opportunity Data",
                     "publisher": "OpenActive Community Group",
                 },
                 "RPDE": {
-                    "href": "https://www.openactive.io/realtime-paged-data-exchange/",
+                    "href": "http://openactive.io/realtime-paged-data-exchange/",
                     "title": "Realtime Paged Data Exchange",
                     "publisher": "OpenActive Community Group",
                 },
                 "OpenActive-Vocabulary": {
-                    "href": "https://www.openactive.io/ns/",
+                    "href": "http://openactive.io/ns/",
                     "title": "OpenActive Vocabulary",
                     "publisher": "OpenActive Community Group",
                 },
@@ -193,7 +193,7 @@
             background: white top left fixed no-repeat !important;
             background-size: 25px auto !important;
             background-image:
-                url('https://www.openactive.io/assets/openactive-label-specification.png') !important;
+                url('http://openactive.io/assets/openactive-label-specification.png') !important;
         }
 
         h1 {
@@ -262,7 +262,7 @@ The document is an output of the
 [OpenActive Community Group](http://www.w3.org/community/openactive/). As part
 of the [OpenActive](https://openactive.io) initiative, the community group is
 developing standards that will promote the publication and use of open
-[opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
+[opportunity data](http://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
 in helping people to become more physically active.
 
 The Community Group have already published specifications that define standard
@@ -413,7 +413,7 @@ The content of the example is in monospace font and may be syntax colored.
             <dd>The user who places a booking using an application provided by
             a broker.</dd>
             <dt>__*event*__</dt>
-            <dd>An [Event](https://www.openactive.io/modelling-opportunity-data/#events)
+            <dd>An <a href="http://openactive.io/modelling-opportunity-data/#events">Event</a>
                 is an opportunity to take part in a physical activity. Events
                 take place at a specific location and at an agreed date
                 and time.</dd>
@@ -426,7 +426,7 @@ The content of the example is in monospace font and may be syntax colored.
             a customer can place a booking and still be guaranteed a place at
             an event (or use of the facility).</dd>
             <dt>__*offer*__</dt>
-            <dd>An [Offer](https://www.openactive.io/modelling-opportunity-data/#offers)
+            <dd>An <a href="http://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
             <dt>__*order*__</dt>
@@ -611,7 +611,7 @@ The documents MUST include a [[!JSON-LD]] `context` that refers to the
 
 <pre class="example" title="minimal JSON-LD document">
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld"
+  "@context": "http://openactive.io/ns/oa.jsonld"
 }
 </pre>
 
@@ -666,7 +666,7 @@ the problem. It may or may not yield further information if dereferenced.
 
 ### Standard URIs for common errors
 
-https://www.openactive.io/probs/incomplete_customer_details
+http://openactive.io/errors/incomplete_customer_details
 
 Use cases:
 
@@ -675,7 +675,7 @@ object.
 
 - if the `customer` property supplied is not a valid schema:Person object.
 
-https://www.openactive.io/probs/incomplete_broker_details
+http://openactive.io/errors/incomplete_broker_details
 
 Use cases:
 
@@ -685,7 +685,7 @@ the **broker**
 - if the `broker` property supplied is not a valid schema:Organisation object.
 
 
-https://www.openactive.io/probs/incomplete_offer_details
+http://openactive.io/errors/incomplete_offer_details
 
 Use cases:
 
@@ -695,7 +695,7 @@ Use cases:
 **booking system**
 
 
-https://www.openactive.io/probs/incomplete_event_details
+http://openactive.io/errors/incomplete_event_details
 
 Use cases:
 
@@ -705,33 +705,33 @@ Use cases:
 **booking system**
 
 
-https://www.openactive.io/probs/unavailable_offer
+http://openactive.io/errors/unavailable_offer
 
 Use cases:
 
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
-https://www.openactive.io/probs/unavailable_event
+http://openactive.io/errors/unavailable_event
 
 Use cases:
 
 - if the **event** contained in the `orderedItem` property is not bookable
 
-https://www.openactive.io/probs/event_is_full
+http://openactive.io/errors/event_is_full
 
 Use cases:
 
 - if there are no available spaces for the **event** contained in the
 `orderedItem` property
 
-https://www.openactive.io/probs/incomplete_payment_details
+http://openactive.io/errors/incomplete_payment_details
 
 Use cases:
 
 - if the `paymentMethod` or `paymentMethodId` properties are missing or
 incorrect
 
-https://www.openactive.io/probs/anonymous_lease_expired
+http://openactive.io/errors/anonymous_lease_expired
 
 Use cases:
 
@@ -847,7 +847,7 @@ Content-Length: ...
 
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "@context": "http://openactive.io/ns/oa.jsonld",
   "type": "Event",
   "identifier": 9209,
   "id": "https://example.com/sessions/9209",
@@ -1013,11 +1013,11 @@ Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "@context": "http://openactive.io/ns/oa.jsonld",
   "type": "Order",
   "customer": {
     "type": "Person",
-    "email": "geoffcapes@shotput.com",
+    "email": "geoffcapes@example.com",
     "givenName": "Geoff",
     "familyName": "Capes",
   }
@@ -1029,9 +1029,8 @@ Accept: application/vnd.openactive+json
   "orderedItem": {
     "type": "OrderItem",
     "orderQuantity": 1,
-    "customer": "https://example.com/customers/472",
-    "acceptedOffer": "https://example.com/sessions/9209",
-    "orderedItem": "https://example.com/sessions/9209"
+    "acceptedOffer": "https://example.com/offers/9209",
+    "orderedItem": "https://example.com/events/452"
   }
 }
         </pre>
@@ -1079,13 +1078,17 @@ Content-Length: ...
       "type": "OrderItem",
       "id": "https://example.com/orders/535/orderitems/987",
       "identifier": 987,
-      "customer": "https://example.com/customers/472",
+      "customer": {
+        "type": "Person",
+        "email": "geoffcapes@example.com",
+        "givenName": "Geoff",
+        "familyName": "Capes",
+      },
       "orderedItem": {
         "type": "OrderItem",
         "orderQuantity": 1,
-        "customer": "https://example.com/customers/472",
-        "acceptedOffer": "https://example.com/sessions/9209",
-        "orderedItem": "https://example.com/sessions/9209"
+        "acceptedOffer": "https://example.com/offers/9209",
+        "orderedItem": "https://example.com/events/452"
       },
       "amount": {
         "type": "MonetaryAmount",
@@ -1117,9 +1120,19 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/535/payment",
-        "encodingType": "application/vnd.openactive.v0.4+json",
-        "httpMethod": "POST"
+        "url": "https://example.com/orders/535",
+        "encodingType": "application/vnd.openactive.v0.5+json",
+        "httpMethod": "PATCH"
+      }
+    },
+    {
+      "type": "CancelAction",
+      "name": "Pay",
+      "target": {
+        "type": "EntryPoint",
+        "url": "https://example.com/orders/535",
+        "encodingType": "application/vnd.openactive.v0.5+json",
+        "httpMethod": "PATCH"
       }
     }
   ]
@@ -1209,7 +1222,7 @@ that a space still exists within the **event**. If no space exists, the
 </div>
 
 
-### The state transitions durint the order process
+### The state transitions during the order process
 
 1. An **order** object is created by a **broker** invoking the orders endpoint
 with a POST request containing details of the **broker** (represented as a
