@@ -1318,7 +1318,7 @@ Content-Length: ...
 }
     </pre>
 
-### Deleting an order
+### Deleting an order (`/orders/{orderId}`)
 
 A `DELETE` request to an **Order** URI will delete the order. Deletion may only
 be used in the specific case for cancelling an **order** and the associated
@@ -1329,63 +1329,41 @@ A `DELETE` request MUST NOT be used to cancel an existing completed **order**
 as part of a refund/cancellation workflow. An appropriate approach for that is
 defined elsewhere.
 
-## Completing an order (`/orders/{orderId}/payments`)
+## Completing an order (`/orders/{orderId}`)
 
-An Order is completed by the client submitting a payment.
+An **order** is completed by the **broker** submitting notification that the
+**customer** has made a payment via a third-party payment gateway.
 
-    <div class="issue"
-             title="Discovery of /payments endpoint"
-             data-number="29">
-        How does a client find this? E.g. via `potentialAction`?
-    </div>
+An **order** is not considered complete until payment has occurred.
 
+**Brokers** MUST update the **booking system** to indicate that **payment** has
+been taken.
 
-    <div class="issue"
-             title="Are we supporting partial payments?"
-             data-number="41">
-             Can a broker make multiple payments?
-    </div>
-
-    <div class="issue"
-             title="POSTing to /order rather than sub-resources"
-             data-number="16">
-             Should we post to order instead?
-    </div>
-
-An order is not considered complete until payment has occurred.
-
-Brokers MUST update the booking system to indicate that payment has been taken.
-
-Once the seller is content with the payments, it then sets the `orderStatus`
-property of the `Order` to `OrderDelivered`.
-
-<div class="issue"
-         title="Clarify use of `paymentMethod` when completing an order"
-         data-number="30">
-        What does `paymentMethod` refer to?
-        WIP see below for fix.
-</div>
+Once the **booking system** is content with the payments, it then sets the
+`orderStatus` property of the `Order` to https://schema.org/OrderDelivered and
+returns a representation of the completed **order** with a 200 status code.
 
 
     <pre class="example" title="Completing an order - request">
-POST /orders/123/payments HTTP/1.1
+PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
 
 {
-  "type": "Payment",
-  "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-  "totalPaidToProvider": {
-    "type": "MonetaryAmount",
-    "value": "8.00",
-    "currency": "GBP"
-  },
-  "totalPaidByCustomer": {
-    "type": "MonetaryAmount",
-    "value": "5.00",
-    "currency": "GBP"
-  }
+  "type": "Order",
+  "payments": [
+    {
+      "type": "Payment",
+      "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+      "paymentMethodId": "3204",
+      "totalPaidToProvider": {
+        "type": "MonetaryAmount",
+        "value": "8.00",
+        "currency": "GBP"
+      },
+    }
+  ]
 }
     </pre>
 
@@ -1410,7 +1388,7 @@ invalid, the **customer** should be refunded if payment has been taken.
 </div>
 
 
-### The state transitions during the order process
+## The state transitions during the order process
 
 1. An **order** object is created by a **broker** invoking the orders endpoint
 with a POST request containing details of the **broker** (represented as a
