@@ -1250,11 +1250,14 @@ Accept: application/vnd.openactive+json
 
 ### Leases and the beta:anonymousLeaseDuration property
 
-If the lease expires during **payment**, the current **order** should be deleted
-(see below) and a new **order** created to generate a new lease. Before
-creating a new order, the **event** and **offers** should be checked to ensure
-that a space still exists within the **event**. If no space exists, the
-**customer** should be refunded if payment has been taken.
+If the lease expires during **payment**, the **broker** MAY delete the **order**
+(if the **booking system** has not already done so, returning a response with a
+410 status code). The **broker** should then create a new **order** for the
+**customer** in order to generate a new lease. Before creating a new order,
+the **broker** MUST check the **event** and **offers** sto ensure
+that a space still exists within the **event** and that the **offer** selected
+by the **customer** is still valid. If no space exists or the **offer** is now
+invalid, the **customer** should be refunded if payment has been taken.
 
 
 <div class="issue"
