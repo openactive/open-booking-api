@@ -950,13 +950,16 @@ Content-Length: ...
   "offers": [
     {
       "type": "Offer",
-      "identifier": 2134,
+      "acceptedPaymentMethod": [
+          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+      ],
+      "availabilityEnds": "2018-04-29T12:14:35Z",
+      "availabilityStarts": "2018-04-01T12:14:35Z",
+      "description": "Winger space for Speedball.",
+      "id": "https://example.com/offers/1234",
       "name": "Speedball winger position",
       "price": "33.00",
       "priceCurrency": "GBP",
-      "availabilityStarts": "2014-04-29T12:14:35",
-      "availabilityEnds": "2014-04-29T12:14:35",
-      "description": "Winger space for Speedball."
     }
   ],
   "beta:anonymousLeaseDuration": "PT15M",
@@ -1097,7 +1100,7 @@ the **events** referenced in the **Order**.
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
 
 {
   "@context": "https://openactive.io/ns/oa.jsonld",
@@ -1106,8 +1109,8 @@ Accept: application/vnd.openactive+json
     "type": "Person",
     "email": "geoffcapes@example.com",
     "givenName": "Geoff",
-    "familyName": "Capes",
-  }
+    "familyName": "Capes"
+  },
   "broker": {
     "type": "Organization",
     "name": "MyFitnessApp",
@@ -1116,7 +1119,19 @@ Accept: application/vnd.openactive+json
   "orderedItem": {
     "type": "OrderItem",
     "orderQuantity": 1,
-    "acceptedOffer": "https://example.com/offers/9209",
+    "acceptedOffer": {
+      "type": "Offer",
+      "acceptedPaymentMethod": [
+          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+      ],
+      "availabilityEnds": "2018-04-29T12:14:35Z",
+      "availabilityStarts": "2018-04-01T12:14:35Z",
+      "description": "Winger space for Speedball.",
+      "id": "https://example.com/offers/1234",
+      "name": "Speedball winger position",
+      "price": "33.00",
+      "priceCurrency": "GBP",
+    },
     "orderedItem": "https://example.com/events/452"
   }
 }
@@ -1147,46 +1162,47 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/535 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
+Content-Type: application/vnd.openactive.v0.5+json
 Content-Length: ...
 
 {
   "type": "Order",
   "id": "https://example.com/orders/535",
   "identifier": 535,
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
   "orderedItem": [
     {
       "type": "OrderItem",
-      "id": "https://example.com/orders/535/orderitems/987",
-      "identifier": 987,
-      "customer": {
-        "type": "Person",
-        "email": "geoffcapes@example.com",
-        "givenName": "Geoff",
-        "familyName": "Capes",
+      "acceptedOffer": {
+        "type": "Offer",
+        "acceptedPaymentMethod": [
+            "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+        ],
+        "availabilityEnds": "2018-04-29T12:14:35Z",
+        "availabilityStarts": "2018-04-01T12:14:35Z",
+        "description": "Winger space for Speedball.",
+        "id": "https://example.com/offers/1234",
+        "name": "Speedball winger position",
+        "price": "33.00",
+        "priceCurrency": "GBP",
       },
-      "orderedItem": {
-        "type": "OrderItem",
-        "orderQuantity": 1,
-        "acceptedOffer": "https://example.com/offers/9209",
-        "orderedItem": "https://example.com/events/452"
-      },
+      "orderedItem": "https://example.com/events/452",
       "amount": {
         "type": "MonetaryAmount",
         "value": "10.00",
         "currency": "GBP"
       },
-      "subTotalPrice": {
-        "type": "MonetaryAmount",
-        "value": "5.00",
-        "currency": "GBP"
-      }
     }
   ],
   "orderStatus": "OrderPaymentDue",
