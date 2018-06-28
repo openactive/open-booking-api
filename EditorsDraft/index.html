@@ -663,6 +663,49 @@ The documents MUST include a [[!JSON-LD]] `context` that refers to the
 Unless otherwise specified the request and response documents MUST conform to
 the [[!Modelling-Opportunity-Data]] data model.
 
+## URL discovery
+
+The Booking API has been defined around the concept of URL discovery. This
+allows **booking systems** to create resource URLs which match their own
+terms for naming specific objects such as **events** and **orders**.
+
+The URL for a specific action, such as for example providing **payment** details,
+may be discovered by parsing the actions defined in the `potentialAction`
+property of an object.
+
+An example is below:
+
+<pre class="example" title="Example of a potentialAction">
+
+"potentialAction": [
+        {
+          "type": "PayAction",
+          "name": "Payment",
+          "target": {
+            "type": "EntryPoint",
+            "url": "https://example.com/orders",
+            "encodingType": "application/vnd.openactive.v0.5+json",
+            "httpMethod": "PATCH"
+          }
+        }
+      ]
+</pre>
+
+Since discovery of URLs is an implicit part of the specification, **brokers**
+SHOULD avoid hard-coding URLs for specific actions into their applications and
+client libraries. **Brokers**  SHOULD use most applicable URL discovered at the
+point in the workflow they are currently in - e.g. not use a cached URL that has
+been previously successfully used. They should also not attempt to create URLs
+for a specific action based on patterns within previously used URLs.
+
+It is the responsibility of **booking platforms** to advertise the URL for
+further activity in the booking workflow at the point of need. For example they
+MUST advertise the URL for **order** creation when a **broker** requests
+a specific **event** resource and SHOULD advertise it in their RDPE feeds since
+both of these points within the booking workflow are places where a **customer**
+may wish to check availability.
+
+
 ## Error handling
 
         <div class="issue"
@@ -782,7 +825,6 @@ Use cases:
 
 - if **broker** did not supply **payment** details between the creation of the
 **order** and the expiration of the lease.
-
 
 ## Security
 
@@ -1001,7 +1043,7 @@ contain the `encodingType` and the `httpMethod` which must be POST as a new
 
 An example is below:
 
-<pre class="example" title="Example of a potentialAction">
+<pre class="example" title="Example of a ReserveAction">
 
 "potentialAction": [
         {
