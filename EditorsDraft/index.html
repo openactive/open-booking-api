@@ -916,6 +916,13 @@ Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
 way of verifying the identity of customer. It is a thin layer that sits
 atop OAuth2.
 
+One principle relating to authentication and the Booking API is that **orders**
+created by a specific **broker** SHOULD NOT be able to be changed by any other
+**broker**. It is the responsibility of the **booking system** to ensure that
+subsequent requests to an **order** should only be initiated by the **broker**
+which created the **order**.
+
+
     </section>
 
     <section>
