@@ -525,6 +525,12 @@ the business model and agreements in place between the broker and booking system
 
 ## Step-by-step process description
 
+The 0.5 version of the Booking API supports single items per **order** and
+single **payments** per **order**. Future versions of the specification may support
+multiple items and multipart **payments**.
+
+### Complete transaction
+
 1. The **broker** requests details on a specific **event** from the **booking
 system** (/events/452 in example) in order to discover available **offers**.
 These offers are subsequently presented to the **customer**.
@@ -554,17 +560,37 @@ responsibility of the **broker**.
 completion by returning a response with a 200 status code and an object with an
 appropriate value for the `confirmationCode` field.
 
-## Notes and assumptions on step-by-step description
+The **broker** is the entity initiating **payment** and as the merchant in the
+transaction is responsible for storing records of the **payment** transaction
+such as authorization codes. This is an implementation detail and is thus,
+out of scope for the Booking API and specification.
 
-- Assumption: since the **broker** is in control of taking the payment and is the
-merchant in the transaction that they should be responsible for storing things
-such as authentication codes. This is out of scope for this API.
 
-- Since the schema:Order definition only has support for a `paymentMethodId` and
-a `paymontMethod`, multipart payments are not supported in this iteration of <thead>
-  Booking API specification as an array of an appropriate payment object would
-  need to be appended to the Order object.
-</thead>
+### Order cancellation and refund
+
+The **broker** is the party which initiates the third-party **payment**
+and is the entity which notifies the **booking system** of **payment** and
+creates the **order** on behalf of the **customer**, the **broker** is also the
+entity which handles refunds and cancellation.
+
+The workflow to deal with a cancellation and refund of an order is described
+below:
+
+1. The **broker** intiates a refund for the **customer** using the mechanisms
+provided by the third-party payment provider.
+
+2. The **broker** notifies the **booking system** of the cancellation by making
+a patch request to the specific order endpoint (/orders/789 in the example) of
+the **booking system**. The PATCH request body should contain an updated
+order item in the `orderedItem` property, with the `orderItemStatus` set to
+https://schema.org/OrderCancelled to indicate that the ordered item in
+the **order** is no longer required.
+
+3. The **booking system** responds to the **broker** with a representation of
+the **order** with the `orderStatus` property set to
+https://schema.org/OrderCancelled with a status of 200. The **order** is now
+deemed to be cancelled.
+
 
     </section>
 
