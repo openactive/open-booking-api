@@ -591,6 +591,15 @@ the **order** with the `orderStatus` property set to
 https://schema.org/OrderCancelled with a status of 200. The **order** is now
 deemed to be cancelled.
 
+### Cancelling a Lease
+
+If the **customer** no longer wants to proceed with a particular **offer**, the
+lease for the space in the **event** and the **order** may be cancelled by
+issuing a DELETE request to the specific order endpoint (/orders/789 in the
+example) of the **booking system**. The **booking system** SHOULD release the
+space in the **event** and delete the underlying resource. Any subsequent
+requests to this resource should result in a 404 response.
+
 
     </section>
 
