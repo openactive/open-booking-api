@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+<html xmlns='https://www.w3.org/1999/xhtml' lang='en'>
 
 <head>
     <meta charset='utf-8' />
@@ -10,7 +10,7 @@
             // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
             specStatus: "CG-DRAFT",
 
-            // the specification's short name, as in http://www.w3.org/TR/short-name/
+            // the specification's short name, as in https://www.w3.org/TR/short-name/
             shortName: "open-booking-api",
 
             // if you wish the publication date to be other than today, set this
@@ -23,25 +23,25 @@
             //previousPublishDate: "2018-05-03",
 
             // if there a publicly available Editor's Draft, this is the link
-            edDraftURI: "http://openactive.io/open-booking-api/EditorsDraft/",
-            //prevED:  "http://openactive.io/spec-template/",
-            //previousURI:  "http://openactive.io/realtime-paged-data-exchange/0.2.3/",
-            //testSuiteURI: "http://openactive.io/endpoint-validator/",
+            edDraftURI: "https://openactive.io/open-booking-api/EditorsDraft/",
+            //prevED:  "https://openactive.io/spec-template/",
+            //previousURI:  "https://openactive.io/realtime-paged-data-exchange/0.2.3/",
+            //testSuiteURI: "https://openactive.io/endpoint-validator/",
             copyrightStart: 2018,
 
             // editors, add as many as you like
             // only "name" is required
             editors: [{
                 name: "Leigh Dodds",
-                url: "http://ldodds.com",
+                url: "https://ldodds.com",
                 company: "Open Data Institute",
-                companyURL: "http://theodi.org",
+                companyURL: "https://theodi.org",
                 w3cid: 55359
             }, {
                 name: "Nick Evans",
-                url: "http://nickevans.me/",
+                url: "https://nickevans.me/",
                 company: "Open Data Institute",
-                companyURL: "http://theodi.org"
+                companyURL: "https://theodi.org"
             }],
 
             otherLinks: [{
@@ -56,8 +56,8 @@
             }],
 
             logos: [{
-                src: 'http://openactive.io/assets/openactive-logo-large.png',
-                href: "http://openactive.io",
+                src: 'https://openactive.io/assets/openactive-logo-large.png',
+                href: "https://openactive.io",
                 alt: "openactive.io",
                 width: 255, //170
                 height: 43, //22
@@ -86,22 +86,22 @@
                     "publisher": "W3C",
                 },
                 "SCHEMA-ORG": {
-                    "href": "http://schema.org/",
+                    "href": "https://schema.org/",
                     "title": "Schema.org"
 
                 },
                 "Modelling-Opportunity-Data": {
-                    "href": "http://openactive.io/modelling-opportunity-data/",
+                    "href": "https://openactive.io/modelling-opportunity-data/",
                     "title": "Modelling Opportunity Data",
                     "publisher": "OpenActive Community Group",
                 },
                 "RPDE": {
-                    "href": "http://openactive.io/realtime-paged-data-exchange/",
+                    "href": "https://openactive.io/realtime-paged-data-exchange/",
                     "title": "Realtime Paged Data Exchange",
                     "publisher": "OpenActive Community Group",
                 },
                 "OpenActive-Vocabulary": {
-                    "href": "http://openactive.io/ns/",
+                    "href": "https://openactive.io/ns/",
                     "title": "OpenActive Vocabulary",
                     "publisher": "OpenActive Community Group",
                 },
@@ -110,7 +110,7 @@
                     "title": "OAuth 2.0",
                 },
                 "OpenIdConnect" : {
-                    "href": "http://openid.net/connect/",
+                    "href": "https://openid.net/connect/",
                     "title": "OpenID Connect",
                 }
             }
@@ -193,7 +193,7 @@
             background: white top left fixed no-repeat !important;
             background-size: 25px auto !important;
             background-image:
-                url('http://openactive.io/assets/openactive-label-specification.png') !important;
+                url('https://openactive.io/assets/openactive-label-specification.png') !important;
         }
 
         h1 {
@@ -259,10 +259,10 @@ early proof-of-concept implementations.
 # Introduction
 
 The document is an output of the
-[OpenActive Community Group](http://www.w3.org/community/openactive/). As part
+[OpenActive Community Group](https://www.w3.org/community/openactive/). As part
 of the [OpenActive](https://openactive.io) initiative, the community group is
 developing standards that will promote the publication and use of open
-[opportunity data](http://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
+[opportunity data](https://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
 in helping people to become more physically active.
 
 The Community Group have already published specifications that define standard
@@ -355,7 +355,7 @@ overview of the API functionality.
 
     <section id="conformance">
 This specification makes use of the compact IRI Syntax; please refer to the
-[Compact IRIs](http://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
+[Compact IRIs](https://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
     </section>
 
     <section>
@@ -413,7 +413,7 @@ The content of the example is in monospace font and may be syntax colored.
             <dd>The user who places a booking using an application provided by
             a broker.</dd>
             <dt>__*event*__</dt>
-            <dd>An <a href="http://openactive.io/modelling-opportunity-data/#events">Event</a>
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#events">Event</a>
                 is an opportunity to take part in a physical activity. Events
                 take place at a specific location and at an agreed date
                 and time.</dd>
@@ -426,7 +426,7 @@ The content of the example is in monospace font and may be syntax colored.
             a customer can place a booking and still be guaranteed a place at
             an event (or use of the facility).</dd>
             <dt>__*offer*__</dt>
-            <dd>An <a href="http://openactive.io/modelling-opportunity-data/#offers">Offer</a>
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
             <dt>__*order*__</dt>
@@ -608,7 +608,7 @@ still available. If they are, the **broker** should create a new **order** using
 the workflow described above. The **booking system** should respond to requests
 for **orders** with an expired lease with a 410 status code with an error
 specifying the `errorType` as
-http://openactive.io/errors/anonymous_lease_expired until the underlying
+https://openactive.io/errors/anonymous_lease_expired until the underlying
 **order** resource is removed.
 
     </section>
@@ -656,7 +656,7 @@ The documents MUST include a [[!JSON-LD]] `context` that refers to the
 
 <pre class="example" title="minimal JSON-LD document">
 {
-  "@context": "http://openactive.io/ns/oa.jsonld"
+  "@context": "https://openactive.io/ns/oa.jsonld"
 }
 </pre>
 
@@ -711,7 +711,7 @@ the problem. It may or may not yield further information if dereferenced.
 
 ### Standard URIs for common errors
 
-http://openactive.io/errors/incomplete_customer_details
+https://openactive.io/errors/incomplete_customer_details
 
 Use cases:
 
@@ -720,7 +720,7 @@ object.
 
 - if the `customer` property supplied is not a valid schema:Person object.
 
-http://openactive.io/errors/incomplete_broker_details
+https://openactive.io/errors/incomplete_broker_details
 
 Use cases:
 
@@ -730,7 +730,7 @@ the **broker**
 - if the `broker` property supplied is not a valid schema:Organisation object.
 
 
-http://openactive.io/errors/incomplete_offer_details
+https://openactive.io/errors/incomplete_offer_details
 
 Use cases:
 
@@ -740,7 +740,7 @@ Use cases:
 **booking system**
 
 
-http://openactive.io/errors/incomplete_event_details
+https://openactive.io/errors/incomplete_event_details
 
 Use cases:
 
@@ -750,33 +750,33 @@ Use cases:
 **booking system**
 
 
-http://openactive.io/errors/unavailable_offer
+https://openactive.io/errors/unavailable_offer
 
 Use cases:
 
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
-http://openactive.io/errors/unavailable_event
+https://openactive.io/errors/unavailable_event
 
 Use cases:
 
 - if the **event** contained in the `orderedItem` property is not bookable
 
-http://openactive.io/errors/event_is_full
+https://openactive.io/errors/event_is_full
 
 Use cases:
 
 - if there are no available spaces for the **event** contained in the
 `orderedItem` property
 
-http://openactive.io/errors/incomplete_payment_details
+https://openactive.io/errors/incomplete_payment_details
 
 Use cases:
 
 - if the `paymentMethod` or `paymentMethodId` properties are missing or
 incorrect
 
-http://openactive.io/errors/anonymous_lease_expired
+https://openactive.io/errors/anonymous_lease_expired
 
 Use cases:
 
@@ -892,7 +892,7 @@ Content-Length: ...
 
 
 {
-  "@context": "http://openactive.io/ns/oa.jsonld",
+  "@context": "https://openactive.io/ns/oa.jsonld",
   "type": "Event",
   "identifier": 9209,
   "id": "https://example.com/sessions/9209",
@@ -910,7 +910,7 @@ Content-Length: ...
     }
   ],
   "beta:anonymousLeaseDuration": "PT15M",
-  "eventStatus": "http://schema.org/EventScheduled",
+  "eventStatus": "https://schema.org/EventScheduled",
   "maximumAttendeeCapacity": 30,
   "remainingAttendeeCapacity": 20,
   "startDate": "2018-01-27T11:00:00Z",
@@ -1058,7 +1058,7 @@ Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
 
 {
-  "@context": "http://openactive.io/ns/oa.jsonld",
+  "@context": "https://openactive.io/ns/oa.jsonld",
   "type": "Order",
   "customer": {
     "type": "Person",
@@ -1235,7 +1235,7 @@ Accept: application/vnd.openactive+json
 
 {
   "type": "Payment",
-  "paymentMethod": "http://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+  "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
   "totalPaidToProvider": {
     "type": "MonetaryAmount",
     "value": "8.00",
@@ -1372,7 +1372,7 @@ the space at the **event** has been booked on their behalf.
 # Acknowledgements
 
 The editors thank
-[all members](http://www.w3.org/community/openactive/participants) of the
+[all members](https://www.w3.org/community/openactive/participants) of the
 OpenActive Community Group for their contributions.
     </section>
 </body>
