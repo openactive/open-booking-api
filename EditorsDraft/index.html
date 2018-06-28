@@ -1183,6 +1183,9 @@ be used in the specific case for cancelling an **order** and the associated
 lease on a space in an **event** if the **customer** no longer wishes to take
 up the opportunity.
 
+A `DELETE` request MUST NOT be used to cancel an existing completed **order**
+as part of a refund/cancellation workflow. An appropriate approach for that is
+defined elsewhere.
 
 ## Completing an order (`/orders/{orderId}/payments`)
 
