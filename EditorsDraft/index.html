@@ -874,8 +874,16 @@ is compliant with and supports the Open Active Booking API.
 
 ### Checking availability and offers for an event
 
-To check the availability of an event a broker will issue a GET request to the
-URI specified in the `id` of the Event:
+To check the availability of an event a **broker** will issue a GET request to
+the URI specified in the `id` of the Event.
+
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingAttendeeCapacity` property is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+It is the responsibility of **brokers** to ensure that spaces within the event
+are still available before proceeding with booking.
 
         <pre class="example" title="Viewing event availability">
 GET /sessions/9209 HTTP/1.1
