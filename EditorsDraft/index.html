@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+<html xmlns='https://www.w3.org/1999/xhtml' lang='en'>
 
 <head>
     <meta charset='utf-8' />
@@ -10,7 +10,7 @@
             // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
             specStatus: "CG-DRAFT",
 
-            // the specification's short name, as in http://www.w3.org/TR/short-name/
+            // the specification's short name, as in https://www.w3.org/TR/short-name/
             shortName: "open-booking-api",
 
             // if you wish the publication date to be other than today, set this
@@ -23,25 +23,25 @@
             //previousPublishDate: "2018-05-03",
 
             // if there a publicly available Editor's Draft, this is the link
-            edDraftURI: "https://www.openactive.io/open-booking-api/EditorsDraft/",
-            //prevED:  "https://www.openactive.io/spec-template/",
-            //previousURI:  "https://www.openactive.io/realtime-paged-data-exchange/0.2.3/",
-            //testSuiteURI: "https://www.openactive.io/endpoint-validator/",
+            edDraftURI: "https://openactive.io/open-booking-api/EditorsDraft/",
+            //prevED:  "https://openactive.io/spec-template/",
+            //previousURI:  "https://openactive.io/realtime-paged-data-exchange/0.2.3/",
+            //testSuiteURI: "https://openactive.io/endpoint-validator/",
             copyrightStart: 2018,
 
             // editors, add as many as you like
             // only "name" is required
             editors: [{
                 name: "Leigh Dodds",
-                url: "http://ldodds.com",
+                url: "https://ldodds.com",
                 company: "Open Data Institute",
-                companyURL: "http://theodi.org",
+                companyURL: "https://theodi.org",
                 w3cid: 55359
             }, {
                 name: "Nick Evans",
-                url: "http://nickevans.me/",
+                url: "https://nickevans.me/",
                 company: "Open Data Institute",
-                companyURL: "http://theodi.org"
+                companyURL: "https://theodi.org"
             }],
 
             otherLinks: [{
@@ -56,8 +56,8 @@
             }],
 
             logos: [{
-                src: 'https://www.openactive.io/assets/openactive-logo-large.png',
-                href: "https://www.openactive.io",
+                src: 'https://openactive.io/assets/openactive-logo-large.png',
+                href: "https://openactive.io",
                 alt: "openactive.io",
                 width: 255, //170
                 height: 43, //22
@@ -86,22 +86,22 @@
                     "publisher": "W3C",
                 },
                 "SCHEMA-ORG": {
-                    "href": "http://schema.org/",
+                    "href": "https://schema.org/",
                     "title": "Schema.org"
 
                 },
                 "Modelling-Opportunity-Data": {
-                    "href": "https://www.openactive.io/modelling-opportunity-data/",
+                    "href": "https://openactive.io/modelling-opportunity-data/",
                     "title": "Modelling Opportunity Data",
                     "publisher": "OpenActive Community Group",
                 },
                 "RPDE": {
-                    "href": "https://www.openactive.io/realtime-paged-data-exchange/",
+                    "href": "https://openactive.io/realtime-paged-data-exchange/",
                     "title": "Realtime Paged Data Exchange",
                     "publisher": "OpenActive Community Group",
                 },
                 "OpenActive-Vocabulary": {
-                    "href": "https://www.openactive.io/ns/",
+                    "href": "https://openactive.io/ns/",
                     "title": "OpenActive Vocabulary",
                     "publisher": "OpenActive Community Group",
                 },
@@ -110,7 +110,7 @@
                     "title": "OAuth 2.0",
                 },
                 "OpenIdConnect" : {
-                    "href": "http://openid.net/connect/",
+                    "href": "https://openid.net/connect/",
                     "title": "OpenID Connect",
                 }
             }
@@ -193,7 +193,7 @@
             background: white top left fixed no-repeat !important;
             background-size: 25px auto !important;
             background-image:
-                url('https://www.openactive.io/assets/openactive-label-specification.png') !important;
+                url('https://openactive.io/assets/openactive-label-specification.png') !important;
         }
 
         h1 {
@@ -259,10 +259,10 @@ early proof-of-concept implementations.
 # Introduction
 
 The document is an output of the
-[OpenActive Community Group](http://www.w3.org/community/openactive/). As part
+[OpenActive Community Group](https://www.w3.org/community/openactive/). As part
 of the [OpenActive](https://openactive.io) initiative, the community group is
 developing standards that will promote the publication and use of open
-[opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
+[opportunity data](https://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
 in helping people to become more physically active.
 
 The Community Group have already published specifications that define standard
@@ -355,7 +355,7 @@ overview of the API functionality.
 
     <section id="conformance">
 This specification makes use of the compact IRI Syntax; please refer to the
-[Compact IRIs](http://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
+[Compact IRIs](https://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
     </section>
 
     <section>
@@ -413,7 +413,7 @@ The content of the example is in monospace font and may be syntax colored.
             <dd>The user who places a booking using an application provided by
             a broker.</dd>
             <dt>__*event*__</dt>
-            <dd>An [Event](https://www.openactive.io/modelling-opportunity-data/#events)
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#events">Event</a>
                 is an opportunity to take part in a physical activity. Events
                 take place at a specific location and at an agreed date
                 and time.</dd>
@@ -426,7 +426,7 @@ The content of the example is in monospace font and may be syntax colored.
             a customer can place a booking and still be guaranteed a place at
             an event (or use of the facility).</dd>
             <dt>__*offer*__</dt>
-            <dd>An [Offer](https://www.openactive.io/modelling-opportunity-data/#offers)
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
             <dt>__*order*__</dt>
@@ -537,6 +537,92 @@ as RDPE in an Open Active compliant **booking system**.
 
 ## Step-by-step process description
 
+The 0.5 version of the Booking API supports single items per **order** and
+single **payments** per **order**. Future versions of the specification may support
+multiple items and multipart **payments**.
+
+### Complete transaction
+
+1. The **broker** requests details on a specific **event** from the **booking
+system** (/events/452 in example) in order to discover available **offers**.
+These offers are subsequently presented to the **customer**.
+2. The **customer** chooses an bookable **offer** (see definition of a bookable
+event).
+3. If the **offer** for the **event** is bookable, the broker makes a POST
+request to the **orders** endpoint (/orders in the examples) containing a
+Person object describing the **customer**. At a minimum, this object should
+contain the `email` address for the **customer**, if possible the `givenName`
+and `familyName`. The **booking system** creates a timed **lease** on the space
+in the **event** which is being booked. At this point the **offer** is deemed to
+be accepted and an **order** is created. The **booking system** sends a 201
+status code, with a representation of the **order** in the body of the response,
+and with a Location header set containing the URI for the web representation of
+the created **Order** object.
+4. If there is a price for the **offer**, the **broker** takes payment from the
+**customer** via a third party payment provider.
+5. The **broker** notifies the **seller** of the payment by making a PATCH
+request to the specific order endpoint (/orders/789 in the example) of the
+**booking system**. This should include details of the `paymentMethod` and the
+`paymentMethodId` (commonly the last four digits of the card which can be used
+by the **seller** to identify the **customer**). The **broker** should store any
+details about the transaction which are needed for processing refunds or in the
+case of chargebacks. This is out of scope for the Booking API spec and is the
+responsibility of the **broker**.
+6. The **booking system** notifies the **broker** of a successful order
+completion by returning a response with a 200 status code and an object with an
+appropriate value for the `confirmationCode` field.
+
+The **broker** is the entity initiating **payment** and as the merchant in the
+transaction is responsible for storing records of the **payment** transaction
+such as authorization codes. This is an implementation detail and is thus,
+out of scope for the Booking API and specification.
+
+
+### Order cancellation and refund
+
+The **broker** is the party which initiates the third-party **payment**
+and is the entity which notifies the **booking system** of **payment** and
+creates the **order** on behalf of the **customer**, the **broker** is also the
+entity which handles refunds and cancellation.
+
+The workflow to deal with a cancellation and refund of an order is described
+below:
+
+1. The **broker** intiates a refund for the **customer** using the mechanisms
+provided by the third-party payment provider.
+
+2. The **broker** notifies the **booking system** of the cancellation by making
+a patch request to the specific order endpoint (/orders/789 in the example) of
+the **booking system**. The PATCH request body should contain an updated
+order item in the `orderedItem` property, with the `orderItemStatus` set to
+https://schema.org/OrderCancelled to indicate that the ordered item in
+the **order** is no longer required.
+
+3. The **booking system** responds to the **broker** with a representation of
+the **order** with the `orderStatus` property set to
+https://schema.org/OrderCancelled with a status of 200. The **order** is now
+deemed to be cancelled.
+
+### Cancelling a Lease
+
+If the **customer** no longer wants to proceed with a particular **offer**, the
+lease for the space in the **event** and the **order** may be cancelled by
+issuing a DELETE request to the specific order endpoint (/orders/789 in the
+example) of the **booking system**. The **booking system** SHOULD release the
+space in the **event** and delete the underlying resource. Any subsequent
+requests to this resource should result in a 404 response.
+
+### Handling lease expiry
+
+If the lease has expired during the **payment** process, the **broker** SHOULD
+check whether the **event** is still bookable and if the selected **offer** is
+still available. If they are, the **broker** should create a new **order** using
+the workflow described above. The **booking system** should respond to requests
+for **orders** with an expired lease with a 410 status code with an error
+specifying the `errorType` as
+https://openactive.io/errors/anonymous_lease_expired until the underlying
+**order** resource is removed.
+
     </section>
 
     <section class="normative">
@@ -582,12 +668,55 @@ The documents MUST include a [[!JSON-LD]] `context` that refers to the
 
 <pre class="example" title="minimal JSON-LD document">
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld"
+  "@context": "https://openactive.io/ns/oa.jsonld"
 }
 </pre>
 
 Unless otherwise specified the request and response documents MUST conform to
 the [[!Modelling-Opportunity-Data]] data model.
+
+## URL discovery
+
+The Booking API has been defined around the concept of URL discovery. This
+allows **booking systems** to create resource URLs which match their own
+terms for naming specific objects such as **events** and **orders**.
+
+The URL for a specific action, such as for example providing **payment** details,
+may be discovered by parsing the actions defined in the `potentialAction`
+property of an object.
+
+An example is below:
+
+<pre class="example" title="Example of a potentialAction">
+
+"potentialAction": [
+        {
+          "type": "PayAction",
+          "name": "Payment",
+          "target": {
+            "type": "EntryPoint",
+            "url": "https://example.com/orders",
+            "encodingType": "application/vnd.openactive.v0.5+json",
+            "httpMethod": "PATCH"
+          }
+        }
+      ]
+</pre>
+
+Since discovery of URLs is an implicit part of the specification, **brokers**
+SHOULD avoid hard-coding URLs for specific actions into their applications and
+client libraries. **Brokers**  SHOULD use most applicable URL discovered at the
+point in the workflow they are currently in - e.g. not use a cached URL that has
+been previously successfully used. They should also not attempt to create URLs
+for a specific action based on patterns within previously used URLs.
+
+It is the responsibility of **booking platforms** to advertise the URL for
+further activity in the booking workflow at the point of need. For example they
+MUST advertise the URL for **order** creation when a **broker** requests
+a specific **event** resource and SHOULD advertise it in their RDPE feeds since
+both of these points within the booking workflow are places where a **customer**
+may wish to check availability.
+
 
 ## Error handling
 
@@ -631,7 +760,152 @@ the problem. It may or may not yield further information if dereferenced.
            title="Define URIs for common errors" data-number="23">
         The specification recommends use of RFC 7807 which suggests that type in
         responses should be a pre-defined URI. We should define and document these.
+
+        WIP below
         </div>
+
+### Standard URIs for common errors
+
+https://openactive.io/errors/incomplete_customer_details
+
+Status code: 400
+
+Use cases:
+
+- if the `email` address of the customer is not supplied within a schema:Person
+object.
+
+- if the `customer` property supplied is not a valid schema:Person object.
+
+https://openactive.io/errors/incomplete_broker_details
+
+Status code: 400
+
+Use cases:
+
+- if there is insuffficient detail in the schema:Organisation object describing
+the **broker**
+
+- if the `broker` property supplied is not a valid schema:Organisation object.
+
+
+https://openactive.io/errors/incomplete_offer_details
+
+Status code: 400
+
+Use cases:
+
+- if there is no `acceptedOffer` property on the schema:OrderItem
+
+- if the `acceptedOffer` is not a URL which corresponds to an **offer** on the
+**booking system**
+
+
+https://openactive.io/errors/incomplete_event_details
+
+Status code: 400
+
+Use cases:
+
+- if there is no `orderedItem` property on the schema:OrderItem
+
+- if the `orderedItem` is not a URL which corresponds to an **event** on the
+**booking system**
+
+
+https://openactive.io/errors/unavailable_offer
+
+Status code: 400
+
+Use cases:
+
+- if the **offer** contained in the `acceptedOffer` property is not bookable
+
+https://openactive.io/errors/unavailable_event
+
+Status code: 400
+
+Use cases:
+
+- if the **event** contained in the `orderedItem` property is not bookable
+
+https://openactive.io/errors/event_is_full
+
+Status code: 400
+
+Use cases:
+
+- if there are no available spaces for the **event** contained in the
+`orderedItem` property
+
+https://openactive.io/errors/incomplete_payment_details
+
+Status code: 400
+
+Use cases:
+
+- if the `paymentMethod` or `paymentMethodId` properties are missing or
+incorrect
+
+https://openactive.io/errors/anonymous_lease_expired
+
+Status code: 410
+
+Use cases:
+
+- if **broker** did not supply **payment** details between the creation of the
+**order** and the expiration of the lease.
+
+https://openactive.io/errors/no_api_token_provided
+
+Status code: 403
+
+Use cases:
+
+- if **broker** did not supply an API key
+
+https://openactive.io/errors/invalid_api_token_provided
+
+Status code: 401
+
+Use cases:
+
+- if **broker** supplied an invalid API key, either malformed or expired
+
+https://openactive.io/errors/temporarily_unable_to_create_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to create an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/temporarily_unable_to_update_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to update an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/temporarily_unable_to_delete_order
+
+Status code: 500
+
+Use cases:
+
+- if **booking platform** is unable for technical reasons to delete an **order**
+where the data provided to it is sufficient to allow it to do so
+
+https://openactive.io/errors/unknown_or_incorrect_offer
+
+Status code: 404
+
+Use cases:
+
+- where a **booking platform** has no **offer** matching the offer requested
 
 ## Security
 
@@ -653,6 +927,13 @@ application flows (e.g. via a Javascript web application or between servers).
 Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
 way of verifying the identity of customer. It is a thin layer that sits
 atop OAuth2.
+
+One principle relating to authentication and the Booking API is that **orders**
+created by a specific **broker** SHOULD NOT be able to be changed by any other
+**broker**. It is the responsibility of the **booking system** to ensure that
+subsequent requests to an **order** should only be initiated by the **broker**
+which created the **order**.
+
 
     </section>
 
@@ -678,10 +959,61 @@ The offers available to a customer might also change over time.
 A booking system that MUST allow a broker to check the current state of events
 and/or facilities depending on what decide they expose from their platform.
 
+### Definition of 'bookable'
+
+An **event** is deemed to be 'bookable' if:
+
+- The **event** has not already occurred
+
+- The `eventStatus` of the **event** does not indicate that it has been
+cancelled or postponed
+
+- The gender of the **customer** taking up the opportunity is compatible with
+the `genderRestriction` of the **event**
+
+- The age of the **customer** taking up the opportunity is compatible with the
+`ageRange` of the **event**
+
+- The `remainingAttendeeCapacity` of the **event** is greater than the number
+of places required
+
+- The `potentialAction` of the **event** contains one or more appropriate
+ReserveAction objects
+
+- There are one or more valid bookable **offers** for the **event**
+
+- The temporary lease on the space in the **event** (defined in
+`Beta:anonymousLeaseDuration`) has not expired before the **payment** is taken
+by the **broker** and the **seller** is notified by the **broker** that payment
+has taken place.
+
+- The **event** contains a deep link to a URL where the user can book the
+**event** independently
+
+The above set of restrictions are at the level of the **event** and the data
+contained within the content of the API returns.
+
+On a **booking system** level, an **event** is 'bookable', mediated by a
+specific **broker**, if that **broker** has machine readable permission to
+access the relevant instance of the Booking API provided by the **booking**
+system via an API key or similar token.
+
+For the purposes of this specification, the **event** is only bookable if the
+data describing the the **event** is published via a **booking system** which
+is compliant with and supports the Open Active Booking API.
+
 ### Checking availability and offers for an event
 
-To check the availability of an event a broker will issue a GET request to the
-URI specified in the `id` of the Event:
+To check the availability of an event a **broker** will issue a GET request to
+the URI specified in the `id` of the Event.
+
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingAttendeeCapacity` property is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+It is the responsibility of **brokers** to ensure that spaces within the event
+are still available before proceeding with booking.
 
         <pre class="example" title="Viewing event availability">
 GET /sessions/9209 HTTP/1.1
@@ -698,7 +1030,7 @@ Content-Length: ...
 
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "@context": "https://openactive.io/ns/oa.jsonld",
   "type": "Event",
   "identifier": 9209,
   "id": "https://example.com/sessions/9209",
@@ -706,17 +1038,20 @@ Content-Length: ...
   "offers": [
     {
       "type": "Offer",
-      "identifier": 2134,
+      "acceptedPaymentMethod": [
+          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+      ],
+      "availabilityEnds": "2018-04-29T12:14:35Z",
+      "availabilityStarts": "2018-04-01T12:14:35Z",
+      "description": "Winger space for Speedball.",
+      "id": "https://example.com/offers/1234",
       "name": "Speedball winger position",
       "price": "33.00",
       "priceCurrency": "GBP",
-      "availabilityStarts": "2014-04-29T12:14:35",
-      "availabilityEnds": "2014-04-29T12:14:35",
-      "description": "Winger space for Speedball."
     }
   ],
   "beta:anonymousLeaseDuration": "PT15M",
-  "eventStatus": "http://schema.org/EventScheduled",
+  "eventStatus": "https://schema.org/EventScheduled",
   "maximumAttendeeCapacity": 30,
   "remainingAttendeeCapacity": 20,
   "startDate": "2018-01-27T11:00:00Z",
@@ -732,7 +1067,27 @@ Content-Length: ...
          title="Clarify use of proposed beta:anonymousLeaseDuration property"
          data-number="25">
         How does this inform lease duration?
+        WIP below
     </div>
+
+
+### Obtaining a lease on a space within an event
+
+**Events** MAY contain a `beta:anonymousLeaseDuration` property. This property
+MUST contain an ISO 8601 formatted duration for the lease.
+
+
+The `beta:anonymousLeaseDuration` property notifies the **broker** about the
+length of time for which a space will be reserved by the **booking system**
+whilst payment for the **event** is taken by the third-party payment system.
+
+This lease is NOT designed as a pause for a shopping cart system which is out
+of scope for v1.0 of this specification.
+
+The **broker** MUST ensure that it has obtained all of the relevant details
+about a **customer** before getting to the point where it attempts to place an
+**order**. The lease is not designed as a pause in the process whilst a
+**customer** is registered by a **broker**.
 
     <div class="issue"
          title="Describe booking workflow for facilities" data-number="26">
@@ -758,48 +1113,92 @@ to initiate the booking workflow.
     <div class="issue"
         title="potentialAction" data-number="5">
         How does a client discover the right endpoint?
+        WIP below
     </div>
+
+### Discovering the order endpoint
+
+**Booking systems** MUST expose an orders endpoint, e.g. /orders to allow
+**brokers** to initiate and enter the **booking** workflow.
+
+To initiate the **booking workflow**, the **booking system** must include a
+`potentialAction` field within each **bookable** **event**. The
+`potentialAction` field MUST contain one or more objects of type ReserveAction.
+
+These ReserveAction objects must contain a `target` field containing an
+EntryPoint object.
+
+The EntryPoint object MUST state the `url` of the orders endpoint, and SHOULD
+contain the `encodingType` and the `httpMethod` which must be POST as a new
+**order** object will be created on successful invocation.
+
+An example is below:
+
+<pre class="example" title="Example of a ReserveAction">
+
+"potentialAction": [
+        {
+          "type": "ReserveAction",
+          "name": "Book",
+          "target": {
+            "type": "EntryPoint",
+            "url": "https://example.com/orders",
+            "encodingType": "application/vnd.openactive.v0.5+json",
+            "httpMethod": "POST"
+          }
+        }
+      ]
+</pre>
+
+
+<div class="issue"
+    title="Explain why brokers are included in order creation"
+    data-number="38">
+    e.g. lease durations, default behaviour, etc
+</div>
+
+
+
+
+<div class="issue"
+    title="Review order pre-condition checks from 0.4"
+    data-number="27">
+    e.g. verifying user, etc.
+    WIP below
+</div>
+
+
+### Pre-conditions for creating an order
+
+Before creating an **order** the **broker** SHOULD have, in some form,
+registered the **customer** and MUST know at least the `email` address of the
+customer and ideally their `givenName` and `familyName` so that minimal
+schema:Person object can be provided as a mandatory part of the POST request to
+the `/orders` endpoint to create an order.
+
 
 ### Creating a new order (`/orders`)
 
-A POST request to the `/orders` collection will ask the server to create an
-new Order. A time limited lease will be created for the events referenced
-in the Order.
+A POST request to the `/orders` endpoint of the **booking system** will result
+in server creating an new **Order**. A time limited lease will be created for
+the **events** referenced in the **Order**.
 
-        <div class="issue"
-            title="Explain why brokers are included in order creation"
-            data-number="38">
-            e.g. lease durations, default behaviour, etc
-        </div>
-
-        <div class="issue"
-            title="Clarify use of proposed beta:anonymousLeaseDuration property"
-            data-number="25">
-            e.g. lease durations, default behaviour, etc
-        </div>
-
-        <div class="issue"
-            title="Review order pre-condition checks from 0.4"
-            data-number="27">
-            e.g. verifying user, etc.
-        </div>
-
-        <div class="issue"
-            title="Can `orderQuantity` have a value other than 1?"
-            data-number="40">
-            Are we supporting booking multiple places in v1?
-        </div>
 
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "@context": "https://openactive.io/ns/oa.jsonld",
   "type": "Order",
-  "customer": "https://example.com/customers/472",
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
   "broker": {
     "type": "Organization",
     "name": "MyFitnessApp",
@@ -808,9 +1207,20 @@ Accept: application/vnd.openactive+json
   "orderedItem": {
     "type": "OrderItem",
     "orderQuantity": 1,
-    "customer": "https://example.com/customers/472",
-    "acceptedOffer": "https://example.com/sessions/9209",
-    "orderedItem": "https://example.com/sessions/9209"
+    "acceptedOffer": {
+      "type": "Offer",
+      "acceptedPaymentMethod": [
+          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+      ],
+      "availabilityEnds": "2018-04-29T12:14:35Z",
+      "availabilityStarts": "2018-04-01T12:14:35Z",
+      "description": "Winger space for Speedball.",
+      "id": "https://example.com/offers/1234",
+      "name": "Speedball winger position",
+      "price": "33.00",
+      "priceCurrency": "GBP",
+    },
+    "orderedItem": "https://example.com/events/452"
   }
 }
         </pre>
@@ -825,6 +1235,13 @@ Content-Type: application/vnd.openactive+json
 Location: /orders/123
         </pre>
 
+
+        <div class="issue"
+                 title="Lease timeout behaviour"
+                 data-number="34">
+                 What happens when a lease times out?
+        </div>
+
 ### Viewing an order (`/orders/{orderId}`)
 
 To get the latest state of an order, perform a GET request on its URI.
@@ -833,42 +1250,47 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/535 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
+Content-Type: application/vnd.openactive.v0.5+json
 Content-Length: ...
 
 {
   "type": "Order",
   "id": "https://example.com/orders/535",
   "identifier": 535,
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
   "orderedItem": [
     {
       "type": "OrderItem",
-      "id": "https://example.com/orders/535/orderitems/987",
-      "identifier": 987,
-      "customer": "https://example.com/customers/472",
-      "orderedItem": {
-        "type": "OrderItem",
-        "orderQuantity": 1,
-        "customer": "https://example.com/customers/472",
-        "acceptedOffer": "https://example.com/sessions/9209",
-        "orderedItem": "https://example.com/sessions/9209"
+      "acceptedOffer": {
+        "type": "Offer",
+        "acceptedPaymentMethod": [
+            "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+        ],
+        "availabilityEnds": "2018-04-29T12:14:35Z",
+        "availabilityStarts": "2018-04-01T12:14:35Z",
+        "description": "Winger space for Speedball.",
+        "id": "https://example.com/offers/1234",
+        "name": "Speedball winger position",
+        "price": "33.00",
+        "priceCurrency": "GBP",
       },
+      "orderedItem": "https://example.com/events/452",
       "amount": {
         "type": "MonetaryAmount",
         "value": "10.00",
         "currency": "GBP"
       },
-      "subTotalPrice": {
-        "type": "MonetaryAmount",
-        "value": "5.00",
-        "currency": "GBP"
-      }
     }
   ],
   "orderStatus": "OrderPaymentDue",
@@ -889,216 +1311,186 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/535/payment",
-        "encodingType": "application/vnd.openactive.v0.4+json",
-        "httpMethod": "POST"
+        "url": "https://example.com/orders/535",
+        "encodingType": "application/vnd.openactive.v0.5+json",
+        "httpMethod": "PATCH"
+      }
+    },
+    {
+      "type": "CancelAction",
+      "name": "Pay",
+      "target": {
+        "type": "EntryPoint",
+        "url": "https://example.com/orders/535",
+        "encodingType": "application/vnd.openactive.v0.5+json",
+        "httpMethod": "PATCH"
       }
     }
   ]
 }
     </pre>
 
-### Deleting an order
+### Deleting an order (`/orders/{orderId}`)
 
-A `DELETE` request to an `Order` URI will delete the order.
+A `DELETE` request to an **Order** URI will delete the order. Deletion may only
+be used in the specific case for cancelling an **order** and the associated
+lease on a space in an **event** if the **customer** no longer wishes to take
+up the opportunity.
 
-### Adding further items to an order
+A `DELETE` request MUST NOT be used to cancel an existing completed **order**
+as part of a refund/cancellation workflow. An appropriate approach for that is
+defined elsewhere.
 
-A POST to the `orderItems` collection of the order will append a new item.
+## Completing an order (`/orders/{orderId}`)
+
+An **order** is completed by the **broker** submitting notification that the
+**customer** has made a payment via a third-party payment gateway.
+
+An **order** is not considered complete until payment has occurred.
+
+**Brokers** MUST update the **booking system** to indicate that **payment** has
+been taken.
+
+Once the **booking system** is content with the payments, it then sets the
+`orderStatus` property of the `Order` to https://schema.org/OrderDelivered and
+returns a representation of the completed **order** with a 200 status code.
+
+
+    <pre class="example" title="Completing an order - request">
+PATCH /orders/123 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.5+json
+
+{
+  "type": "Order",
+  "payments": [
+    {
+      "type": "Payment",
+      "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+      "paymentMethodId": "3204",
+      "totalPaidToProvider": {
+        "type": "MonetaryAmount",
+        "value": "8.00",
+        "currency": "GBP"
+      },
+    }
+  ]
+}
+    </pre>
+
+
+### Leases and the beta:anonymousLeaseDuration property
+
+If the lease expires during **payment**, the **broker** MAY delete the **order**
+(if the **booking system** has not already done so, returning a response with a
+410 status code). The **broker** should then create a new **order** for the
+**customer** in order to generate a new lease. Before creating a new order,
+the **broker** MUST check the **event** and **offers** sto ensure
+that a space still exists within the **event** and that the **offer** selected
+by the **customer** is still valid. If no space exists or the **offer** is now
+invalid, the **customer** should be refunded if payment has been taken.
+
+
+<div class="issue"
+         title="Document order state transitions"
+         data-number="35">
+         How does an order change state?
+         WIP below
+</div>
+
+
+## The state transitions during the order process
+
+1. An **order** object is created by a **broker** invoking the orders endpoint
+with a POST request containing details of the **broker** (represented as a
+schema:Organisation), **customer** (represented as a schema:Person) and details
+of the selected **event** and **offer** as components of a schema:OrderItem
+object.
+The **booking system** returns a representation of the **order** object to the
+**broker** in a response with a 201 status and the URL for the object in the
+`Location` header. The `orderStatus` of the **order** at this point in the flow
+should be https://schema.org/OrderPaymentDue
+2. Concurrently the **booking system** also creates a lease for a space in the
+**event** for the **customer** for the duration specified in the
+`beta:anonymousLeaseDuration` property of the **event**.
+3. The **broker** directs the customer into the flow of the third-party
+**payment** provider.
+4. If the **customer** successfully completes the payment within the duration
+of the lease, the **broker** sends notification of the payment with a PATCH
+request to the specific order end point (/orders/123 in the examples) with
+details of the **payment** in the `paymentMethod` and `paymentMethodId`
+properties. At this point the **order** is deemed to be completed. The
+`orderStatus` property should be currently set to
+`https://schema.org/OrderDelivered` and the `confirmationNumber`
+property set to an appropriate unique value by the **booking system**. At this
+point in the flow, the **order** is deemed to be complete.
+
+If the lease expires before the payment is made, the **order** should either be
+deleted by the **broker** or be deleted by the **booking system** at some point
+after expiry. The `orderStatus` property should be set to
+https://schema.org/OrderCancelled to indicate that the **order** cannot proceed
+to completion.
 
     <div class="issue"
              title="Rescope to include multi-item orders?"
              data-number="28">
              Shopping cart models were originally out of scope.
+             Section relating to adding items to an order has been deleted
     </div>
 
-## Completing an order (`/orders/{orderId}/payments`)
 
-An Order is completed by the client submitting a payment.
 
-    <div class="issue"
-             title="Discovery of /payments endpoint"
-             data-number="29">
-        How does a client find this? E.g. via `potentialAction`?
-    </div>
 
-    <div class="issue"
-             title="Clarify use of `paymentMethod` when completing an order"
-             data-number="30">
-            What does `paymentMethod` refer to?
-    </div>
+## Viewing previously placed orders
 
-    <div class="issue"
-             title="Lease timeout behaviour"
-             data-number="34">
-             What happens when a lease times out?
-    </div>
+A server MUST provide endpoints to allow **brokers** to retrieve information
+about previously placed **orders**.
 
-    <div class="issue"
-             title="Document order state transitions"
-             data-number="35">
-             How does an order change state?
-    </div>
-
-    <div class="issue"
-             title="Are we supporting partial payments?"
-             data-number="41">
-             Can a broker make multiple payments?
-    </div>
-
-    <div class="issue"
-             title="POSTing to /order rather than sub-resources"
-             data-number="16">
-             Should we post to order instead?
-    </div>
-
-An order is not considered complete until payment has occurred.
-
-Brokers MUST update the booking system to indicate that payment has been taken.
-
-Once the seller is content with the payments, it then sets the `orderStatus`
-property of the `Order` to `OrderDelivered`.
-
-    <pre class="example" title="Completing an order - request">
-POST /orders/123/payments HTTP/1.1
-Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
-
-{
-  "type": "Payment",
-  "paymentMethod": "https://www.example.com/customers/472/paymentmethods/9765",
-  "totalPaidToProvider": {
-    "type": "MonetaryAmount",
-    "value": "8.00",
-    "currency": "GBP"
-  },
-  "totalPaidByCustomer": {
-    "type": "MonetaryAmount",
-    "value": "5.00",
-    "currency": "GBP"
-  }
-}
-    </pre>
-
-## Viewing customer orders and reservations
-
-A server SHOULD provide endpoints to allow clients to retrieve information
-about previously placed orders and reservations.
 
     <div class="issue"
             title="How and when are customers and reservations created?"
             data-number="31">
         The creation of customers is not described yet
+        WIP below
     </div>
 
-### Viewing customer orders (`/customers/{customerId}/orders`)
+## Creation of customers on the booking system
 
-A GET request to the orders collection associated with a customer will return
-a paged list of orders.
+In this current iteration of the Booking API specification, the programmatic
+creation of **customers** on the **booking system** by the **broker** is
+considered to be out of scope.
 
-    <div class="issue"
-             title="List endpoints should return JSON-LD"
-             data-number="7">
-        Need to update this to ensure spec is consistent
-    </div>
+## Deletion of personal data of the customer if the order is not
+completed
 
-        <pre class="example" title="Viewing customer orders - request">
-GET /customers/472/orders HTTP/1.1
-Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
-        </pre>
-
-        <pre class="example" title="Viewing customer orders - response">
-HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
-Content-Length: ...
-
-
-{
-  "links": {
-    "self": "https://example.com/customers/472/orders",
-    "next": "https://example.com/customers/472/orders?next=9210",
-    "last": "https://example.com/customers/472/orders?next=20000"
-  },
-  "data": [
-    {
-      "type": "Order",
-      "id": "https://example.com/orders/535",
-      ...
-    },
-    ...
-  ]
-}
-        </pre>
-
-### Viewing customer reservations (`/customers/{customerId}/reservations`)
-
-A GET request to the reservations collection associated with a customer will return
-a paged list of reservations.
-
-    <div class="issue"
-             title="List endpoints should return JSON-LD"
-             data-number="7">
-        Need to update this to ensure spec is consistent
-    </div>
-
-    <pre class="example" title="Viewing customer reservations - request">
-GET /customers/472/reservations HTTP/1.1
-Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
-    </pre>
-
-    <pre class="example" title="Viewing customer reservations - response">
-HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
-Content-Length: ...
-
-
-{
-  "links": {
-    "self": "https://example.com/customers/472/reservations",
-    "next": "https://example.com/customers/472/reservations?next=9210",
-    "last": "https://example.com/customers/472/reservations?next=20000"
-  },
-  "data": [
-    {
-      "@context": "https://www.openactive.io/ns/oa.jsonld",
-      "type": "EventReservation",
-      "id": "https://www.example.com/customers/472/reservations/9765",
-      "underName": "https://example.com/customers/472",
-      "reservationStatus": "http://schema.org/ReservationConfirmed",
-      "description": "Event successfully booked.",
-      "cancelUntil": "2018-03-27T11:18:55.181Z",
-      "reservationFor": {
-        "type": "Event",
-        "identifier": 9209,
-        "id": "https://example.com/sessions/9209"
-        ...
-      },
-      ...
-    }
-    ...
-  ]
-}
-    </pre>
-
+If an **order** is not completed, the **booking system** SHOULD delete the
+personal information of the **customer** provided to it as part of the **order**
+creation process.
 
 
 ## Events after order completion: confirmations and refunds
 
-Both the broker and booking system may need to take further actions after
+Both the **broker** and **booking system** may need to take further actions after
 completing an order. This section describes some potential interactions.
 
-    <div class="issue"
-             title="Document how and when confirmation happens"
-             data-number="32">
-        Should a broker be informed or be able to check when confirmation has happened?
-    </div>
+<div class="issue"
+         title="Document how and when confirmation happens"
+         data-number="32">
+    Should a broker be informed or be able to check when confirmation has happened?
+    WIP below
+</div>
+
+### Supplying a confirmation to the customer
+
+The **broker** SHOULD provide the **customer** with confirmation of a successful
+payment having been made through the third-party system and that the **order**
+has been completed successfully. The **broker** will have access to a completed
+**order** which will contain a `confirmationCode` property.
+
+The **booking system** may also provide the **customer** with a confirmation that
+the space at the **event** has been booked on their behalf.
+
 
     <div class="issue"
              title="Document any responsibilities and interactions around refunds"
@@ -1109,10 +1501,11 @@ completing an order. This section describes some potential interactions.
     </section>
 
     <section class='appendix informative'>
+
 # Acknowledgements
 
 The editors thank
-[all members](http://www.w3.org/community/openactive/participants) of the
+[all members](https://www.w3.org/community/openactive/participants) of the
 OpenActive Community Group for their contributions.
     </section>
 </body>
