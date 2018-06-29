@@ -912,6 +912,8 @@ subsequent requests to an **order** should only be initiated by the **broker**
 which created the **order**.
 
 
+
+
     </section>
 
     <section class="normative">
@@ -1021,7 +1023,6 @@ Content-Length: ...
       "priceCurrency": "GBP",
     }
   ],
-  "beta:anonymousLeaseDuration": "PT15M",
   "eventStatus": "https://schema.org/EventScheduled",
   "maximumAttendeeCapacity": 30,
   "remainingAttendeeCapacity": 20,
@@ -1037,13 +1038,20 @@ Content-Length: ...
 
 ### Obtaining a lease on a space within an event
 
-**Events** MAY contain a `beta:anonymousLeaseDuration` property. This property
-MUST contain an ISO 8601 formatted duration for the lease.
+**orders** SHOULD contain a `beta:anonymousLeaseDuration` property. This
+property MUST contain an ISO 8601 formatted duration for the lease. The lease
+duration may also be advertised somewhere else to make it clear in advance,
+e.g. in docs/setup config, or as part of a `potentialAction` property.
 
+(Note: In previous iterations of the Booking API specification, the lease was
+a property of an event. This has now been depracated.)
 
 The `beta:anonymousLeaseDuration` property notifies the **broker** about the
 length of time for which a space will be reserved by the **booking system**
 whilst payment for the **event** is taken by the third-party payment system.
+
+The default suggested lease duration is 15 minutes, but it is up to each
+**booking plaftorm** to define and advertise their own lease duration.
 
 This lease is NOT designed as a pause for a shopping cart system which is out
 of scope for v1.0 of this specification.
@@ -1055,14 +1063,6 @@ about a **customer** before getting to the point where it attempts to place an
 
 The client may then present the updated availability and suitable offers to
 the customer.
-
-    <div class="issue"
-            title="Define processing model for selecting an Order"
-            data-number="13">
-       How does a client select between multiple orders?
-    </div>
-
-
 
 ## Creating and updating orders
 
