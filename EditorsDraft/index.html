@@ -504,9 +504,9 @@ the business model and agreements in place between the broker and booking system
 ## URLs used in the description of the API
 
 The following sections contain URIs which are for guidance, and are used as
-examples only. For example, /event/452 is used to represent the canonical
+examples only. For example, /events/452 is used to represent the canonical
 reference to the web representation of an Event with an id of 452. The URI could
-alternatively be /session/452 if session is the term used to describe the
+alternatively be /sessions/452 if session is the term used to describe the
 specific type of Event in an implementation of this API and associated APIs such
 as RDPE in an Open Active compliant **booking system**.
 
@@ -994,7 +994,7 @@ are still available before proceeding with booking.
 
 
         <pre class="example" title="Viewing event availability">
-GET /sessions/9209 HTTP/1.1
+GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive+json
@@ -1010,8 +1010,8 @@ Content-Length: ...
 {
   "@context": "https://openactive.io/ns/oa.jsonld",
   "type": "Event",
-  "identifier": 9209,
-  "id": "https://example.com/sessions/9209",
+  "identifier": 452,
+  "id": "https://example.com/events/452",
   "name": "Speedball",
   "offers": [
     {
