@@ -42,6 +42,9 @@
                 url: "https://nickevans.me/",
                 company: "Open Data Institute",
                 companyURL: "https://theodi.org"
+            }, {
+                name: "Chris Thorpe",
+                url: "https://github.com/drchristhorpe"
             }],
 
             otherLinks: [{
@@ -53,6 +56,9 @@
                 key: "Issues",
                 value: "Report an issue",
                 href: "https://github.com/openactive/open-booking-api/issues/"
+            }, {
+                key: "Version",
+                value: "0.5"
             }],
 
             logos: [{
@@ -246,11 +252,12 @@ and should be made via
 pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
-        <div class="warning">
-This document represents an early draft of the planned API design. It is highly
-likely to change completely between now and the first published version. These
-early drafts are intended to help developers provide feedback by developing
-early proof-of-concept implementations.
+        <div class="note">
+This document represents an early Editors Draft of the planned API design. It is 
+likely to change between now and its final version. These
+early drafts are intended to help developers provide that feedback by developing 
+proof-of-concept implementations. We encourage developers to explore this API and 
+contribute to the development of the specification.
         </div>
 
     </section>
@@ -365,16 +372,16 @@ The following typographic conventions are used in this specification:
 
 
         <dl class="typography">
-            <dt>`markup`</dt>
+            <dt><code>markup</code></dt>
             <dd>Markup (elements, attributes, properties), machine processable
                 values (string, characters, media types), property name, or a
                 file name is in a monospace font.</dd>
-            <dt>__*definition*__</dt>
+            <dt><strong>definition</strong></dt>
             <dd>A definition of a term, to be used elsewhere in this or other
                 specifications, is in bold and italics.</dd>
-            <dt>[hyperlink]()</dt>
+            <dt><a href="">hyperlink</a></dt>
             <dd>A hyperlink is underlined and in blue.</dd>
-            <dt>[[reference]]()</dt>
+            <dt>[[reference]]</dt>
             <dd>A document reference (normative or informative) is enclosed in
                 square brackets and links to the references section.</dd>
         </dl>
@@ -397,57 +404,57 @@ The content of the example is in monospace font and may be syntax colored.
 # Key Concepts
 
         <dl class="typography">
-            <dt>__*booking system*__</dt>
+            <dt><strong>booking system</strong></dt>
             <dd>The platform or service that provides a server-side
             implementation of this API.
             </dd>
-            <dt>__*broker*__</dt>
+            <dt><strong>broker</strong></dt>
             <dd>The organisation or developer providing an application that
             allows customers to make bookings. Those applications will be
             clients of the API defined in this specification</dd>
-            <dt>__*confirmation*__</dt>
+            <dt><strong>confirmation</strong></dt>
             <dd>The process of contacting a customer following the placement
             of a successful order, e.g. to provide tickets, attendance details,
             etc. This specification does not define this process</dd>
-            <dt>__*customer*__</dt>
+            <dt><strong>customer</strong></dt>
             <dd>The user who places a booking using an application provided by
             a broker.</dd>
-            <dt>__*event*__</dt>
+            <dt><strong>event</strong></dt>
             <dd>An <a href="https://openactive.io/modelling-opportunity-data/#events">Event</a>
                 is an opportunity to take part in a physical activity. Events
                 take place at a specific location and at an agreed date
                 and time.</dd>
-            <dt>__*facility*__</dt>
+            <dt><strong>facility</strong></dt>
             <dd>A sporting facility, e.g. a squash court, table tennis table or
             football pitch.</dd>
-            <dt>__*lease*__</dt>
+            <dt><strong>lease</strong></dt>
             <dd>A temporary reservation of a space at an event or for the use
             of a facility. Leases provide a limited time window during which
             a customer can place a booking and still be guaranteed a place at
             an event (or use of the facility).</dd>
-            <dt>__*offer*__</dt>
+            <dt><strong>offer</strong></dt>
             <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
-            <dt>__*order*__</dt>
+            <dt><strong>order</strong></dt>
             <dd>Describes the in-process or completed booking. An order may be
             made up of several order items. An order results in a customer
             having a confirmed reservation.</dd>
-            <dt>__*payment*__</dt>
+            <dt><strong>payment</strong></dt>
             <dd>The process of taking funds from a customer in order to place
             an order. Payment is managed between the customer and the broker.</dd>
-            <dt>__*reconciliation*__</dt>
+            <dt><strong>reconciliation</strong></dt>
             <dd>The process by which brokers and booking systems confirm that
             payment(s) have been taken on behalf of customers, to ensure that
             money is appropriately exchanged between the brokers, booking systems
             and sellers. This specification does not define this process.</dd>
-            <dt>__*refund*__</dt>
+            <dt><strong>refund</strong></dt>
             <dd>The process of returning funds to a customer, e.g. if an order
             is cancelled. This specification does not define this process.</dd>
-            <dt>__*reservation*__</dt>
+            <dt><strong>reservation</strong></dt>
             <dd>A reservation for a customer to attend an event or for the use
             of a facility. A reservation is created for every item in an order.</dd>
-            <dt>__*seller*__</dt>
+            <dt><strong>seller</strong></dt>
             <dd>The organisation providing access to events or use of facilities
             via a booking system. E.g. a leisure provider running yoga classes.</dd>
         </dl>
