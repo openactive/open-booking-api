@@ -551,7 +551,7 @@ the created **Order** object.
 4. If there is a price for the **offer**, the **broker** takes payment from the
 **customer** via a third party payment provider.
 5. The **broker** notifies the **seller** of the payment by making a PATCH
-request to the specific order endpoint (/orders/789 in the example) of the
+request to the specific order endpoint (/orders/123 in the example) of the
 **booking system**. This should include details of the `paymentMethod` and the
 `paymentMethodId` (commonly the last four digits of the card which can be used
 by the **seller** to identify the **customer**). The **broker** should store any
@@ -582,7 +582,7 @@ below:
 provided by the third-party payment provider.
 
 2. The **broker** notifies the **booking system** of the cancellation by making
-a patch request to the specific order endpoint (/orders/789 in the example) of
+a patch request to the specific order endpoint (/orders/123 in the example) of
 the **booking system**. The PATCH request body should contain an updated
 order item in the `orderedItem` property, with the `orderItemStatus` set to
 https://schema.org/OrderCancelled to indicate that the ordered item in
@@ -597,7 +597,7 @@ deemed to be cancelled.
 
 If the **customer** no longer wants to proceed with a particular **offer**, the
 lease for the space in the **event** and the **order** may be cancelled by
-issuing a DELETE request to the specific order endpoint (/orders/789 in the
+issuing a DELETE request to the specific order endpoint (/orders/123 in the
 example) of the **booking system**. The **booking system** SHOULD release the
 space in the **event** and delete the underlying resource. Any subsequent
 requests to this resource should result in a 404 response.
@@ -997,13 +997,13 @@ are still available before proceeding with booking.
 GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive+json
+Accept: application/vnd.openactive.v0.5+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive+json
+Content-Type: application/vnd.openactive.v0.5+json
 Content-Length: ...
 
 
@@ -1292,7 +1292,7 @@ Location: /orders/123
 To get the latest state of an order, perform a GET request on its URI.
 
     <pre class="example" title="Viewing an order - request">
-GET /orders/535 HTTP/1.1
+GET /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v0.5+json
@@ -1306,8 +1306,8 @@ Content-Length: ...
 
 {
   "type": "Order",
-  "id": "https://example.com/orders/535",
-  "identifier": 535,
+  "id": "https://example.com/orders/123",
+  "identifier": 123,
   "customer": {
     "type": "Person",
     "email": "geoffcapes@example.com",
@@ -1338,7 +1338,7 @@ Content-Length: ...
       },
     }
   ],
-  "orderStatus": "OrderPaymentDue",
+  "orderStatus": "https://schema.org/OrderPaymentDue",
   "paymentDueDate": "2018-02-20T11:00:00Z",
   "orderDate": "2018-02-20T11:00:00Z",
   "partOfInvoice": {
@@ -1356,7 +1356,7 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/535",
+        "url": "https://example.com/orders/123",
         "encodingType": "application/vnd.openactive.v0.5+json",
         "httpMethod": "PATCH"
       }
@@ -1366,7 +1366,7 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/535",
+        "url": "https://example.com/orders/123",
         "encodingType": "application/vnd.openactive.v0.5+json",
         "httpMethod": "PATCH"
       }
@@ -1418,10 +1418,86 @@ Accept: application/vnd.openactive.v0.5+json
         "type": "MonetaryAmount",
         "value": "8.00",
         "currency": "GBP"
-      },
+      }
     }
   ]
 }
+
+</pre>
+
+<pre class="example" title="Completing an order - response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v0.5+json
+Content-Length: ...
+
+{
+	"type": "Order",
+	"id": "https://example.com/orders/535",
+	"identifier": 535,
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"orderedItem": [{
+		"type": "OrderItem",
+		"acceptedOffer": {
+			"type": "Offer",
+			"acceptedPaymentMethod": [
+				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+			],
+			"availabilityEnds": "2018-04-29T12:14:35Z",
+			"availabilityStarts": "2018-04-01T12:14:35Z",
+			"description": "Winger space for Speedball.",
+			"id": "https://example.com/offers/1234",
+			"name": "Speedball winger position",
+			"price": "33.00",
+			"priceCurrency": "GBP"
+		},
+		"orderedItem": "https://example.com/events/452",
+		"amount": {
+			"type": "MonetaryAmount",
+			"value": "10.00",
+			"currency": "GBP"
+		}
+	}],
+	"orderStatus": "https://schema.org/OrderDelivered",
+	"paymentDueDate": "2018-02-20T11:00:00Z",
+	"orderDate": "2018-02-20T11:00:00Z",
+	"partOfInvoice": {
+		"type": "Invoice",
+		"paymentStatus": "PaymentDue",
+		"totalPaymentDue": {
+			"type": "MonetaryAmount",
+			"value": "10.00",
+			"currency": "GBP"
+		}
+	},
+	"payments": [{
+		"type": "Payment",
+		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+		"paymentMethodId": "3204",
+		"totalPaidToProvider": {
+			"type": "MonetaryAmount",
+			"value": "8.00",
+			"currency": "GBP"
+		},
+		"confirmationNumber": "T12371284"
+	}],
+	"potentialAction": [{
+		"type": "CancelAction",
+		"name": "Pay",
+		"target": {
+			"type": "EntryPoint",
+			"url": "https://example.com/orders/535",
+			"encodingType": "application/vnd.openactive.v0.5+json",
+			"httpMethod": "PATCH"
+		}
+	}]
+}
+
     </pre>
 
 
