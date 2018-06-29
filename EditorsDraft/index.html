@@ -985,6 +985,8 @@ from in-progress **orders**.
 It is the responsibility of **brokers** to ensure that spaces within the event
 are still available before proceeding with booking.
 
+
+
         <pre class="example" title="Viewing event availability">
 GET /sessions/9209 HTTP/1.1
 Host: example.com
@@ -1030,6 +1032,37 @@ Content-Length: ...
     ...
   }
 }
+
+The **broker** MUST assemble a set of all applicable **offers** for an **event**
+from the information supplied by the **booking system**.
+
+In the case of the **event** having no `subEvent` the set of all applicable
+**offers** is simply the array of **offers** contained within the `offers`
+property.
+
+In the case of an **event** containing sub-events within the `subEvent` property
+the set of all applicable offers should be compiled from the **offers** from the
+sub-event selected by the customer, augmented with any additional different
+offers contained in the parent super-event.
+
+If the sub-event selected by the **customer** has no **offers** the set of all
+applicable offers will be compiled from the **offers** contained withinin the
+super-event.
+
+The **broker** should then filter this set to provide a set of current **offers**
+which apply to the **customer**. This specification provides no guidance as to
+how the filtering should be performed.
+
+The **broker** SHOULD however show all applicable **offers** to a customer,
+including information on pricing restrictions, unless the **customer** has only
+requested a subset in some form of preferences (e.g. only show adult classes
+and offers).
+
+The **customer** selects one of these **offers** and when all pre-conditions
+have been met, the **broker** enters the **order** creation workflow on behalf
+of the customer.
+
+
         </pre>
 
 
