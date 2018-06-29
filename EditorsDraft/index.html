@@ -1152,37 +1152,36 @@ Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v0.5+json
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Order",
-  "customer": {
-    "type": "Person",
-    "email": "geoffcapes@example.com",
-    "givenName": "Geoff",
-    "familyName": "Capes"
-  },
-  "broker": {
-    "type": "Organization",
-    "name": "MyFitnessApp",
-    "url": "https://myfitnessapp.example.com"
-  },
-  "orderedItem": {
-    "type": "OrderItem",
-    "orderQuantity": 1,
-    "acceptedOffer": {
-      "type": "Offer",
-      "acceptedPaymentMethod": [
-          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-      ],
-      "availabilityEnds": "2018-04-29T12:14:35Z",
-      "availabilityStarts": "2018-04-01T12:14:35Z",
-      "description": "Winger space for Speedball.",
-      "id": "https://example.com/offers/1234",
-      "name": "Speedball winger position",
-      "price": "33.00",
-      "priceCurrency": "GBP",
-    },
-    "orderedItem": "https://example.com/events/452"
-  }
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"acceptedOffer": {
+			"type": "Offer",
+			"acceptedPaymentMethod": [
+				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+			],
+			"availabilityEnds": "2018-04-29T12:14:35Z",
+			"availabilityStarts": "2018-04-01T12:14:35Z",
+			"description": "Winger space for Speedball.",
+			"id": "https://example.com/offers/1234",
+			"name": "Speedball winger position",
+			"price": "33.00",
+			"priceCurrency": "GBP"
+		}
+	}]
 }
         </pre>
 
@@ -1195,7 +1194,53 @@ Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v0.5+json
 Location: /orders/123
 
-{}
+{
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+  "id": "https://example.com/orders/123",
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+  "beta:anonymousLeaseDuration": "PT15M",
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+  "orderStatus": "https://schema.org/OrderPaymentDue",
+  "potentialAction": [
+    {
+      "type": "PayAction",
+      "name": "Pay",
+      "target": {
+        "type": "EntryPoint",
+        "url": "https://example.com/orders/123",
+        "encodingType": "application/vnd.openactive.v0.5+json",
+        "httpMethod": "PATCH"
+      }
+    }
+  ],
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"acceptedOffer": {
+			"type": "Offer",
+			"acceptedPaymentMethod": [
+				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+			],
+			"availabilityEnds": "2018-04-29T12:14:35Z",
+			"availabilityStarts": "2018-04-01T12:14:35Z",
+			"description": "Winger space for Speedball.",
+			"id": "https://example.com/offers/1234",
+			"name": "Speedball winger position",
+			"price": "33.00",
+			"priceCurrency": "GBP"
+		}
+	}]
+}
 </pre>
 
 
