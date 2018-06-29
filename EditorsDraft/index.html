@@ -914,7 +914,7 @@ which created the **order**.
 
     </section>
 
-    <section>
+    <section class="normative">
 # Operations
 
 ## Checking availability and offers
@@ -1412,7 +1412,46 @@ creation process.
 
 </section>
 
-<section>
+<section class="normative">
+
+# Future versions of this API
+
+Version 0.5 of the API is a stepping stone towards the 1.0 specification of the
+Booking API. It is not yet feature complete and there are some requirements
+which are not satisfied by version 0.5.
+
+Some of the patterns within version 0.5, for example the PATCHing of an order
+resource to provide a payment and usng PATCH to change the status of an `orderItem` to
+cancel an order provide the groundwork for known requirements such as multiple
+order items (shopping carts), cancellation of individual order items and also
+multipart payments.
+
+Both `orderItems` and `payments` are modelled as collections to support
+extension of the version 0.5 specification towards multipart orders and
+payments without breaking changes in the Order model for subsequent versions.
+
+The new models for Payment and for Error enhance the Open Active model
+specification to make it more transactional when used as part of the Booking
+API.
+
+The currently known requirements not satisfied in version 0.5 are:
+
+- multiple part orders
+- supporting multiple payments
+- customer creation
+- managing of reservations
+- support for member lookups
+
+We have not yet decided what the priorities are, or whether all of these
+requirements are in scope for version 1.0 and would encourage people to shape
+future iterations of the specification by becoming involved in the communities
+associated with Open Active and the open specification.
+
+
+
+</section>
+
+<section class="normative">
 
 # New Open Active models defined in the 0.5 Booking API specification
 
@@ -1460,85 +1499,50 @@ creation process.
 <td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></td>
 <td>Used by technical support for diagnostics purposes.</td>
 </tr>
+</tbody>
 <table>
 
 ## Payment
 
 <table>
-<thead>
-<tr><th>Property</th>
-<th>Status</th>
-<th>Notes</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>paymentMethod</code></td>
-<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
-<td>A URI providing an enumeration value for the type of payment method used.</td>
-</tr>
-<tr>
-<td><code>paymentMethodId</code></td>
-<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
-<td>A string identifier for the method of payment used (e.g. the last 4 digits of the credit card).</td>
-</tr>
-<tr>
-<td><code>totalPaidToProvider</code></td>
-<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
-<td>A schema:MonetaryAmount object deining the total amount paid.</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>paymentMethod</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+      <td>A URI providing an enumeration value for the type of payment method used.</td>
+    </tr>
+    <tr>
+      <td><code>paymentMethodId</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+      <td>A string identifier for the method of payment used (e.g. the last 4 digits of the credit card).</td>
+    </tr>
+    <tr>
+      <td><code>totalPaidToProvider</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+      <td>A schema:MonetaryAmount object deining the total amount paid.</td>
+    </tr>
+  </tbody>
 <table>
 
-    </section>
-
-    <section>
-
-# Future versions of this API
-
-Version 0.5 of the API is a stepping stone towards the 1.0 specification of the
-Booking API. It is not yet feature complete and there are some requirements
-which are not satisfied by version 0.5.
-
-Some of the patterns within version 0.5, for example the PATCHing of an order
-resource to provide a payment and usng PATCH to change the status of an `orderItem` to
-cancel an order provide the groundwork for known requirements such as multiple
-order items (shopping carts), cancellation of individual order items and also
-multipart payments.
-
-Both `orderItems` and `payments` are modelled as collections to support
-extension of the version 0.5 specification towards multipart orders and
-payments without breaking changes in the Order model for subsequent versions.
-
-The new models for Payment and for Error enhance the Open Active model
-specification to make it more transactional when used as part of the Booking
-API.
-
-The currently known requirements not satisfied in version 0.5 are:
-
-- multiple part orders
-- supporting multiple payments
-- customer creation
-- managing of reservations
-- support for member lookups
-
-We have not yet decided what the priorities are, or whether all of these
-requirements are in scope for version 1.0 and would encourage people to shape
-future iterations of the specification by becoming involved in the communities
-associated with Open Active and the open specification.
+  </section>
 
 
-
-    </section>
-
-
-    <section class='appendix informative'>
+  <section class='appendix informative'>
 
 # Acknowledgements
 
 The editors thank
 [all members](https://www.w3.org/community/openactive/participants) of the
 OpenActive Community Group for their contributions.
-    </section>
+</section>
+
 </body>
 
 </html>
