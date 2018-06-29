@@ -1511,12 +1511,17 @@ Content-Length: ...
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
-410 status code). The **broker** should then create a new **order** for the
-**customer** in order to generate a new lease. Before creating a new order,
-the **broker** MUST check the **event** and **offers** sto ensure
+410 status code). 
+
+The **broker** should then create a new **order** for the
+**customer** in order to generate a new lease. 
+
+Before creating a new order, the **broker** MUST check the **event** and **offers** to ensure
 that a space still exists within the **event** and that the **offer** selected
-by the **customer** is still valid. If no space exists or the **offer** is now
-invalid, the **customer** should be refunded if payment has been taken.
+by the **customer** is still valid. 
+
+If no space exists or the **offer** is now invalid, the **customer** 
+should be refunded if payment has been taken.
 
 
 ## The state transitions during the order process
@@ -1566,8 +1571,10 @@ has been completed successfully. The **broker** will have access to a completed
 The **booking system** may also provide the **customer** with a confirmation that
 the space at the **event** has been booked on their behalf.
 
-### Refunding a customer and canelling an order
+### Refunding a customer and cancelling an order
 
+<div class="issue" title="Cancelling an order needs documenting" data-number="47">
+</div>
 
 ## Customers
 
