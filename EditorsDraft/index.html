@@ -709,7 +709,7 @@ Error responses MUST be served using an appropriate HTTP 4XX status code.
 All error responses from this API MUST conform to [[!RFC7807]], and
 have media type of `application/problem+json`.
 
-        <pre class="example" title="Error response format">
+<pre class="example" title="Error response format">
         {
           "type": "string",
           "title": "string",
@@ -717,7 +717,7 @@ have media type of `application/problem+json`.
           "instance": "string",
           "requestId": "string"
         }
-        </pre>
+</pre>
 
 * `type` – a URI reference [[!RFC3986]] that identifies the problem type. This
 specification encourages that, when dereferenced, it provide human-readable
@@ -1400,8 +1400,79 @@ If an **order** is not completed, the **booking system** SHOULD delete all
 personal information of the **customer** provided to it as part of the **order**
 creation process.
 
+</section>
 
+<section>
 
+# New Open Active models defined in the 0.5 Booking API specification
+
+## Error
+
+<table>
+<thead>
+<tr><th>Property</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>errorType</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+<td>A URI providing an enumeration value for the type of error.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+<td>A human readable reason for the error.</td>
+</tr>
+<tr>
+<td><code>detail</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></td>
+<td>A human readable description of the error.</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></td>
+<td>The requested URL.</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></td>
+<td>The method of the request (e.g. GET).</td>
+</tr>
+<tr>
+<td><code>invalid-params</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></td>
+<td>An array of invalid parameters, if appropriate.</td>
+</tr>
+<table>
+
+## Payment
+
+<table>
+<thead>
+<tr><th>Property</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>paymentMethod</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+<td>A URI providing an enumeration value for the type of payment method used.</td>
+</tr>
+<tr>
+<td><code>paymentMethodId</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+<td>A string identifier for the method of payment used (e.g. the last 4 digits of the credit card).</td>
+</tr>
+<tr>
+<td><code>totalPaidToProvider</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></td>
+<td>A schema:MonetaryAmount object deining the total amount paid.</td>
+</tr>
+</tbody>
+<table>
 
     </section>
 
