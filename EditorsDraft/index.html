@@ -933,16 +933,11 @@ and/or facilities depending on what decide they expose from their platform.
 
 An **event** is deemed to be 'bookable' if:
 
-- The **event** has not already occurred
+- The **event** has not already occurred, i.e. the `endDate` of the **event**
+has not been exceeded
 
 - The `eventStatus` of the **event** does not indicate that it has been
 cancelled or postponed
-
-- The gender of the **customer** taking up the opportunity is compatible with
-the `genderRestriction` of the **event**
-
-- The age of the **customer** taking up the opportunity is compatible with the
-`ageRange` of the **event**
 
 - The `remainingAttendeeCapacity` of the **event** is greater than the number
 of places required
@@ -957,8 +952,18 @@ ReserveAction objects
 by the **broker** and the **seller** is notified by the **broker** that payment
 has taken place.
 
-- The **event** contains a deep link to a URL where the user can book the
-**event** independently
+The **customer** may be ineligeable to attend a 'bookable' **event**, but may
+book a space for someone else (e.g. a child) if:
+
+- The gender of the **customer** taking up the opportunity is incompatible with
+the `genderRestriction` of the **event** but the attendee is compatible
+
+- The age of the **customer** taking up the opportunity is incompatible with the
+`ageRange` of the **event** but the attendee is compatible
+
+The **event** may also be deemed to be bookable if the **event** contains a deep
+link to a URL where the user can book the **event** independently, however
+this is out of scope for this API
 
 The above set of restrictions are at the level of the **event** and the data
 contained within the content of the API returns.
@@ -971,6 +976,7 @@ system via an API key or similar token.
 For the purposes of this specification, the **event** is only bookable if the
 data describing the the **event** is published via a **booking system** which
 is compliant with and supports the Open Active Booking API.
+
 
 ### Checking availability and offers for an event
 
