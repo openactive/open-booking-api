@@ -1136,7 +1136,13 @@ authentication which should be performed outside of the JSON body of the
 request. No authentication tokens should be present within the `broker` property
 of the submitted JSON.
 
-The `broker` property should be a well formed schema:Organisation object. 
+The `broker` property should be a well formed schema:Organisation object.
+
+In the situation where This allows a middleware is used to handle access control
+for various **brokers**, independently of API key provisioning at the
+**booking system** (which in some systems is a lengthly and time-consuming
+process), the `broker` property should contain the details of the end-user
+**broker** rather than the middleware.
 
 
         <pre class="example" title="Creating an order - request">
