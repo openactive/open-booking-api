@@ -1491,6 +1491,46 @@ creation process.
 
     </section>
 
+    <section>
+
+# Future versions of this API
+
+Version 0.5 of the API is a stepping stone towards the 1.0 specification of the
+Booking API. It is not yet feature complete and there are some requirements
+which are not satisfied by version 0.5.
+
+Some of the patterns within version 0.5, for example the PATCHing of an order
+resource to provide a payment and usng PATCH to change the status of an `orderItem` to
+cancel an order provide the groundwork for known requirements such as multiple
+order items (shopping carts), cancellation of individual order items and also
+multipart payments.
+
+Both `orderItems` and `payments` are modelled as collections to support
+extension of the version 0.5 specification towards multipart orders and
+payments without breaking changes in the Order model for subsequent versions.
+
+The new models for Payment and for Error enhance the Open Active model
+specification to make it more transactional when used as part of the Booking
+API.
+
+The currently known requirements not satisfied in version 0.5 are:
+
+- multiple part orders
+- supporting multiple payments
+- customer creation
+- managing of reservations
+- support for member lookups
+
+We have not yet decided what the priorities are, or whether all of these
+requirements are in scope for version 1.0 and would encourage people to shape
+future iterations of the specification by becoming involved in the communities
+associated with Open Active and the open specification.
+
+
+
+    </section>
+
+
     <section class='appendix informative'>
 
 # Acknowledgements
