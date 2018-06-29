@@ -954,11 +954,11 @@ ReserveAction objects
 - There are one or more valid bookable **offers** for the **event**
 
 - The temporary lease on the space in the **event** (defined in
-`Beta:anonymousLeaseDuration`) has not expired before the **payment** is taken
+`orderLeaseDuration`) has not expired before the **payment** is taken
 by the **broker** and the **seller** is notified by the **broker** that payment
 has taken place.
 
-The **customer** may be ineligeable to attend a 'bookable' **event**, but may
+The **customer** may be ineligible to attend a 'bookable' **event**, but may
 book a space for someone else (e.g. a child) if:
 
 - The gender of the **customer** taking up the opportunity is incompatible with
@@ -1050,7 +1050,7 @@ Content-Length: ...
 The **broker** MUST assemble a set of all applicable **offers** for an **event**
 from the information supplied by the **booking system**. An applicable **offer**
 is an **offer** which is available for an **event** which is bookable and for
-which the **customer** is eligeable.
+which the **customer** is eligible.
 
 In the case of the **event** having no `subEvent` the set of all applicable
 **offers** is simply the array of **offers** contained within the `offers`
@@ -1084,7 +1084,7 @@ of the customer.
 
 ### Obtaining a lease on a space within an event
 
-**orders** SHOULD contain a `beta:anonymousLeaseDuration` property. This
+**orders** SHOULD contain a `orderLeaseDuration` property. This
 property MUST contain an ISO 8601 formatted duration for the lease. The lease
 duration may also be advertised somewhere else to make it clear in advance,
 e.g. in docs/setup config, or as part of a `potentialAction` property.
@@ -1092,7 +1092,7 @@ e.g. in docs/setup config, or as part of a `potentialAction` property.
 (Note: In previous iterations of the Booking API specification, the lease was
 a property of an event. This has now been depracated.)
 
-The `beta:anonymousLeaseDuration` property notifies the **broker** about the
+The `orderLeaseDuration` property notifies the **broker** about the
 length of time for which a space will be reserved by the **booking system**
 whilst payment for the **event** is taken by the third-party payment system.
 
@@ -1253,7 +1253,7 @@ Location: /orders/123
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
-  "beta:anonymousLeaseDuration": "PT15M",
+  "orderLeaseDuration": "PT15M",
 	"broker": {
 		"type": "Organization",
 		"name": "MyFitnessApp",
@@ -1507,7 +1507,7 @@ Content-Length: ...
     </pre>
 
 
-## Leases and the beta:anonymousLeaseDuration property
+## Leases and the orderLeaseDuration property
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
@@ -1532,7 +1532,7 @@ The **booking system** returns a representation of the **order** object to the
 should be https://schema.org/OrderPaymentDue
 2. Concurrently the **booking system** also creates a lease for a space in the
 **event** for the **customer** for the duration specified in the
-`beta:anonymousLeaseDuration` property of the **event**.
+`orderLeaseDuration` property of the **event**.
 3. The **broker** directs the customer into the flow of the third-party
 **payment** provider.
 4. If the **customer** successfully completes the payment within the duration
