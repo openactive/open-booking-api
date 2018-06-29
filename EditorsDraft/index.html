@@ -911,9 +911,6 @@ created by a specific **broker** SHOULD NOT be able to be changed by any other
 subsequent requests to an **order** should only be initiated by the **broker**
 which created the **order**.
 
-
-
-
     </section>
 
     <section class="normative">
@@ -1131,6 +1128,15 @@ Before creating an **order** the **broker** SHOULD:
 A POST request to the `/orders` endpoint of the **booking system** will result
 in server creating an new **Order**. A time limited lease will be created for
 the **events** referenced in the **Order**.
+
+The `broker` property in the request body is to help the **booking platform** to
+clarify who is making request and to help them in situations such as queries
+to allow reconciliation of payments. It is not designed as any part of an
+authentication which should be performed outside of the JSON body of the
+request. No authentication tokens should be present within the `broker` property
+of the submitted JSON.
+
+The `broker` property should be a well formed schema:Organisation object. 
 
 
         <pre class="example" title="Creating an order - request">
