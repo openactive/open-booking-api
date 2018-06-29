@@ -605,7 +605,9 @@ deemed to be cancelled.
 If the **customer** no longer wants to proceed with a particular **offer**, the
 lease for the space in the **event** and the **order** may be cancelled by
 issuing a DELETE request to the specific order endpoint (/orders/123 in the
-example) of the **booking system**. The **booking system** SHOULD release the
+example) of the **booking system**. 
+
+The **booking system** SHOULD release the
 space in the **event** and delete the underlying resource. Any subsequent
 requests to this resource should result in a 404 response.
 
@@ -614,7 +616,9 @@ requests to this resource should result in a 404 response.
 If the lease has expired during the **payment** process, the **broker** SHOULD
 check whether the **event** is still bookable and if the selected **offer** is
 still available. If they are, the **broker** should create a new **order** using
-the workflow described above. The **booking system** should respond to requests
+the workflow described above. 
+
+The **booking system** should respond to requests
 for **orders** with an expired lease with a 410 status code with an error
 specifying the `errorType` as
 https://openactive.io/errors/anonymous_lease_expired until the underlying
@@ -720,9 +724,6 @@ Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
 <pre class="example" title="Error response format">
-        {
-          "links": {},
-          "data": [
             {
               "@context": "https://openactive.io/ns/oa.jsonld",
               "type": "Error",
@@ -733,8 +734,6 @@ closely on [[!RFC7807]].
               "instance": "/orders",
               "method": "POST"
             }
-          ]
-        }
 </pre>
 
 * `errorType` – a URI reference [[!RFC3986]] that identifies the problem type. This
