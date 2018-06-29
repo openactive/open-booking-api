@@ -1036,7 +1036,9 @@ Content-Length: ...
 </pre>
 
 The **broker** MUST assemble a set of all applicable **offers** for an **event**
-from the information supplied by the **booking system**.
+from the information supplied by the **booking system**. An applicable **offer**
+is an **offer** which is available for an **event** which is bookable and for
+which the **customer** is eligeable.
 
 In the case of the **event** having no `subEvent` the set of all applicable
 **offers** is simply the array of **offers** contained within the `offers`
