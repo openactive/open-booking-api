@@ -1506,6 +1506,38 @@ Content-Length: ...
 
     </pre>
 
+## Ordering a place at a free event
+
+Free **events** MUST follow the same workflow as paid **events**. A free
+**event** is technically a free **offer** on a space for an event. There MUST be
+at least one **offer** with a `price` property of "0.00". The `priceCurrency`
+MUST still be defined for data consistency and completeness.
+
+The **order** workflow MUST be followed as described for **offers** with a
+payment. The PATCH to the URL defined in `PayAction` should follow the example
+shown below.
+
+<pre class="example" title="Completing an free order with a payment of '0.00' - request">
+PATCH /orders/123 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.5+json
+
+{
+"type": "Order",
+"payments": [
+{
+  "type": "Payment",
+  "totalPaidToProvider": {
+    "type": "MonetaryAmount",
+    "value": "0.00",
+    "currency": "GBP"
+  }
+}
+]
+}
+
+</pre>
 
 ## Leases and the orderLeaseDuration property
 
