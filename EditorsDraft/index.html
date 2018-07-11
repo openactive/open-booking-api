@@ -653,6 +653,24 @@ The current media type is:
 application/vnd.openactive.0.6+json
 ```
 
+**Brokers specifying a media type without a version, such as:
+
+```
+application/vnd.openactive+json
+```
+
+will recieve data in in the most current format which is 0.6.
+
+If you are building an application as a **broker** and care about the stability
+of the response, or have a client application which is tied to a specific
+version you should always try to use a media type containing the version number.
+
+**Booking systems** are not obliged to support previous versions of the
+specification, and so may not support a specific version number. We anticipate
+that when the Booking API reaches the stability of a 1.0 version that this
+advice may change.
+
+
 ## Response formats
 
 Requests and response documents exchanged via this API will all be valid
