@@ -1573,8 +1573,22 @@ the space at the **event** has been booked on their behalf.
 
 ### Refunding a customer and cancelling an order
 
-<div class="issue" title="Cancelling an order needs documenting" data-number="47">
-</div>
+Refunds and cancellations are a responsibility of the **broker** who is the
+party in the system in a position to process a refund for the **customer** with
+the third-party payments system.
+
+The **broker** should initiate a refund with the third-party payment provider.
+The refund process should be considered to be asynchronous for the purposes of
+this specification.
+
+After initiating a refund, the **broker** should cancel the
+**order** by submitting a PATCH request to the URL defined in the `CancelAction`
+prescribed in the `potentialAction` property of the **order** response.
+
+The process of cancellation is documented in Section 5.5.2
+
+<!--div class="issue" title="Cancelling an order needs documenting" data-number="47">
+</div -->
 
 ## Customers
 
