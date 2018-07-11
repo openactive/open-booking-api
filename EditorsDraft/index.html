@@ -58,7 +58,7 @@
                 href: "https://github.com/openactive/open-booking-api/issues/"
             }, {
                 key: "Version",
-                value: "0.5"
+                value: "0.6"
             }],
 
             logos: [{
@@ -534,9 +534,9 @@ as RDPE in an Open Active compliant **booking system**.
 
 ## Step-by-step process description
 
-The 0.5 version of the Booking API supports single items per **order** and
+The 0.5, and higher, versions of the Booking API supports single items per **order** and
 single **payments** per **order**. Future versions of the specification may support
-multiple items and multipart **payments**.
+multiple items and multipart **payments**, 0.6 still does not.
 
 ### Complete transaction
 
@@ -650,7 +650,7 @@ application/vnd.openactive[.version]+json
 The current media type is:
 
 ```
-application/vnd.openactive.0.5+json
+application/vnd.openactive.0.6+json
 ```
 
 ## Response formats
@@ -691,7 +691,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.5+json",
+            "encodingType": "application/vnd.openactive.v0.6+json",
             "httpMethod": "PATCH"
           }
         }
@@ -719,7 +719,7 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v0.5+json` and include at least one
+content type of `application/vnd.openactive.v0.6+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
@@ -1672,11 +1672,11 @@ creation process.
 
 # Future versions of this API
 
-Version 0.5 of the API is a stepping stone towards the 1.0 specification of the
-Booking API. It is not yet feature complete and there are some requirements
-which are not satisfied by version 0.5.
+Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
+Booking API. Neither it, or 0.6, are yet feature complete and there are some requirements
+which are not satisfied by this version.
 
-Some of the patterns within version 0.5, for example the PATCHing of an order
+Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
 resource to provide a payment and usng PATCH to change the status of an `orderItem` to
 cancel an order provide the groundwork for known requirements such as multiple
 order items (shopping carts), cancellation of individual order items and also
@@ -1690,7 +1690,7 @@ The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
 API.
 
-The currently known requirements not satisfied in version 0.5 are:
+The currently known requirements not satisfied in version 0.6 are:
 
 - multiple part orders
 - supporting multiple payments
