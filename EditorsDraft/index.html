@@ -1147,8 +1147,18 @@ the customer.
 
 ## Creating and updating orders
 
-Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers
-to initiate the booking workflow.
+**Booking systems** MUST expose an **orders** endpoint, e.g. `/orders` to allow
+**brokers** to initiate the **booking** workflow.
+
+**Orders** initiated by a specific **broker** SHOULD only be able to be updated
+by the same **broker**. For the purpose of creating and updating an **order**
+the only reliable mechanism for ensuring that the **broker** is the same across
+requests is via authentication/identification by API keys or Authoriztion
+headers. The **broker** property within the **order** is for information only.
+
+It is the responsibility of the **booking system** to ensure that only the
+**broker** which created the **order** can update, complete and cancel an
+order.
 
 ### Discovering the order endpoint
 
