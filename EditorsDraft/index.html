@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Open Booking API 0.5</title>
+    <title>Open Booking API 0.6</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
@@ -253,10 +253,10 @@ pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
         <div class="note">
-This document represents an early Editors Draft of the planned API design. It is 
+This document represents an early Editors Draft of the planned API design. It is
 likely to change between now and its final version. These
-early drafts are intended to help developers provide that feedback by developing 
-proof-of-concept implementations. We encourage developers to explore this API and 
+early drafts are intended to help developers provide that feedback by developing
+proof-of-concept implementations. We encourage developers to explore this API and
 contribute to the development of the specification.
         </div>
 
@@ -605,7 +605,7 @@ deemed to be cancelled.
 If the **customer** no longer wants to proceed with a particular **offer**, the
 lease for the space in the **event** and the **order** may be cancelled by
 issuing a DELETE request to the specific order endpoint (/orders/123 in the
-example) of the **booking system**. 
+example) of the **booking system**.
 
 The **booking system** SHOULD release the
 space in the **event** and delete the underlying resource. Any subsequent
@@ -616,7 +616,7 @@ requests to this resource should result in a 404 response.
 If the lease has expired during the **payment** process, the **broker** SHOULD
 check whether the **event** is still bookable and if the selected **offer** is
 still available. If they are, the **broker** should create a new **order** using
-the workflow described above. 
+the workflow described above.
 
 The **booking system** should respond to requests
 for **orders** with an expired lease with a 410 status code with an error
@@ -1511,16 +1511,16 @@ Content-Length: ...
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
-410 status code). 
+410 status code).
 
 The **broker** should then create a new **order** for the
-**customer** in order to generate a new lease. 
+**customer** in order to generate a new lease.
 
 Before creating a new order, the **broker** MUST check the **event** and **offers** to ensure
 that a space still exists within the **event** and that the **offer** selected
-by the **customer** is still valid. 
+by the **customer** is still valid.
 
-If no space exists or the **offer** is now invalid, the **customer** 
+If no space exists or the **offer** is now invalid, the **customer**
 should be refunded if payment has been taken.
 
 
