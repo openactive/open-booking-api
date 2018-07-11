@@ -1517,6 +1517,10 @@ The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
 shown below.
 
+**Orders** for a free place at an **event** are the only current scenario in the
+Booking API specification where a `Payment` object has `paymentMethod` and
+`paymentMethodId` as optional properties.
+
 <pre class="example" title="Completing an free order with a payment of '0.00' - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
