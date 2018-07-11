@@ -1020,13 +1020,13 @@ are still available before proceeding with booking.
 GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 
@@ -1159,7 +1159,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.5+json",
+            "encodingType": "application/vnd.openactive.v0.6+json",
             "httpMethod": "POST"
           }
         }
@@ -1215,7 +1215,7 @@ process), the `broker` property should contain the details of the end-user
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
 
 {
 	"@context": "https://openactive.io/ns/oa.jsonld",
@@ -1257,7 +1257,7 @@ If successful the server will response with the location of a newly created
         <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Location: /orders/123
 
 {
@@ -1284,7 +1284,7 @@ Location: /orders/123
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1318,13 +1318,13 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 {
@@ -1380,7 +1380,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     },
@@ -1390,7 +1390,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1428,7 +1428,7 @@ returns a representation of the completed **order** with a 200 status code.
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
 
 {
   "type": "Order",
@@ -1451,7 +1451,7 @@ Accept: application/vnd.openactive.v0.5+json
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 {
@@ -1515,7 +1515,7 @@ Content-Length: ...
 		"target": {
 			"type": "EntryPoint",
 			"url": "https://example.com/orders/535",
-			"encodingType": "application/vnd.openactive.v0.5+json",
+			"encodingType": "application/vnd.openactive.v0.6+json",
 			"httpMethod": "PATCH"
 		}
 	}]
@@ -1542,7 +1542,7 @@ Booking API specification where a `Payment` object has `paymentMethod` and
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
 
 {
 "type": "Order",
