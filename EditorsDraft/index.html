@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Open Booking API 0.5</title>
+    <title>Open Booking API 0.6</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
@@ -58,7 +58,7 @@
                 href: "https://github.com/openactive/open-booking-api/issues/"
             }, {
                 key: "Version",
-                value: "0.5"
+                value: "0.6"
             }],
 
             logos: [{
@@ -253,10 +253,10 @@ pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
         <div class="note">
-This document represents an early Editors Draft of the planned API design. It is 
+This document represents an early Editors Draft of the planned API design. It is
 likely to change between now and its final version. These
-early drafts are intended to help developers provide that feedback by developing 
-proof-of-concept implementations. We encourage developers to explore this API and 
+early drafts are intended to help developers provide that feedback by developing
+proof-of-concept implementations. We encourage developers to explore this API and
 contribute to the development of the specification.
         </div>
 
@@ -534,9 +534,9 @@ as RDPE in an Open Active compliant **booking system**.
 
 ## Step-by-step process description
 
-The 0.5 version of the Booking API supports single items per **order** and
+The 0.5, and higher, versions of the Booking API supports single items per **order** and
 single **payments** per **order**. Future versions of the specification may support
-multiple items and multipart **payments**.
+multiple items and multipart **payments**, 0.6 still does not.
 
 ### Complete transaction
 
@@ -605,7 +605,7 @@ deemed to be cancelled.
 If the **customer** no longer wants to proceed with a particular **offer**, the
 lease for the space in the **event** and the **order** may be cancelled by
 issuing a DELETE request to the specific order endpoint (/orders/123 in the
-example) of the **booking system**. 
+example) of the **booking system**.
 
 The **booking system** SHOULD release the
 space in the **event** and delete the underlying resource. Any subsequent
@@ -616,7 +616,7 @@ requests to this resource should result in a 404 response.
 If the lease has expired during the **payment** process, the **broker** SHOULD
 check whether the **event** is still bookable and if the selected **offer** is
 still available. If they are, the **broker** should create a new **order** using
-the workflow described above. 
+the workflow described above.
 
 The **booking system** should respond to requests
 for **orders** with an expired lease with a 410 status code with an error
@@ -650,8 +650,26 @@ application/vnd.openactive[.version]+json
 The current media type is:
 
 ```
-application/vnd.openactive.0.5+json
+application/vnd.openactive.0.6+json
 ```
+
+**Brokers specifying a media type without a version, such as:
+
+```
+application/vnd.openactive+json
+```
+
+will recieve data in in the most current format which is 0.6.
+
+If you are building an application as a **broker** and care about the stability
+of the response, or have a client application which is tied to a specific
+version you should always try to use a media type containing the version number.
+
+**Booking systems** are not obliged to support previous versions of the
+specification, and so may not support a specific version number. We anticipate
+that when the Booking API reaches the stability of a 1.0 version that this
+advice may change.
+
 
 ## Response formats
 
@@ -691,7 +709,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.5+json",
+            "encodingType": "application/vnd.openactive.v0.6+json",
             "httpMethod": "PATCH"
           }
         }
@@ -719,7 +737,7 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v0.5+json` and include at least one
+content type of `application/vnd.openactive.v0.6+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
@@ -917,6 +935,23 @@ created by a specific **broker** SHOULD NOT be able to be changed by any other
 subsequent requests to an **order** should only be initiated by the **broker**
 which created the **order**.
 
+## Delivery of terms and conditions
+
+The **broker** should make the **customer** aware of and assent to any specific
+Terms and Conditions and Privacy Policy for using their service at the point of
+a **customer** signing up to the service and/or providing their contact details.
+
+Since, during **booking**, the details of the **customer** are provided to the
+**booking system** and the **seller**, the **broker** should inform the
+**customer** of this any implications with resepct to GDPR and any other
+data protection legislation.
+
+Any specific Terms and Conditions for the **offer** being taken, or Terms and
+Conditions relating to the **seller** should be made available via a URL as a
+`termsOfService` property on the **offer**. (https://pending.schema.org/termsOfService)
+
+
+
     </section>
 
     <section class="normative">
@@ -1003,13 +1038,13 @@ are still available before proceeding with booking.
 GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 
@@ -1112,8 +1147,18 @@ the customer.
 
 ## Creating and updating orders
 
-Booking systems MUST expose an orders endpoint, e.g. `/orders` to allow brokers
-to initiate the booking workflow.
+**Booking systems** MUST expose an **orders** endpoint, e.g. `/orders` to allow
+**brokers** to initiate the **booking** workflow.
+
+**Orders** initiated by a specific **broker** SHOULD only be able to be updated
+by the same **broker**. For the purpose of creating and updating an **order**
+the only reliable mechanism for ensuring that the **broker** is the same across
+requests is via authentication/identification by API keys or Authoriztion
+headers. The **broker** property within the **order** is for information only.
+
+It is the responsibility of the **booking system** to ensure that only the
+**broker** which created the **order** can update, complete and cancel an
+order.
 
 ### Discovering the order endpoint
 
@@ -1142,7 +1187,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.5+json",
+            "encodingType": "application/vnd.openactive.v0.6+json",
             "httpMethod": "POST"
           }
         }
@@ -1198,7 +1243,7 @@ process), the `broker` property should contain the details of the end-user
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
 
 {
 	"@context": "https://openactive.io/ns/oa.jsonld",
@@ -1240,7 +1285,7 @@ If successful the server will response with the location of a newly created
         <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Location: /orders/123
 
 {
@@ -1267,7 +1312,7 @@ Location: /orders/123
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1301,13 +1346,13 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 {
@@ -1363,7 +1408,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     },
@@ -1373,7 +1418,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.5+json",
+        "encodingType": "application/vnd.openactive.v0.6+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1411,7 +1456,7 @@ returns a representation of the completed **order** with a 200 status code.
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.5+json
+Accept: application/vnd.openactive.v0.6+json
 
 {
   "type": "Order",
@@ -1434,7 +1479,7 @@ Accept: application/vnd.openactive.v0.5+json
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.5+json
+Content-Type: application/vnd.openactive.v0.6+json
 Content-Length: ...
 
 {
@@ -1498,7 +1543,7 @@ Content-Length: ...
 		"target": {
 			"type": "EntryPoint",
 			"url": "https://example.com/orders/535",
-			"encodingType": "application/vnd.openactive.v0.5+json",
+			"encodingType": "application/vnd.openactive.v0.6+json",
 			"httpMethod": "PATCH"
 		}
 	}]
@@ -1506,21 +1551,57 @@ Content-Length: ...
 
     </pre>
 
+## Ordering a place at a free event
+
+Free **events** MUST follow the same workflow as paid **events**. A free
+**event** is technically a free **offer** on a space for an event. There MUST be
+at least one **offer** with a `price` property of "0.00". The `priceCurrency`
+MUST still be defined for data consistency and completeness.
+
+The **order** workflow MUST be followed as described for **offers** with a
+payment. The PATCH to the URL defined in `PayAction` should follow the example
+shown below.
+
+**Orders** for a free place at an **event** are the only current scenario in the
+Booking API specification where a `Payment` object has `paymentMethod` and
+`paymentMethodId` as optional properties.
+
+<pre class="example" title="Completing an free order with a payment of '0.00' - request">
+PATCH /orders/123 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.6+json
+
+{
+"type": "Order",
+"payments": [
+{
+  "type": "Payment",
+  "totalPaidToProvider": {
+    "type": "MonetaryAmount",
+    "value": "0.00",
+    "currency": "GBP"
+  }
+}
+]
+}
+
+</pre>
 
 ## Leases and the orderLeaseDuration property
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
-410 status code). 
+410 status code).
 
 The **broker** should then create a new **order** for the
-**customer** in order to generate a new lease. 
+**customer** in order to generate a new lease.
 
 Before creating a new order, the **broker** MUST check the **event** and **offers** to ensure
 that a space still exists within the **event** and that the **offer** selected
-by the **customer** is still valid. 
+by the **customer** is still valid.
 
-If no space exists or the **offer** is now invalid, the **customer** 
+If no space exists or the **offer** is now invalid, the **customer**
 should be refunded if payment has been taken.
 
 
@@ -1573,8 +1654,22 @@ the space at the **event** has been booked on their behalf.
 
 ### Refunding a customer and cancelling an order
 
-<div class="issue" title="Cancelling an order needs documenting" data-number="47">
-</div>
+Refunds and cancellations are a responsibility of the **broker** who is the
+party in the system in a position to process a refund for the **customer** with
+the third-party payments system.
+
+The **broker** should initiate a refund with the third-party payment provider.
+The refund process should be considered to be asynchronous for the purposes of
+this specification.
+
+After initiating a refund, the **broker** should cancel the
+**order** by submitting a PATCH request to the URL defined in the `CancelAction`
+prescribed in the `potentialAction` property of the **order** response.
+
+The process of cancellation is documented in Section 5.5.2
+
+<!--div class="issue" title="Cancelling an order needs documenting" data-number="47">
+</div -->
 
 ## Customers
 
@@ -1605,11 +1700,11 @@ creation process.
 
 # Future versions of this API
 
-Version 0.5 of the API is a stepping stone towards the 1.0 specification of the
-Booking API. It is not yet feature complete and there are some requirements
-which are not satisfied by version 0.5.
+Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
+Booking API. Neither it, or 0.6, are yet feature complete and there are some requirements
+which are not satisfied by this version.
 
-Some of the patterns within version 0.5, for example the PATCHing of an order
+Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
 resource to provide a payment and usng PATCH to change the status of an `orderItem` to
 cancel an order provide the groundwork for known requirements such as multiple
 order items (shopping carts), cancellation of individual order items and also
@@ -1623,7 +1718,7 @@ The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
 API.
 
-The currently known requirements not satisfied in version 0.5 are:
+The currently known requirements not satisfied in version 0.6 are:
 
 - multiple part orders
 - supporting multiple payments
