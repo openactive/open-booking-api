@@ -427,6 +427,12 @@ The content of the example is in monospace font and may be syntax colored.
             <dt><strong>facility</strong></dt>
             <dd>A sporting facility, e.g. a squash court, table tennis table or
             football pitch.</dd>
+            <dt><strong>facilityuse</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-facility-use-code-oa-facilityuse-code-code-oa-individualfacilityuse-code-">FacilityUse</a>
+            is an opportunity to utilise the facilities of a seller in order
+            to take part in a physical activity. FacilityUses are not
+            scheduled, but are an equivalent for an Event in being an
+            opportunity which can be booked.</dd>
             <dt><strong>lease</strong></dt>
             <dd>A temporary reservation of a space at an event or for the use
             of a facility. Leases provide a limited time window during which
@@ -436,6 +442,12 @@ The content of the example is in monospace font and may be syntax colored.
             <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
+            <dt><strong>opportunity</strong></dt>
+            <dd>An opportunity is a generic term to describe an opportunity to
+            be active. Currently an opportunity is either an Event (for
+            scheduled events, such as a yoga class) or a FacilityUse or a Slot
+            for a FacilityUse (for non-scheduled use of the facilities of a
+            seller).</dd>
             <dt><strong>order</strong></dt>
             <dd>Describes the in-process or completed booking. An order may be
             made up of several order items. An order results in a customer
@@ -457,6 +469,11 @@ The content of the example is in monospace font and may be syntax colored.
             <dt><strong>seller</strong></dt>
             <dd>The organisation providing access to events or use of facilities
             via a booking system. E.g. a leisure provider running yoga classes.</dd>
+            <dt><strong>slot</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-slots-code-oa-slot-code-">Slot</a>
+            is an opportunity to use a facility at a specific time and for a
+            specified duration. A Slot is therefore a specific type of Event,
+            although it has a more constrained set of properties.</dd>
         </dl>
 
     </section>
