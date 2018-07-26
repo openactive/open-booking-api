@@ -723,7 +723,9 @@ terms for naming specific objects such as **events** and **orders**.
 
 The URL for a specific action, such as for example providing **payment** details,
 may be discovered by parsing the actions defined in the `potentialAction`
-property of an object.
+property of an object and constructing the appropriate URL from the
+`urlTemplate` property of the `schema:EntryPoint` object contained within the `target`
+property of the `potentialAction` required.
 
 An example is below:
 
@@ -735,7 +737,7 @@ An example is below:
           "name": "Payment",
           "target": {
             "type": "EntryPoint",
-            "url": "https://example.com/orders",
+            "urlTemplate": "https://example.com/orders",
             "encodingType": "application/vnd.openactive.v0.7+json",
             "httpMethod": "PATCH"
           }
@@ -1266,7 +1268,7 @@ An example is below:
           "name": "Book",
           "target": {
             "type": "EntryPoint",
-            "url": "https://example.com/orders",
+            "urlTemplate": "https://example.com/orders",
             "encodingType": "application/vnd.openactive.v0.7+json",
             "httpMethod": "POST"
           }
@@ -1392,7 +1394,7 @@ Location: /orders/123
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
+        "urlTemplate": "https://example.com/orders/{order_id}",
         "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
@@ -1488,7 +1490,7 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
+        "urlTemplate": "https://example.com/orders/{order_id}",
         "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
@@ -1498,7 +1500,7 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
+        "urlTemplate": "https://example.com/orders/{order_id}",
         "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
@@ -1623,7 +1625,7 @@ Content-Length: ...
 		"name": "Pay",
 		"target": {
 			"type": "EntryPoint",
-			"url": "https://example.com/orders/535",
+			"urlTemplate": "https://example.com/orders/{order_id}",
 			"encodingType": "application/vnd.openactive.v0.7+json",
 			"httpMethod": "PATCH"
 		}
