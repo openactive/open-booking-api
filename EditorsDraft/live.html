@@ -1484,7 +1484,7 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
 }</span></pre></div></section></section><section><h3 id="ordering-a-place-at-a-free-event"><span class="secno">7.3 </span>Ordering a place at a free event</h3><p>Free <strong>events</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>events</strong>. A free
 <strong>event</strong> is technically a free <strong>offer</strong> on a space for an event. There <em class="rfc2119" title="MUST">MUST</em> be
 at least one <strong>offer</strong> with a <code>price</code> property of "0.00". The <code>priceCurrency</code>
-<em class="rfc2119" title="MUST">MUST</em> still be defined for data consistency and completeness.</p><p>The <strong>order</strong> workflow <em class="rfc2119" title="MUST">MUST</em> be followed as described for <strong>offers</strong> with a
+<em class="rfc2119" title="SHOULD">SHOULD</em> still be defined for data consistency and completeness.</p><p>The <strong>order</strong> workflow <em class="rfc2119" title="MUST">MUST</em> be followed as described for <strong>offers</strong> with a
 payment. The PATCH to the URL defined in <code>PayAction</code> should follow the example
 shown below.</p><p><strong>Orders</strong> for a free place at an <strong>event</strong> are the only current scenario in the
 Booking API specification where a <code>Payment</code> object has <code>paymentMethod</code> and
