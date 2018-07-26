@@ -1006,9 +1006,12 @@ data from a *booking system* that includes descriptions of **events**,
 **facilities**, **slots** etc. For example by harvesting data via an [[RPDE]]
 feed.
 
-The availability of an **event** or **facility** may change at any time.
+The availability of an **event**, or `subEvent`, or **facility** (either as a
+`FacilityUse` or `Slot`) may change at any time.
 
-The offers available to a customer might also change over time.
+The **offers** available to a customer might also change over time and the data
+should be refreshed so that the most up-to-date representation of the live data
+is presented to the **purchaser** before booking.
 
 A **booking system**  MUST allow a **broker** to check the current state of
 **events** and/or **facilities** depending on what decide they expose from their
@@ -1018,8 +1021,8 @@ platform.
 
 An **event** is deemed to be 'bookable' if:
 
-- The **event** has not already occurred, i.e. the `endDate` of the **event**
-has not been exceeded
+- The **event** has not already occurred, i.e. the `startDate` (when expressed
+as a timedatestamp) and the `endDate` of the **event** has not been exceeded
 
 - The `eventStatus` of the **event** does not indicate that it has been
 cancelled or postponed
@@ -1071,25 +1074,25 @@ different criteria for it being bookable.
 
 A **slot** is deemed to be 'bookable' if:
 
-- The **slot** has not already occurred, i.e. the `startDate` and `endDate` of
-the **event** has not been exceeded
+- The **slot** has not already occurred, i.e. the `startDate` (when expressed
+as a timedatestamp) and `endDate` of the **slot** has not been exceeded
 
 - The `remainingUses` of the **slot** is greater than or equal to the number
 of slots required. For example if an independently organised badminton league
 requires four courts, the number of `remainingUses` should be 4 or higher.
 
+- There are one or more valid **offers** for the slot
+
 - The `potentialAction` of the **slot** contains one or more appropriate
 ReserveAction objects
 
 There may be more restrictions placed by a **seller** on the booking of a
-**slot** for use of a **facility**.
-
-For example it might be that one of the party must be over a certain age as a
-supervising adult if some of the party are minors. It is the responsibility of
-the **booking platform** to make the terms and conditions of **booking**
-available to the **broker** and it is the responsibility of the **broker** to
-ensure that the **customer** is aware of these conditions before **booking**
-occurs.
+**slot** for use of a **facility**. For example, it may be that one of the party
+must be over a certain age as a supervising adult if some of the party are
+minors. It is the responsibility of the **booking platform** to make the terms
+and conditions of **booking** available to the **broker** and it is the
+responsibility of the **broker** to ensure that the **customer** is aware of
+these conditions before entering the **order** workflow.
 
 ### Checking availability and offers for an event or facility use slot
 

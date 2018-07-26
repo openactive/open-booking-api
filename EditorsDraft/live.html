@@ -1100,11 +1100,14 @@ Conditions relating to the <strong>seller</strong> should be made available via 
 <code>termsOfService</code> property on the <strong>offer</strong>. (<a href="https://pending.schema.org/termsOfService">https://pending.schema.org/termsOfService</a>)</p></section></section><section class="normative"><!--OddPage--><h2 id="operations"><span class="secno">7. </span>Operations</h2><section><h3 id="checking-availability-and-offers"><span class="secno">7.1 </span>Checking availability and offers</h3><p>This specification assumes that a <em>broker</em> has already obtained opportunity
 data from a <em>booking system</em> that includes descriptions of <strong>events</strong>,
 <strong>facilities</strong>, <strong>slots</strong> etc. For example by harvesting data via an [<cite><a class="bibref" href="#bib-rpde">RPDE</a></cite>]
-feed.</p><p>The availability of an <strong>event</strong> or <strong>facility</strong> may change at any time.</p><p>The offers available to a customer might also change over time.</p><p>A <strong>booking system</strong>  <em class="rfc2119" title="MUST">MUST</em> allow a <strong>broker</strong> to check the current state of
+feed.</p><p>The availability of an <strong>event</strong>, or <code>subEvent</code>, or <strong>facility</strong> (either as a
+<code>FacilityUse</code> or <code>Slot</code>) may change at any time.</p><p>The <strong>offers</strong> available to a customer might also change over time and the data
+should be refreshed so that the most up-to-date representation of the live data
+is presented to the <strong>purchaser</strong> before booking.</p><p>A <strong>booking system</strong>  <em class="rfc2119" title="MUST">MUST</em> allow a <strong>broker</strong> to check the current state of
 <strong>events</strong> and/or <strong>facilities</strong> depending on what decide they expose from their
 platform.</p><section><h4 id="definition-of-a-bookable-event"><span class="secno">7.1.1 </span>Definition of a 'bookable' Event</h4><p>An <strong>event</strong> is deemed to be 'bookable' if:</p><ul>
-<li><p>The <strong>event</strong> has not already occurred, i.e. the <code>endDate</code> of the <strong>event</strong>
-has not been exceeded</p>
+<li><p>The <strong>event</strong> has not already occurred, i.e. the <code>startDate</code> (when expressed
+as a timedatestamp) and the <code>endDate</code> of the <strong>event</strong> has not been exceeded</p>
 </li>
 <li><p>The <code>eventStatus</code> of the <strong>event</strong> does not indicate that it has been
 cancelled or postponed</p>
@@ -1141,23 +1144,25 @@ data describing the the <strong>event</strong> is published via a <strong>bookin
 is compliant with and supports the Open Active Booking API.</p></section><section><h4 id="definition-of-a-bookable-slot-facility-use"><span class="secno">7.1.2 </span>Definition of a 'bookable' slot/facility use</h4><p>A slot is essentially an event, and many of the above conditions apply, however
 some of the properties for a slot are different and as a consequence there are
 different criteria for it being bookable.</p><p>A <strong>slot</strong> is deemed to be 'bookable' if:</p><ul>
-<li><p>The <strong>slot</strong> has not already occurred, i.e. the <code>startDate</code> and <code>endDate</code> of
-the <strong>event</strong> has not been exceeded</p>
+<li><p>The <strong>slot</strong> has not already occurred, i.e. the <code>startDate</code> (when expressed
+as a timedatestamp) and <code>endDate</code> of the <strong>slot</strong> has not been exceeded</p>
 </li>
 <li><p>The <code>remainingUses</code> of the <strong>slot</strong> is greater than or equal to the number
 of slots required. For example if an independently organised badminton league
 requires four courts, the number of <code>remainingUses</code> should be 4 or higher.</p>
 </li>
+<li><p>There are one or more valid <strong>offers</strong> for the slot</p>
+</li>
 <li><p>The <code>potentialAction</code> of the <strong>slot</strong> contains one or more appropriate
 ReserveAction objects</p>
 </li>
 </ul><p>There may be more restrictions placed by a <strong>seller</strong> on the booking of a
-<strong>slot</strong> for use of a <strong>facility</strong>.</p><p>For example it might be that one of the party must be over a certain age as a
-supervising adult if some of the party are minors. It is the responsibility of
-the <strong>booking platform</strong> to make the terms and conditions of <strong>booking</strong>
-available to the <strong>broker</strong> and it is the responsibility of the <strong>broker</strong> to
-ensure that the <strong>customer</strong> is aware of these conditions before <strong>booking</strong>
-occurs.</p></section><section><h4 id="checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</h4><p>To check the availability of an opportunity a <strong>broker</strong> will issue a GET
+<strong>slot</strong> for use of a <strong>facility</strong>. For example, it may be that one of the party
+must be over a certain age as a supervising adult if some of the party are
+minors. It is the responsibility of the <strong>booking platform</strong> to make the terms
+and conditions of <strong>booking</strong> available to the <strong>broker</strong> and it is the
+responsibility of the <strong>broker</strong> to ensure that the <strong>customer</strong> is aware of
+these conditions before entering the <strong>order</strong> workflow.</p></section><section><h4 id="checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</h4><p>To check the availability of an opportunity a <strong>broker</strong> will issue a GET
 request to the URI specified in the <code>id</code> of the opportunity, having
 discovered it from the RDPE feed.</p><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingAttendeeCapacity</code> property is up to date and includes a
