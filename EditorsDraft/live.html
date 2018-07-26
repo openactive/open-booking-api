@@ -1,0 +1,1753 @@
+<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 22.3.1"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
+div.example-title {
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.example-title span {
+    text-transform: uppercase;
+}
+aside.example, div.example, div.illegal-example {
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+div.illegal-example { color: red }
+div.illegal-example p { color: black }
+aside.example, div.example {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+    border-color: #e0cb52;
+    background: #fcfaee;
+}
+
+aside.example div.example {
+    border-left-width: .1em;
+    border-color: #999;
+    background: #fff;
+}
+aside.example div.example div.example-title {
+    color: #999;
+}
+</style><style>/* --- ISSUES/NOTES --- */
+div.issue-title, div.note-title , div.ednote-title, div.warning-title {
+    padding-right:  1em;
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.issue-title { color: #e05252; }
+div.note-title, div.ednote-title { color: #2b2; }
+div.warning-title { color: #f22; }
+div.issue-title span, div.note-title span, div.ednote-title span, div.warning-title span {
+    text-transform: uppercase;
+}
+div.note, div.issue, div.ednote, div.warning {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.note > p:first-child, .ednote > p:first-child, .issue > p:first-child, .warning > p:first-child { margin-top: 0 }
+.issue, .note, .ednote, .warning {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+}
+div.issue, div.note , div.ednote,  div.warning {
+    padding: 1em 1.2em 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+span.note, span.ednote, span.issue, span.warning { padding: .1em .5em .15em; }
+
+.issue {
+    border-color: #e05252;
+    background: #fbe9e9;
+}
+.note, .ednote {
+    border-color: #52e052;
+    background: #e9fbe9;
+}
+
+.warning {
+    border-color: #f11;
+    border-width: .2em;
+    border-style: solid;
+    background: #fbe9e9;
+}
+
+.warning-title:before{
+    content: "⚠"; /*U+26A0 WARNING SIGN*/
+    font-size: 3em;
+    float: left;
+    height: 100%;
+    padding-right: .3em;
+    vertical-align: top;
+    margin-top: -0.5em;
+}
+
+li.task-list-item {
+    list-style: none;
+}
+
+input.task-list-item-checkbox {
+    margin: 0 0.35em 0.25em -1.6em;
+    vertical-align: middle;
+}
+
+.issue a.respec-gh-label {
+  padding: 5px;
+  margin: 0 2px 0 2px;
+  font-size: 10px;
+  text-transform: none;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  position: relative;
+  bottom: 2px;
+}
+
+.issue a.respec-label-dark {
+  color: #fff;
+  background-color: #000;
+}
+
+.issue a.respec-label-light {
+  color: #000;
+  background-color: #fff;
+}
+</style><script src="//localhost:35729/livereload.js?snipver=1" async="" defer=""></script>
+
+
+
+    
+    <title>Open Booking API 0.7</title>
+
+    
+
+    
+
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 1px solid #bec9d9
+        }
+
+        td,
+        th {
+            padding: 3px 0.5em;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            border-bottom: 1px solid #E2EDFE;
+        }
+
+        tr th[colspan] {
+            color: #005A9C;
+            background-color: #FEEDE2;
+            text-align: center
+        }
+
+        th {
+            color: #005A9C;
+            background-color: #E2EDFE;
+            font-weight: normal;
+            border-bottom: 1px solid #BEC9D9;
+        }
+
+        tbody tr th {
+            text-align: left;
+        }
+
+        td.nb {
+            font-size: smaller;
+        }
+
+        .rec,
+        .pr {
+            color: #005A9C;
+            background-color: #99EE99
+        }
+
+        .ext {
+            background-color: #FFFFFF
+        }
+
+        .cr,
+        .lcwd {
+            color: #005A9C;
+            background-color: #EEEE99
+        }
+
+        .wd {
+            color: #005A9C;
+            background-color: #EE9999
+        }
+
+        .ed,
+        .fpwd {
+            color: #005A9C;
+            background-color: #FF7777
+        }
+
+        code {
+            white-space: pre;
+        }
+
+        html {
+            background-image: none !important;
+        }
+
+        body {
+            background: white top left fixed no-repeat !important;
+            background-size: 25px auto !important;
+            background-image:
+                url('https://openactive.io/assets/openactive-label-specification.png') !important;
+        }
+
+        h1 {
+            font-family: 'Open Sans', sans-serif !important;
+            font-weight: 300 !important;
+            color: #69b9ff !important;
+            font-size: 220%;
+        }
+
+        #toc {
+            padding-top: 0px !important;
+        }
+
+        .remove {
+            background-colour: yellow;
+        }
+
+        code {
+            color: #C83500;
+        }
+
+        em.rfc2119 {
+            font-variant: small-caps;
+        }
+    </style>
+
+<style id="respec-mainstyle">/*****************************************************************
+ * ReSpec 3 CSS
+ * Robin Berjon - http://berjon.com/
+ *****************************************************************/
+
+/* Override code highlighter background */
+.hljs {
+  background: transparent !important;
+}
+
+/* --- INLINES --- */
+h1 abbr,
+h2 abbr,
+h3 abbr,
+h4 abbr,
+h5 abbr,
+h6 abbr,
+a abbr {
+  border: none;
+}
+
+dfn {
+  font-weight: bold;
+}
+
+a.internalDFN {
+  color: inherit;
+  border-bottom: 1px solid #99c;
+  text-decoration: none;
+}
+
+a.externalDFN {
+  color: inherit;
+  border-bottom: 1px dotted #ccc;
+  text-decoration: none;
+}
+
+a.bibref {
+  text-decoration: none;
+}
+
+#references :target {
+  background: #eaf3ff;
+}
+
+cite .bibref {
+  font-style: normal;
+}
+
+code {
+  color: #c83500;
+}
+
+th code {
+  color: inherit;
+}
+
+/* --- TOC --- */
+
+.toc a,
+.tof a {
+  text-decoration: none;
+}
+
+a .secno,
+a .figno {
+  color: #000;
+}
+
+ul.tof,
+ol.tof {
+  list-style: none outside none;
+}
+
+.caption {
+  margin-top: 0.5em;
+  font-style: italic;
+}
+
+/* --- TABLE --- */
+
+table.simple {
+  border-spacing: 0;
+  border-collapse: collapse;
+  border-bottom: 3px solid #005a9c;
+}
+
+.simple th {
+  background: #005a9c;
+  color: #fff;
+  padding: 3px 5px;
+  text-align: left;
+}
+
+.simple th[scope="row"] {
+  background: inherit;
+  color: inherit;
+  border-top: 1px solid #ddd;
+}
+
+.simple td {
+  padding: 3px 10px;
+  border-top: 1px solid #ddd;
+}
+
+.simple tr:nth-child(even) {
+  background: #f0f6ff;
+}
+
+/* --- DL --- */
+
+.section dd > p:first-child {
+  margin-top: 0;
+}
+
+.section dd > p:last-child {
+  margin-bottom: 0;
+}
+
+.section dd {
+  margin-bottom: 1em;
+}
+
+.section dl.attrs dd,
+.section dl.eldef dd {
+  margin-bottom: 0;
+}
+
+#issue-summary > ul,
+.respec-dfn-list {
+  column-count: 2;
+}
+
+#issue-summary li,
+.respec-dfn-list li {
+  list-style: none;
+}
+
+details.respec-tests-details {
+  margin-left: 1em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+details.respec-tests-details > * {
+  padding-right: 2em;
+}
+
+details.respec-tests-details[open] {
+  z-index: 999999;
+  position: absolute;
+  border: thin solid #cad3e2;
+  border-radius: 0.3em;
+  background-color: white;
+  padding-bottom: 0.5em;
+}
+
+details.respec-tests-details[open] > summary {
+  border-bottom: thin solid #cad3e2;
+  padding-left: 1em;
+  margin-bottom: 1em;
+  line-height: 2em;
+}
+
+details.respec-tests-details > ul {
+  width: 100%;
+  margin-top: -0.3em;
+}
+
+details.respec-tests-details > li {
+  padding-left: 1em;
+}
+
+@media print {
+  .removeOnSave {
+    display: none;
+  }
+}
+</style><style>/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+</style><link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2016/cg-draft"><link rel="canonical" href="https://www.w3.org/TR/open-booking-api/"><script id="initialUserConfig" type="application/json">{
+  "specStatus": "CG-DRAFT",
+  "shortName": "open-booking-api",
+  "edDraftURI": "https://openactive.io/open-booking-api/EditorsDraft/",
+  "copyrightStart": 2018,
+  "editors": [
+    {
+      "name": "Leigh Dodds",
+      "url": "https://ldodds.com",
+      "company": "Open Data Institute",
+      "companyURL": "https://theodi.org",
+      "w3cid": 55359
+    },
+    {
+      "name": "Nick Evans",
+      "url": "https://nickevans.me/",
+      "company": "Open Data Institute",
+      "companyURL": "https://theodi.org"
+    },
+    {
+      "name": "Chris Thorpe",
+      "url": "https://github.com/drchristhorpe"
+    }
+  ],
+  "otherLinks": [
+    {
+      "key": "Repo",
+      "value": "We are on Github",
+      "href": "https://github.com/openactive/open-booking-api/",
+      "class": "repo"
+    },
+    {
+      "key": "Issues",
+      "value": "Report an issue",
+      "href": "https://github.com/openactive/open-booking-api/issues/"
+    },
+    {
+      "key": "Version",
+      "value": "0.7"
+    }
+  ],
+  "logos": [
+    {
+      "src": "https://openactive.io/assets/openactive-logo-large.png",
+      "href": "https://openactive.io",
+      "alt": "openactive.io",
+      "width": 255,
+      "height": 43,
+      "id": "logo"
+    }
+  ],
+  "wg": "OpenActive Community Group",
+  "wgURI": "https://www.w3.org/community/openactive/",
+  "wgPublicList": "public-openactive",
+  "maxTocLevel": 4,
+  "preProcess": [],
+  "noRecTrack": true,
+  "issueBase": "https://github.com/openactive/open-booking-api/issues/",
+  "format": "markdown",
+  "localBiblio": {
+    "JSON-LD": {
+      "href": "https://www.w3.org/TR/json-ld/",
+      "title": "JSON-LD 1.0",
+      "status": "REC",
+      "publisher": "W3C",
+      "id": "json-ld"
+    },
+    "SCHEMA-ORG": {
+      "href": "https://schema.org/",
+      "title": "Schema.org"
+    },
+    "Modelling-Opportunity-Data": {
+      "href": "https://openactive.io/modelling-opportunity-data/",
+      "title": "Modelling Opportunity Data",
+      "publisher": "OpenActive Community Group",
+      "id": "modelling-opportunity-data"
+    },
+    "RPDE": {
+      "href": "https://openactive.io/realtime-paged-data-exchange/",
+      "title": "Realtime Paged Data Exchange",
+      "publisher": "OpenActive Community Group",
+      "id": "rpde"
+    },
+    "OpenActive-Vocabulary": {
+      "href": "https://openactive.io/ns/",
+      "title": "OpenActive Vocabulary",
+      "publisher": "OpenActive Community Group",
+      "id": "openactive-vocabulary"
+    },
+    "OAuth2": {
+      "href": "https://oauth.net/2/",
+      "title": "OAuth 2.0",
+      "id": "oauth2"
+    },
+    "OpenIdConnect": {
+      "href": "https://openid.net/connect/",
+      "title": "OpenID Connect",
+      "id": "openidconnect"
+    }
+  },
+  "publishISODate": "2018-07-26T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 26 July 2018"
+}</script><meta name="description" content="This document specifies an HTTP API for placing bookings to participate in
+physical activities, either by attending events or through the use of leisure
+or sports facilities."></head>
+
+<body class="h-entry toc-inline"><div class="head">
+  <a href="" class="logo">
+      <img id="logo" alt="openactive.io" width="255" height="43" src="https://openactive.io/assets/openactive-logo-large.png">
+  </a>
+  <h1 class="title p-name" id="title">Open Booking API 0.7</h1>
+  
+  <h2 id="draft-community-group-report-26-july-2018">Draft Community Group Report <time class="dt-published" datetime="2018-07-26">26 July 2018</time></h2>
+  <dl>
+    
+    
+    <dt>Latest editor's draft:</dt><dd><a href="https://openactive.io/open-booking-api/EditorsDraft/">https://openactive.io/open-booking-api/EditorsDraft/</a></dd>
+    
+    
+    
+    
+    
+    <dt>Editors:</dt>
+    <dd class="p-author h-card vcard" data-editor-id="55359"><a class="u-url url p-name fn" href="https://ldodds.com">Leigh Dodds</a> (<a class="p-org org h-org h-card" href="https://theodi.org">Open Data Institute</a>)</dd><dd class="p-author h-card vcard"><a class="u-url url p-name fn" href="https://nickevans.me/">Nick Evans</a> (<a class="p-org org h-org h-card" href="https://theodi.org">Open Data Institute</a>)</dd><dd class="p-author h-card vcard"><a class="u-url url p-name fn" href="https://github.com/drchristhorpe">Chris Thorpe</a></dd>
+    
+    
+    <dt class="repo">Repo:</dt><dd class="repo">
+      <a href="https://github.com/openactive/open-booking-api/">We are on Github</a>
+    </dd><dt>Issues:</dt><dd>
+      <a href="https://github.com/openactive/open-booking-api/issues/">Report an issue</a>
+    </dd><dt>Version:</dt><dd>
+      
+    </dd>
+  </dl>
+  
+  <p class="copyright">
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> ©
+    2018
+    the Contributors to the Open Booking API 0.7 Specification, published by the
+    <a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a> under the
+    <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+      A human-readable <a href="https://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.
+    
+  </p>
+  <hr title="Separator for header">
+</div><style>
+body {
+    background-size: 25px auto !important;
+}
+
+body.toc-sidebar #toc {
+    background-size: 25px auto !important;
+    background-attachment: fixed !important;
+}
+</style><section id="abstract" class="introductory"><h2 id="abstract-0">Abstract</h2><p>This document specifies an HTTP API for placing bookings to participate in
+physical activities, either by attending events or through the use of leisure
+or sports facilities.</p></section><section id="sotd" class="introductory"><h2 id="status-of-this-document">Status of This Document</h2><p>
+  This specification was published by the <a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a>.
+  It is not a W3C Standard nor is it on the W3C Standards Track.
+  
+    Please note that under the
+    <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>
+    there is a limited opt-out and other conditions apply.
+  
+  Learn more about
+  <a href="https://www.w3.org/community/">W3C Community and Business Groups</a>.
+</p><p>Contributions to this document are not only welcomed but are actively solicited
+and should be made via
+<a href="https://github.com/openactive/open-booking-api/issues">GitHub Issues</a> and
+pull requests. The source code is available
+on <a href="https://github.com/openactive/open-booking-api">GitHub</a>.</p><div class="note" id="issue-container-generatedID"><div role="heading" class="note-title marker" id="h-note" aria-level="3"><span>Note</span></div><div class=""><p>This document represents an early Editors Draft of the planned API design. It is
+likely to change between now and its final version. These
+early drafts are intended to help developers provide that feedback by developing
+proof-of-concept implementations. We encourage developers to explore this API and
+contribute to the development of the specification.</p>
+</div></div><p>If you wish to make comments regarding this document, please send them to
+    <a href="mailto:public-openactive@w3.org">public-openactive@w3.org</a>
+    (<a href="mailto:public-openactive-request@w3.org?subject=subscribe">subscribe</a>,
+    <a href="https://lists.w3.org/Archives/Public/public-openactive/">archives</a>).</p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ol class="toc"><li class="tocline"><a href="#scope-and-requirements" class="tocxref"><span class="secno">1.1 </span>Scope and requirements</a><ol class="toc"><li class="tocline"><a href="#functionality-that-is-out-of-scope" class="tocxref"><span class="secno">1.1.1 </span>Functionality that is out of scope</a></li></ol></li><li class="tocline"><a href="#audience" class="tocxref"><span class="secno">1.2 </span>Audience</a></li></ol></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#typographical-conventions" class="tocxref"><span class="secno">3. </span>Typographical Conventions</a></li><li class="tocline"><a href="#key-concepts" class="tocxref"><span class="secno">4. </span>Key Concepts</a></li><li class="tocline"><a href="#booking-flow" class="tocxref"><span class="secno">5. </span>Booking Flow</a><ol class="toc"><li class="tocline"><a href="#high-level-summary-of-the-api" class="tocxref"><span class="secno">5.1 </span>High-level summary of the API</a></li><li class="tocline"><a href="#urls-used-in-the-description-of-the-api" class="tocxref"><span class="secno">5.2 </span>URLs used in the description of the API</a></li><li class="tocline"><a href="#workflow-diagram" class="tocxref"><span class="secno">5.3 </span>Workflow diagram</a></li><li class="tocline"><a href="#sequence-diagram" class="tocxref"><span class="secno">5.4 </span>Sequence diagram</a></li><li class="tocline"><a href="#step-by-step-process-description" class="tocxref"><span class="secno">5.5 </span>Step-by-step process description</a><ol class="toc"><li class="tocline"><a href="#complete-transaction" class="tocxref"><span class="secno">5.5.1 </span>Complete transaction</a></li><li class="tocline"><a href="#order-cancellation-and-refund" class="tocxref"><span class="secno">5.5.2 </span>Order cancellation and refund</a></li><li class="tocline"><a href="#cancelling-a-lease" class="tocxref"><span class="secno">5.5.3 </span>Cancelling a Lease</a></li><li class="tocline"><a href="#handling-lease-expiry" class="tocxref"><span class="secno">5.5.4 </span>Handling lease expiry</a></li></ol></li></ol></li><li class="tocline"><a href="#common-requirements" class="tocxref"><span class="secno">6. </span>Common Requirements</a><ol class="toc"><li class="tocline"><a href="#media-types" class="tocxref"><span class="secno">6.1 </span>Media types</a></li><li class="tocline"><a href="#response-formats" class="tocxref"><span class="secno">6.2 </span>Response formats</a></li><li class="tocline"><a href="#url-discovery" class="tocxref"><span class="secno">6.3 </span>URL discovery</a></li><li class="tocline"><a href="#error-handling" class="tocxref"><span class="secno">6.4 </span>Error handling</a><ol class="toc"><li class="tocline"><a href="#standard-uris-for-common-errors" class="tocxref"><span class="secno">6.4.1 </span>Standard URIs for common errors</a></li></ol></li><li class="tocline"><a href="#security" class="tocxref"><span class="secno">6.5 </span>Security</a></li><li class="tocline"><a href="#authentication" class="tocxref"><span class="secno">6.6 </span>Authentication</a></li><li class="tocline"><a href="#delivery-of-terms-and-conditions" class="tocxref"><span class="secno">6.7 </span>Delivery of terms and conditions</a></li></ol></li><li class="tocline"><a href="#operations" class="tocxref"><span class="secno">7. </span>Operations</a><ol class="toc"><li class="tocline"><a href="#checking-availability-and-offers" class="tocxref"><span class="secno">7.1 </span>Checking availability and offers</a><ol class="toc"><li class="tocline"><a href="#definition-of-a-bookable-event" class="tocxref"><span class="secno">7.1.1 </span>Definition of a 'bookable' Event</a></li><li class="tocline"><a href="#definition-of-a-bookable-slot-facility-use" class="tocxref"><span class="secno">7.1.2 </span>Definition of a 'bookable' slot/facility use</a></li><li class="tocline"><a href="#checking-availability-and-offers-for-an-event-or-facility-use-slot" class="tocxref"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</a></li><li class="tocline"><a href="#obtaining-a-lease-on-a-space-within-an-event" class="tocxref"><span class="secno">7.1.4 </span>Obtaining a lease on a space within an event</a></li></ol></li><li class="tocline"><a href="#creating-and-updating-orders" class="tocxref"><span class="secno">7.2 </span>Creating and updating orders</a><ol class="toc"><li class="tocline"><a href="#discovering-the-order-endpoint" class="tocxref"><span class="secno">7.2.1 </span>Discovering the order endpoint</a></li><li class="tocline"><a href="#pre-conditions-for-creating-an-order" class="tocxref"><span class="secno">7.2.2 </span>Pre-conditions for creating an order</a></li><li class="tocline"><a href="#creating-a-new-order-orders-" class="tocxref"><span class="secno">7.2.3 </span>Creating a new order (<code>/orders</code>)</a></li><li class="tocline"><a href="#viewing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#deleting-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#completing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</a></li></ol></li><li class="tocline"><a href="#ordering-a-place-at-a-free-event-ordering-a-free-slot" class="tocxref"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</a></li><li class="tocline"><a href="#leases-and-the-orderleaseduration-property" class="tocxref"><span class="secno">7.4 </span>Leases and the orderLeaseDuration property</a></li><li class="tocline"><a href="#the-state-transitions-during-the-order-process" class="tocxref"><span class="secno">7.5 </span>The state transitions during the order process</a></li><li class="tocline"><a href="#actions-which-occur-after-order-completion-confirmations-and-refunds" class="tocxref"><span class="secno">7.6 </span>Actions which occur after order completion: confirmations and refunds</a><ol class="toc"><li class="tocline"><a href="#supplying-a-confirmation-to-the-customer" class="tocxref"><span class="secno">7.6.1 </span>Supplying a confirmation to the customer</a></li><li class="tocline"><a href="#refunding-a-customer-and-cancelling-an-order" class="tocxref"><span class="secno">7.6.2 </span>Refunding a customer and cancelling an order</a></li></ol></li><li class="tocline"><a href="#customers" class="tocxref"><span class="secno">7.7 </span>Customers</a><ol class="toc"><li class="tocline"><a href="#creation-of-customers-on-the-booking-system" class="tocxref"><span class="secno">7.7.1 </span>Creation of customers on the booking system</a></li><li class="tocline"><a href="#viewing-a-customer-s-previously-placed-orders" class="tocxref"><span class="secno">7.7.2 </span>Viewing a customer's previously placed orders</a></li><li class="tocline"><a href="#deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed" class="tocxref"><span class="secno">7.7.3 </span>Deletion of personal data of the customer if the order is not completed</a></li></ol></li></ol></li><li class="tocline"><a href="#future-versions-of-this-api" class="tocxref"><span class="secno">8. </span>Future versions of this API</a></li><li class="tocline"><a href="#new-open-active-models-defined-in-the-0-5-booking-api-specification-which-are" class="tocxref"><span class="secno">9. </span>New Open Active models defined in the 0.5 Booking API specification which are</a><ol class="toc"><li class="tocline"><a href="#error" class="tocxref"><span class="secno">9.1 </span>Error</a></li><li class="tocline"><a href="#payment" class="tocxref"><span class="secno">9.2 </span>Payment</a></li><li class="tocline"><a href="#acknowledgements" class="tocxref"><span class="secno">9.3 </span>Acknowledgements</a></li></ol></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ol class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ol></li></ol></nav><section class="informative"><!--OddPage--><h2 id="introduction"><span class="secno">1. </span>Introduction</h2><p><em>This section is non-normative.</em></p><p>The document is an output of the
+<a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a>. As part
+of the <a href="https://openactive.io">OpenActive</a> initiative, the community group is
+developing standards that will promote the publication and use of open
+<a href="https://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data">opportunity data</a>
+in helping people to become more physically active.</p><p>The Community Group have already published specifications that define standard
+data models ([<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>]) and support the publication and
+harvesting of data in standard formats ([<cite><a class="bibref" href="#bib-rpde">RPDE</a></cite>]).</p><p>This existing work helps increase the discovery of opportunities for people to
+be active. This specification builds on that work by defining an HTTP API that
+can be implemented by booking systems that are publishing opportunity data. By
+allowing third-party applications to place bookings in their systems, it becomes
+possible for more people to participate in events or make use of leisure and
+sporting facilities.</p><p>The specification defines the flow of HTTP requests and responses between the
+booking system (server) and the third-party application (client). This includes
+definitions of the overall application flow, detailed request and response
+formats and the potential error conditions that applications may encounter.</p><section><h3 id="scope-and-requirements"><span class="secno">1.1 </span>Scope and requirements</h3><p>The current scope of the specification should conform to a set of
+<a href="https://docs.google.com/document/d/1fsCr071V12i_2g0DK818OAGlEAJFLWwkBp9bpgx4fo8/edit?usp=sharing">use cases and requirements</a>
+that have previously been identified and discussed with the OpenActive
+community.</p><p>The focus of the initial versions of this specification will be on the simplest
+use cases that will support making bookings on behalf of users. This core
+functionality includes:</p><ul>
+<li><strong>Pricing and availability</strong> – checking the price and current availabilty of
+an event or for the use of a facility</li>
+<li><strong>Leasing</strong> – temporarily reserving spaces for a user to attend an event or
+make use of a facility, whilst placing a booking</li>
+<li><strong>Booking</strong> – placing and viewing bookings, and where necessary, confirming
+receipt of payment from users</li>
+</ul><p>A number of additional requirements that relate to the booking of events and
+facilities are currently out of scope:</p><ul>
+<li>creating and managing accounts for users</li>
+<li>more complex pricing options, e.g. membership based pricing</li>
+<li>handling bookings for multiple events ("shopping carts") or for groups of users</li>
+<li>waiting lists for events</li>
+</ul><p>It is possible that future versions of this specification may include support
+for these or other features. Revisions will be driven by the needs of the
+community.</p><section><h4 id="functionality-that-is-out-of-scope"><span class="secno">1.1.1 </span>Functionality that is out of scope</h4><p>By design this specification will not define some types of functionality.</p><p>These have been declared as permanently out of scope because they are either
+adequately covered by existing specifications, or will be covered by future
+work of the OpenActive Community Group.</p><p>The functionality that is currrently defined as out of scope includes:</p><ul>
+<li><strong>API authentication and security</strong> – while the specification recommends some
+best practices relating to authentication and security it does not mandate a
+specific means of securing an API. Implementers are free to choose the system
+that offers the best security for their platform and users</li>
+<li><strong>Payment processing</strong> – the design assumes that all payment handling will
+be carried out by the third-party application, in a separate payment flow.
+Booking systems and application developers are able to use the payment and
+reconciliation mechanisms that provide the best options for their customers</li>
+<li><strong>API business models</strong> – the design is agnostic to any business models that
+might govern the use of the API, e.g. revenue-sharing or transaction processing
+fees</li>
+<li><strong>Discovery</strong>  – finding, filtering and searching for opportunity data. This
+specification assumes that the client and server applications have already
+shared data about the relevant opportunities. Additional functionality in this
+area will be addressed by future specifications from the Community Group</li>
+</ul></section></section><section><h3 id="audience"><span class="secno">1.2 </span>Audience</h3><p>The document is primarily intended for the following audiences:</p><ul>
+<li>Software developers who want to implement the API, e.g. as part of a booking
+system</li>
+<li>Software developers building client libraries or applications that will use
+the API</li>
+</ul><p>The following sections introduce terminology, concepts and requirements that
+underpin the design of the API. This content might also be useful for a wider
+audience, e.g. business analysts or product managers looking for a high-level
+overview of the API functionality.</p></section></section><section id="conformance"><!--OddPage--><h2 id="x2-conformance"><span class="secno">2. </span>Conformance</h2><p>
+  As well as sections marked as non-normative, all authoring guidelines, diagrams, examples,
+  and notes in this specification are non-normative. Everything else in this specification is
+  normative.
+</p><p id="respecRFC2119">The key words  <em class="rfc2119">MAY</em>, <em class="rfc2119">MUST</em>, <em class="rfc2119">MUST NOT</em>, <em class="rfc2119">OPTIONAL</em>, <em class="rfc2119">RECOMMENDED</em>, <em class="rfc2119">REQUIRED</em>, <em class="rfc2119">SHOULD</em>, and <em class="rfc2119">SHOULD NOT</em> are 
+  to be interpreted as described in [<cite><a class="bibref" href="#bib-rfc2119">RFC2119</a></cite>].
+</p><p>This specification makes use of the compact IRI Syntax; please refer to the
+<a href="https://www.w3.org/TR/json-ld/#compact-iris">Compact IRIs</a> from [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>].</p></section><section><!--OddPage--><h2 id="typographical-conventions"><span class="secno">3. </span>Typographical Conventions</h2><p>The following typographic conventions are used in this specification:</p><dl class="typography">
+<dt><code>markup</code></dt>
+<dd>Markup (elements, attributes, properties), machine processable
+values (string, characters, media types), property name, or a
+file name is in a monospace font.</dd>
+<dt><strong>definition</strong></dt>
+<dd>A definition of a term, to be used elsewhere in this or other
+specifications, is in bold and italics.</dd>
+<dt><a href="">hyperlink</a></dt>
+<dd>A hyperlink is underlined and in blue.</dd>
+<dt>[<cite><a class="bibref" href="#bib-reference">reference</a></cite>]</dt>
+<dd>A document reference (normative or informative) is enclosed in
+square brackets and links to the references section.</dd>
+</dl><div class="note" id="issue-container-generatedID-0"><div role="heading" class="note-title marker" id="h-note-0" aria-level="3"><span>Note</span></div><div class=""><p>Notes are in light green boxes with a green left border and with a "Note"
+header in green. Notes are normative or informative depending on the whether
+they are in a normative or informative section, respectively.</p>
+</div></div><div class="example"><div class="example-title marker"><span>Example 1</span></div><pre class="hljs javascript" aria-busy="false">Examples are <span class="hljs-keyword">in</span> light khaki boxes, <span class="hljs-keyword">with</span> khaki left border, and <span class="hljs-keyword">with</span> a
+numbered <span class="hljs-string">"Example"</span> header <span class="hljs-keyword">in</span> khaki. Examples are always informative.
+The content <span class="hljs-keyword">of</span> the example is <span class="hljs-keyword">in</span> monospace font and may be syntax colored.</pre></div></section><section><!--OddPage--><h2 id="key-concepts"><span class="secno">4. </span>Key Concepts</h2><dl class="typography">
+<dt><strong>booking system</strong></dt>
+<dd>The platform or service that provides a server-side
+implementation of this API.
+</dd>
+<dt><strong>broker</strong></dt>
+<dd>The organisation or developer providing an application that
+allows customers to make bookings. Those applications will be
+clients of the API defined in this specification</dd>
+<dt><strong>confirmation</strong></dt>
+<dd>The process of contacting a customer following the placement
+of a successful order, e.g. to provide tickets, attendance details,
+etc. This specification does not define this process</dd>
+<dt><strong>customer</strong></dt>
+<dd>The user who places a booking using an application provided by
+a broker.</dd>
+<dt><strong>event</strong></dt>
+<dd>An <a href="https://openactive.io/modelling-opportunity-data/#events">Event</a>
+is an opportunity to take part in a physical activity. Events
+take place at a specific location and at an agreed date
+and time.</dd>
+<dt><strong>facility</strong></dt>
+<dd>A sporting facility, e.g. a squash court, table tennis table or
+football pitch.</dd>
+<dt><strong>facilityuse</strong></dt>
+<dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-facility-use-code-oa-facilityuse-code-code-oa-individualfacilityuse-code-">FacilityUse</a>
+is an generic opportunity to utilise the facilities of a seller in order
+to take part in a physical activity. FacilityUses are not
+scheduled, and their slots are an equivalent for an Event in being an
+opportunity which can be booked.</dd>
+<dt><strong>lease</strong></dt>
+<dd>A temporary reservation of a space at an event or for the use
+of a facility. Leases provide a limited time window during which
+a customer can place a booking and still be guaranteed a place at
+an event (or use of the facility).</dd>
+<dt><strong>offer</strong></dt>
+<dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
+describes the terms under which a customer may participate in an
+event or use a facility.</dd>
+<dt><strong>opportunity</strong></dt>
+<dd>An opportunity is a generic term to describe an opportunity to
+be active. Currently an opportunity is either an Event (for
+scheduled events, such as a yoga class) or a Slot for a FacilityUse
+(for non-scheduled use of the facilities of a seller).</dd>
+<dt><strong>order</strong></dt>
+<dd>Describes the in-process or completed booking. An order may be
+made up of several order items. An order results in a customer
+having a confirmed reservation.</dd>
+<dt><strong>payment</strong></dt>
+<dd>The process of taking funds from a customer in order to place
+an order. Payment is managed between the customer and the broker.</dd>
+<dt><strong>reconciliation</strong></dt>
+<dd>The process by which brokers and booking systems confirm that
+payment(s) have been taken on behalf of customers, to ensure that
+money is appropriately exchanged between the brokers, booking systems
+and sellers. This specification does not define this process.</dd>
+<dt><strong>refund</strong></dt>
+<dd>The process of returning funds to a customer, e.g. if an order
+is cancelled. This specification does not define this process.</dd>
+<dt><strong>reservation</strong></dt>
+<dd>A reservation for a customer to attend an event or for the use
+of a facility. A reservation is created for every item in an order.</dd>
+<dt><strong>seller</strong></dt>
+<dd>The organisation providing access to events or use of facilities
+via a booking system. E.g. a leisure provider running yoga classes.</dd>
+<dt><strong>slot</strong></dt>
+<dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-slots-code-oa-slot-code-">Slot</a>
+is an opportunity to use a facility at a specific time and for a
+specified duration. A Slot is therefore a specific type of Event,
+although it has a more constrained set of properties.</dd>
+</dl></section><section class="normative"><!--OddPage--><h2 id="booking-flow"><span class="secno">5. </span>Booking Flow</h2><section><h3 id="high-level-summary-of-the-api"><span class="secno">5.1 </span>High-level summary of the API</h3><p>This API defines a means for a <strong>booking system</strong> to expose an HTTP API that
+may be used by a <strong>broker</strong> to place bookings for <strong>opportunities</strong> on behalf of
+a <strong>customer</strong>. By exposing this API the booking system can support a <strong>seller</strong>
+in reaching a wider audience.</p><p>A <strong>broker</strong> provides <strong>customers</strong> with an application that helps them to discover
+<strong>opportunities</strong> to be physically active. The customer may then choose to make
+a booking to attend an <strong>event</strong> or to make use of a <strong>facility</strong>.</p><p>The <strong>broker</strong> will check the availability of the <strong>opportunity</strong> in order to check
+whether the <strong>customer</strong> can still attend. The <strong>broker</strong> will also present the
+<strong>customer</strong> with information about any costs associated with taking up the
+<strong>opportunity</strong>. This involves identifying the applicable <strong>offers</strong> and
+presenting them to the user. The customer should be made aware of any terms and
+conditions and any restrictions relating to age, gender or ability, as part of
+the process of proceeding to being in a position to make a booking.</p><p>If there is still availability and the <strong>customer</strong> is happy to accept an
+<strong>offer</strong>, then the <strong>customer</strong> can proceed to make a booking. The broker
+creates an <strong>order</strong> on behalf of the user.</p><p>Creating the <strong>order</strong> will also create a temporary <strong>lease</strong> that will reserve
+a space for the <strong>customer</strong> to take up the <strong>opportunity</strong> while the
+rest of the workflow completes.</p><p>If the <strong>offers</strong> for an event or use of a facility indicate that the user must
+pay, then the broker will take the customer through a separate <strong>payment</strong>
+workflow. This workflow is not defined by this specification.</p><p>Once <strong>payment</strong> has been completed, the <strong>broker</strong> will update the
+<strong>booking platform</strong> to indicate that <strong>payment</strong> has been taken. The
+<strong>booking</strong> process is then completed and the <strong>order</strong> is maked as completed.</p><p>The completion of the <strong>order</strong> will result in the <strong>lease</strong> being removed and a
+permanent <strong>reservation</strong> being created on behalf of the <strong>customer</strong>. The
+<strong>customer</strong> may receive <strong>confirmation</strong> from either the <strong>broker</strong> or
+<strong>booking system</strong> (or both) that provides details about how and when they can
+attend the <strong>event</strong> or use the booked <strong>facility</strong>.</p><p>Separately the <strong>broker</strong> and <strong>booking system</strong> will go through a
+<strong>reconciliation</strong> process to transfer funds or otherwise report on successful
+transactions. A <strong>customer</strong> might also cancel an <strong>order</strong> and will then
+receive a <strong>refund</strong>. The reconciliation processes is not defined by this
+specification. The details will depend on the business model and agreements in
+place between the <strong>broker</strong> and <strong>booking system</strong>. The cancellation workflow
+is defined in this specification in terms of the steps that the <strong>broker</strong> must
+undertake to provide the <strong>booking system</strong> with notification of the
+cancellation.</p></section><section><h3 id="urls-used-in-the-description-of-the-api"><span class="secno">5.2 </span>URLs used in the description of the API</h3><p>The following sections contain URIs which are for guidance, and are used as
+examples only. For example, /events/452 is used to represent the canonical
+reference to the web representation of an Event with an id of 452. The URI could
+alternatively be /sessions/452 if session is the term used to describe the
+specific type of Event by a particular seller or booking system or by /slots/452
+if dealing with a <strong>slot</strong> for use of a <strong>facility</strong>. All URIs should
+however be long lived identifiers and canonical and should not be recycled.
+Adherence to the workflows within this specification is required to develop a
+compliant <strong>booking system</strong>/<strong>broker</strong> implementation of this API and
+associated APIs such as RDPE in the Open Active ecosystem.</p></section><section><h3 id="workflow-diagram"><span class="secno">5.3 </span>Workflow diagram</h3><figure id="fig-simple-illustration-of-booking-workflow"><img src="flow-diagram.png" alt="Flow diagram" height="759" width="558">
+<figcaption>Figure <span class="figno">1</span> <span class="fig-title">Simple illustration of booking workflow</span></figcaption>
+</figure></section><section><h3 id="sequence-diagram"><span class="secno">5.4 </span>Sequence diagram</h3><figure id="fig-sequence-diagram-showing-api-interactions"><img src="sequence-diagram.png" alt="Sequence diagram" height="723" width="710">
+<figcaption>Figure <span class="figno">2</span> <span class="fig-title">Sequence diagram showing API interactions</span></figcaption>
+</figure></section><section><h3 id="step-by-step-process-description"><span class="secno">5.5 </span>Step-by-step process description</h3><p>The 0.5, and higher, versions of the Booking API supports single items per <strong>order</strong> and
+single <strong>payments</strong> per <strong>order</strong>. Future versions of the specification may support
+multiple items and multipart <strong>payments</strong>, 0.7 still does not.</p><section><h4 id="complete-transaction"><span class="secno">5.5.1 </span>Complete transaction</h4><ol>
+<li>The <strong>broker</strong> requests details on a specific <strong>opportunity</strong> from the
+<strong>booking system</strong> (/events/452 in example) in order to discover available
+<strong>offers</strong>. These offers are subsequently presented to the <strong>customer</strong>.</li>
+<li>The <strong>customer</strong> chooses an bookable <strong>offer</strong> (see definition of a bookable
+event).</li>
+<li>If the <strong>offer</strong> for the <strong>opportunity</strong> is bookable, the broker makes a POST
+request to the <strong>orders</strong> endpoint (/orders in the examples) containing a
+Person object describing the <strong>customer</strong>, and information about the <strong>offer</strong>
+and <strong>opportunity</strong> selected. At a minimum, this Person object should
+contain the <code>email</code> address for the <strong>customer</strong>, and if possible the <code>givenName</code>
+and <code>familyName</code>. The <strong>booking system</strong> creates a timed <strong>lease</strong> on the space
+in the <strong>opportunity</strong> which is being booked. At this point the <strong>offer</strong> is
+deemed to be accepted and an <strong>order</strong> is created.
+The <strong>booking system</strong> sends a 201
+status code, with a representation of the <strong>order</strong> in the body of the response,
+and with a Location header set containing the URI for the web representation of
+the created <strong>Order</strong> object.</li>
+<li>If there is a price for the <strong>offer</strong>, the <strong>broker</strong> takes payment from the
+<strong>customer</strong> via a third party payment provider.</li>
+<li>The <strong>broker</strong> notifies the <strong>seller</strong> of the payment by making a PATCH
+request to the specific order endpoint (/orders/123 in the example) of the
+<strong>booking system</strong>. This should include details of the <code>paymentMethod</code> and the
+<code>paymentMethodId</code> (commonly the last four digits of the card which can be used
+by the <strong>seller</strong> to identify the <strong>customer</strong>). The <strong>broker</strong> should store any
+details about the transaction which are needed for processing refunds or in the
+case of chargebacks. This is out of scope for the Booking API spec and is the
+responsibility of the <strong>broker</strong>.</li>
+<li>The <strong>booking system</strong> notifies the <strong>broker</strong> of a successful order
+completion by returning a response with a 200 status code and an object with an
+appropriate value for the <code>confirmationCode</code> field.</li>
+</ol><p>The <strong>broker</strong> is the entity initiating <strong>payment</strong> and as the merchant in the
+transaction is responsible for storing records of the <strong>payment</strong> transaction
+such as authorization codes. This is an implementation detail and is thus,
+out of scope for the Booking API and specification.</p></section><section><h4 id="order-cancellation-and-refund"><span class="secno">5.5.2 </span>Order cancellation and refund</h4><p>Since the <strong>broker</strong> is the party which initiates the third-party <strong>payment</strong>
+and is the entity which notifies the <strong>booking system</strong> of <strong>payment</strong> and
+creates the <strong>order</strong> on behalf of the <strong>customer</strong>, the <strong>broker</strong> is also the
+entity which handles refunds and cancellation.</p><p>The workflow to deal with a cancellation and refund of an order is described
+below:</p><ol>
+<li><p>The <strong>broker</strong> intiates a refund for the <strong>customer</strong> using the mechanisms
+provided by the third-party payment provider.</p>
+</li>
+<li><p>The <strong>broker</strong> notifies the <strong>booking system</strong> of the cancellation by making
+a PATCH request to the specific order endpoint (/orders/123 in the example) of
+the <strong>booking system</strong>. The PATCH request body should contain an updated
+order item in the <code>orderedItem</code> property, with the <code>orderItemStatus</code> set to
+<a href="https://schema.org/OrderCancelled">https://schema.org/OrderCancelled</a> to indicate that the ordered item in
+the <strong>order</strong> is no longer required.</p>
+</li>
+<li><p>The <strong>booking system</strong> responds to the <strong>broker</strong> with a representation of
+the <strong>order</strong> with the <code>orderStatus</code> property set to
+<a href="https://schema.org/OrderCancelled">https://schema.org/OrderCancelled</a> with a status of 200. The <strong>order</strong> is now
+deemed to be cancelled.</p>
+</li>
+</ol></section><section><h4 id="cancelling-a-lease"><span class="secno">5.5.3 </span>Cancelling a Lease</h4><p>If the <strong>customer</strong> no longer wants to proceed with a particular <strong>offer</strong>, the
+lease for the space in the <strong>opportunity</strong> and the <strong>order</strong> may be cancelled by
+issuing a DELETE request to the specific order endpoint (/orders/123 in the
+example) of the <strong>booking system</strong>.</p><p>The <strong>booking system</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> release the space in the <strong>event</strong> and delete the
+underlying resource. Any subsequent requests to this resource should result in a
+404 response.</p></section><section><h4 id="handling-lease-expiry"><span class="secno">5.5.4 </span>Handling lease expiry</h4><p>If the lease has expired during the <strong>payment</strong> process, the <strong>broker</strong> <em class="rfc2119" title="SHOULD">SHOULD</em>
+check whether the <strong>opportunity</strong> is still bookable and if the selected
+<strong>offer</strong> is still available. If they are, the <strong>broker</strong> should create a
+new <strong>order</strong> using the workflow described above.</p><p>The <strong>booking system</strong> should respond to requests for <strong>orders</strong> with an expired
+lease with a 410 status code with an error specifying the <code>errorType</code> as
+<a href="https://openactive.io/errors/anonymous_lease_expired">https://openactive.io/errors/anonymous_lease_expired</a> until the underlying
+<strong>order</strong> resource is removed.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="common-requirements"><span class="secno">6. </span>Common Requirements</h2><p>This section defines some common functionality that applies to the design of the
+whole API.</p><section><h3 id="media-types"><span class="secno">6.1 </span>Media types</h3><p>Custom media types are used in this API to allow clients to choose the format
+of the data they receive.</p><p>Servers <em class="rfc2119" title="MAY">MAY</em> choose to support additional media types but <em class="rfc2119" title="MUST">MUST</em> support the
+media type(s) defined by this specification.</p><p>Media types will conform to the following pattern:</p><pre aria-busy="false" class="hljs">application/vnd.openactive[.version]+json</pre><p>The current media type is:</p><pre aria-busy="false" class="hljs">application/vnd.openactive.0.7+json</pre><p>**Brokers specifying a media type without a version, such as:</p><pre aria-busy="false" class="hljs">application/vnd.openactive+json</pre><p>will recieve data in in the most current format which is 0.7.</p><p>If you are building an application as a <strong>broker</strong> and care about the stability
+of the response, or have a client application which is tied to a specific
+version you should always try to use a media type containing the version number.</p><p><strong>Booking systems</strong> are not obliged to support previous versions of the
+specification, and so may not support a specific version number. We anticipate
+that when the Booking API reaches the stability of a 1.0 version that this
+advice may change.</p></section><section><h3 id="response-formats"><span class="secno">6.2 </span>Response formats</h3><p>Requests and response documents exchanged via this API will all be valid
+[<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents.</p><p>The documents <em class="rfc2119" title="MUST">MUST</em> include a [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] <code>context</code> that refers to the
+[<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example"><div class="example-title marker"><span>Example 2</span><span style="text-transform: none">: minimal JSON-LD document</span></div><pre class="hljs json" aria-busy="false">{
+  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>
+}</pre></div><p>Unless otherwise specified the request and response documents <em class="rfc2119" title="MUST">MUST</em> conform to
+the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section><h3 id="url-discovery"><span class="secno">6.3 </span>URL discovery</h3><p>The Booking API has been defined around the concept of URL discovery. This
+allows <strong>booking systems</strong> to create resource URLs which match their own
+terms for naming specific objects such as <strong>events</strong> and <strong>orders</strong>.</p><p>The URL for a specific action, such as for example providing <strong>payment</strong> details,
+may be discovered by parsing the actions defined in the <code>potentialAction</code>
+property of an object and constructing the appropriate URL from the
+<code>urlTemplate</code> property of the <code>schema:EntryPoint</code> object contained within the <code>target</code>
+property of the <code>potentialAction</code> required.</p><p>An example is below:</p><div class="example"><div class="example-title marker"><span>Example 3</span><span style="text-transform: none">: Example of a potentialAction</span></div><pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: [
+        {
+          <span class="hljs-string">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+          <span class="hljs-string">"name"</span>: <span class="hljs-string">"Payment"</span>,
+          <span class="hljs-string">"target"</span>: {
+            <span class="hljs-string">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-string">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+            <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+            <span class="hljs-string">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+          }
+        }
+      ]</pre></div><p>Since discovery of URLs is an implicit part of the specification, <strong>brokers</strong>
+<em class="rfc2119" title="SHOULD">SHOULD</em> avoid hard-coding URLs for specific actions into their applications and
+client libraries. <strong>Brokers</strong>  <em class="rfc2119" title="SHOULD">SHOULD</em> use most applicable URL discovered at the
+point in the workflow they are currently in - e.g. not use a cached URL that has
+been previously successfully used. They should also not attempt to create URLs
+for a specific action based on patterns within previously used URLs.</p><p>It is the responsibility of <strong>booking platforms</strong> to advertise the URL for
+further activity in the booking workflow at the point of need. For example they
+<em class="rfc2119" title="MUST">MUST</em> advertise the URL for <strong>order</strong> creation when a <strong>broker</strong> requests
+a specific <strong>opportunity</strong> resource and <em class="rfc2119" title="SHOULD">SHOULD</em> advertise it in their RDPE feeds
+since both of these points within the booking workflow are places where a \
+<strong>customer</strong> may wish to check availability.</p></section><section><h3 id="error-handling"><span class="secno">6.4 </span>Error handling</h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP
+5XX status code.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format using a
+content type of <code>application/vnd.openactive.v0.7+json</code> and include at least one
+Error object. The error handling has in the Booking API has been modelled
+closely on [<cite><a class="bibref" href="#bib-rfc7807">RFC7807</a></cite>].</p><div class="example"><div class="example-title marker"><span>Example 4</span><span style="text-transform: none">: Error response format</span></div><pre class="hljs json" aria-busy="false">{
+  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Error"</span>,
+  <span class="hljs-attr">"errorType"</span>: <span class="hljs-string">"https://openactive.io/errors/incomplete_customer_details"</span>,
+  <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Incomplete customer details"</span>,
+  <span class="hljs-attr">"details"</span>: <span class="hljs-string">"No customer details supplied"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"400"</span>,
+  <span class="hljs-attr">"instance"</span>: <span class="hljs-string">"/orders"</span>,
+  <span class="hljs-attr">"method"</span>: <span class="hljs-string">"POST"</span>
+}</pre></div><ul>
+<li><code>errorType</code> – a URI reference [<cite><a class="bibref" href="#bib-rfc3986">RFC3986</a></cite>] that identifies the problem type. This
+specification encourages that, when dereferenced, it provide human-readable
+documentation for the problem type.
+When this member is not present, its value is assumed to be "about:blank".</li>
+<li><code>title</code> – a short, human-readable summary of the problem type. It
+<em class="rfc2119" title="SHOULD NOT">SHOULD NOT</em> change from occurrence to occurrence of the problem, except for
+purposes of localization.</li>
+<li><code>description</code> – a slightly longer, human-readable summary of the problem type.
+It largely <em class="rfc2119" title="SHOULD NOT">SHOULD NOT</em> change from occurrence to occurrence of the problem,
+except for purposes of localization or to provide specific information about why
+the error occurred in that particular case.</li>
+<li><code>status</code>  – the HTTP status code ([<cite><a class="bibref" href="#bib-rfc7231">RFC7231</a></cite>], Section 6) generated by the
+origin server for this occurrence of the problem.</li>
+<li><code>instance</code>  – a URI reference that identifies the specific occurrence of
+the problem. It may or may not yield further information if dereferenced.</li>
+<li><code>requestId</code>  – used by technical support for diagnostics purposes.</li>
+</ul><section><h4 id="standard-uris-for-common-errors"><span class="secno">6.4.1 </span>Standard URIs for common errors</h4><p><a href="https://openactive.io/errors/incomplete_customer_details">https://openactive.io/errors/incomplete_customer_details</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li><p>if the <code>email</code> address of the customer is not supplied within a schema:Person
+object.</p>
+</li>
+<li><p>if the <code>customer</code> property supplied is not a valid schema:Person object.</p>
+</li>
+</ul><p><a href="https://openactive.io/errors/incomplete_broker_details">https://openactive.io/errors/incomplete_broker_details</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li><p>if there is insuffficient detail in the schema:Organisation object describing
+the <strong>broker</strong></p>
+</li>
+<li><p>if the <code>broker</code> property supplied is not a valid schema:Organisation object.</p>
+</li>
+</ul><p><a href="https://openactive.io/errors/incomplete_offer_details">https://openactive.io/errors/incomplete_offer_details</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li><p>if there is no <code>acceptedOffer</code> property on the schema:OrderItem</p>
+</li>
+<li><p>if the <code>acceptedOffer</code> is not a URL which corresponds to an <strong>offer</strong> on the
+<strong>booking system</strong></p>
+</li>
+</ul><p><a href="https://openactive.io/errors/incomplete_event_details">https://openactive.io/errors/incomplete_event_details</a>
+<a href="https://openactive.io/errors/incomplete_facilityuse_details">https://openactive.io/errors/incomplete_facilityuse_details</a>
+<a href="https://openactive.io/errors/incomplete_slot_details">https://openactive.io/errors/incomplete_slot_details</a>
+<a href="https://openactive.io/errors/incomplete_opportunity_details">https://openactive.io/errors/incomplete_opportunity_details</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li><p>if there is no <code>orderedItem</code> property on the schema:OrderItem</p>
+</li>
+<li><p>if the <code>orderedItem</code> is not a URL which corresponds to an <strong>opportunity</strong> on
+the <strong>booking system</strong></p>
+</li>
+</ul><p><a href="https://openactive.io/errors/unavailable_offer">https://openactive.io/errors/unavailable_offer</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li>if the <strong>offer</strong> contained in the <code>acceptedOffer</code> property is not bookable</li>
+</ul><p><a href="https://openactive.io/errors/unavailable_event">https://openactive.io/errors/unavailable_event</a>
+<a href="https://openactive.io/errors/unavailable_facilityuse">https://openactive.io/errors/unavailable_facilityuse</a>
+<a href="https://openactive.io/errors/unavailable_slot">https://openactive.io/errors/unavailable_slot</a>
+<a href="https://openactive.io/errors/unavailable_opportunity">https://openactive.io/errors/unavailable_opportunity</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li>if the <strong>opportunity</strong> contained in the <code>orderedItem</code> property is not bookable</li>
+</ul><p><a href="https://openactive.io/errors/event_is_full">https://openactive.io/errors/event_is_full</a>
+<a href="https://openactive.io/errors/slot_is_full">https://openactive.io/errors/slot_is_full</a>
+<a href="https://openactive.io/errors/opportunity_is_full">https://openactive.io/errors/opportunity_is_full</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li>if there are no available spaces for the <strong>opportunity</strong> contained in the
+<code>orderedItem</code> property</li>
+</ul><p><a href="https://openactive.io/errors/incomplete_payment_details">https://openactive.io/errors/incomplete_payment_details</a></p><p>Status code: 400</p><p>Use cases:</p><ul>
+<li>if the <code>paymentMethod</code> or <code>paymentMethodId</code> properties are missing or
+incorrect</li>
+</ul><p><a href="https://openactive.io/errors/anonymous_lease_expired">https://openactive.io/errors/anonymous_lease_expired</a></p><p>Status code: 410</p><p>Use cases:</p><ul>
+<li>if <strong>broker</strong> did not supply <strong>payment</strong> details between the creation of the
+<strong>order</strong> and the expiration of the lease.</li>
+</ul><p><a href="https://openactive.io/errors/no_api_token_provided">https://openactive.io/errors/no_api_token_provided</a></p><p>Status code: 403</p><p>Use cases:</p><ul>
+<li>if <strong>broker</strong> did not supply an API key</li>
+</ul><p><a href="https://openactive.io/errors/invalid_api_token_provided">https://openactive.io/errors/invalid_api_token_provided</a></p><p>Status code: 401</p><p>Use cases:</p><ul>
+<li>if <strong>broker</strong> supplied an invalid API key, either malformed or expired</li>
+</ul><p><a href="https://openactive.io/errors/temporarily_unable_to_create_order">https://openactive.io/errors/temporarily_unable_to_create_order</a></p><p>Status code: 500</p><p>Use cases:</p><ul>
+<li>if <strong>booking platform</strong> is unable for technical reasons to create an <strong>order</strong>
+where the data provided to it is sufficient to allow it to do so</li>
+</ul><p><a href="https://openactive.io/errors/temporarily_unable_to_update_order">https://openactive.io/errors/temporarily_unable_to_update_order</a></p><p>Status code: 500</p><p>Use cases:</p><ul>
+<li>if <strong>booking platform</strong> is unable for technical reasons to update an <strong>order</strong>
+where the data provided to it is sufficient to allow it to do so</li>
+</ul><p><a href="https://openactive.io/errors/temporarily_unable_to_delete_order">https://openactive.io/errors/temporarily_unable_to_delete_order</a></p><p>Status code: 500</p><p>Use cases:</p><ul>
+<li>if <strong>booking platform</strong> is unable for technical reasons to delete an <strong>order</strong>
+where the data provided to it is sufficient to allow it to do so</li>
+</ul><p><a href="https://openactive.io/errors/unknown_or_incorrect_offer">https://openactive.io/errors/unknown_or_incorrect_offer</a></p><p>Status code: 404</p><p>Use cases:</p><ul>
+<li>where a <strong>booking platform</strong> has no <strong>offer</strong> matching the offer requested</li>
+</ul></section></section><section><h3 id="security"><span class="secno">6.5 </span>Security</h3><p>All HTTP requests and responses <em class="rfc2119" title="SHOULD">SHOULD</em> be secured using SSL.</p></section><section><h3 id="authentication"><span class="secno">6.6 </span>Authentication</h3><p>All of the API transactions described in this document <em class="rfc2119" title="SHOULD">SHOULD</em> require
+authentication.</p><p>This standard does not mandate a particular authentication method, but
+recommendation is that implementers <em class="rfc2119" title="SHOULD">SHOULD</em> consider using [<cite><a class="bibref" href="#bib-oauth2">OAuth2</a></cite>] as it is
+well-defined, widely supported and can be used in a variety of different
+application flows (e.g. via a Javascript web application or between servers).</p><p>Where necessary, OpenID Connect ([<cite><a class="bibref" href="#bib-openidconnect">OpenIdConnect</a></cite>]) provides a standard
+way of verifying the identity of customer. It is a thin layer that sits
+atop OAuth2.</p><p>One principle relating to authentication and the Booking API is that <strong>orders</strong>
+created by a specific <strong>broker</strong> <em class="rfc2119" title="SHOULD NOT">SHOULD NOT</em> be able to be changed by any other
+<strong>broker</strong>. It is the responsibility of the <strong>booking system</strong> to ensure that
+subsequent requests to an <strong>order</strong> should only be initiated by the <strong>broker</strong>
+which created the <strong>order</strong>.</p></section><section><h3 id="delivery-of-terms-and-conditions"><span class="secno">6.7 </span>Delivery of terms and conditions</h3><p>The <strong>broker</strong> should make the <strong>customer</strong> aware of and assent to any specific
+Terms and Conditions and Privacy Policy for using their service at the point of
+a <strong>customer</strong> signing up to the service and/or providing their contact details.</p><p>Since, during <strong>booking</strong>, the details of the <strong>customer</strong> are provided to the
+<strong>booking system</strong> and the <strong>seller</strong>, the <strong>broker</strong> should inform the
+<strong>customer</strong> of this any implications with resepct to GDPR and any other
+data protection legislation.</p><p>Any specific Terms and Conditions for the <strong>offer</strong> being taken, or Terms and
+Conditions relating to the <strong>seller</strong> should be made available via a URL as a
+<code>termsOfService</code> property on the <strong>offer</strong>. (<a href="https://pending.schema.org/termsOfService">https://pending.schema.org/termsOfService</a>)</p></section></section><section class="normative"><!--OddPage--><h2 id="operations"><span class="secno">7. </span>Operations</h2><section><h3 id="checking-availability-and-offers"><span class="secno">7.1 </span>Checking availability and offers</h3><p>This specification assumes that a <em>broker</em> has already obtained opportunity
+data from a <em>booking system</em> that includes descriptions of <strong>events</strong>,
+<strong>facilities</strong>, <strong>slots</strong> etc. For example by harvesting data via an [<cite><a class="bibref" href="#bib-rpde">RPDE</a></cite>]
+feed.</p><p>The availability of an <strong>event</strong> or <strong>facility</strong> may change at any time.</p><p>The offers available to a customer might also change over time.</p><p>A <strong>booking system</strong>  <em class="rfc2119" title="MUST">MUST</em> allow a <strong>broker</strong> to check the current state of
+<strong>events</strong> and/or <strong>facilities</strong> depending on what decide they expose from their
+platform.</p><section><h4 id="definition-of-a-bookable-event"><span class="secno">7.1.1 </span>Definition of a 'bookable' Event</h4><p>An <strong>event</strong> is deemed to be 'bookable' if:</p><ul>
+<li><p>The <strong>event</strong> has not already occurred, i.e. the <code>endDate</code> of the <strong>event</strong>
+has not been exceeded</p>
+</li>
+<li><p>The <code>eventStatus</code> of the <strong>event</strong> does not indicate that it has been
+cancelled or postponed</p>
+</li>
+<li><p>The <code>remainingAttendeeCapacity</code> of the <strong>event</strong> is greater than the number
+of places required</p>
+</li>
+<li><p>The <code>potentialAction</code> of the <strong>event</strong> contains one or more appropriate
+ReserveAction objects</p>
+</li>
+<li><p>There are one or more valid bookable <strong>offers</strong> for the <strong>event</strong></p>
+</li>
+<li><p>The temporary lease on the space in the <strong>event</strong> (defined in
+<code>orderLeaseDuration</code>) has not expired before the <strong>payment</strong> is taken
+by the <strong>broker</strong> and the <strong>seller</strong> is notified by the <strong>broker</strong> that payment
+has taken place.</p>
+</li>
+</ul><p>The <strong>customer</strong> may be ineligible to attend a 'bookable' <strong>event</strong>, but may
+book a space for someone else (e.g. a child) if:</p><ul>
+<li><p>The gender of the <strong>customer</strong> taking up the opportunity is incompatible with
+the <code>genderRestriction</code> of the <strong>event</strong> but the attendee is compatible</p>
+</li>
+<li><p>The age of the <strong>customer</strong> taking up the opportunity is incompatible with the
+<code>ageRange</code> of the <strong>event</strong> but the attendee is compatible</p>
+</li>
+</ul><p>The <strong>event</strong> may also be deemed to be bookable if the <strong>event</strong> contains a deep
+link to a URL where the user can book the <strong>event</strong> independently, however
+this is out of scope for this API</p><p>The above set of restrictions are at the level of the <strong>event</strong> and the data
+contained within the content of the API returns.</p><p>On a <strong>booking system</strong> level, an <strong>event</strong> is 'bookable', mediated by a
+specific <strong>broker</strong>, if that <strong>broker</strong> has machine readable permission to
+access the relevant instance of the Booking API provided by the <strong>booking</strong>
+system via an API key or similar token.</p><p>For the purposes of this specification, the <strong>event</strong> is only bookable if the
+data describing the the <strong>event</strong> is published via a <strong>booking system</strong> which
+is compliant with and supports the Open Active Booking API.</p></section><section><h4 id="definition-of-a-bookable-slot-facility-use"><span class="secno">7.1.2 </span>Definition of a 'bookable' slot/facility use</h4><p>A slot is essentially an event, and many of the above conditions apply, however
+some of the properties for a slot are different and as a consequence there are
+different criteria for it being bookable.</p><p>A <strong>slot</strong> is deemed to be 'bookable' if:</p><ul>
+<li><p>The <strong>slot</strong> has not already occurred, i.e. the <code>startDate</code> and <code>endDate</code> of
+the <strong>event</strong> has not been exceeded</p>
+</li>
+<li><p>The <code>remainingUses</code> of the <strong>slot</strong> is greater than or equal to the number
+of slots required. For example if an independently organised badminton league
+requires four courts, the number of <code>remainingUses</code> should be 4 or higher.</p>
+</li>
+<li><p>The <code>potentialAction</code> of the <strong>slot</strong> contains one or more appropriate
+ReserveAction objects</p>
+</li>
+</ul><p>There may be more restrictions placed by a <strong>seller</strong> on the booking of a
+<strong>slot</strong> for use of a <strong>facility</strong>.</p><p>For example it might be that one of the party must be over a certain age as a
+supervising adult if some of the party are minors. It is the responsibility of
+the <strong>booking platform</strong> to make the terms and conditions of <strong>booking</strong>
+available to the <strong>broker</strong> and it is the responsibility of the <strong>broker</strong> to
+ensure that the <strong>customer</strong> is aware of these conditions before <strong>booking</strong>
+occurs.</p></section><section><h4 id="checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</h4><p>To check the availability of an opportunity a <strong>broker</strong> will issue a GET
+request to the URI specified in the <code>id</code> of the opportunity, having
+discovered it from the RDPE feed.</p><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
+the <code>remainingAttendeeCapacity</code> property is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress <strong>orders</strong>.</p><p>It is the responsibility of <strong>brokers</strong> to ensure that spaces within the
+opportunity are still available before proceeding with booking.</p><div class="example"><div class="example-title marker"><span>Example 5</span><span style="text-transform: none">: Viewing event availability</span></div><pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/events/452</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.7+json</pre></div><div class="example"><div class="example-title marker"><span>Example 6</span><span style="text-transform: none">: Event response</span></div><pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.7+json
+<span class="hljs-attribute">Content-Length</span>: ...
+
+<span class="javascript">
+{
+  <span class="hljs-string">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Event"</span>,
+  <span class="hljs-string">"identifier"</span>: <span class="hljs-number">452</span>,
+  <span class="hljs-string">"id"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
+  <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball"</span>,
+  <span class="hljs-string">"offers"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Offer"</span>,
+      <span class="hljs-string">"acceptedPaymentMethod"</span>: [
+          <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+      ],
+      <span class="hljs-string">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+      <span class="hljs-string">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+      <span class="hljs-string">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+      <span class="hljs-string">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+      <span class="hljs-string">"price"</span>: <span class="hljs-string">"33.00"</span>,
+      <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+    }
+  ],
+  <span class="hljs-string">"eventStatus"</span>: <span class="hljs-string">"https://schema.org/EventScheduled"</span>,
+  <span class="hljs-string">"maximumAttendeeCapacity"</span>: <span class="hljs-number">30</span>,
+  <span class="hljs-string">"remainingAttendeeCapacity"</span>: <span class="hljs-number">20</span>,
+  <span class="hljs-string">"startDate"</span>: <span class="hljs-string">"2018-01-27T11:00:00Z"</span>,
+  <span class="hljs-string">"endDate"</span>: <span class="hljs-string">"2018-01-27T12:00:00Z"</span>,
+  <span class="hljs-string">"duration"</span>: <span class="hljs-string">"PT1H"</span>,
+  <span class="hljs-string">"location"</span>: {
+    ...
+  }
+}</span></pre></div><p>The <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em> assemble a set of all applicable <strong>offers</strong> for an
+<strong>opportunity</strong> from the information supplied by the <strong>booking system</strong>.
+An applicable <strong>offer</strong> is an <strong>offer</strong> which is available for an
+<strong>opportunity</strong> which is bookable and for which the <strong>customer</strong> is eligible.</p><p>In the case of the <strong>event</strong> having no <code>subEvent</code> the set of all applicable
+<strong>offers</strong> is simply the array of <strong>offers</strong> contained within the <code>offers</code>
+property.</p><p>In the case of an <strong>event</strong> containing sub-events within the <code>subEvent</code> property
+the set of all applicable offers should be compiled from the <strong>offers</strong> from the
+sub-event selected by the customer, augmented with any additional different
+offers contained in the parent super-event.</p><p>If the sub-event selected by the <strong>customer</strong> has no <strong>offers</strong> the set of all
+applicable offers will be compiled from the <strong>offers</strong> contained withinin the
+super-event.</p><p>The <strong>broker</strong> should then filter this set to provide a set of current <strong>offers</strong>
+which apply to the <strong>customer</strong>. This specification provides no guidance as to
+how the filtering should be performed.</p><p>The <strong>broker</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> however show all applicable <strong>offers</strong> to a customer,
+including information on pricing restrictions, unless the <strong>customer</strong> has only
+requested a subset in some form of preferences (e.g. only show adult classes
+and offers).</p><p>The <strong>customer</strong> selects one of these <strong>offers</strong> and when all pre-conditions
+have been met, the <strong>broker</strong> enters the <strong>order</strong> creation workflow on behalf
+of the customer.</p><p>The process for building a set of all applicable offers is similar for
+<strong>facilities</strong> with the <strong>offers</strong> which are part of a specific <strong>slot</strong> having
+primacy over the more generic <strong>offers</strong> contained within a<code>FacilityUse</code>.</p><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
+the <code>remainingUses</code> property  in the <strong>slot</strong> is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress <strong>orders</strong>. The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> also ensure that
+the <code>hoursAvailable</code> property on the <code>FacilityUse</code> is kept updated.</p></section><section><h4 id="obtaining-a-lease-on-a-space-within-an-event"><span class="secno">7.1.4 </span>Obtaining a lease on a space within an event</h4><p><strong>orders</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> contain a <code>orderLeaseDuration</code> property. This
+property <em class="rfc2119" title="MUST">MUST</em> contain an ISO 8601 formatted duration for the lease. The lease
+duration may also be advertised somewhere else to make it clear in advance,
+e.g. in docs/setup config, or as part of a <code>potentialAction</code> property.</p><p>(Note: In previous iterations of the Booking API specification, the lease was
+a property of an event. This has now been deprecated.)</p><p>The <code>orderLeaseDuration</code> property notifies the <strong>broker</strong> about the
+length of time for which a space will be reserved by the <strong>booking system</strong>
+whilst payment for the <strong>event</strong> is taken by the third-party payment system.</p><p>The default suggested lease duration is 15 minutes, but it is up to each
+<strong>booking plaftorm</strong> to define and advertise their own lease duration.</p><p>This lease is NOT designed as a pause for a shopping cart system which is out
+of scope for v1.0 of this specification.</p><p>The <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that it has obtained all of the relevant details
+about a <strong>customer</strong> before getting to the point where it attempts to place an
+<strong>order</strong>. The lease is not designed as a pause in the process whilst a
+<strong>customer</strong> is registered by a <strong>broker</strong>.</p><p>The client may then present the updated availability and suitable offers to
+the customer.</p></section></section><section><h3 id="creating-and-updating-orders"><span class="secno">7.2 </span>Creating and updating orders</h3><p><strong>Booking systems</strong> <em class="rfc2119" title="MUST">MUST</em> expose an <strong>orders</strong> endpoint, e.g. <code>/orders</code> to allow
+<strong>brokers</strong> to initiate the <strong>booking</strong> workflow.</p><p><strong>Orders</strong> initiated by a specific <strong>broker</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> only be able to be updated
+by the same <strong>broker</strong>. For the purpose of creating and updating an <strong>order</strong>
+the only reliable mechanism for ensuring that the <strong>broker</strong> is the same across
+requests is via authentication/identification by API keys or Authoriztion
+headers. The <strong>broker</strong> property within the <strong>order</strong> is for information only.</p><p>It is the responsibility of the <strong>booking system</strong> to ensure that only the
+<strong>broker</strong> which created the <strong>order</strong> can update, complete and cancel an
+order.</p><section><h4 id="discovering-the-order-endpoint"><span class="secno">7.2.1 </span>Discovering the order endpoint</h4><p><strong>Booking systems</strong> <em class="rfc2119" title="MUST">MUST</em> expose an orders endpoint, e.g. /orders to allow
+<strong>brokers</strong> to initiate and enter the <strong>booking</strong> workflow.</p><p>To initiate the <strong>booking workflow</strong>, the <strong>booking system</strong> must include a
+<code>potentialAction</code> field within each <strong>bookable</strong>
+<strong>opportunity</strong>. The
+<code>potentialAction</code> field <em class="rfc2119" title="MUST">MUST</em> contain one or more objects of type ReserveAction.</p><p>These ReserveAction objects must contain a <code>target</code> field containing an
+EntryPoint object.</p><p>The EntryPoint object <em class="rfc2119" title="MUST">MUST</em> state the <code>url</code> of the orders endpoint, and <em class="rfc2119" title="SHOULD">SHOULD</em>
+contain the <code>encodingType</code> and the <code>httpMethod</code> which must be POST as a new
+<strong>order</strong> object will be created on successful invocation.</p><p>An example is below:</p><div class="example"><div class="example-title marker"><span>Example 7</span><span style="text-transform: none">: Example of a ReserveAction</span></div><pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: [
+        {
+          <span class="hljs-string">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+          <span class="hljs-string">"name"</span>: <span class="hljs-string">"Book"</span>,
+          <span class="hljs-string">"target"</span>: {
+            <span class="hljs-string">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-string">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+            <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+            <span class="hljs-string">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+          }
+        }
+      ]</pre></div></section><section><h4 id="pre-conditions-for-creating-an-order"><span class="secno">7.2.2 </span>Pre-conditions for creating an order</h4><p>Before creating an <strong>order</strong> the <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em>:</p><ul>
+<li>have obtained <strong>customer</strong> information</li>
+<li>have determined that the <strong>opportunity</strong> is bookable (see sections on the
+definition of bookable for events and slots/facility uses)</li>
+<li>have identified the selected <strong>offer</strong></li>
+<li>have prompted <strong>customer</strong> that they will enter a <strong>payment</strong> flow
+(no pre-emptive leasing)</li>
+<li>have indicates that the <strong>customer's</strong> personal information is being submitted
+to third-party (the <strong>booking system</strong> and the <strong>seller</strong>) and made the customer
+aware of and assent to any legitimate privacy policy and terms and conditions</li>
+<li>have already obtained permission to use API</li>
+</ul><p>Before creating an <strong>order</strong> the <strong>broker</strong> <em class="rfc2119" title="SHOULD">SHOULD</em>:</p><ul>
+<li>have registered the <strong>customer</strong> (or have the <strong>customer's</strong> details to hand)</li>
+<li>have identified the <strong>customer's</strong> preferred payment options</li>
+</ul></section><section><h4 id="creating-a-new-order-orders-"><span class="secno">7.2.3 </span>Creating a new order (<code>/orders</code>)</h4><p>A POST request to the <code>/orders</code> endpoint of the <strong>booking system</strong> will result
+in server creating an new <strong>Order</strong>. A time limited lease will be created for
+the <strong>events</strong> referenced in the <strong>Order</strong>.</p><p>The <code>broker</code> property in the request body is to help the <strong>booking platform</strong> to
+clarify who is making request and to help them in situations such as queries
+to allow reconciliation of payments. It is not designed as any part of an
+authentication which should be performed outside of the JSON body of the
+request. No authentication tokens should be present within the <code>broker</code> property
+of the submitted JSON.</p><p>The <code>broker</code> property should be a well formed schema:Organisation object.</p><p>In the situation where a middleware to be used to handle access control for
+various <strong>brokers</strong>, independently of API key provisioning at the
+<strong>booking system</strong> level (which in some systems is a lengthly and time-consuming
+process), the <code>broker</code> property should contain the details of the end-user
+<strong>broker</strong> rather than the middleware.</p><div class="example"><div class="example-title marker"><span>Example 8</span><span style="text-transform: none">: Creating an order - request</span></div><pre class="hljs http" aria-busy="false"><span class="hljs-keyword">POST</span> <span class="hljs-string">/orders</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.7+json
+
+<span class="json">{
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"acceptedOffer"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+            <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+                <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+            ],
+            <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+            <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+            <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+            <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    }]
+}
+        </span></pre></div><p>If successful the server will response with the location of a newly created
+<code>Order</code> resource:</p><div class="example"><div class="example-title marker"><span>Example 9</span><span style="text-transform: none">: Creating an order - response</span></div><pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">201</span> Created
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.7+json
+<span class="hljs-attribute">Location</span>: /orders/123
+
+<span class="json">{
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/123"</span>,
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+  <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
+  <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+  <span class="hljs-attr">"potentialAction"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+      <span class="hljs-attr">"target"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+      }
+    }
+  ],
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"acceptedOffer"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+            <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+                <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+            ],
+            <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+            <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+            <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+            <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    }]
+}
+</span></pre></div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example"><div class="example-title marker"><span>Example 10</span><span style="text-transform: none">: Viewing an order - request</span></div><pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.7+json</pre></div><div class="example"><div class="example-title marker"><span>Example 11</span><span style="text-transform: none">: Viewing an order - response</span></div><pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> Created
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.7+json
+<span class="hljs-attribute">Content-Length</span>: ...
+
+<span class="json">{
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/123"</span>,
+  <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">123</span>,
+  <span class="hljs-attr">"customer"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+    <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+    <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+    <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+  },
+  <span class="hljs-attr">"orderedItem"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+      <span class="hljs-attr">"acceptedOffer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+            <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+        ],
+        <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+        <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+      },
+      <span class="hljs-attr">"orderedItem"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
+      <span class="hljs-attr">"amount"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
+        <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+      },
+    }
+  ],
+  <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+  <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+  <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+  <span class="hljs-attr">"partOfInvoice"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
+    <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+    <span class="hljs-attr">"totalPaymentDue"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
+      <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+    }
+  },
+  <span class="hljs-attr">"potentialAction"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+      <span class="hljs-attr">"target"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+      }
+    },
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+      <span class="hljs-attr">"target"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+      }
+    }
+  ]
+}
+    </span></pre></div></section><section><h4 id="deleting-an-order-orders-orderid-"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</h4><p>A <code>DELETE</code> request to an <strong>Order</strong> URI will delete the order. Deletion may only
+be used in the specific case for cancelling an <strong>order</strong> and the associated
+lease on a space in an <strong>event</strong> if the <strong>customer</strong> no longer wishes to take
+up the opportunity.</p><p>A <code>DELETE</code> request <em class="rfc2119" title="MUST NOT">MUST NOT</em> be used to cancel an existing completed <strong>order</strong>
+as part of a refund/cancellation workflow. An appropriate approach for that is
+defined elsewhere.</p></section><section><h4 id="completing-an-order-orders-orderid-"><span class="secno">7.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</h4><p>An <strong>order</strong> is completed by the <strong>broker</strong> submitting notification that the
+<strong>customer</strong> has made a payment via a third-party payment gateway.</p><p>An <strong>order</strong> is not considered complete until payment has occurred.</p><p><strong>Brokers</strong> <em class="rfc2119" title="MUST">MUST</em> update the <strong>booking system</strong> to indicate that <strong>payment</strong> has
+been taken.</p><p>Once the <strong>booking system</strong> is content with the payments, it then sets the
+<code>orderStatus</code> property of the <code>Order</code> to <a href="https://schema.org/OrderDelivered">https://schema.org/OrderDelivered</a> and
+returns a representation of the completed <strong>order</strong> with a 200 status code.</p><div class="example"><div class="example-title marker"><span>Example 12</span><span style="text-transform: none">: Completing an order - request</span></div><pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.7+json
+
+<span class="json">{
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+  <span class="hljs-attr">"payments"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
+      <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
+      <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
+      <span class="hljs-attr">"totalPaidToProvider"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"8.00"</span>,
+        <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+      }
+    }
+  ]
+}</span></pre></div><div class="example"><div class="example-title marker"><span>Example 13</span><span style="text-transform: none">: Completing an order - response</span></div><pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.7+json
+<span class="hljs-attribute">Content-Length</span>: ...
+
+<span class="json">{
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/535"</span>,
+    <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">535</span>,
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"acceptedOffer"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+            <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+                <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+            ],
+            <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+            <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+            <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+            <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+        },
+        <span class="hljs-attr">"orderedItem"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
+        <span class="hljs-attr">"amount"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    }],
+    <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderDelivered"</span>,
+    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"partOfInvoice"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
+        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+        <span class="hljs-attr">"totalPaymentDue"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    },
+    <span class="hljs-attr">"payments"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
+        <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
+        <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
+        <span class="hljs-attr">"totalPaidToProvider"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"8.00"</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        },
+        <span class="hljs-attr">"confirmationNumber"</span>: <span class="hljs-string">"T12371284"</span>
+    }],
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.7+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+        }
+    }]
+}</span></pre></div></section></section><section><h3 id="ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</h3><p>Free <strong>opportunities</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>opportunities</strong>.
+A free <strong>event</strong> or <strong>slot</strong> is technically a free <strong>offer</strong> on a space for an
+opportunity. There <em class="rfc2119" title="MUST">MUST</em> be at least one <strong>offer</strong> with a <code>price</code> property of
+"0.00". The <code>priceCurrency</code> <em class="rfc2119" title="SHOULD">SHOULD</em> still be defined for data consistency and
+completeness.</p><p>The <strong>order</strong> workflow <em class="rfc2119" title="MUST">MUST</em> be followed as described for <strong>offers</strong> with a
+payment. The PATCH to the URL defined in <code>PayAction</code> should follow the example
+shown below.</p><p><strong>Orders</strong> for a free place at an <strong>opportunity</strong> are the only current scenario
+in the Booking API specification where a <code>Payment</code> object has <code>paymentMethod</code>
+and <code>paymentMethodId</code> as optional properties.</p><div class="example"><div class="example-title marker"><span>Example 14</span><span style="text-transform: none">: Completing an free order with a payment of '0.00' - request</span></div><pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.7+json
+
+<span class="json">{
+<span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+<span class="hljs-attr">"payments"</span>: [
+{
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
+  <span class="hljs-attr">"totalPaidToProvider"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+    <span class="hljs-attr">"value"</span>: <span class="hljs-string">"0.00"</span>,
+    <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+  }
+}
+]
+}</span></pre></div></section><section><h3 id="leases-and-the-orderleaseduration-property"><span class="secno">7.4 </span>Leases and the orderLeaseDuration property</h3><p>If the lease expires during <strong>payment</strong>, the <strong>broker</strong> <em class="rfc2119" title="MAY">MAY</em> delete the <strong>order</strong>
+(if the <strong>booking system</strong> has not already done so, returning a response with a
+410 status code).</p><p>The <strong>broker</strong> should then create a new <strong>order</strong> for the
+<strong>customer</strong> in order to generate a new lease.</p><p>Before creating a new order, the <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em> check the <strong>opportunity</strong> and
+<strong>offers</strong> to ensure that a space still exists within the <strong>opportunity</strong>
+and that the <strong>offer</strong> selected by the <strong>customer</strong> is still valid.</p><p>If no space exists or the <strong>offer</strong> is now invalid, the <strong>customer</strong>
+should be refunded if payment has been taken.</p></section><section><h3 id="the-state-transitions-during-the-order-process"><span class="secno">7.5 </span>The state transitions during the order process</h3><ol>
+<li>An <strong>order</strong> object is created by a <strong>broker</strong> invoking the orders endpoint
+with a POST request containing details of the <strong>broker</strong> (represented as a
+schema:Organisation), <strong>customer</strong> (represented as a schema:Person) and details
+of the selected <strong>event</strong> and <strong>offer</strong> as components of a schema:OrderItem
+object.
+The <strong>booking system</strong> returns a representation of the <strong>order</strong> object to the
+<strong>broker</strong> in a response with a 201 status and the URL for the object in the
+<code>Location</code> header. The <code>orderStatus</code> of the <strong>order</strong> at this point in the flow
+should be <a href="https://schema.org/OrderPaymentDue">https://schema.org/OrderPaymentDue</a></li>
+<li>Concurrently the <strong>booking system</strong> also creates a lease for a space in the
+<strong>event</strong> for the <strong>customer</strong> for the duration specified in the
+<code>orderLeaseDuration</code> property of the <strong>event</strong>.</li>
+<li>The <strong>broker</strong> directs the customer into the flow of the third-party
+<strong>payment</strong> provider.</li>
+<li>If the <strong>customer</strong> successfully completes the payment within the duration
+of the lease, the <strong>broker</strong> sends notification of the payment with a PATCH
+request to the specific order end point (/orders/123 in the examples) with
+details of the <strong>payment</strong> in the <code>paymentMethod</code> and <code>paymentMethodId</code>
+properties. At this point the <strong>order</strong> is deemed to be completed. The
+<code>orderStatus</code> property should be currently set to
+<code>https://schema.org/OrderDelivered</code> and the <code>confirmationNumber</code>
+property set to an appropriate unique value by the <strong>booking system</strong>. At this
+point in the flow, the <strong>order</strong> is deemed to be complete.</li>
+</ol><p>If the lease expires before the payment is made, the <strong>order</strong> should either be
+deleted by the <strong>broker</strong> or be deleted by the <strong>booking system</strong> at some point
+after expiry. The <code>orderStatus</code> property should be set to
+<a href="https://schema.org/OrderCancelled">https://schema.org/OrderCancelled</a> to indicate that the <strong>order</strong> cannot proceed
+to completion.</p></section><section><h3 id="actions-which-occur-after-order-completion-confirmations-and-refunds"><span class="secno">7.6 </span>Actions which occur after order completion: confirmations and refunds</h3><p>Both the <strong>broker</strong> and <strong>booking system</strong> may need to take further actions after
+completing an order. This section describes some potential interactions.</p><section><h4 id="supplying-a-confirmation-to-the-customer"><span class="secno">7.6.1 </span>Supplying a confirmation to the customer</h4><p>The <strong>broker</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> provide the <strong>customer</strong> with confirmation of a successful
+payment having been made through the third-party system and that the <strong>order</strong>
+has been completed successfully. The <strong>broker</strong> will have access to a completed
+<strong>order</strong> which will contain a <code>confirmationCode</code> property.</p><p>The <strong>booking system</strong> may also provide the <strong>customer</strong> with a confirmation that
+the space at the <strong>opportunity</strong> has been booked on their behalf.</p></section><section><h4 id="refunding-a-customer-and-cancelling-an-order"><span class="secno">7.6.2 </span>Refunding a customer and cancelling an order</h4><p>Refunds and cancellations are a responsibility of the <strong>broker</strong> who is the
+party in the system in a position to process a refund for the <strong>customer</strong> with
+the third-party payments system.</p><p>The <strong>broker</strong> should initiate a refund with the third-party payment provider.
+The refund process should be considered to be asynchronous for the purposes of
+this specification.</p><p>After initiating a refund, the <strong>broker</strong> should cancel the
+<strong>order</strong> by submitting a PATCH request to the URL defined in the <code>CancelAction</code>
+prescribed in the <code>potentialAction</code> property of the <strong>order</strong> response.</p><p>The process of cancellation is documented in Section 5.5.2</p></section></section><section><h3 id="customers"><span class="secno">7.7 </span>Customers</h3><section><h4 id="creation-of-customers-on-the-booking-system"><span class="secno">7.7.1 </span>Creation of customers on the booking system</h4><p>In this current iteration of the Booking API specification, the programmatic
+creation of <strong>customers</strong> on the <strong>booking system</strong> by the <strong>broker</strong> is
+considered to be out of scope.</p></section><section><h4 id="viewing-a-customer-s-previously-placed-orders"><span class="secno">7.7.2 </span>Viewing a customer's previously placed orders</h4><p>A server <em class="rfc2119" title="MUST">MUST</em> provide endpoints to allow <strong>brokers</strong> to retrieve information
+about previously placed <strong>orders</strong>. In future versions of the specification,
+endpoints may be provided which permit a <strong>broker</strong> to see all <strong>orders</strong>
+created by a <strong>customer</strong>. In this current implementation, if the <strong>broker</strong>
+wishes to present a view of all <strong>orders</strong> for a <strong>customer</strong>, it should keep
+an internal record.</p></section><section><h4 id="deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed"><span class="secno">7.7.3 </span>Deletion of personal data of the customer if the order is not completed</h4><p>If an <strong>order</strong> is not completed, the <strong>booking system</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> delete all
+personal information of the <strong>customer</strong> provided to it as part of the <strong>order</strong>
+creation process.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="future-versions-of-this-api"><span class="secno">8. </span>Future versions of this API</h2><p>Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
+Booking API. Neither it, or 0.7, are yet feature complete and there are some requirements
+which are not satisfied by this version.</p><p>Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
+resource to provide a payment and using PATCH to change the status of an <code>orderItem</code> to
+cancel an order provide the groundwork for known requirements such as multiple
+order items (shopping carts), cancellation of individual order items and also
+multipart payments.</p><p>Both <code>orderItems</code> and <code>payments</code> are modelled as collections to support
+extension of the version 0.5 specification towards multipart orders and
+payments without breaking changes in the Order model for subsequent versions.</p><p>The new models for Payment and for Error enhance the Open Active model
+specification to make it more transactional when used as part of the Booking
+API.</p><p>The currently known requirements not satisfied in version 0.7 are:</p><ul>
+<li>multiple part orders</li>
+<li>supporting multiple payments</li>
+<li>customer creation</li>
+<li>managing of reservations</li>
+<li>support for member lookups</li>
+</ul><p>We have not yet decided what the priorities are, or whether all of these
+requirements are in scope for version 1.0 and would encourage people to shape
+future iterations of the specification by becoming involved in the communities
+associated with Open Active and the open specification.</p></section><section class="normative"><!--OddPage--><h2 id="new-open-active-models-defined-in-the-0-5-booking-api-specification-which-are"><span class="secno">9. </span>New Open Active models defined in the 0.5 Booking API specification which are</h2><p>not yet reflected in the current version (1.1) of the Open Active Modelling
+Specification.</p><section><h3 id="error"><span class="secno">9.1 </span>Error</h3><table>
+<thead>
+<tr><th>Property</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>errorType</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+<td>A URI providing an enumeration value for the type of error.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+<td>A human readable reason for the error.</td>
+</tr>
+<tr>
+<td><code>detail</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></em></td>
+<td>A human readable description of the error.</td>
+</tr>
+<tr>
+<td><code>instance</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+<td>The requested URL.</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></em></td>
+<td>The method of the request (e.g. GET).</td>
+</tr>
+<tr>
+<td><code>invalid-params</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
+<td>An array of invalid parameters, if appropriate.</td>
+</tr>
+<tr>
+<td><code>requestId</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
+<td>Used by technical support for diagnostics purposes.</td>
+</tr>
+</tbody>
+</table></section><section><h3 id="payment"><span class="secno">9.2 </span>Payment</h3><table></table><table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>paymentMethod</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+      <td>A URI providing an enumeration value for the type of payment method used.</td>
+    </tr>
+    <tr>
+      <td><code>paymentMethodId</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+      <td>A string identifier for the method of payment used (e.g. the last 4 digits of the credit card).</td>
+    </tr>
+    <tr>
+      <td><code>totalPaidToProvider</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="REQUIRED">REQUIRED</em></em></em></td>
+      <td>A schema:MonetaryAmount object deining the total amount paid.</td>
+    </tr>
+    <tr>
+      <td><code>confirmationNumber</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
+      <td>A string identifier to confirm that a payment has been recorded by the booking system.</td>
+    </tr>
+  </tbody>
+</table></section><section class="appendix informative"><h3 id="acknowledgements"><span class="secno">9.3 </span>Acknowledgements</h3><p><em>This section is non-normative.</em></p><p>The editors thank
+<a href="https://www.w3.org/community/openactive/participants">all members</a> of the
+OpenActive Community Group for their contributions.</p></section><table>
+
+
+
+
+
+
+
+
+
+
+
+
+</table></section><section id="references" class="appendix">
+      <!--OddPage--><h2 id="a-references"><span class="secno">A. </span>References</h2>
+      
+    <section id="normative-references">
+        <h3 id="a-1-normative-references"><span class="secno">A.1 </span>Normative references</h3>
+      <dl class="bibliography">
+        <dt id="bib-json-ld">[JSON-LD]</dt><dd><a href="https://www.w3.org/TR/json-ld/"><cite>JSON-LD 1.0</cite></a>.  W3C. W3C Recommendation. URL: <a href="https://www.w3.org/TR/json-ld/">https://www.w3.org/TR/json-ld/</a></dd><dt id="bib-modelling-opportunity-data">[Modelling-Opportunity-Data]</dt><dd><a href="https://openactive.io/modelling-opportunity-data/"><cite>Modelling Opportunity Data</cite></a>.  OpenActive Community Group. URL: <a href="https://openactive.io/modelling-opportunity-data/">https://openactive.io/modelling-opportunity-data/</a></dd><dt id="bib-openactive-vocabulary">[OpenActive-Vocabulary]</dt><dd><a href="https://openactive.io/ns/"><cite>OpenActive Vocabulary</cite></a>.  OpenActive Community Group. URL: <a href="https://openactive.io/ns/">https://openactive.io/ns/</a></dd><dt id="bib-rfc2119">[RFC2119]</dt><dd><a href="https://tools.ietf.org/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. S. Bradner. IETF. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a></dd><dt id="bib-rfc3986">[RFC3986]</dt><dd><a href="https://tools.ietf.org/html/rfc3986"><cite>Uniform Resource Identifier (URI): Generic Syntax</cite></a>. T. Berners-Lee; R. Fielding; L. Masinter. IETF. January 2005. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc3986">https://tools.ietf.org/html/rfc3986</a></dd><dt id="bib-rfc7231">[RFC7231]</dt><dd><a href="https://tools.ietf.org/html/rfc7231"><cite>Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</cite></a>. R. Fielding, Ed.; J. Reschke, Ed.. IETF. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7231">https://tools.ietf.org/html/rfc7231</a></dd><dt id="bib-rfc7807">[RFC7807]</dt><dd><a href="https://tools.ietf.org/html/rfc7807"><cite>Problem Details for HTTP APIs</cite></a>. M. Nottingham; E. Wilde. IETF. March 2016. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7807">https://tools.ietf.org/html/rfc7807</a></dd>
+      </dl></section><section id="informative-references">
+        <h3 id="a-2-informative-references"><span class="secno">A.2 </span>Informative references</h3>
+      <dl class="bibliography">
+        <dt id="bib-oauth2">[OAuth2]</dt><dd><a href="https://oauth.net/2/"><cite>OAuth 2.0</cite></a>. URL: <a href="https://oauth.net/2/">https://oauth.net/2/</a></dd><dt id="bib-openidconnect">[OpenIdConnect]</dt><dd><a href="https://openid.net/connect/"><cite>OpenID Connect</cite></a>. URL: <a href="https://openid.net/connect/">https://openid.net/connect/</a></dd><dt id="bib-reference">[reference]</dt><dd><em class="respec-offending-element">Reference not found.</em></dd><dt id="bib-rpde">[RPDE]</dt><dd><a href="https://openactive.io/realtime-paged-data-exchange/"><cite>Realtime Paged Data Exchange</cite></a>.  OpenActive Community Group. URL: <a href="https://openactive.io/realtime-paged-data-exchange/">https://openactive.io/realtime-paged-data-exchange/</a></dd>
+      </dl></section></section><p role="navigation" id="back-to-top"><a href="#title"><abbr title="Back to Top">↑</abbr></a></p><script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script></body></html>
