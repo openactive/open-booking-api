@@ -1100,14 +1100,8 @@ To check the availability of an opportunity a **broker** will issue a GET
 request to the URI specified in the `id` of the opportunity, having
 discovered it from the RDPE feed.
 
-The **booking system** MUST ensure that the data presented to the **broker** in
-the `remainingAttendeeCapacity` property is up to date and includes a
-combination of places already booked and places currently reserved by leases
-from in-progress **orders**.
-
 It is the responsibility of **brokers** to ensure that spaces within the
 opportunity are still available before proceeding with booking.
-
 
 
         <pre class="example" title="Viewing event availability">
@@ -1158,10 +1152,73 @@ Content-Length: ...
 
 </pre>
 
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingAttendeeCapacity` property of the **event** is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+
+<pre class="example" title="Viewing slot availability">
+GET /slots/324 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.7+json
+</pre>
+
+<pre class="example" title="Slot response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v0.7+json
+Content-Length: ...
+
+
+{
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Slot",
+  "id": "http://www.example.org/slots/324",
+  "identifier": 324,
+  "facilityUse": "http://www.example.org/facility-use/1",
+  "startDate": "2018-03-01T11:00:00Z",
+  "duration": "PT30M",
+  "remainingUses": 3,
+  "maximumUses": 4,
+   "offers": [
+     {
+       "type": "Offer",
+       "name": "30 minute hire",
+       "price": "15",
+       "priceCurrency": "GBP"
+       "potentialAction": [
+         {
+           "type": "ReserveAction",
+           "name": "Book",
+           "target": {
+             "type": "EntryPoint",
+             "urlTemplate": "https://example.com/orders",
+             "encodingType": "application/vnd.openactive.v0.7+json",
+             "httpMethod": "POST"
+           }
+         }
+       ]
+     }
+   ]
+}
+
+</pre>
+
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingUses` property of the **slot** is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+### Assembling a set of offers and presenting them to a customer
+
 The **broker** MUST assemble a set of all applicable **offers** for an
 **opportunity** from the information supplied by the **booking system**.
 An applicable **offer** is an **offer** which is available for an
 **opportunity** which is bookable and for which the **customer** is eligible.
+
+#### Collating offers for an event
 
 In the case of the **event** having no `subEvent` the set of all applicable
 **offers** is simply the array of **offers** contained within the `offers`
@@ -1189,6 +1246,8 @@ The **customer** selects one of these **offers** and when all pre-conditions
 have been met, the **broker** enters the **order** creation workflow on behalf
 of the customer.
 
+#### Collating offers for the use of a facility
+
 The process for building a set of all applicable offers is similar for
 **facilities** with the **offers** which are part of a specific **slot** having
 primacy over the more generic **offers** contained within a`FacilityUse`.
@@ -1198,9 +1257,6 @@ the `remainingUses` property  in the **slot** is up to date and includes a
 combination of places already booked and places currently reserved by leases
 from in-progress **orders**. The **booking system** MUST also ensure that
 the `hoursAvailable` property on the `FacilityUse` is kept updated.
-
-
-        </pre>
 
 
 ### Obtaining a lease on a space within an event
@@ -1265,21 +1321,19 @@ contain the `encodingType` and the `httpMethod` which must be POST as a new
 An example is below:
 
 <pre class="example" title="Example of a ReserveAction">
-
 "potentialAction": [
-        {
-          "type": "ReserveAction",
-          "name": "Book",
-          "target": {
-            "type": "EntryPoint",
-            "urlTemplate": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.7+json",
-            "httpMethod": "POST"
-          }
-        }
-      ]
+  {
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v0.7+json",
+      "httpMethod": "POST"
+    }
+  }
+]
 </pre>
-
 
 ### Pre-conditions for creating an order
 
@@ -1296,19 +1350,16 @@ to third-party (the **booking system** and the **seller**) and made the customer
 aware of and assent to any legitimate privacy policy and terms and conditions
 - have already obtained permission to use API
 
-
 Before creating an **order** the **broker** SHOULD:
 
 - have registered the **customer** (or have the **customer's** details to hand)
 - have identified the **customer's** preferred payment options
 
-
-
 ### Creating a new order (`/orders`)
 
 A POST request to the `/orders` endpoint of the **booking system** will result
 in server creating an new **Order**. A time limited lease will be created for
-the **events** referenced in the **Order**.
+spaces in the **event** referenced in the **Order**.
 
 The `broker` property in the request body is to help the **booking platform** to
 clarify who is making request and to help them in situations such as queries
@@ -1364,33 +1415,33 @@ Accept: application/vnd.openactive.v0.7+json
 		}
 	}]
 }
-        </pre>
+</pre>
 
 If successful the server will response with the location of a newly created
 `Order` resource:
 
-        <pre class="example" title="Creating an order - response">
+<pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v0.7+json
 Location: /orders/123
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
   "id": "https://example.com/orders/123",
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
+  "customer": {
+  	"type": "Person",
+  	"email": "geoffcapes@example.com",
+  	"givenName": "Geoff",
+  	"familyName": "Capes"
+  },
   "orderLeaseDuration": "PT15M",
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
+  "broker": {
+  	"type": "Organization",
+  	"name": "MyFitnessApp",
+  	"url": "https://myfitnessapp.example.com"
+  },
   "orderStatus": "https://schema.org/OrderPaymentDue",
   "potentialAction": [
     {
@@ -1404,23 +1455,23 @@ Location: /orders/123
       }
     }
   ],
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"availabilityEnds": "2018-04-29T12:14:35Z",
-			"availabilityStarts": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
-			"name": "Speedball winger position",
-			"price": "33.00",
-			"priceCurrency": "GBP"
-		}
-	}]
+  "orderedItem": [{
+  	"type": "OrderItem",
+  	"orderQuantity": 1,
+  	"acceptedOffer": {
+  		"type": "Offer",
+  		"acceptedPaymentMethod": [
+  			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+  		],
+  		"availabilityEnds": "2018-04-29T12:14:35Z",
+  		"availabilityStarts": "2018-04-01T12:14:35Z",
+  		"description": "Winger space for Speedball.",
+  		"id": "https://example.com/offers/1234",
+  		"name": "Speedball winger position",
+  		"price": "33.00",
+  		"priceCurrency": "GBP"
+  	}
+  }]
 }
 </pre>
 
@@ -1661,17 +1712,15 @@ Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v0.7+json
 
 {
-"type": "Order",
-"payments": [
-{
-  "type": "Payment",
-  "totalPaidToProvider": {
-    "type": "MonetaryAmount",
-    "value": "0.00",
-    "currency": "GBP"
-  }
-}
-]
+  "type": "Order",
+  "payments": [{
+    "type": "Payment",
+    "totalPaidToProvider": {
+      "type": "MonetaryAmount",
+      "value": "0.00",
+      "currency": "GBP"
+    }
+  }]
 }
 
 </pre>
