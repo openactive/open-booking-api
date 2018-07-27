@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Open Booking API 0.6</title>
+    <title>Open Booking API 0.7</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
@@ -58,7 +58,7 @@
                 href: "https://github.com/openactive/open-booking-api/issues/"
             }, {
                 key: "Version",
-                value: "0.6"
+                value: "0.7"
             }],
 
             logos: [{
@@ -427,6 +427,12 @@ The content of the example is in monospace font and may be syntax colored.
             <dt><strong>facility</strong></dt>
             <dd>A sporting facility, e.g. a squash court, table tennis table or
             football pitch.</dd>
+            <dt><strong>facilityuse</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-facility-use-code-oa-facilityuse-code-code-oa-individualfacilityuse-code-">FacilityUse</a>
+            is an generic opportunity to utilise the facilities of a seller in order
+            to take part in a physical activity. FacilityUses are not
+            scheduled, and their slots are an equivalent for an Event in being an
+            opportunity which can be booked.</dd>
             <dt><strong>lease</strong></dt>
             <dd>A temporary reservation of a space at an event or for the use
             of a facility. Leases provide a limited time window during which
@@ -436,6 +442,11 @@ The content of the example is in monospace font and may be syntax colored.
             <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
                 describes the terms under which a customer may participate in an
                 event or use a facility.</dd>
+            <dt><strong>opportunity</strong></dt>
+            <dd>An opportunity is a generic term to describe an opportunity to
+            be active. Currently an opportunity is either an Event (for
+            scheduled events, such as a yoga class) or a Slot for a FacilityUse
+            (for non-scheduled use of the facilities of a seller).</dd>
             <dt><strong>order</strong></dt>
             <dd>Describes the in-process or completed booking. An order may be
             made up of several order items. An order results in a customer
@@ -457,6 +468,11 @@ The content of the example is in monospace font and may be syntax colored.
             <dt><strong>seller</strong></dt>
             <dd>The organisation providing access to events or use of facilities
             via a booking system. E.g. a leisure provider running yoga classes.</dd>
+            <dt><strong>slot</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-slots-code-oa-slot-code-">Slot</a>
+            is an opportunity to use a facility at a specific time and for a
+            specified duration. A Slot is therefore a specific type of Event,
+            although it has a more constrained set of properties.</dd>
         </dl>
 
     </section>
@@ -467,46 +483,53 @@ The content of the example is in monospace font and may be syntax colored.
 ## High-level summary of the API
 
 This API defines a means for a **booking system** to expose an HTTP API that
-may be used by a **broker** to place bookings on behalf of a **customer**. By
-exposing this API the booking system can support a **seller** in reaching a wider
-audience.
+may be used by a **broker** to place bookings for **opportunities** on behalf of
+a **customer**. By exposing this API the booking system can support a **seller**
+in reaching a wider audience.
 
-A broker provides customers with an application that helps them to discover
-opportunities to be physically active. The customer may then choose to make
+A **broker** provides **customers** with an application that helps them to discover
+**opportunities** to be physically active. The customer may then choose to make
 a booking to attend an **event** or to make use of a **facility**.
 
-The broker will check the availability of event or facility in order to check
-whether the customer can still attend. The broker will also present the customer
-with information about any costs associated with participating in the event
-or using a facility. This involves identifying the applicable **offers** and
-presenting them to the user.
+The **broker** will check the availability of the **opportunity** in order to check
+whether the **customer** can still attend. The **broker** will also present the
+**customer** with information about any costs associated with taking up the
+**opportunity**. This involves identifying the applicable **offers** and
+presenting them to the user. The customer should be made aware of any terms and
+conditions and any restrictions relating to age, gender or ability, as part of
+the process of proceeding to being in a position to make a booking.
 
-If there is still availability and the customer is happy to accept an offer,
-then the customer can proceed to make a booking. The broker creates
-an **order** on behalf of the user.
+If there is still availability and the **customer** is happy to accept an
+**offer**, then the **customer** can proceed to make a booking. The broker
+creates an **order** on behalf of the user.
 
-Creating the order will also create a temporary **lease** that will reserve a
-space for the customer to attend the event (or use the facility) while the
+Creating the **order** will also create a temporary **lease** that will reserve
+a space for the **customer** to take up the **opportunity** while the
 rest of the workflow completes.
 
 If the **offers** for an event or use of a facility indicate that the user must
 pay, then the broker will take the customer through a separate **payment**
 workflow. This workflow is not defined by this specification.
 
-Once payment has been completed, the broker will update the booking platform to
-indicate that payment has been taken. The booking process is then completed.
+Once **payment** has been completed, the **broker** will update the
+**booking platform** to indicate that **payment** has been taken. The
+**booking** process is then completed and the **order** is maked as completed.
 
-The completion of the order will result in the lease being removed and a
-permanent **reservation** being created on behalf of the customer. The customer
-may receive **confirmation** from either the broker or booking system (or both)
-that provides details about how and when they can attend the event or use the
-booked facility.
+The completion of the **order** will result in the **lease** being removed and a
+permanent **reservation** being created on behalf of the **customer**. The
+**customer** may receive **confirmation** from either the **broker** or
+**booking system** (or both) that provides details about how and when they can
+attend the **event** or use the booked **facility**.
 
-Separately the broker and booking system will go through a **reconciliation**
-process to transfer funds or otherwise report on successful transactions. A
-customer might also cancel an order and will then receive a **refund**. Neither
-of these processes are defined by this specification. The details will depend on
-the business model and agreements in place between the broker and booking system.
+Separately the **broker** and **booking system** will go through a
+**reconciliation** process to transfer funds or otherwise report on successful
+transactions. A **customer** might also cancel an **order** and will then
+receive a **refund**. The reconciliation processes is not defined by this
+specification. The details will depend on the business model and agreements in
+place between the **broker** and **booking system**. The cancellation workflow
+is defined in this specification in terms of the steps that the **broker** must
+undertake to provide the **booking system** with notification of the
+cancellation.
 
 ## URLs used in the description of the API
 
@@ -514,8 +537,12 @@ The following sections contain URIs which are for guidance, and are used as
 examples only. For example, /events/452 is used to represent the canonical
 reference to the web representation of an Event with an id of 452. The URI could
 alternatively be /sessions/452 if session is the term used to describe the
-specific type of Event in an implementation of this API and associated APIs such
-as RDPE in an Open Active compliant **booking system**.
+specific type of Event by a particular seller or booking system or by /slots/452
+if dealing with a **slot** for use of a **facility**. All URIs should
+however be long lived identifiers and canonical and should not be recycled.
+Adherence to the workflows within this specification is required to develop a
+compliant **booking system**/**broker** implementation of this API and
+associated APIs such as RDPE in the Open Active ecosystem.
 
 ## Workflow diagram
 
@@ -536,22 +563,24 @@ as RDPE in an Open Active compliant **booking system**.
 
 The 0.5, and higher, versions of the Booking API supports single items per **order** and
 single **payments** per **order**. Future versions of the specification may support
-multiple items and multipart **payments**, 0.6 still does not.
+multiple items and multipart **payments**, 0.7 still does not.
 
 ### Complete transaction
 
-1. The **broker** requests details on a specific **event** from the **booking
-system** (/events/452 in example) in order to discover available **offers**.
-These offers are subsequently presented to the **customer**.
+1. The **broker** requests details on a specific **opportunity** from the
+**booking system** (/events/452 in example) in order to discover available
+**offers**. These offers are subsequently presented to the **customer**.
 2. The **customer** chooses an bookable **offer** (see definition of a bookable
 event).
-3. If the **offer** for the **event** is bookable, the broker makes a POST
+3. If the **offer** for the **opportunity** is bookable, the broker makes a POST
 request to the **orders** endpoint (/orders in the examples) containing a
-Person object describing the **customer**. At a minimum, this object should
-contain the `email` address for the **customer**, if possible the `givenName`
+Person object describing the **customer**, and information about the **offer**
+and **opportunity** selected. At a minimum, this Person object should
+contain the `email` address for the **customer**, and if possible the `givenName`
 and `familyName`. The **booking system** creates a timed **lease** on the space
-in the **event** which is being booked. At this point the **offer** is deemed to
-be accepted and an **order** is created. The **booking system** sends a 201
+in the **opportunity** which is being booked. At this point the **offer** is
+deemed to be accepted and an **order** is created.
+The **booking system** sends a 201
 status code, with a representation of the **order** in the body of the response,
 and with a Location header set containing the URI for the web representation of
 the created **Order** object.
@@ -577,7 +606,7 @@ out of scope for the Booking API and specification.
 
 ### Order cancellation and refund
 
-The **broker** is the party which initiates the third-party **payment**
+Since the **broker** is the party which initiates the third-party **payment**
 and is the entity which notifies the **booking system** of **payment** and
 creates the **order** on behalf of the **customer**, the **broker** is also the
 entity which handles refunds and cancellation.
@@ -589,7 +618,7 @@ below:
 provided by the third-party payment provider.
 
 2. The **broker** notifies the **booking system** of the cancellation by making
-a patch request to the specific order endpoint (/orders/123 in the example) of
+a PATCH request to the specific order endpoint (/orders/123 in the example) of
 the **booking system**. The PATCH request body should contain an updated
 order item in the `orderedItem` property, with the `orderItemStatus` set to
 https://schema.org/OrderCancelled to indicate that the ordered item in
@@ -603,24 +632,23 @@ deemed to be cancelled.
 ### Cancelling a Lease
 
 If the **customer** no longer wants to proceed with a particular **offer**, the
-lease for the space in the **event** and the **order** may be cancelled by
+lease for the space in the **opportunity** and the **order** may be cancelled by
 issuing a DELETE request to the specific order endpoint (/orders/123 in the
 example) of the **booking system**.
 
-The **booking system** SHOULD release the
-space in the **event** and delete the underlying resource. Any subsequent
-requests to this resource should result in a 404 response.
+The **booking system** SHOULD release the space in the **event** and delete the
+underlying resource. Any subsequent requests to this resource should result in a
+404 response.
 
 ### Handling lease expiry
 
 If the lease has expired during the **payment** process, the **broker** SHOULD
-check whether the **event** is still bookable and if the selected **offer** is
-still available. If they are, the **broker** should create a new **order** using
-the workflow described above.
+check whether the **opportunity** is still bookable and if the selected
+**offer** is still available. If they are, the **broker** should create a
+new **order** using the workflow described above.
 
-The **booking system** should respond to requests
-for **orders** with an expired lease with a 410 status code with an error
-specifying the `errorType` as
+The **booking system** should respond to requests for **orders** with an expired
+lease with a 410 status code with an error specifying the `errorType` as
 https://openactive.io/errors/anonymous_lease_expired until the underlying
 **order** resource is removed.
 
@@ -638,7 +666,7 @@ whole API.
 Custom media types are used in this API to allow clients to choose the format
 of the data they receive.
 
-Servers MAY choose to support additional media types but MUST support the
+**Booking platforms** MAY choose to support additional media types but MUST support the
 media type(s) defined by this specification.
 
 Media types will conform to the following pattern:
@@ -650,16 +678,16 @@ application/vnd.openactive[.version]+json
 The current media type is:
 
 ```
-application/vnd.openactive.0.6+json
+application/vnd.openactive.0.7+json
 ```
 
-**Brokers specifying a media type without a version, such as:
+**Brokers** specifying a media type without a version, such as:
 
 ```
 application/vnd.openactive+json
 ```
 
-will recieve data in in the most current format which is 0.6.
+will recieve data in in the most current format which is 0.7.
 
 If you are building an application as a **broker** and care about the stability
 of the response, or have a client application which is tied to a specific
@@ -696,7 +724,9 @@ terms for naming specific objects such as **events** and **orders**.
 
 The URL for a specific action, such as for example providing **payment** details,
 may be discovered by parsing the actions defined in the `potentialAction`
-property of an object.
+property of an object and constructing the appropriate URL from the
+`urlTemplate` property of the `schema:EntryPoint` object contained within the `target`
+property of the `potentialAction` required.
 
 An example is below:
 
@@ -708,8 +738,8 @@ An example is below:
           "name": "Payment",
           "target": {
             "type": "EntryPoint",
-            "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.6+json",
+            "urlTemplate": "https://example.com/orders",
+            "encodingType": "application/vnd.openactive.v0.7+json",
             "httpMethod": "PATCH"
           }
         }
@@ -726,9 +756,9 @@ for a specific action based on patterns within previously used URLs.
 It is the responsibility of **booking platforms** to advertise the URL for
 further activity in the booking workflow at the point of need. For example they
 MUST advertise the URL for **order** creation when a **broker** requests
-a specific **event** resource and SHOULD advertise it in their RDPE feeds since
-both of these points within the booking workflow are places where a **customer**
-may wish to check availability.
+a specific **opportunity** resource and SHOULD advertise it in their RDPE feeds
+since both of these points within the booking workflow are places where a \
+**customer** may wish to check availability.
 
 
 ## Error handling
@@ -737,7 +767,7 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v0.6+json` and include at least one
+content type of `application/vnd.openactive.v0.7+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
@@ -761,6 +791,10 @@ When this member is not present, its value is assumed to be "about:blank".
 * `title` – a short, human-readable summary of the problem type. It
 SHOULD NOT change from occurrence to occurrence of the problem, except for
 purposes of localization.
+* `description` – a slightly longer, human-readable summary of the problem type.
+It largely SHOULD NOT change from occurrence to occurrence of the problem,
+except for purposes of localization or to provide specific information about why
+the error occurred in that particular case.
 * `status`  – the HTTP status code ([[!RFC7231]], Section 6) generated by the
 origin server for this occurrence of the problem.
 * `instance`  – a URI reference that identifies the specific occurrence of
@@ -806,6 +840,9 @@ Use cases:
 
 
 https://openactive.io/errors/incomplete_event_details
+https://openactive.io/errors/incomplete_facilityuse_details
+https://openactive.io/errors/incomplete_slot_details
+https://openactive.io/errors/incomplete_opportunity_details
 
 Status code: 400
 
@@ -813,8 +850,8 @@ Use cases:
 
 - if there is no `orderedItem` property on the schema:OrderItem
 
-- if the `orderedItem` is not a URL which corresponds to an **event** on the
-**booking system**
+- if the `orderedItem` is not a URL which corresponds to an **opportunity** on
+the **booking system**
 
 
 https://openactive.io/errors/unavailable_offer
@@ -826,20 +863,25 @@ Use cases:
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
 https://openactive.io/errors/unavailable_event
+https://openactive.io/errors/unavailable_facilityuse
+https://openactive.io/errors/unavailable_slot
+https://openactive.io/errors/unavailable_opportunity
 
 Status code: 400
 
 Use cases:
 
-- if the **event** contained in the `orderedItem` property is not bookable
+- if the **opportunity** contained in the `orderedItem` property is not bookable
 
 https://openactive.io/errors/event_is_full
+https://openactive.io/errors/slot_is_full
+https://openactive.io/errors/opportunity_is_full
 
 Status code: 400
 
 Use cases:
 
-- if there are no available spaces for the **event** contained in the
+- if there are no available spaces for the **opportunity** contained in the
 `orderedItem` property
 
 https://openactive.io/errors/incomplete_payment_details
@@ -960,22 +1002,27 @@ Conditions relating to the **seller** should be made available via a URL as a
 ## Checking availability and offers
 
 This specification assumes that a *broker* has already obtained opportunity
-data from a *booking system* that includes descriptions of events, facilities,
-etc. For example by harvesting data via an [[RPDE]] feed.
+data from a *booking system* that includes descriptions of **events**,
+**facilities**, **slots** etc. For example by harvesting data via an [[RPDE]]
+feed.
 
-The availability of an event or facility may change at any time.
+The availability of an **event**, or `subEvent`, or **facility** (either as a
+`FacilityUse` or `Slot`) may change at any time.
 
-The offers available to a customer might also change over time.
+The **offers** available to a customer might also change over time and the data
+should be refreshed so that the most up-to-date representation of the live data
+is presented to the **purchaser** before booking.
 
-A booking system that MUST allow a broker to check the current state of events
-and/or facilities depending on what decide they expose from their platform.
+A **booking system**  MUST allow a **broker** to check the current state of
+**events** and/or **facilities** depending on what decide they expose from their
+platform.
 
-### Definition of 'bookable'
+### Definition of a 'bookable' Event
 
 An **event** is deemed to be 'bookable' if:
 
-- The **event** has not already occurred, i.e. the `endDate` of the **event**
-has not been exceeded
+- The **event** has not already occurred, i.e. the `startDate` (when expressed
+as a timedatestamp) and the `endDate` of the **event** has not been exceeded
 
 - The `eventStatus` of the **event** does not indicate that it has been
 cancelled or postponed
@@ -1019,32 +1066,55 @@ data describing the the **event** is published via a **booking system** which
 is compliant with and supports the Open Active Booking API.
 
 
-### Checking availability and offers for an event
+### Definition of a 'bookable' slot/facility use
 
-To check the availability of an event a **broker** will issue a GET request to
-the URI specified in the `id` of the Event.
+A slot is essentially an event, and many of the above conditions apply, however
+some of the properties for a slot are different and as a consequence there are
+different criteria for it being bookable.
 
-The **booking system** MUST ensure that the data presented to the **broker** in
-the `remainingAttendeeCapacity` property is up to date and includes a
-combination of places already booked and places currently reserved by leases
-from in-progress **orders**.
+A **slot** is deemed to be 'bookable' if:
 
-It is the responsibility of **brokers** to ensure that spaces within the event
-are still available before proceeding with booking.
+- The **slot** has not already occurred, i.e. the `startDate` (when expressed
+as a timedatestamp) and `endDate` of the **slot** has not been exceeded
 
+- The `remainingUses` of the **slot** is greater than or equal to the number
+of slots required. For example if an independently organised badminton league
+requires four courts, the number of `remainingUses` should be 4 or higher.
+
+- There are one or more valid **offers** for the slot
+
+- The `potentialAction` of the **slot** contains one or more appropriate
+ReserveAction objects
+
+There may be more restrictions placed by a **seller** on the booking of a
+**slot** for use of a **facility**. For example, it may be that one of the party
+must be over a certain age as a supervising adult if some of the party are
+minors. It is the responsibility of the **booking platform** to make the terms
+and conditions of **booking** available to the **broker** and it is the
+responsibility of the **broker** to ensure that the **customer** is aware of
+these conditions before entering the **order** workflow.
+
+### Checking availability and offers for an event or facility use slot
+
+To check the availability of an opportunity a **broker** will issue a GET
+request to the URI specified in the `id` of the opportunity, having
+discovered it from the RDPE feed.
+
+It is the responsibility of **brokers** to ensure that spaces within the
+opportunity are still available before proceeding with booking.
 
 
         <pre class="example" title="Viewing event availability">
 GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.6+json
+Accept: application/vnd.openactive.v0.7+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.6+json
+Content-Type: application/vnd.openactive.v0.7+json
 Content-Length: ...
 
 
@@ -1082,10 +1152,154 @@ Content-Length: ...
 
 </pre>
 
-The **broker** MUST assemble a set of all applicable **offers** for an **event**
-from the information supplied by the **booking system**. An applicable **offer**
-is an **offer** which is available for an **event** which is bookable and for
-which the **customer** is eligible.
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingAttendeeCapacity` property of the **event** is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+
+<pre class="example" title="Viewing slot availability">
+GET /slots/324 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.7+json
+</pre>
+
+<pre class="example" title="Slot response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v0.7+json
+Content-Length: ...
+
+
+{
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Slot",
+  "id": "http://www.example.org/slots/324",
+  "identifier": 324,
+  "facilityUse": "http://www.example.org/facility-use/1",
+  "startDate": "2018-03-01T11:00:00Z",
+  "duration": "PT30M",
+  "remainingUses": 3,
+  "maximumUses": 4,
+   "offers": [
+     {
+       "type": "Offer",
+       "name": "30 minute hire",
+       "price": "15",
+       "priceCurrency": "GBP"
+       "potentialAction": [
+         {
+           "type": "ReserveAction",
+           "name": "Book",
+           "target": {
+             "type": "EntryPoint",
+             "urlTemplate": "https://example.com/orders",
+             "encodingType": "application/vnd.openactive.v0.7+json",
+             "httpMethod": "POST"
+           }
+         }
+       ]
+     }
+   ]
+}
+
+</pre>
+
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingUses` property of the **slot** is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**.
+
+<pre class="example" title="Viewing slot availability via a facility use">
+GET /facility-use/1 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.7+json
+</pre>
+
+<pre class="example" title="Facility use response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v0.7+json
+Content-Length: ...
+
+{
+  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "type": "FacilityUse",
+  "url": "http://www.example.org/facility-use/1",
+  "name": "Example Leisure Centre Table Tennis",
+  "description": "Table tennis tables are available to hire for thirty minute slots",
+  "activity": "Table Tennis",
+  "location": {
+    "type": "Place",
+    "name": "Example Leisure Centre",
+    "address": {
+      "type": "PostalAddress",
+      "streetAddress": "1 High Street",
+      "addressLocality": "Bristol",
+      "postalCode": "BS1 4SD"
+    }
+  },
+  "offers": [
+      {
+        "type": "Offer",
+        "name": "30 minute hire",
+        "price": "10",
+        "priceCurrency": "GBP",
+        "potentialAction": [
+          {
+            "type": "ReserveAction",
+            "name": "Book",
+            "target": {
+              "type": "EntryPoint",
+              "urlTemplate": "https://example.com/orders",
+              "encodingType": "application/vnd.openactive.v0.7+json",
+              "httpMethod": "POST"
+            }
+          }
+        ]
+      }
+  ],
+  "event": [
+      {
+        "type": "Slot",
+        "id": "http://www.example.org/slots/123",
+        "facilityUse": "http://www.example.org/facility-use/1",
+        "startDate": "2018-03-01T10:00:00Z",
+        "duration": "PT30M",
+        "remainingUses": 0,
+        "maximumUses": 4
+      },
+      {
+        "type": "Slot",
+        "id": "http://www.example.org/slots/234",
+        "facilityUse": "http://www.example.org/facility-use/1",
+        "startDate": "2018-03-01T11:00:00Z",
+        "duration": "PT30M",
+        "remainingUses": 3,
+        "maximumUses": 4,
+         "offers": [
+           {
+              "name": "30 minute hire",
+              "price": "15",
+              "priceCurrency": "GBP"
+           }
+         ]
+      }
+  ]
+}
+
+</pre>
+
+### Assembling a set of offers and presenting them to a customer
+
+The **broker** MUST assemble a set of all applicable **offers** for an
+**opportunity** from the information supplied by the **booking system**.
+An applicable **offer** is an **offer** which is available for an
+**opportunity** which is bookable and for which the **customer** is eligible.
+
+#### Collating offers for an event
 
 In the case of the **event** having no `subEvent` the set of all applicable
 **offers** is simply the array of **offers** contained within the `offers`
@@ -1113,19 +1327,28 @@ The **customer** selects one of these **offers** and when all pre-conditions
 have been met, the **broker** enters the **order** creation workflow on behalf
 of the customer.
 
+#### Collating offers for the use of a facility
 
-        </pre>
+The process for building a set of all applicable offers is similar for
+**facilities** with the **offers** which are part of a specific **slot** having
+primacy over the more generic **offers** contained within a`FacilityUse`.
+
+The **booking system** MUST ensure that the data presented to the **broker** in
+the `remainingUses` property  in the **slot** is up to date and includes a
+combination of places already booked and places currently reserved by leases
+from in-progress **orders**. The **booking system** MUST also ensure that
+the `hoursAvailable` property on the `FacilityUse` is kept updated.
 
 
-### Obtaining a lease on a space within an event
+### Obtaining a lease on a space within an opportunity
 
-**orders** SHOULD contain a `orderLeaseDuration` property. This
+**Orders** SHOULD contain a `orderLeaseDuration` property. This
 property MUST contain an ISO 8601 formatted duration for the lease. The lease
 duration may also be advertised somewhere else to make it clear in advance,
 e.g. in docs/setup config, or as part of a `potentialAction` property.
 
 (Note: In previous iterations of the Booking API specification, the lease was
-a property of an event. This has now been depracated.)
+a property of an event. This has now been deprecated.)
 
 The `orderLeaseDuration` property notifies the **broker** about the
 length of time for which a space will be reserved by the **booking system**
@@ -1134,15 +1357,15 @@ whilst payment for the **event** is taken by the third-party payment system.
 The default suggested lease duration is 15 minutes, but it is up to each
 **booking plaftorm** to define and advertise their own lease duration.
 
-This lease is NOT designed as a pause for a shopping cart system which is out
-of scope for v1.0 of this specification.
+This lease is NOT designed as a pause for a shopping cart system (in addition
+shopping cart functionality is out of scope for v1.0 of this specification).
 
 The **broker** MUST ensure that it has obtained all of the relevant details
 about a **customer** before getting to the point where it attempts to place an
 **order**. The lease is not designed as a pause in the process whilst a
 **customer** is registered by a **broker**.
 
-The client may then present the updated availability and suitable offers to
+The client may then present the updated availability and suitable **offers** to
 the customer.
 
 ## Creating and updating orders
@@ -1166,7 +1389,7 @@ order.
 **brokers** to initiate and enter the **booking** workflow.
 
 To initiate the **booking workflow**, the **booking system** must include a
-`potentialAction` field within each **bookable** **event**. The
+`potentialAction` field within each **bookable** **opportunity**. The
 `potentialAction` field MUST contain one or more objects of type ReserveAction.
 
 These ReserveAction objects must contain a `target` field containing an
@@ -1179,28 +1402,27 @@ contain the `encodingType` and the `httpMethod` which must be POST as a new
 An example is below:
 
 <pre class="example" title="Example of a ReserveAction">
-
 "potentialAction": [
-        {
-          "type": "ReserveAction",
-          "name": "Book",
-          "target": {
-            "type": "EntryPoint",
-            "url": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.6+json",
-            "httpMethod": "POST"
-          }
-        }
-      ]
+  {
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v0.7+json",
+      "httpMethod": "POST"
+    }
+  }
+]
 </pre>
-
 
 ### Pre-conditions for creating an order
 
 Before creating an **order** the **broker** MUST:
 
 - have obtained **customer** information
-- have determined that the **event** is bookable
+- have determined that the **opportunity** is bookable (see sections on the
+definition of bookable for events and slots/facility uses)
 - have identified the selected **offer**
 - have prompted **customer** that they will enter a **payment** flow
 (no pre-emptive leasing)
@@ -1209,19 +1431,16 @@ to third-party (the **booking system** and the **seller**) and made the customer
 aware of and assent to any legitimate privacy policy and terms and conditions
 - have already obtained permission to use API
 
-
 Before creating an **order** the **broker** SHOULD:
 
 - have registered the **customer** (or have the **customer's** details to hand)
 - have identified the **customer's** preferred payment options
 
-
-
 ### Creating a new order (`/orders`)
 
 A POST request to the `/orders` endpoint of the **booking system** will result
 in server creating an new **Order**. A time limited lease will be created for
-the **events** referenced in the **Order**.
+spaces in the **event** referenced in the **Order**.
 
 The `broker` property in the request body is to help the **booking platform** to
 clarify who is making request and to help them in situations such as queries
@@ -1232,9 +1451,9 @@ of the submitted JSON.
 
 The `broker` property should be a well formed schema:Organisation object.
 
-In the situation where This allows a middleware is used to handle access control
-for various **brokers**, independently of API key provisioning at the
-**booking system** (which in some systems is a lengthly and time-consuming
+In the situation where a middleware to be used to handle access control for
+various **brokers**, independently of API key provisioning at the
+**booking system** level (which in some systems is a lengthly and time-consuming
 process), the `broker` property should contain the details of the end-user
 **broker** rather than the middleware.
 
@@ -1243,7 +1462,7 @@ process), the `broker` property should contain the details of the end-user
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.6+json
+Accept: application/vnd.openactive.v0.7+json
 
 {
 	"@context": "https://openactive.io/ns/oa.jsonld",
@@ -1277,33 +1496,33 @@ Accept: application/vnd.openactive.v0.6+json
 		}
 	}]
 }
-        </pre>
+</pre>
 
 If successful the server will response with the location of a newly created
 `Order` resource:
 
-        <pre class="example" title="Creating an order - response">
+<pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.6+json
+Content-Type: application/vnd.openactive.v0.7+json
 Location: /orders/123
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
   "id": "https://example.com/orders/123",
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
+  "customer": {
+  	"type": "Person",
+  	"email": "geoffcapes@example.com",
+  	"givenName": "Geoff",
+  	"familyName": "Capes"
+  },
   "orderLeaseDuration": "PT15M",
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
+  "broker": {
+  	"type": "Organization",
+  	"name": "MyFitnessApp",
+  	"url": "https://myfitnessapp.example.com"
+  },
   "orderStatus": "https://schema.org/OrderPaymentDue",
   "potentialAction": [
     {
@@ -1311,29 +1530,29 @@ Location: /orders/123
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.6+json",
+        "urlTemplate": "https://example.com/orders/{order_id}",
+        "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
     }
   ],
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"availabilityEnds": "2018-04-29T12:14:35Z",
-			"availabilityStarts": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
-			"name": "Speedball winger position",
-			"price": "33.00",
-			"priceCurrency": "GBP"
-		}
-	}]
+  "orderedItem": [{
+  	"type": "OrderItem",
+  	"orderQuantity": 1,
+  	"acceptedOffer": {
+  		"type": "Offer",
+  		"acceptedPaymentMethod": [
+  			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+  		],
+  		"availabilityEnds": "2018-04-29T12:14:35Z",
+  		"availabilityStarts": "2018-04-01T12:14:35Z",
+  		"description": "Winger space for Speedball.",
+  		"id": "https://example.com/offers/1234",
+  		"name": "Speedball winger position",
+  		"price": "33.00",
+  		"priceCurrency": "GBP"
+  	}
+  }]
 }
 </pre>
 
@@ -1346,13 +1565,13 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.6+json
+Accept: application/vnd.openactive.v0.7+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.6+json
+Content-Type: application/vnd.openactive.v0.7+json
 Content-Length: ...
 
 {
@@ -1407,8 +1626,8 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.6+json",
+        "urlTemplate": "https://example.com/orders/{order_id}",
+        "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
     },
@@ -1417,8 +1636,8 @@ Content-Length: ...
       "name": "Pay",
       "target": {
         "type": "EntryPoint",
-        "url": "https://example.com/orders/123",
-        "encodingType": "application/vnd.openactive.v0.6+json",
+        "urlTemplate": "https://example.com/orders/{order_id}",
+        "encodingType": "application/vnd.openactive.v0.7+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1456,7 +1675,7 @@ returns a representation of the completed **order** with a 200 status code.
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.6+json
+Accept: application/vnd.openactive.v0.7+json
 
 {
   "type": "Order",
@@ -1479,7 +1698,7 @@ Accept: application/vnd.openactive.v0.6+json
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.6+json
+Content-Type: application/vnd.openactive.v0.7+json
 Content-Length: ...
 
 {
@@ -1542,8 +1761,8 @@ Content-Length: ...
 		"name": "Pay",
 		"target": {
 			"type": "EntryPoint",
-			"url": "https://example.com/orders/535",
-			"encodingType": "application/vnd.openactive.v0.6+json",
+			"urlTemplate": "https://example.com/orders/{order_id}",
+			"encodingType": "application/vnd.openactive.v0.7+json",
 			"httpMethod": "PATCH"
 		}
 	}]
@@ -1551,39 +1770,38 @@ Content-Length: ...
 
     </pre>
 
-## Ordering a place at a free event
+## Ordering a place at a free event/ordering a free slot
 
-Free **events** MUST follow the same workflow as paid **events**. A free
-**event** is technically a free **offer** on a space for an event. There MUST be
-at least one **offer** with a `price` property of "0.00". The `priceCurrency`
-SHOULD still be defined for data consistency and completeness.
+Free **opportunities** MUST follow the same workflow as paid **opportunities**.
+A free **event** or **slot** is technically a free **offer** on a space for an
+opportunity. There MUST be at least one **offer** with a `price` property of
+"0.00". The `priceCurrency` SHOULD still be defined, where possible and
+appropriate, for data consistency and completeness.
 
 The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
 shown below.
 
-**Orders** for a free place at an **event** are the only current scenario in the
-Booking API specification where a `Payment` object has `paymentMethod` and
-`paymentMethodId` as optional properties.
+**Orders** for a free place at an **opportunity** are the only current scenario
+in the Booking API specification where a `Payment` object has `paymentMethod`
+and `paymentMethodId` as optional properties.
 
 <pre class="example" title="Completing an free order with a payment of '0.00' - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.6+json
+Accept: application/vnd.openactive.v0.7+json
 
 {
-"type": "Order",
-"payments": [
-{
-  "type": "Payment",
-  "totalPaidToProvider": {
-    "type": "MonetaryAmount",
-    "value": "0.00",
-    "currency": "GBP"
-  }
-}
-]
+  "type": "Order",
+  "payments": [{
+    "type": "Payment",
+    "totalPaidToProvider": {
+      "type": "MonetaryAmount",
+      "value": "0.00",
+      "currency": "GBP"
+    }
+  }]
 }
 
 </pre>
@@ -1597,9 +1815,9 @@ If the lease expires during **payment**, the **broker** MAY delete the **order**
 The **broker** should then create a new **order** for the
 **customer** in order to generate a new lease.
 
-Before creating a new order, the **broker** MUST check the **event** and **offers** to ensure
-that a space still exists within the **event** and that the **offer** selected
-by the **customer** is still valid.
+Before creating a new order, the **broker** MUST check the **opportunity** and
+**offers** to ensure that a space still exists within the **opportunity**
+and that the **offer** selected by the **customer** is still valid.
 
 If no space exists or the **offer** is now invalid, the **customer**
 should be refunded if payment has been taken.
@@ -1637,7 +1855,7 @@ after expiry. The `orderStatus` property should be set to
 https://schema.org/OrderCancelled to indicate that the **order** cannot proceed
 to completion.
 
-## Events after order completion: confirmations and refunds
+## Actions which occur after order completion: confirmations and refunds
 
 Both the **broker** and **booking system** may need to take further actions after
 completing an order. This section describes some potential interactions.
@@ -1650,7 +1868,7 @@ has been completed successfully. The **broker** will have access to a completed
 **order** which will contain a `confirmationCode` property.
 
 The **booking system** may also provide the **customer** with a confirmation that
-the space at the **event** has been booked on their behalf.
+the space at the **opportunity** has been booked on their behalf.
 
 ### Refunding a customer and cancelling an order
 
@@ -1667,9 +1885,6 @@ After initiating a refund, the **broker** should cancel the
 prescribed in the `potentialAction` property of the **order** response.
 
 The process of cancellation is documented in Section 5.5.2
-
-<!--div class="issue" title="Cancelling an order needs documenting" data-number="47">
-</div -->
 
 ## Customers
 
@@ -1701,11 +1916,11 @@ creation process.
 # Future versions of this API
 
 Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
-Booking API. Neither it, or 0.6, are yet feature complete and there are some requirements
+Booking API. Neither it, or 0.7, are yet feature complete and there are some requirements
 which are not satisfied by this version.
 
 Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
-resource to provide a payment and usng PATCH to change the status of an `orderItem` to
+resource to provide a payment and using PATCH to change the status of an `orderItem` to
 cancel an order provide the groundwork for known requirements such as multiple
 order items (shopping carts), cancellation of individual order items and also
 multipart payments.
@@ -1718,7 +1933,7 @@ The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
 API.
 
-The currently known requirements not satisfied in version 0.6 are:
+The currently known requirements not satisfied in version 0.7 are:
 
 - multiple part orders
 - supporting multiple payments
@@ -1737,7 +1952,9 @@ associated with Open Active and the open specification.
 
 <section class="normative">
 
-# New Open Active models defined in the 0.5 Booking API specification
+# New Open Active models defined in the 0.5 Booking API specification which are
+not yet reflected in the current version (1.1) of the Open Active Modelling
+Specification.
 
 ## Error
 
