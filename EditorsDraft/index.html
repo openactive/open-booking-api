@@ -666,7 +666,7 @@ whole API.
 Custom media types are used in this API to allow clients to choose the format
 of the data they receive.
 
-Servers MAY choose to support additional media types but MUST support the
+**Booking platforms** MAY choose to support additional media types but MUST support the
 media type(s) defined by this specification.
 
 Media types will conform to the following pattern:
@@ -681,7 +681,7 @@ The current media type is:
 application/vnd.openactive.0.7+json
 ```
 
-**Brokers specifying a media type without a version, such as:
+**Brokers** specifying a media type without a version, such as:
 
 ```
 application/vnd.openactive+json
@@ -1211,6 +1211,87 @@ the `remainingUses` property of the **slot** is up to date and includes a
 combination of places already booked and places currently reserved by leases
 from in-progress **orders**.
 
+<pre class="example" title="Viewing slot availability via a facility use">
+GET /facility-use/1 HTTP/1.1
+Host: example.com
+Date: Tue, 07 Jun 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v0.7+json
+</pre>
+
+<pre class="example" title="Facility use response">
+HTTP/1.1 200 OK
+Date: Tue, 07 Jun 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v0.7+json
+Content-Length: ...
+
+{
+  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "type": "FacilityUse",
+  "url": "http://www.example.org/facility-use/1",
+  "name": "Example Leisure Centre Table Tennis",
+  "description": "Table tennis tables are available to hire for thirty minute slots",
+  "activity": "Table Tennis",
+  "location": {
+    "type": "Place",
+    "name": "Example Leisure Centre",
+    "address": {
+      "type": "PostalAddress",
+      "streetAddress": "1 High Street",
+      "addressLocality": "Bristol",
+      "postalCode": "BS1 4SD"
+    }
+  },
+  "offers": [
+      {
+        "type": "Offer",
+        "name": "30 minute hire",
+        "price": "10",
+        "priceCurrency": "GBP",
+        "potentialAction": [
+          {
+            "type": "ReserveAction",
+            "name": "Book",
+            "target": {
+              "type": "EntryPoint",
+              "urlTemplate": "https://example.com/orders",
+              "encodingType": "application/vnd.openactive.v0.7+json",
+              "httpMethod": "POST"
+            }
+          }
+        ]
+      }
+  ],
+  "event": [
+      {
+        "type": "Slot",
+        "id": "http://www.example.org/slots/123",
+        "facilityUse": "http://www.example.org/facility-use/1",
+        "startDate": "2018-03-01T10:00:00Z",
+        "duration": "PT30M",
+        "remainingUses": 0,
+        "maximumUses": 4
+      },
+      {
+        "type": "Slot",
+        "id": "http://www.example.org/slots/234",
+        "facilityUse": "http://www.example.org/facility-use/1",
+        "startDate": "2018-03-01T11:00:00Z",
+        "duration": "PT30M",
+        "remainingUses": 3,
+        "maximumUses": 4,
+         "offers": [
+           {
+              "name": "30 minute hire",
+              "price": "15",
+              "priceCurrency": "GBP"
+           }
+         ]
+      }
+  ]
+}
+
+</pre>
+
 ### Assembling a set of offers and presenting them to a customer
 
 The **broker** MUST assemble a set of all applicable **offers** for an
@@ -1259,9 +1340,9 @@ from in-progress **orders**. The **booking system** MUST also ensure that
 the `hoursAvailable` property on the `FacilityUse` is kept updated.
 
 
-### Obtaining a lease on a space within an event
+### Obtaining a lease on a space within an opportunity
 
-**orders** SHOULD contain a `orderLeaseDuration` property. This
+**Orders** SHOULD contain a `orderLeaseDuration` property. This
 property MUST contain an ISO 8601 formatted duration for the lease. The lease
 duration may also be advertised somewhere else to make it clear in advance,
 e.g. in docs/setup config, or as part of a `potentialAction` property.
@@ -1276,15 +1357,15 @@ whilst payment for the **event** is taken by the third-party payment system.
 The default suggested lease duration is 15 minutes, but it is up to each
 **booking plaftorm** to define and advertise their own lease duration.
 
-This lease is NOT designed as a pause for a shopping cart system which is out
-of scope for v1.0 of this specification.
+This lease is NOT designed as a pause for a shopping cart system (in addition
+shopping cart functionality is out of scope for v1.0 of this specification).
 
 The **broker** MUST ensure that it has obtained all of the relevant details
 about a **customer** before getting to the point where it attempts to place an
 **order**. The lease is not designed as a pause in the process whilst a
 **customer** is registered by a **broker**.
 
-The client may then present the updated availability and suitable offers to
+The client may then present the updated availability and suitable **offers** to
 the customer.
 
 ## Creating and updating orders
@@ -1694,8 +1775,8 @@ Content-Length: ...
 Free **opportunities** MUST follow the same workflow as paid **opportunities**.
 A free **event** or **slot** is technically a free **offer** on a space for an
 opportunity. There MUST be at least one **offer** with a `price` property of
-"0.00". The `priceCurrency` SHOULD still be defined for data consistency and
-completeness.
+"0.00". The `priceCurrency` SHOULD still be defined, where possible and
+appropriate, for data consistency and completeness.
 
 The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
