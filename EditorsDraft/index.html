@@ -802,11 +802,7 @@ the problem. It may or may not yield further information if dereferenced.
 * `requestId`  – used by technical support for diagnostics purposes.
 
 
-### Standard URIs for common errors
-
-https://openactive.io/errors/incomplete_customer_details
-
-Status code: 400
+### Order creation : Incomplete customer details
 
 Use cases:
 
@@ -815,9 +811,13 @@ object.
 
 - if the `customer` property supplied is not a valid schema:Person object.
 
-https://openactive.io/errors/incomplete_broker_details
+errorType URI:
+
+- https://openactive.io/errors/incomplete_customer_details
 
 Status code: 400
+
+### Order creation : Incomplete broker details
 
 Use cases:
 
@@ -826,10 +826,13 @@ the **broker**
 
 - if the `broker` property supplied is not a valid schema:Organisation object.
 
+errorType URI:
 
-https://openactive.io/errors/incomplete_offer_details
+- https://openactive.io/errors/incomplete_broker_details
 
 Status code: 400
+
+### Order creation : Incomplete offer details
 
 Use cases:
 
@@ -838,13 +841,13 @@ Use cases:
 - if the `acceptedOffer` is not a URL which corresponds to an **offer** on the
 **booking system**
 
+errorType URI:
 
-https://openactive.io/errors/incomplete_event_details
-https://openactive.io/errors/incomplete_facilityuse_details
-https://openactive.io/errors/incomplete_slot_details
-https://openactive.io/errors/incomplete_opportunity_details
+- https://openactive.io/errors/incomplete_offer_details
 
 Status code: 400
+
+### Order creation : Incomplete opportunity details
 
 Use cases:
 
@@ -853,111 +856,268 @@ Use cases:
 - if the `orderedItem` is not a URL which corresponds to an **opportunity** on
 the **booking system**
 
+errorType URIs:
 
-https://openactive.io/errors/unavailable_offer
+- https://openactive.io/errors/incomplete_event_details
+- https://openactive.io/errors/incomplete_facilityuse_details
+- https://openactive.io/errors/incomplete_slot_details
+- https://openactive.io/errors/incomplete_opportunity_details
 
 Status code: 400
+
+### Order creation : Unavailable offer
 
 Use cases:
 
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
-https://openactive.io/errors/unavailable_event
-https://openactive.io/errors/unavailable_facilityuse
-https://openactive.io/errors/unavailable_slot
-https://openactive.io/errors/unavailable_opportunity
+errorType URI:
+
+- https://openactive.io/errors/unavailable_offer
 
 Status code: 400
+
+### Order creation : Unavailable opportunity
 
 Use cases:
 
 - if the **opportunity** contained in the `orderedItem` property is not bookable
 
-https://openactive.io/errors/event_is_full
-https://openactive.io/errors/slot_is_full
-https://openactive.io/errors/opportunity_is_full
+errorType URIs:
+
+- https://openactive.io/errors/unavailable_event
+- https://openactive.io/errors/unavailable_facilityuse
+- https://openactive.io/errors/unavailable_slot
+- https://openactive.io/errors/unavailable_opportunity
 
 Status code: 400
+
+### Order creation : Opportunity full
 
 Use cases:
 
 - if there are no available spaces for the **opportunity** contained in the
 `orderedItem` property
 
-https://openactive.io/errors/incomplete_payment_details
+errorType URIs:
+
+- https://openactive.io/errors/event_is_full
+- https://openactive.io/errors/slot_is_full
+- https://openactive.io/errors/opportunity_is_full
 
 Status code: 400
+
+### Order completion : Incomplete payment details
 
 Use cases:
 
 - if the `paymentMethod` or `paymentMethodId` properties are missing or
 incorrect
 
-https://openactive.io/errors/anonymous_lease_expired
+errorType URI:
 
-Status code: 410
+- https://openactive.io/errors/incomplete_payment_details
+
+Status code: 400
+
+### Order completion : Anonymous lease expired
 
 Use cases:
 
 - if **broker** did not supply **payment** details between the creation of the
 **order** and the expiration of the lease.
 
-https://openactive.io/errors/no_api_token_provided
+errorType URI:
+
+- https://openactive.io/errors/anonymous_lease_expired
+
+Status code: 410
+
+### API authentication : Unauthenticated
+
+Use cases:
+
+- if **broker** did not supply any form of authentication
+
+errorType URI:
+
+- https://openactive.io/errors/unauthenticated
 
 Status code: 403
+
+### API authentication : No API token provided
 
 Use cases:
 
 - if **broker** did not supply an API key
 
-https://openactive.io/errors/invalid_api_token_provided
+errorType URI:
 
-Status code: 401
+- https://openactive.io/errors/no_api_token_provided
+
+Status code: 403
+
+### API authentication : Invalid API token provided
 
 Use cases:
 
 - if **broker** supplied an invalid API key, either malformed or expired
 
-https://openactive.io/errors/temporarily_unable_to_create_order
+errorType URI:
 
-Status code: 500
+- https://openactive.io/errors/invalid_api_token_provided
+
+Status code: 401
+
+### API authentication : Invalid authorization details provided
+
+Use cases:
+
+- if **broker** supplied an invalid set of authorization details, either
+malformed or expired
+
+errorType URI:
+
+- https://openactive.io/errors/invalid_authorization_details
+
+Status code: 401
+
+### Technical errors : Temporarily unable to create order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to create an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/temporarily_unable_to_update_order
+errorType URI:
+
+- https://openactive.io/errors/temporarily_unable_to_create_order
 
 Status code: 500
+
+### Technical errors : Temporarily unable to create order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to update an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/temporarily_unable_to_delete_order
+errorType URI:
+
+- https://openactive.io/errors/temporarily_unable_to_update_order
 
 Status code: 500
+
+### Technical errors : Temporarily unable to delete order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to delete an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/unknown_or_incorrect_offer
+errorType URI:
 
-Status code: 404
+- https://openactive.io/errors/temporarily_unable_to_delete_order
+
+Status code: 500
+
+### Generic errors : Unknown or incorrect offer
 
 Use cases:
 
-- where a **booking platform** has no **offer** matching the offer requested
+- where a **booking platform** has no **offer** matching the one requested
 
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_offer
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect opportunity
+
+Use cases:
+
+- where a **booking platform** has no **opportunity** matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_opportunity
+- https://openactive.io/errors/unknown_or_incorrect_event
+- https://openactive.io/errors/unknown_or_incorrect_facilityuse
+- https://openactive.io/errors/unknown_or_incorrect_slot
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect order
+
+Use cases:
+
+- where a **booking platform** has no **order** matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_order
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect endpoint
+
+Use cases:
+
+- where a **booking platform** has no endpoint matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_endpoint
+
+Status code: 404
+
+### Generic errors : Not found
+
+Use cases:
+
+- where a **booking platform** does not have the generic resource specified
+
+errorType URI:
+
+- https://openactive.io/errors/not_found
+
+Status code: 404
+
+
+
+### Generic errors : Method not allowed
+
+Use cases:
+
+- where a **booking platform** does not a speficic HTTP method for the endpoint
+requested with that specific HTTP verb
+
+errorType URI:
+
+- https://openactive.io/errors/method_not_allowed
+
+Status code: 405
+
+### Generic errors : Gone
+
+Use cases:
+
+- where an **order** has been cancelled and the underlying resources are marked
+for deletion
+
+errorType URI:
+
+- https://openactive.io/errors/gone
+
+Status code: 410
 ## Security
 
 All HTTP requests and responses SHOULD be secured using SSL.
 
 ## Authentication
+
+### API level authentication
 
 All of the API transactions described in this document SHOULD require
 authentication.
@@ -967,15 +1127,27 @@ recommendation is that implementers SHOULD consider using [[OAuth2]] as it is
 well-defined, widely supported and can be used in a variety of different
 application flows (e.g. via a Javascript web application or between servers).
 
-Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
-way of verifying the identity of customer. It is a thin layer that sits
-atop OAuth2.
+Other server to server authentication mechanisms such as basic authentication,
+API key or bearer tokern based mechanisms are also appropriate.
 
 One principle relating to authentication and the Booking API is that **orders**
 created by a specific **broker** SHOULD NOT be able to be changed by any other
 **broker**. It is the responsibility of the **booking system** to ensure that
 subsequent requests to an **order** should only be initiated by the **broker**
 which created the **order**.
+
+### Customer level authentication
+
+Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
+way of verifying the identity of customer. It is a thin layer that sits
+atop OAuth2.
+
+One principle relating to authentication and the Booking API is that **orders**
+created by a specific **customer** SHOULD NOT be able to be changed by any other
+**customer**. It is the responsibility of the **booking system** to ensure that
+subsequent requests to an **order** should only be initiated by the **customer**
+which created the **order**.
+
 
 ## Delivery of terms and conditions
 
