@@ -1946,9 +1946,10 @@ Content-Length: ...
 
 Free **opportunities** MUST follow the same workflow as paid **opportunities**.
 A free **event** or **slot** is technically a free **offer** on a space for an
-opportunity. There MUST be at least one **offer** with a `price` property of
-"0.00". The `priceCurrency` SHOULD still be defined, where possible and
-appropriate, for data consistency and completeness.
+opportunity. There MUST be at least one offer with a price property of `0.00`.
+For free Offers publishers MAY leave out the priceCurrency. If a priceCurrency
+is not available then brokers SHOULD display a suitable default currency when
+displaying a zero price.
 
 The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
@@ -1958,7 +1959,7 @@ shown below.
 in the Booking API specification where a `Payment` object has `paymentMethod`
 and `paymentMethodId` as optional properties.
 
-<pre class="example" title="Completing an free order with a payment of '0.00' - request">
+<pre class="example" title="Completing an free order with a payment of 0.00 - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
@@ -1970,7 +1971,7 @@ Accept: application/vnd.openactive.v0.8+json
     "type": "Payment",
     "totalPaidToProvider": {
       "type": "MonetaryAmount",
-      "value": "0.00",
+      "value": 0.00,
       "currency": "GBP"
     }
   }]

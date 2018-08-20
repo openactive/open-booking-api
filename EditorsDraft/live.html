@@ -1,4 +1,4 @@
-<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 22.4.0"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
+<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 22.5.0"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
 span.example-title {
     text-transform: none;
 }
@@ -605,8 +605,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
       "id": "openidconnect"
     }
   },
-  "publishISODate": "2018-08-15T00:00:00.000Z",
-  "generatedSubtitle": "Draft Community Group Report 15 August 2018"
+  "publishISODate": "2018-08-20T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 20 August 2018"
 }</script><meta name="description" content="This document specifies an HTTP API for placing bookings to participate in
 physical activities, either by attending events or through the use of leisure
 or sports facilities."></head>
@@ -617,7 +617,7 @@ or sports facilities."></head>
   </a>
   <h1 class="title p-name" id="title">Open Booking API 0.8</h1>
   
-  <h2 id="draft-community-group-report-15-august-2018">Draft Community Group Report <time class="dt-published" datetime="2018-08-15">15 August 2018</time></h2>
+  <h2 id="draft-community-group-report-20-august-2018">Draft Community Group Report <time class="dt-published" datetime="2018-08-20">20 August 2018</time></h2>
   <dl>
     
     
@@ -1797,14 +1797,15 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
 }</span></pre>
         </div></section></section><section><h3 id="ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</h3><p>Free <strong>opportunities</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>opportunities</strong>.
 A free <strong>event</strong> or <strong>slot</strong> is technically a free <strong>offer</strong> on a space for an
-opportunity. There <em class="rfc2119" title="MUST">MUST</em> be at least one <strong>offer</strong> with a <code>price</code> property of
-"0.00". The <code>priceCurrency</code> <em class="rfc2119" title="SHOULD">SHOULD</em> still be defined, where possible and
-appropriate, for data consistency and completeness.</p><p>The <strong>order</strong> workflow <em class="rfc2119" title="MUST">MUST</em> be followed as described for <strong>offers</strong> with a
+opportunity. There <em class="rfc2119" title="MUST">MUST</em> be at least one offer with a price property of <code>0.00</code>.
+For free Offers publishers <em class="rfc2119" title="MAY">MAY</em> leave out the priceCurrency. If a priceCurrency
+is not available then brokers <em class="rfc2119" title="SHOULD">SHOULD</em> display a suitable default currency when
+displaying a zero price.</p><p>The <strong>order</strong> workflow <em class="rfc2119" title="MUST">MUST</em> be followed as described for <strong>offers</strong> with a
 payment. The PATCH to the URL defined in <code>PayAction</code> should follow the example
 shown below.</p><p><strong>Orders</strong> for a free place at an <strong>opportunity</strong> are the only current scenario
 in the Booking API specification where a <code>Payment</code> object has <code>paymentMethod</code>
 and <code>paymentMethodId</code> as optional properties.</p><div class="example">
-          <div class="marker"><span>Example 18</span><span class="example-title">: Completing an free order with a payment of '0.00' - request</span></div>
+          <div class="marker"><span>Example 18</span><span class="example-title">: Completing an free order with a payment of 0.00 - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
@@ -1816,7 +1817,7 @@ and <code>paymentMethodId</code> as optional properties.</p><div class="example"
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
     <span class="hljs-attr">"totalPaidToProvider"</span>: {
       <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"0.00"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-number">0.00</span>,
       <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
     }
   }]
