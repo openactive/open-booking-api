@@ -1011,7 +1011,7 @@ closely on [<cite><a class="bibref" href="#bib-rfc7807">RFC7807</a></cite>].</p>
   <span class="hljs-attr">"errorType"</span>: <span class="hljs-string">"https://openactive.io/errors/incomplete_customer_details"</span>,
   <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Incomplete customer details"</span>,
   <span class="hljs-attr">"details"</span>: <span class="hljs-string">"No customer details supplied"</span>,
-  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"400"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-number">400</span>,
   <span class="hljs-attr">"instance"</span>: <span class="hljs-string">"/orders"</span>,
   <span class="hljs-attr">"method"</span>: <span class="hljs-string">"POST"</span>
 }</pre>
@@ -1824,7 +1824,7 @@ and <code>paymentMethodId</code> as optional properties.</p><div class="example"
 }</span></pre>
         </div></section><section><h3 id="leases-and-the-orderleaseduration-property"><span class="secno">7.4 </span>Leases and the orderLeaseDuration property</h3><p>If the lease expires during <strong>payment</strong>, the <strong>broker</strong> <em class="rfc2119" title="MAY">MAY</em> delete the <strong>order</strong>
 (if the <strong>booking system</strong> has not already done so, returning a response with a
-410 status code).</p><p>The <strong>broker</strong> should then create a new <strong>order</strong> for the
+<code>410</code> status code).</p><p>The <strong>broker</strong> should then create a new <strong>order</strong> for the
 <strong>customer</strong> in order to generate a new lease.</p><p>Before creating a new order, the <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em> check the <strong>opportunity</strong> and
 <strong>offers</strong> to ensure that a space still exists within the <strong>opportunity</strong>
 and that the <strong>offer</strong> selected by the <strong>customer</strong> is still valid.</p><p>If no space exists or the <strong>offer</strong> is now invalid, the <strong>customer</strong>
@@ -1927,6 +1927,11 @@ Specification.</p><section><h3 id="error"><span class="secno">9.1 </span>Error</
 <td><code>method</code></td>
 <td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></em></td>
 <td>The method of the request (e.g. GET).</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
+<td>An integer representing the HTTP status code.</td>
 </tr>
 <tr>
 <td><code>invalid-params</code></td>

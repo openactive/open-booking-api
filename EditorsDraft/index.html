@@ -778,7 +778,7 @@ closely on [[!RFC7807]].
               "errorType": "https://openactive.io/errors/incomplete_customer_details",
               "title": "Incomplete customer details",
               "details": "No customer details supplied",
-              "status": "400",
+              "status": 400,
               "instance": "/orders",
               "method": "POST"
             }
@@ -1983,7 +1983,7 @@ Accept: application/vnd.openactive.v0.8+json
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
-410 status code).
+`410` status code).
 
 The **broker** should then create a new **order** for the
 **customer** in order to generate a new lease.
@@ -2162,6 +2162,11 @@ Specification.
 <td><code>method</code></td>
 <td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></td>
 <td>The method of the request (e.g. GET).</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></td>
+<td>An integer representing the HTTP status code.</td>
 </tr>
 <tr>
 <td><code>invalid-params</code></td>
