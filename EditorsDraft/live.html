@@ -1,4 +1,4 @@
-<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 22.5.0"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
+<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 22.7.1"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
 span.example-title {
     text-transform: none;
 }
@@ -767,7 +767,7 @@ square brackets and links to the references section.</dd>
 </dl><div class="note" id="issue-container-generatedID-0"><div role="heading" class="note-title marker" id="h-note-0" aria-level="3"><span>Note</span></div><div class=""><p>Notes are in light green boxes with a green left border and with a "Note"
 header in green. Notes are normative or informative depending on the whether
 they are in a normative or informative section, respectively.</p>
-</div></div><div class="example">
+</div></div><div class="example" id="ex-1-example-1-examples-are-in-light-khaki-boxes-with-khaki-left-border-and-with-a-numbered-example-header-in-khaki-examples-are-always-informative-the-content-of-the-example-is-in-monospace-font-and-may-be-syntax-colored">
           <div class="marker"><span>Example 1</span></div>
           <pre class="hljs javascript" aria-busy="false">Examples are <span class="hljs-keyword">in</span> light khaki boxes, <span class="hljs-keyword">with</span> khaki left border, and <span class="hljs-keyword">with</span> a
 numbered <span class="hljs-string">"Example"</span> header <span class="hljs-keyword">in</span> khaki. Examples are always informative.
@@ -963,7 +963,7 @@ specification, and so may not support a specific version number. We anticipate
 that when the Booking API reaches the stability of a 1.0 version that this
 advice may change.</p></section><section><h3 id="response-formats"><span class="secno">6.2 </span>Response formats</h3><p>Requests and response documents exchanged via this API will all be valid
 [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents.</p><p>The documents <em class="rfc2119" title="MUST">MUST</em> include a [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] <code>context</code> that refers to the
-[<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example">
+[<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="ex-2-minimal-json-ld-document">
           <div class="marker"><span>Example 2</span><span class="example-title">: minimal JSON-LD document</span></div>
           <pre class="hljs json" aria-busy="false">{
   <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>
@@ -975,7 +975,7 @@ terms for naming specific objects such as <strong>events</strong> and <strong>or
 may be discovered by parsing the actions defined in the <code>potentialAction</code>
 property of an object and constructing the appropriate URL from the
 <code>urlTemplate</code> property of the <code>schema:EntryPoint</code> object contained within the <code>target</code>
-property of the <code>potentialAction</code> required.</p><p>An example is below:</p><div class="example">
+property of the <code>potentialAction</code> required.</p><p>An example is below:</p><div class="example" id="ex-3-example-of-a-potentialaction">
           <div class="marker"><span>Example 3</span><span class="example-title">: Example of a potentialAction</span></div>
           <pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: [
         {
@@ -998,12 +998,11 @@ for a specific action based on patterns within previously used URLs.</p><p>It is
 further activity in the booking workflow at the point of need. For example they
 <em class="rfc2119" title="MUST">MUST</em> advertise the URL for <strong>order</strong> creation when a <strong>broker</strong> requests
 a specific <strong>opportunity</strong> resource and <em class="rfc2119" title="SHOULD">SHOULD</em> advertise it in their RDPE feeds
-since both of these points within the booking workflow are places where a \
-<strong>customer</strong> may wish to check availability.</p></section><section><h3 id="error-handling"><span class="secno">6.4 </span>Error handling</h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP
+since both of these points within the booking workflow are places where a <br><strong>customer</strong> may wish to check availability.</p></section><section><h3 id="error-handling"><span class="secno">6.4 </span>Error handling</h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format using a
 content type of <code>application/vnd.openactive.v0.8+json</code> and include at least one
 Error object. The error handling has in the Booking API has been modelled
-closely on [<cite><a class="bibref" href="#bib-rfc7807">RFC7807</a></cite>].</p><div class="example">
+closely on [<cite><a class="bibref" href="#bib-rfc7807">RFC7807</a></cite>].</p><div class="example" id="ex-4-error-response-format">
           <div class="marker"><span>Example 4</span><span class="example-title">: Error response format</span></div>
           <pre class="hljs json" aria-busy="false">{
   <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
@@ -1250,13 +1249,13 @@ responsibility of the <strong>broker</strong> to ensure that the <strong>custome
 these conditions before entering the <strong>order</strong> workflow.</p></section><section><h4 id="checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</h4><p>To check the availability of an opportunity a <strong>broker</strong> will issue a GET
 request to the URI specified in the <code>id</code> of the opportunity, having
 discovered it from the RDPE feed.</p><p>It is the responsibility of <strong>brokers</strong> to ensure that spaces within the
-opportunity are still available before proceeding with booking.</p><div class="example">
+opportunity are still available before proceeding with booking.</p><div class="example" id="ex-5-viewing-event-availability">
           <div class="marker"><span>Example 5</span><span class="example-title">: Viewing event availability</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/events/452</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
-        </div><div class="example">
+        </div><div class="example" id="ex-6-event-response">
           <div class="marker"><span>Example 6</span><span class="example-title">: Event response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1298,13 +1297,13 @@ opportunity are still available before proceeding with booking.</p><div class="e
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingAttendeeCapacity</code> property of the <strong>event</strong> is up to date and includes a
 combination of places already booked and places currently reserved by leases
-from in-progress <strong>orders</strong>.</p><div class="example">
+from in-progress <strong>orders</strong>.</p><div class="example" id="ex-7-viewing-slot-availability">
           <div class="marker"><span>Example 7</span><span class="example-title">: Viewing slot availability</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/slots/324</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
-        </div><div class="example">
+        </div><div class="example" id="ex-8-slot-response">
           <div class="marker"><span>Example 8</span><span class="example-title">: Slot response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1346,13 +1345,13 @@ from in-progress <strong>orders</strong>.</p><div class="example">
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingUses</code> property of the <strong>slot</strong> is up to date and includes a
 combination of places already booked and places currently reserved by leases
-from in-progress <strong>orders</strong>.</p><div class="example">
+from in-progress <strong>orders</strong>.</p><div class="example" id="ex-9-viewing-slot-availability-via-a-facility-use">
           <div class="marker"><span>Example 9</span><span class="example-title">: Viewing slot availability via a facility use</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/facility-use/1</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
-        </div><div class="example">
+        </div><div class="example" id="ex-10-facility-use-response">
           <div class="marker"><span>Example 10</span><span class="example-title">: Facility use response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1473,7 +1472,7 @@ order.</p><section><h4 id="discovering-the-order-endpoint"><span class="secno">7
 <code>potentialAction</code> field <em class="rfc2119" title="MUST">MUST</em> contain one or more objects of type ReserveAction.</p><p>These ReserveAction objects must contain a <code>target</code> field containing an
 EntryPoint object.</p><p>The EntryPoint object <em class="rfc2119" title="MUST">MUST</em> state the <code>url</code> of the orders endpoint, and <em class="rfc2119" title="SHOULD">SHOULD</em>
 contain the <code>encodingType</code> and the <code>httpMethod</code> which must be POST as a new
-<strong>order</strong> object will be created on successful invocation.</p><p>An example is below:</p><div class="example">
+<strong>order</strong> object will be created on successful invocation.</p><p>An example is below:</p><div class="example" id="ex-11-example-of-a-reserveaction">
           <div class="marker"><span>Example 11</span><span class="example-title">: Example of a ReserveAction</span></div>
           <pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: [
   {
@@ -1512,7 +1511,7 @@ of the submitted JSON.</p><p>The <code>broker</code> property should be a well f
 various <strong>brokers</strong>, independently of API key provisioning at the
 <strong>booking system</strong> level (which in some systems is a lengthly and time-consuming
 process), the <code>broker</code> property should contain the details of the end-user
-<strong>broker</strong> rather than the middleware.</p><div class="example">
+<strong>broker</strong> rather than the middleware.</p><div class="example" id="ex-12-creating-an-order-request">
           <div class="marker"><span>Example 12</span><span class="example-title">: Creating an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">POST</span> <span class="hljs-string">/orders</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
@@ -1553,7 +1552,7 @@ process), the <code>broker</code> property should contain the details of the end
 }
 </span></pre>
         </div><p>If successful the server will response with the location of a newly created
-<code>Order</code> resource:</p><div class="example">
+<code>Order</code> resource:</p><div class="example" id="ex-13-creating-an-order-response">
           <div class="marker"><span>Example 13</span><span class="example-title">: Creating an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">201</span> Created
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1608,13 +1607,13 @@ process), the <code>broker</code> property should contain the details of the end
   }]
 }
 </span></pre>
-        </div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example">
+        </div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example" id="ex-14-viewing-an-order-request">
           <div class="marker"><span>Example 14</span><span class="example-title">: Viewing an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
-        </div><div class="example">
+        </div><div class="example" id="ex-15-viewing-an-order-response">
           <div class="marker"><span>Example 15</span><span class="example-title">: Viewing an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> Created
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1700,7 +1699,7 @@ defined elsewhere.</p></section><section><h4 id="completing-an-order-orders-orde
 <strong>customer</strong> has made a payment via a third-party payment gateway.</p><p>An <strong>order</strong> is not considered complete until payment has occurred.</p><p><strong>Brokers</strong> <em class="rfc2119" title="MUST">MUST</em> update the <strong>booking system</strong> to indicate that <strong>payment</strong> has
 been taken.</p><p>Once the <strong>booking system</strong> is content with the payments, it then sets the
 <code>orderStatus</code> property of the <code>Order</code> to <a href="https://schema.org/OrderDelivered">https://schema.org/OrderDelivered</a> and
-returns a representation of the completed <strong>order</strong> with a 200 status code.</p><div class="example">
+returns a representation of the completed <strong>order</strong> with a 200 status code.</p><div class="example" id="ex-16-completing-an-order-request">
           <div class="marker"><span>Example 16</span><span class="example-title">: Completing an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
@@ -1722,7 +1721,7 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
     }
   ]
 }</span></pre>
-        </div><div class="example">
+        </div><div class="example" id="ex-17-completing-an-order-response">
           <div class="marker"><span>Example 17</span><span class="example-title">: Completing an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
@@ -1804,7 +1803,7 @@ displaying a zero price.</p><p>The <strong>order</strong> workflow <em class="rf
 payment. The PATCH to the URL defined in <code>PayAction</code> should follow the example
 shown below.</p><p><strong>Orders</strong> for a free place at an <strong>opportunity</strong> are the only current scenario
 in the Booking API specification where a <code>Payment</code> object has <code>paymentMethod</code>
-and <code>paymentMethodId</code> as optional properties.</p><div class="example">
+and <code>paymentMethodId</code> as optional properties.</p><div class="example" id="ex-18-completing-an-free-order-with-a-payment-of-0-00-request">
           <div class="marker"><span>Example 18</span><span class="example-title">: Completing an free order with a payment of 0.00 - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Open Booking API 0.8</title>
+    <title>Open Booking API 1.0</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
@@ -58,7 +58,7 @@
                 href: "https://github.com/openactive/open-booking-api/issues/"
             }, {
                 key: "Version",
-                value: "0.8"
+                value: "1.0"
             }],
 
             logos: [{
@@ -561,9 +561,9 @@ associated APIs such as RDPE in the Open Active ecosystem.
 
 ## Step-by-step process description
 
-The 0.5, and higher, versions of the Booking API supports single items per **order** and
+The 1.0, and higher, versions of the Booking API supports single items per **order** and
 single **payments** per **order**. Future versions of the specification may support
-multiple items and multipart **payments**, 0.8 still does not.
+multiple items and multipart **payments** which are out of scope for the 1.0 release.
 
 ### Complete transaction
 
@@ -678,7 +678,7 @@ application/vnd.openactive[.version]+json
 The current media type is:
 
 ```
-application/vnd.openactive.0.8+json
+application/vnd.openactive.1.0+json
 ```
 
 **Brokers** specifying a media type without a version, such as:
@@ -687,7 +687,7 @@ application/vnd.openactive.0.8+json
 application/vnd.openactive+json
 ```
 
-will recieve data in in the most current format which is 0.8.
+will recieve data in in the most current format which is 1.0.
 
 If you are building an application as a **broker** and care about the stability
 of the response, or have a client application which is tied to a specific
@@ -739,7 +739,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "urlTemplate": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.8+json",
+            "encodingType": "application/vnd.openactive.v1.0+json",
             "httpMethod": "PATCH"
           }
         }
@@ -767,7 +767,7 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v0.8+json` and include at least one
+content type of `application/vnd.openactive.v1.0+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
@@ -1280,13 +1280,13 @@ opportunity are still available before proceeding with booking.
 GET /events/452 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 
@@ -1334,13 +1334,13 @@ from in-progress **orders**.
 GET /slots/324 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Slot response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 
@@ -1367,7 +1367,7 @@ Content-Length: ...
            "target": {
              "type": "EntryPoint",
              "urlTemplate": "https://example.com/orders",
-             "encodingType": "application/vnd.openactive.v0.8+json",
+             "encodingType": "application/vnd.openactive.v1.0+json",
              "httpMethod": "POST"
            }
          }
@@ -1387,13 +1387,13 @@ from in-progress **orders**.
 GET /facility-use/1 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Facility use response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
@@ -1426,7 +1426,7 @@ Content-Length: ...
             "target": {
               "type": "EntryPoint",
               "urlTemplate": "https://example.com/orders",
-              "encodingType": "application/vnd.openactive.v0.8+json",
+              "encodingType": "application/vnd.openactive.v1.0+json",
               "httpMethod": "POST"
             }
           }
@@ -1581,7 +1581,7 @@ An example is below:
     "target": {
       "type": "EntryPoint",
       "urlTemplate": "https://example.com/orders",
-      "encodingType": "application/vnd.openactive.v0.8+json",
+      "encodingType": "application/vnd.openactive.v1.0+json",
       "httpMethod": "POST"
     }
   }
@@ -1634,7 +1634,7 @@ process), the `broker` property should contain the details of the end-user
 POST /orders HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
 
 {
 	"@context": "https://openactive.io/ns/oa.jsonld",
@@ -1676,7 +1676,7 @@ If successful the server will response with the location of a newly created
 <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Location: /orders/123
 
 {
@@ -1703,7 +1703,7 @@ Location: /orders/123
       "target": {
         "type": "EntryPoint",
         "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.8+json",
+        "encodingType": "application/vnd.openactive.v1.0+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1737,13 +1737,13 @@ To get the latest state of an order, perform a GET request on its URI.
 GET /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
@@ -1799,7 +1799,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.8+json",
+        "encodingType": "application/vnd.openactive.v1.0+json",
         "httpMethod": "PATCH"
       }
     },
@@ -1809,7 +1809,7 @@ Content-Length: ...
       "target": {
         "type": "EntryPoint",
         "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.8+json",
+        "encodingType": "application/vnd.openactive.v1.0+json",
         "httpMethod": "PATCH"
       }
     }
@@ -1847,7 +1847,7 @@ returns a representation of the completed **order** with a 200 status code.
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
 
 {
   "type": "Order",
@@ -1870,7 +1870,7 @@ Accept: application/vnd.openactive.v0.8+json
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
 Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.8+json
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
@@ -1934,7 +1934,7 @@ Content-Length: ...
 		"target": {
 			"type": "EntryPoint",
 			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v0.8+json",
+			"encodingType": "application/vnd.openactive.v1.0+json",
 			"httpMethod": "PATCH"
 		}
 	}]
@@ -1963,7 +1963,7 @@ and `paymentMethodId` as optional properties.
 PATCH /orders/123 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.8+json
+Accept: application/vnd.openactive.v1.0+json
 
 {
   "type": "Order",
@@ -2088,10 +2088,6 @@ creation process.
 
 # Future versions of this API
 
-Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
-Booking API. Neither it, or 0.8, are yet feature complete and there are some requirements
-which are not satisfied by this version.
-
 Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
 resource to provide a payment and using PATCH to change the status of an `orderItem` to
 cancel an order provide the groundwork for known requirements such as multiple
@@ -2099,14 +2095,14 @@ order items (shopping carts), cancellation of individual order items and also
 multipart payments.
 
 Both `orderItems` and `payments` are modelled as collections to support
-extension of the version 0.5 specification towards multipart orders and
+extension of the version 1.0 specification towards multipart orders and
 payments without breaking changes in the Order model for subsequent versions.
 
 The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
 API.
 
-The currently known requirements not satisfied in version 0.8 are:
+The currently known requirements not satisfied in version 1.0 are:
 
 - multiple part orders
 - supporting multiple payments
