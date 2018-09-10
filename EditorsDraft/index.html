@@ -703,13 +703,13 @@ session by making a PATCH request to the CancelAction.
 ### Definition of a 'cancellable' oppportunity/offer
 
 In order to provide an excellent user experience for the **customer**, the
-**booking system** MUST provide information in it's terms of service about its
-cancellation policy. To avoid disappointment by the **customer**, **booking systems**
-MUST also make it clear prior to entering the booking workflow, whether specific
-opportunities and offers are cancellable, and if required, what the cancellation
-window is. The **broker** must always display information relating to whether the
-**opportunity**/**offer** is cancellable and what the cancellation window is,
-before the user has created an order.
+**booking system** MUST provide information about its cancellation policy in
+its Terms and Conditions . To avoid disappointment by the **customer**, **booking
+systems** MUST also make it clear prior to entering the booking workflow, whether
+specific opportunities and offers are cancellable, and if required, what the
+cancellation window is. The **broker** must always display information relating
+to whether the **opportunity**/**offer** is cancellable and what the
+cancellation window is, before the user has created an order.
 
 For an opportunity/offer to be cancellable it MUST:
 
@@ -1223,7 +1223,7 @@ subsequent requests to an **order** should only be initiated by the **customer**
 which created the **order**.
 
 
-## Delivery of terms and conditions
+## Delivery of Terms and Conditions and Privacy Policy
 
 The **broker** should make the **customer** aware of and assent to any specific
 Terms and Conditions and Privacy Policy for using their service at the point of
@@ -1234,11 +1234,28 @@ Since, during **booking**, the details of the **customer** are provided to the
 **customer** of this any implications with resepct to GDPR and any other
 data protection legislation.
 
-Any specific Terms and Conditions for the **offer** being taken, or Terms and
-Conditions relating to the **seller** should be made available via a URL as a
-`termsOfService` property on the **offer**. (https://pending.schema.org/termsOfService)
+Specific Terms and Conditions/Privacy Policy for the **booking service**/**seller**
+and/or the **opportynity**/**offer** being taken MUST be made available using the
+`privacyPolicy` and `termsAndConditions` properties described in the example at
+the most appropriate level. If the properties are present at the **opportunity**
+level, they apply to all included **opportunities** and **offers** unless the
+properties are present at a lower level.
 
 
+<pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
+
+  "privacyPolicy": {
+		"type": "Terms",
+		"url": "https://example.com/privacy-policy",
+		"name": "Privacy Policy"
+	},
+	"termsAndConditions": {
+		"type": "Terms",
+		"url": "https://example.com/terms-and-conditions",
+		"name": "Terms and Conditions"
+	}
+
+</pre>
 
     </section>
 
@@ -1398,7 +1415,17 @@ Content-Length: ...
       "encodingType": "application/vnd.openactive.v1.0+json",
       "httpMethod": "POST"
     }
-  }]
+  }],
+  "privacyPolicy": {
+      "type": "Terms",
+      "url": "https://example.com/privacy-policy",
+      "name": "Privacy Policy"
+  },
+  "termsAndConditions": {
+      "type": "Terms",
+      "url": "https://example.com/terms-and-conditions",
+      "name": "Terms and Conditions"
+  }
 }
 
 </pre>
@@ -2229,7 +2256,7 @@ associated with Open Active and the open specification.
 
 In a future version, it is imagined that an API method describing the service,
 and including such things as the links to Privacy Policy, Terms and Conditions
-and the target for a ReserveAction could be used to reduce data duplication. 
+and the target for a ReserveAction could be used to reduce data duplication.
 
 </section>
 
