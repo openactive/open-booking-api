@@ -820,16 +820,16 @@ Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
 <pre class="example" title="Error response format">
-            {
-              "@context": "https://openactive.io/ns/oa.jsonld",
-              "type": "Error",
-              "errorType": "https://openactive.io/errors/incomplete_customer_details",
-              "title": "Incomplete customer details",
-              "details": "No customer details supplied",
-              "status": 400,
-              "instance": "/orders",
-              "method": "POST"
-            }
+{
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Error",
+  "errorType": "https://openactive.io/errors/incomplete_customer_details",
+  "title": "Incomplete customer details",
+  "details": "No customer details supplied",
+  "status": 400,
+  "instance": "/orders",
+  "method": "POST"
+}
 </pre>
 
 * `errorType` – a URI reference [[!RFC3986]] that identifies the problem type. This
