@@ -1304,9 +1304,6 @@ opportunity are still available before proceeding with booking.</p><div class="e
     <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball"</span>,
     <span class="hljs-attr">"offers"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-        <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
-            <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
-        ],
         <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
         <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
         <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
@@ -1321,7 +1318,17 @@ opportunity are still available before proceeding with booking.</p><div class="e
     <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-01-27T11:00:00Z"</span>,
     <span class="hljs-attr">"endDate"</span>: <span class="hljs-string">"2018-01-27T12:00:00Z"</span>,
     <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT1H"</span>,
-    <span class="hljs-attr">"location"</span>: {}
+    <span class="hljs-attr">"location"</span>: {},
+  <span class="hljs-attr">"potentialAction"</span>: [{
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
+    <span class="hljs-attr">"target"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+    }
+  }]
 }</span></pre>
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingAttendeeCapacity</code> property of the <strong>event</strong> is up to date and includes a
@@ -1354,18 +1361,18 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-7-viewi
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">15.00</span>,
-        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"potentialAction"</span>: [{
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
-            <span class="hljs-attr">"target"</span>: {
-                <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-                <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-                <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-                <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
-            }
-        }]
-    }]
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+    }],
+  <span class="hljs-attr">"potentialAction"</span>: [{
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
+    <span class="hljs-attr">"target"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+    }
+  }]
 }</span></pre>
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingUses</code> property of the <strong>slot</strong> is up to date and includes a
@@ -1404,18 +1411,18 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-9-viewi
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
-        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"potentialAction"</span>: [{
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
-            <span class="hljs-attr">"target"</span>: {
-                <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-                <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-                <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-                <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
-            }
-        }]
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
     }],
+  <span class="hljs-attr">"potentialAction"</span>: [{
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
+    <span class="hljs-attr">"target"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+    }
+  }],
     <span class="hljs-attr">"event"</span>: [{
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/123"</span>,
@@ -1904,7 +1911,7 @@ the third-party payments system.</p><p>The <strong>broker</strong> should initia
 The refund process should be considered to be asynchronous for the purposes of
 this specification.</p><p>After initiating a refund, the <strong>broker</strong> should cancel the
 <strong>order</strong> by submitting a PATCH request to the URL defined in the <code>CancelAction</code>
-prescribed in the <code>potentialAction</code> property of the <strong>order</strong> response.</p><p>The process of cancellation is documented in Section 5.5.2</p></section></section><section><h3 id="customers"><span class="secno">7.7 </span>Customers</h3><section><h4 id="creation-of-customers-on-the-booking-system"><span class="secno">7.7.1 </span>Creation of customers on the booking system</h4><p>In this current iteration of the Booking API specification, the programmatic
+prescribed in the <code>potentialAction</code> property of the <strong>order</strong> response.</p><p>The process of cancellation is documented in Section 5.6</p></section></section><section><h3 id="customers"><span class="secno">7.7 </span>Customers</h3><section><h4 id="creation-of-customers-on-the-booking-system"><span class="secno">7.7.1 </span>Creation of customers on the booking system</h4><p>In this current iteration of the Booking API specification, the programmatic
 creation of <strong>customers</strong> on the <strong>booking system</strong> by the <strong>broker</strong> is
 considered to be out of scope.</p></section><section><h4 id="viewing-a-customer-s-previously-placed-orders"><span class="secno">7.7.2 </span>Viewing a customer's previously placed orders</h4><p>A server <em class="rfc2119" title="MUST">MUST</em> provide endpoints to allow <strong>brokers</strong> to retrieve information
 about previously placed <strong>orders</strong>. In future versions of the specification,

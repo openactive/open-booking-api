@@ -1346,9 +1346,6 @@ Content-Length: ...
 	"name": "Speedball",
 	"offers": [{
 		"type": "Offer",
-		"acceptedPaymentMethod": [
-			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-		],
 		"validThrough": "2018-04-29T12:14:35Z",
 		"validFrom": "2018-04-01T12:14:35Z",
 		"description": "Winger space for Speedball.",
@@ -1363,7 +1360,17 @@ Content-Length: ...
 	"startDate": "2018-01-27T11:00:00Z",
 	"endDate": "2018-01-27T12:00:00Z",
 	"duration": "PT1H",
-	"location": {}
+	"location": {},
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
+    }
+  }]
 }
 
 </pre>
@@ -1402,18 +1409,18 @@ Content-Length: ...
 		"type": "Offer",
 		"name": "30 minute hire",
 		"price": 15.00,
-		"priceCurrency": "GBP",
-		"potentialAction": [{
-			"type": "ReserveAction",
-			"name": "Book",
-			"target": {
-				"type": "EntryPoint",
-				"urlTemplate": "https://example.com/orders",
-				"encodingType": "application/vnd.openactive.v1.0+json",
-				"httpMethod": "POST"
-			}
-		}]
-	}]
+		"priceCurrency": "GBP"
+	}],
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
+    }
+  }]
 }
 
 </pre>
@@ -1457,18 +1464,18 @@ Content-Length: ...
 		"type": "Offer",
 		"name": "30 minute hire",
 		"price": 10.00,
-		"priceCurrency": "GBP",
-		"potentialAction": [{
-			"type": "ReserveAction",
-			"name": "Book",
-			"target": {
-				"type": "EntryPoint",
-				"urlTemplate": "https://example.com/orders",
-				"encodingType": "application/vnd.openactive.v1.0+json",
-				"httpMethod": "POST"
-			}
-		}]
+		"priceCurrency": "GBP"
 	}],
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
+    }
+  }],
 	"event": [{
 			"type": "Slot",
 			"id": "http://www.example.org/slots/123",
