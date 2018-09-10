@@ -961,17 +961,21 @@ deemed to be cancelled.</p>
 </li>
 </ol></section><section><h4 id="booking-system-originated-cancellation"><span class="secno">5.6.2 </span>Booking system originated cancellation</h4><p>The workflow to deal with the cancellation and refund of an order by the <strong>booking
 system</strong> is described below. Only the <strong>booking system</strong> can cancel  <strong>orders</strong>
-relating to <strong>opportunities</strong> and <strong>offers</strong> which are not otherwise cancellable.</p><p>The mechanism for the <strong>booking system</strong> to notify the <strong>broker</strong> that an
-<strong>opportunity</strong>/<strong>offer</strong> is cancelled is through a webhook, where the <strong>booking
-system</strong> POSTs data relating to the opportunities/offers which are cancelled to the
-<strong>broker</strong>.</p><p>The process of registering webhooks by the <strong>broker</strong> with the <strong>booking system</strong>
+relating to <strong>opportunities</strong> and <strong>offers</strong> which are not otherwise cancellable.</p><p>This is to be used in situations where the underlying <strong>opportunity</strong>/<strong>offer</strong>
+needs to be cancelled, thus necessitating the cancellation of a <strong>customer's</strong>
+order.</p><p>The mechanism for the <strong>booking system</strong> to notify the <strong>broker</strong> that an
+<strong>order</strong> is cancelled is through a webhook, where the <strong>booking
+system</strong> POSTs data relating to the orders which are cancelled to the
+<strong>broker</strong>. The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> only POST <strong>orders</strong> to a <strong>broker</strong>
+which have been initiated by that <strong>broker</strong>. No <strong>customer</strong> details should be
+transmitted in the POST to the webhook.</p><p>The process of registering webhooks by the <strong>broker</strong> with the <strong>booking system</strong>
 is out of scope for this specification. One possible addition in a later version
 of the Booking API specification is the extension of this mechanism to cover
 opportunities that are rescheduled.</p><ol>
 <li><p>The POST sent by the <strong>booking system</strong> to the webhook receiver of the <strong>broker</strong>
-should contain an array of cancelled <strong>opportunities</strong> and their related <em>*offers</em>.</p>
+should contain an array of cancelled <strong>orders</strong>.</p>
 </li>
-<li><p>The <strong>broker</strong> parses the array of cancelled items and matches them to existing
+<li><p>The <strong>broker</strong> parses the array of cancelled orders and matches them to existing
 <strong>orders</strong> from <strong>customers</strong>.</p>
 </li>
 <li><p>The <strong>broker</strong> refunds the customer and alerts them to the cancellation. It
@@ -979,11 +983,10 @@ is good practice for the <strong>booking system</strong> to also notify the <str
 the cancellation, where they can potentially provide more information about
 the rescheduling of the event.</p>
 </li>
-<li><p>The <strong>broker</strong> then cancels the order as described in the previous session.</p>
+<li><p>The <strong>broker</strong> then cancels the order as described in step 2 of the previous
+session by making a PATCH request to the CancelAction.</p>
 </li>
-</ol><p>One optional improvement to this system would be for the <strong>booking system</strong> to
-provide an additional webhook subscription which would allow <strong>brokers</strong> to
-subscribe to a feed of <strong>orders</strong> which are affected by cancellations.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="common-requirements"><span class="secno">6. </span>Common Requirements</h2><p>This section defines some common functionality that applies to the design of the
+</ol></section></section></section><section class="normative"><!--OddPage--><h2 id="common-requirements"><span class="secno">6. </span>Common Requirements</h2><p>This section defines some common functionality that applies to the design of the
 whole API.</p><section><h3 id="media-types"><span class="secno">6.1 </span>Media types</h3><p>Custom media types are used in this API to allow clients to choose the format
 of the data they receive.</p><p><strong>Booking platforms</strong> <em class="rfc2119" title="MAY">MAY</em> choose to support additional media types but <em class="rfc2119" title="MUST">MUST</em> support the
 media type(s) defined by this specification.</p><p>Media types will conform to the following pattern:</p><pre aria-busy="false" class="hljs">application/vnd.openactive[.version]+json</pre><p>The current media type is:</p><pre aria-busy="false" class="hljs">application/vnd.openactive.1.0+json</pre><p><strong>Brokers</strong> specifying a media type without a version, such as:</p><pre aria-busy="false" class="hljs">application/vnd.openactive+json</pre><p>will recieve data in in the most current format which is 1.0.</p><p>If you are building an application as a <strong>broker</strong> and care about the stability
@@ -1610,6 +1613,7 @@ process), the <code>broker</code> property should contain the details of the end
     <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
         <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
         <span class="hljs-attr">"orderedItem"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
@@ -1681,9 +1685,10 @@ process), the <code>broker</code> property should contain the details of the end
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
     <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-    <span class="hljs-attr">"orderedItem"</span>: [{
+  <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
         <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
         <span class="hljs-attr">"orderedItem"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
@@ -1791,9 +1796,10 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
     <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-    <span class="hljs-attr">"orderedItem"</span>: [{
+  <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
         <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderDelivered"</span>,
         <span class="hljs-attr">"orderedItem"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>

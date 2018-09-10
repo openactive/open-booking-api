@@ -670,10 +670,16 @@ The workflow to deal with the cancellation and refund of an order by the **booki
 system** is described below. Only the **booking system** can cancel  **orders**
 relating to **opportunities** and **offers** which are not otherwise cancellable.
 
+This is to be used in situations where the underlying **opportunity**/**offer**
+needs to be cancelled, thus necessitating the cancellation of a **customer's**
+order.
+
 The mechanism for the **booking system** to notify the **broker** that an
-**opportunity**/**offer** is cancelled is through a webhook, where the **booking
-system** POSTs data relating to the opportunities/offers which are cancelled to the
-**broker**.
+**order** is cancelled is through a webhook, where the **booking
+system** POSTs data relating to the orders which are cancelled to the
+**broker**. The **booking system** MUST only POST **orders** to a **broker**
+which have been initiated by that **broker**. No **customer** details should be
+transmitted in the POST to the webhook.
 
 The process of registering webhooks by the **broker** with the **booking system**
 is out of scope for this specification. One possible addition in a later version
@@ -681,9 +687,9 @@ of the Booking API specification is the extension of this mechanism to cover
 opportunities that are rescheduled.
 
 1. The POST sent by the **booking system** to the webhook receiver of the **broker**
-should contain an array of cancelled **opportunities** and their related **offers*.
+should contain an array of cancelled **orders**.
 
-2. The **broker** parses the array of cancelled items and matches them to existing
+2. The **broker** parses the array of cancelled orders and matches them to existing
 **orders** from **customers**.
 
 3. The **broker** refunds the customer and alerts them to the cancellation. It
@@ -691,15 +697,8 @@ is good practice for the **booking system** to also notify the **customer** of
 the cancellation, where they can potentially provide more information about
 the rescheduling of the event.
 
-4. The **broker** then cancels the order as described in the previous session.
-
-One optional improvement to this system would be for the **booking system** to
-provide an additional webhook subscription which would allow **brokers** to
-subscribe to a feed of **orders** which are affected by cancellations.
-
-
-
-
+4. The **broker** then cancels the order as described in step 2 of the previous
+session by making a PATCH request to the CancelAction.
 
     </section>
 
@@ -1753,6 +1752,7 @@ Location: /orders/890
 	"orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderPaymentDue",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1832,9 +1832,10 @@ Content-Length: ...
 		"familyName": "Capes"
 	},
 	"orderDate": "2018-02-20T11:00:00Z",
-	"orderedItem": [{
+  "orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderPaymentDue",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1963,9 +1964,10 @@ Content-Length: ...
 		"familyName": "Capes"
 	},
 	"orderDate": "2018-02-20T11:00:00Z",
-	"orderedItem": [{
+  "orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderDelivered",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
