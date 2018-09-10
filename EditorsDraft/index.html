@@ -604,31 +604,6 @@ such as authorization codes. This is an implementation detail and is thus,
 out of scope for the Booking API and specification.
 
 
-### Order cancellation and refund
-
-Since the **broker** is the party which initiates the third-party **payment**
-and is the entity which notifies the **booking system** of **payment** and
-creates the **order** on behalf of the **customer**, the **broker** is also the
-entity which handles refunds and cancellation.
-
-The workflow to deal with a cancellation and refund of an order is described
-below:
-
-1. The **broker** intiates a refund for the **customer** using the mechanisms
-provided by the third-party payment provider.
-
-2. The **broker** notifies the **booking system** of the cancellation by making
-a PATCH request to the specific order endpoint (/orders/123 in the example) of
-the **booking system**. The PATCH request body should contain an updated
-order item in the `orderedItem` property, with the `orderItemStatus` set to
-https://schema.org/OrderCancelled to indicate that the ordered item in
-the **order** is no longer required.
-
-3. The **booking system** responds to the **broker** with a representation of
-the **order** with the `orderStatus` property set to
-https://schema.org/OrderCancelled with a status of 200. The **order** is now
-deemed to be cancelled.
-
 ### Cancelling a Lease
 
 If the **customer** no longer wants to proceed with a particular **offer**, the
@@ -651,6 +626,80 @@ The **booking system** should respond to requests for **orders** with an expired
 lease with a 410 status code with an error specifying the `errorType` as
 https://openactive.io/errors/anonymous_lease_expired until the underlying
 **order** resource is removed.
+
+## Order cancellation and refunds
+
+Since the **broker** is the party which initiates the third-party **payment**
+and is the entity which notifies the **booking system** of **payment** and
+creates the **order** on behalf of the **customer**, the **broker** is also the
+entity which handles refunds and cancellation. It should be noted that not all
+opportunities/offers are cancellable by the customer.
+
+There are two distinct types of cancellation:
+
+- **customer** originated cancellation
+- **booking system** originated cancellation
+
+These two different types of cancellation have very different workflows which
+are outlined below.
+
+### Customer originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **customer**
+is described below. For clarity, it is assumed that the order being cancelled
+may be cancelled (see section around Cancellable offers/opportunities).
+
+1. The **broker** intiates a refund for the **customer** using the mechanisms
+provided by the third-party payment provider.
+
+2. The **broker** notifies the **booking system** of the cancellation by making
+a PATCH request to the specific order endpoint (/orders/123 in the example) of
+the **booking system**. The PATCH request body should contain an updated
+order item in the `orderedItem` property, with the `orderItemStatus` set to
+https://schema.org/OrderCancelled to indicate that the ordered item in
+the **order** is no longer required.
+
+3. The **booking system** responds to the **broker** with a representation of
+the **order** with the `orderStatus` property set to
+https://schema.org/OrderCancelled with a status of 200. The **order** is now
+deemed to be cancelled.
+
+### Booking system originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **booking
+system** is described below. Only the **booking system** can cancel  **orders**
+relating to **opportunities** and **offers** which are not otherwise cancellable.
+
+The mechanism for the **booking system** to notify the **broker** that an
+**opportunity**/**offer** is cancelled is through a webhook, where the **booking
+system** POSTs data relating to the opportunities/offers which are cancelled to the
+**broker**.
+
+The process of registering webhooks by the **broker** with the **booking system**
+is out of scope for this specification. One possible addition in a later version
+of the Booking API specification is the extension of this mechanism to cover
+opportunities that are rescheduled.
+
+1. The POST sent by the **booking system** to the webhook receiver of the **broker**
+should contain an array of cancelled **opportunities** and their related **offers*.
+
+2. The **broker** parses the array of cancelled items and matches them to existing
+**orders** from **customers**.
+
+3. The **broker** refunds the customer and alerts them to the cancellation. It
+is good practice for the **booking system** to also notify the **customer** of
+the cancellation, where they can potentially provide more information about
+the rescheduling of the event.
+
+4. The **broker** then cancels the order as described in the previous session.
+
+One optional improvement to this system would be for the **booking system** to
+provide an additional webhook subscription which would allow **brokers** to
+subscribe to a feed of **orders** which are affected by cancellations.
+
+
+
+
 
     </section>
 
