@@ -1664,6 +1664,9 @@ various **brokers**, independently of API key provisioning at the
 process), the `broker` property should contain the details of the end-user
 **broker** rather than the middleware.
 
+To acheive compliance with Apple Pay, Google Pay and Google Reserve, the
+customer's telephone number, an optional field, should be supplied.
+
 
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
@@ -1682,6 +1685,7 @@ Accept: application/vnd.openactive.v1.0+json
     "customer": {
         "type": "Person",
         "email": "geoffcapes@example.com",
+        "telephone": "020 811 8055",
         "givenName": "Geoff",
         "familyName": "Capes"
     },
@@ -1745,6 +1749,7 @@ Location: /orders/890
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
@@ -1828,6 +1833,7 @@ Content-Length: ...
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
@@ -1960,6 +1966,7 @@ Content-Length: ...
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},

@@ -1529,7 +1529,8 @@ of the submitted JSON.</p><p>The <code>broker</code> property should be a well f
 various <strong>brokers</strong>, independently of API key provisioning at the
 <strong>booking system</strong> level (which in some systems is a lengthly and time-consuming
 process), the <code>broker</code> property should contain the details of the end-user
-<strong>broker</strong> rather than the middleware.</p><div class="example" id="ex-12-creating-an-order-request">
+<strong>broker</strong> rather than the middleware.</p><p>To acheive compliance with Apple Pay, Google Pay and Google Reserve, the
+customer's telephone number, an optional field, should be supplied.</p><div class="example" id="ex-12-creating-an-order-request">
           <div class="marker"><span>Example 12</span><span class="example-title">: Creating an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">POST</span> <span class="hljs-string">/orders</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
@@ -1547,6 +1548,7 @@ process), the <code>broker</code> property should contain the details of the end
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
@@ -1606,6 +1608,7 @@ process), the <code>broker</code> property should contain the details of the end
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+    <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
@@ -1681,6 +1684,7 @@ process), the <code>broker</code> property should contain the details of the end
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+    <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
@@ -1792,6 +1796,7 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+    <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
