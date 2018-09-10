@@ -1291,35 +1291,31 @@ Content-Length: ...
 
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Event",
-  "identifier": 452,
-  "id": "https://example.com/events/452",
-  "name": "Speedball",
-  "offers": [
-    {
-      "type": "Offer",
-      "acceptedPaymentMethod": [
-          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-      ],
-      "availabilityEnds": "2018-04-29T12:14:35Z",
-      "availabilityStarts": "2018-04-01T12:14:35Z",
-      "description": "Winger space for Speedball.",
-      "id": "https://example.com/offers/1234",
-      "name": "Speedball winger position",
-      "price": "33.00",
-      "priceCurrency": "GBP",
-    }
-  ],
-  "eventStatus": "https://schema.org/EventScheduled",
-  "maximumAttendeeCapacity": 30,
-  "remainingAttendeeCapacity": 20,
-  "startDate": "2018-01-27T11:00:00Z",
-  "endDate": "2018-01-27T12:00:00Z",
-  "duration": "PT1H",
-  "location": {
-    ...
-  }
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Event",
+	"identifier": 452,
+	"id": "https://example.com/events/452",
+	"name": "Speedball",
+	"offers": [{
+		"type": "Offer",
+		"acceptedPaymentMethod": [
+			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
+		],
+		"availabilityEnds": "2018-04-29T12:14:35Z",
+		"availabilityStarts": "2018-04-01T12:14:35Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"name": "Speedball winger position",
+		"price": 33.00,
+		"priceCurrency": "GBP"
+	}],
+	"eventStatus": "https://schema.org/EventScheduled",
+	"maximumAttendeeCapacity": 30,
+	"remainingAttendeeCapacity": 20,
+	"startDate": "2018-01-27T11:00:00Z",
+	"endDate": "2018-01-27T12:00:00Z",
+	"duration": "PT1H",
+	"location": {}
 }
 
 </pre>
@@ -1345,35 +1341,31 @@ Content-Length: ...
 
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Slot",
-  "id": "http://www.example.org/slots/324",
-  "identifier": 324,
-  "facilityUse": "http://www.example.org/facility-use/1",
-  "startDate": "2018-03-01T11:00:00Z",
-  "duration": "PT30M",
-  "remainingUses": 3,
-  "maximumUses": 4,
-   "offers": [
-     {
-       "type": "Offer",
-       "name": "30 minute hire",
-       "price": "15",
-       "priceCurrency": "GBP"
-       "potentialAction": [
-         {
-           "type": "ReserveAction",
-           "name": "Book",
-           "target": {
-             "type": "EntryPoint",
-             "urlTemplate": "https://example.com/orders",
-             "encodingType": "application/vnd.openactive.v1.0+json",
-             "httpMethod": "POST"
-           }
-         }
-       ]
-     }
-   ]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Slot",
+	"id": "http://www.example.org/slots/324",
+	"identifier": 324,
+	"facilityUse": "http://www.example.org/facility-use/1",
+	"startDate": "2018-03-01T11:00:00Z",
+	"duration": "PT30M",
+	"remainingUses": 3,
+	"maximumUses": 4,
+	"offers": [{
+		"type": "Offer",
+		"name": "30 minute hire",
+		"price": 15.00,
+		"priceCurrency": "GBP",
+		"potentialAction": [{
+			"type": "ReserveAction",
+			"name": "Book",
+			"target": {
+				"type": "EntryPoint",
+				"urlTemplate": "https://example.com/orders",
+				"encodingType": "application/vnd.openactive.v1.0+json",
+				"httpMethod": "POST"
+			}
+		}]
+	}]
 }
 
 </pre>
@@ -1397,69 +1389,62 @@ Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
-  "type": "FacilityUse",
-  "url": "http://www.example.org/facility-use/1",
-  "name": "Example Leisure Centre Table Tennis",
-  "description": "Table tennis tables are available to hire for thirty minute slots",
-  "activity": "Table Tennis",
-  "location": {
-    "type": "Place",
-    "name": "Example Leisure Centre",
-    "address": {
-      "type": "PostalAddress",
-      "streetAddress": "1 High Street",
-      "addressLocality": "Bristol",
-      "postalCode": "BS1 4SD"
-    }
-  },
-  "offers": [
-      {
-        "type": "Offer",
-        "name": "30 minute hire",
-        "price": "10",
-        "priceCurrency": "GBP",
-        "potentialAction": [
-          {
-            "type": "ReserveAction",
-            "name": "Book",
-            "target": {
-              "type": "EntryPoint",
-              "urlTemplate": "https://example.com/orders",
-              "encodingType": "application/vnd.openactive.v1.0+json",
-              "httpMethod": "POST"
-            }
-          }
-        ]
-      }
-  ],
-  "event": [
-      {
-        "type": "Slot",
-        "id": "http://www.example.org/slots/123",
-        "facilityUse": "http://www.example.org/facility-use/1",
-        "startDate": "2018-03-01T10:00:00Z",
-        "duration": "PT30M",
-        "remainingUses": 0,
-        "maximumUses": 4
-      },
-      {
-        "type": "Slot",
-        "id": "http://www.example.org/slots/234",
-        "facilityUse": "http://www.example.org/facility-use/1",
-        "startDate": "2018-03-01T11:00:00Z",
-        "duration": "PT30M",
-        "remainingUses": 3,
-        "maximumUses": 4,
-         "offers": [
-           {
-              "name": "30 minute hire",
-              "price": "15",
-              "priceCurrency": "GBP"
-           }
-         ]
-      }
-  ]
+	"@context": "https://www.openactive.io/ns/oa.jsonld",
+	"type": "FacilityUse",
+	"url": "http://www.example.org/facility-use/1",
+	"name": "Example Leisure Centre Table Tennis",
+	"description": "Table tennis tables are available to hire for thirty minute slots",
+	"activity": "Table Tennis",
+	"location": {
+		"type": "Place",
+		"name": "Example Leisure Centre",
+		"address": {
+			"type": "PostalAddress",
+			"streetAddress": "1 High Street",
+			"addressLocality": "Bristol",
+			"postalCode": "BS1 4SD"
+		}
+	},
+	"offers": [{
+		"type": "Offer",
+		"name": "30 minute hire",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"potentialAction": [{
+			"type": "ReserveAction",
+			"name": "Book",
+			"target": {
+				"type": "EntryPoint",
+				"urlTemplate": "https://example.com/orders",
+				"encodingType": "application/vnd.openactive.v1.0+json",
+				"httpMethod": "POST"
+			}
+		}]
+	}],
+	"event": [{
+			"type": "Slot",
+			"id": "http://www.example.org/slots/123",
+			"facilityUse": "http://www.example.org/facility-use/1",
+			"startDate": "2018-03-01T10:00:00Z",
+			"duration": "PT30M",
+			"remainingUses": 0,
+			"maximumUses": 4
+		},
+		{
+			"type": "Slot",
+			"id": "http://www.example.org/slots/234",
+			"facilityUse": "http://www.example.org/facility-use/1",
+			"startDate": "2018-03-01T11:00:00Z",
+			"duration": "PT30M",
+			"remainingUses": 3,
+			"maximumUses": 4,
+			"offers": [{
+				"name": "30 minute hire",
+				"price": 15.00,
+				"priceCurrency": "GBP"
+			}]
+		}
+	]
 }
 
 </pre>
@@ -1574,6 +1559,7 @@ contain the `encodingType` and the `httpMethod` which must be POST as a new
 An example is below:
 
 <pre class="example" title="Example of a ReserveAction">
+
 "potentialAction": [
   {
     "type": "ReserveAction",
@@ -1586,6 +1572,7 @@ An example is below:
     }
   }
 ]
+
 </pre>
 
 ### Pre-conditions for creating an order
@@ -1637,37 +1624,41 @@ Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
+    "@context": "https://openactive.io/ns/oa.jsonld",
+    "type": "Order",
+    "broker": {
+        "type": "Organization",
+        "name": "MyFitnessApp",
+        "url": "https://myfitnessapp.example.com"
+    },
+    "customer": {
+        "type": "Person",
+        "email": "geoffcapes@example.com",
+        "givenName": "Geoff",
+        "familyName": "Capes"
+    },
+    "acceptedOffer": [{
+  		"type": "Offer",
+      "id": "https://example.com/offers/567",
+      "acceptedPaymentMethod": [
 				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
 			],
 			"availabilityEnds": "2018-04-29T12:14:35Z",
 			"availabilityStarts": "2018-04-01T12:14:35Z",
 			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
 			"name": "Speedball winger position",
-			"price": "33.00",
+			"price": 10.00,
 			"priceCurrency": "GBP"
-		}
-	}]
+  	}],
+    "orderedItem": [{
+        "orderQuantity":"1",
+        "orderedItem": {
+          "type": "Event",
+          "id": "https://example.com/events/123"
+        }
+    }]
 }
+
 </pre>
 
 If successful the server will response with the location of a newly created
@@ -1677,55 +1668,71 @@ If successful the server will response with the location of a newly created
 HTTP/1.1 201 Created
 Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
-Location: /orders/123
+Location: /orders/890
+
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Order",
-  "id": "https://example.com/orders/123",
-  "customer": {
-  	"type": "Person",
-  	"email": "geoffcapes@example.com",
-  	"givenName": "Geoff",
-  	"familyName": "Capes"
-  },
-  "orderLeaseDuration": "PT15M",
-  "broker": {
-  	"type": "Organization",
-  	"name": "MyFitnessApp",
-  	"url": "https://myfitnessapp.example.com"
-  },
-  "orderStatus": "https://schema.org/OrderPaymentDue",
-  "potentialAction": [
-    {
-      "type": "PayAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v1.0+json",
-        "httpMethod": "PATCH"
-      }
-    }
-  ],
-  "orderedItem": [{
-  	"type": "OrderItem",
-  	"orderQuantity": 1,
-  	"acceptedOffer": {
-  		"type": "Offer",
-  		"acceptedPaymentMethod": [
-  			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-  		],
-  		"availabilityEnds": "2018-04-29T12:14:35Z",
-  		"availabilityStarts": "2018-04-01T12:14:35Z",
-  		"description": "Winger space for Speedball.",
-  		"id": "https://example.com/offers/1234",
-  		"name": "Speedball winger position",
-  		"price": "33.00",
-  		"priceCurrency": "GBP"
-  	}
-  }]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/567",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"validFrom": "2018-04-29T12:14:35Z",
+		"validTo": "2018-04-01T12:14:35Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"orderDate": "2018-02-20T11:00:00Z",
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		}
+	}],
+	"orderLeaseDuration": "PT15M",
+	"orderStatus": "https://schema.org/OrderPaymentDue",
+	"partOfInvoice": {
+		"type": "Invoice",
+		"paymentStatus": "PaymentDue",
+		"totalPaymentDue": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	},
+	"paymentDueDate": "2018-02-20T11:00:00Z",
+	"potentialAction": [{
+		"type": "PayAction",
+		"name": "Pay",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders/{order_id}",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "PATCH"
+		}
+	}]
 }
+
 </pre>
 
 
@@ -1734,7 +1741,7 @@ Location: /orders/123
 To get the latest state of an order, perform a GET request on its URI.
 
     <pre class="example" title="Viewing an order - request">
-GET /orders/123 HTTP/1.1
+GET /orders/890 HTTP/1.1
 Host: example.com
 Date: Tue, 07 Jun 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v1.0+json
@@ -1747,75 +1754,78 @@ Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-  "type": "Order",
-  "id": "https://example.com/orders/123",
-  "identifier": 123,
-  "customer": {
-    "type": "Person",
-    "email": "geoffcapes@example.com",
-    "givenName": "Geoff",
-    "familyName": "Capes"
-  },
-  "orderedItem": [
-    {
-      "type": "OrderItem",
-      "acceptedOffer": {
-        "type": "Offer",
-        "acceptedPaymentMethod": [
-            "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-        ],
-        "availabilityEnds": "2018-04-29T12:14:35Z",
-        "availabilityStarts": "2018-04-01T12:14:35Z",
-        "description": "Winger space for Speedball.",
-        "id": "https://example.com/offers/1234",
-        "name": "Speedball winger position",
-        "price": "33.00",
-        "priceCurrency": "GBP",
-      },
-      "orderedItem": "https://example.com/events/452",
-      "amount": {
-        "type": "MonetaryAmount",
-        "value": "10.00",
-        "currency": "GBP"
-      },
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/567",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"validFrom": "2018-04-29T12:14:35Z",
+		"validTo": "2018-04-01T12:14:35Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"orderDate": "2018-02-20T11:00:00Z",
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		}
+	}],
+	"orderLeaseDuration": "PT15M",
+	"orderStatus": "https://schema.org/OrderPaymentDue",
+	"partOfInvoice": {
+		"type": "Invoice",
+		"paymentStatus": "PaymentDue",
+		"totalPaymentDue": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	},
+	"paymentDueDate": "2018-02-20T11:00:00Z",
+	"potentialAction": [{
+		"type": "PayAction",
+		"name": "Pay",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders/{order_id}",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "PATCH"
+		}
+	},
+  {
+    "type": "CancelAction",
+    "name": "Cancel",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders/{order_id}",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "PATCH"
     }
-  ],
-  "orderStatus": "https://schema.org/OrderPaymentDue",
-  "paymentDueDate": "2018-02-20T11:00:00Z",
-  "orderDate": "2018-02-20T11:00:00Z",
-  "partOfInvoice": {
-    "type": "Invoice",
-    "paymentStatus": "PaymentDue",
-    "totalPaymentDue": {
-      "type": "MonetaryAmount",
-      "value": "10.00",
-      "currency": "GBP"
-    }
-  },
-  "potentialAction": [
-    {
-      "type": "PayAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v1.0+json",
-        "httpMethod": "PATCH"
-      }
-    },
-    {
-      "type": "CancelAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v1.0+json",
-        "httpMethod": "PATCH"
-      }
-    }
-  ]
+  }]
 }
-    </pre>
+
+</pre>
 
 ### Deleting an order (`/orders/{orderId}`)
 
@@ -1858,7 +1868,7 @@ Accept: application/vnd.openactive.v1.0+json
       "paymentMethodId": "3204",
       "totalPaidToProvider": {
         "type": "MonetaryAmount",
-        "value": "8.00",
+        "value": 10.00,
         "currency": "GBP"
       }
     }
@@ -1873,72 +1883,69 @@ Date: Tue, 07 Jun 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
+
 {
+	"@context": "https://openactive.io/ns/oa.jsonld",
 	"type": "Order",
-	"id": "https://example.com/orders/535",
-	"identifier": 535,
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/567",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"validFrom": "2018-04-29T12:14:35Z",
+		"validTo": "2018-04-01T12:14:35Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
+	"orderDate": "2018-02-20T11:00:00Z",
 	"orderedItem": [{
 		"type": "OrderItem",
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"availabilityEnds": "2018-04-29T12:14:35Z",
-			"availabilityStarts": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
-			"name": "Speedball winger position",
-			"price": "33.00",
-			"priceCurrency": "GBP"
-		},
-		"orderedItem": "https://example.com/events/452",
-		"amount": {
-			"type": "MonetaryAmount",
-			"value": "10.00",
-			"currency": "GBP"
+		"orderQuantity": 1,
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
 		}
 	}],
 	"orderStatus": "https://schema.org/OrderDelivered",
-	"paymentDueDate": "2018-02-20T11:00:00Z",
-	"orderDate": "2018-02-20T11:00:00Z",
 	"partOfInvoice": {
 		"type": "Invoice",
-		"paymentStatus": "PaymentDue",
+		"paymentStatus": "PaymentComplete",
 		"totalPaymentDue": {
 			"type": "MonetaryAmount",
-			"value": "10.00",
+			"value": 10.00,
 			"currency": "GBP"
 		}
 	},
-	"payments": [{
-		"type": "Payment",
-		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-		"paymentMethodId": "3204",
-		"totalPaidToProvider": {
-			"type": "MonetaryAmount",
-			"value": "8.00",
-			"currency": "GBP"
-		},
-		"confirmationNumber": "T12371284"
-	}],
-	"potentialAction": [{
-		"type": "CancelAction",
-		"name": "Pay",
-		"target": {
-			"type": "EntryPoint",
-			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v1.0+json",
-			"httpMethod": "PATCH"
-		}
-	}]
+	"potentialAction": [
+  {
+    "type": "CancelAction",
+    "name": "Cancel",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders/{order_id}",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "PATCH"
+    }
+  }]
 }
+
+
 
     </pre>
 

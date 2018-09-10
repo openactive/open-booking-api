@@ -121,7 +121,7 @@ input.task-list-item-checkbox {
 
 
     
-    <title>Open Booking API 0.8</title>
+    <title>Open Booking API 1.0</title>
 
     
 
@@ -543,7 +543,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
     },
     {
       "key": "Version",
-      "value": "0.8"
+      "value": "1.0"
     }
   ],
   "logos": [
@@ -605,8 +605,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
       "id": "openidconnect"
     }
   },
-  "publishISODate": "2018-08-20T00:00:00.000Z",
-  "generatedSubtitle": "Draft Community Group Report 20 August 2018"
+  "publishISODate": "2018-09-10T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 10 September 2018"
 }</script><meta name="description" content="This document specifies an HTTP API for placing bookings to participate in
 physical activities, either by attending events or through the use of leisure
 or sports facilities."></head>
@@ -615,9 +615,9 @@ or sports facilities."></head>
   <a href="" class="logo">
       <img id="logo" alt="openactive.io" width="255" height="43" src="https://openactive.io/assets/openactive-logo-large.png">
   </a>
-  <h1 class="title p-name" id="title">Open Booking API 0.8</h1>
+  <h1 class="title p-name" id="title">Open Booking API 1.0</h1>
   
-  <h2 id="draft-community-group-report-20-august-2018">Draft Community Group Report <time class="dt-published" datetime="2018-08-20">20 August 2018</time></h2>
+  <h2 id="draft-community-group-report-10-september-2018">Draft Community Group Report <time class="dt-published" datetime="2018-09-10">10 September 2018</time></h2>
   <dl>
     
     
@@ -643,7 +643,7 @@ or sports facilities."></head>
   <p class="copyright">
     <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> ©
     2018
-    the Contributors to the Open Booking API 0.8 Specification, published by the
+    the Contributors to the Open Booking API 1.0 Specification, published by the
     <a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a> under the
     <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
       A human-readable <a href="https://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.
@@ -886,9 +886,9 @@ associated APIs such as RDPE in the Open Active ecosystem.</p></section><section
 <figcaption>Figure <span class="figno">1</span> <span class="fig-title">Simple illustration of booking workflow</span></figcaption>
 </figure></section><section><h3 id="sequence-diagram"><span class="secno">5.4 </span>Sequence diagram</h3><figure id="fig-sequence-diagram-showing-api-interactions"><img src="sequence-diagram.png" alt="Sequence diagram" height="723" width="710">
 <figcaption>Figure <span class="figno">2</span> <span class="fig-title">Sequence diagram showing API interactions</span></figcaption>
-</figure></section><section><h3 id="step-by-step-process-description"><span class="secno">5.5 </span>Step-by-step process description</h3><p>The 0.5, and higher, versions of the Booking API supports single items per <strong>order</strong> and
+</figure></section><section><h3 id="step-by-step-process-description"><span class="secno">5.5 </span>Step-by-step process description</h3><p>The 1.0, and higher, versions of the Booking API supports single items per <strong>order</strong> and
 single <strong>payments</strong> per <strong>order</strong>. Future versions of the specification may support
-multiple items and multipart <strong>payments</strong>, 0.8 still does not.</p><section><h4 id="complete-transaction"><span class="secno">5.5.1 </span>Complete transaction</h4><ol>
+multiple items and multipart <strong>payments</strong> which are out of scope for the 1.0 release.</p><section><h4 id="complete-transaction"><span class="secno">5.5.1 </span>Complete transaction</h4><ol>
 <li>The <strong>broker</strong> requests details on a specific <strong>opportunity</strong> from the
 <strong>booking system</strong> (/events/452 in example) in order to discover available
 <strong>offers</strong>. These offers are subsequently presented to the <strong>customer</strong>.</li>
@@ -956,7 +956,7 @@ lease with a 410 status code with an error specifying the <code>errorType</code>
 <strong>order</strong> resource is removed.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="common-requirements"><span class="secno">6. </span>Common Requirements</h2><p>This section defines some common functionality that applies to the design of the
 whole API.</p><section><h3 id="media-types"><span class="secno">6.1 </span>Media types</h3><p>Custom media types are used in this API to allow clients to choose the format
 of the data they receive.</p><p><strong>Booking platforms</strong> <em class="rfc2119" title="MAY">MAY</em> choose to support additional media types but <em class="rfc2119" title="MUST">MUST</em> support the
-media type(s) defined by this specification.</p><p>Media types will conform to the following pattern:</p><pre aria-busy="false" class="hljs">application/vnd.openactive[.version]+json</pre><p>The current media type is:</p><pre aria-busy="false" class="hljs">application/vnd.openactive.0.8+json</pre><p><strong>Brokers</strong> specifying a media type without a version, such as:</p><pre aria-busy="false" class="hljs">application/vnd.openactive+json</pre><p>will recieve data in in the most current format which is 0.8.</p><p>If you are building an application as a <strong>broker</strong> and care about the stability
+media type(s) defined by this specification.</p><p>Media types will conform to the following pattern:</p><pre aria-busy="false" class="hljs">application/vnd.openactive[.version]+json</pre><p>The current media type is:</p><pre aria-busy="false" class="hljs">application/vnd.openactive.1.0+json</pre><p><strong>Brokers</strong> specifying a media type without a version, such as:</p><pre aria-busy="false" class="hljs">application/vnd.openactive+json</pre><p>will recieve data in in the most current format which is 1.0.</p><p>If you are building an application as a <strong>broker</strong> and care about the stability
 of the response, or have a client application which is tied to a specific
 version you should always try to use a media type containing the version number.</p><p><strong>Booking systems</strong> are not obliged to support previous versions of the
 specification, and so may not support a specific version number. We anticipate
@@ -984,7 +984,7 @@ property of the <code>potentialAction</code> required.</p><p>An example is below
           <span class="hljs-string">"target"</span>: {
             <span class="hljs-string">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
             <span class="hljs-string">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-            <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
+            <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
             <span class="hljs-string">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
           }
         }
@@ -1000,7 +1000,7 @@ further activity in the booking workflow at the point of need. For example they
 a specific <strong>opportunity</strong> resource and <em class="rfc2119" title="SHOULD">SHOULD</em> advertise it in their RDPE feeds
 since both of these points within the booking workflow are places where a <br><strong>customer</strong> may wish to check availability.</p></section><section><h3 id="error-handling"><span class="secno">6.4 </span>Error handling</h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format using a
-content type of <code>application/vnd.openactive.v0.8+json</code> and include at least one
+content type of <code>application/vnd.openactive.v1.0+json</code> and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [<cite><a class="bibref" href="#bib-rfc7807">RFC7807</a></cite>].</p><div class="example" id="ex-4-error-response-format">
           <div class="marker"><span>Example 4</span><span class="example-title">: Error response format</span></div>
@@ -1254,45 +1254,41 @@ opportunity are still available before proceeding with booking.</p><div class="e
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/events/452</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-6-event-response">
           <div class="marker"><span>Example 6</span><span class="example-title">: Event response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
-<span class="javascript">
+<span class="json">
 {
-  <span class="hljs-string">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Event"</span>,
-  <span class="hljs-string">"identifier"</span>: <span class="hljs-number">452</span>,
-  <span class="hljs-string">"id"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
-  <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball"</span>,
-  <span class="hljs-string">"offers"</span>: [
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Offer"</span>,
-      <span class="hljs-string">"acceptedPaymentMethod"</span>: [
-          <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
-      ],
-      <span class="hljs-string">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-      <span class="hljs-string">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
-      <span class="hljs-string">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-      <span class="hljs-string">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
-      <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-      <span class="hljs-string">"price"</span>: <span class="hljs-string">"33.00"</span>,
-      <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-    }
-  ],
-  <span class="hljs-string">"eventStatus"</span>: <span class="hljs-string">"https://schema.org/EventScheduled"</span>,
-  <span class="hljs-string">"maximumAttendeeCapacity"</span>: <span class="hljs-number">30</span>,
-  <span class="hljs-string">"remainingAttendeeCapacity"</span>: <span class="hljs-number">20</span>,
-  <span class="hljs-string">"startDate"</span>: <span class="hljs-string">"2018-01-27T11:00:00Z"</span>,
-  <span class="hljs-string">"endDate"</span>: <span class="hljs-string">"2018-01-27T12:00:00Z"</span>,
-  <span class="hljs-string">"duration"</span>: <span class="hljs-string">"PT1H"</span>,
-  <span class="hljs-string">"location"</span>: {
-    ...
-  }
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+    <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">452</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball"</span>,
+    <span class="hljs-attr">"offers"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+            <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
+        ],
+        <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+        <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">33.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+    }],
+    <span class="hljs-attr">"eventStatus"</span>: <span class="hljs-string">"https://schema.org/EventScheduled"</span>,
+    <span class="hljs-attr">"maximumAttendeeCapacity"</span>: <span class="hljs-number">30</span>,
+    <span class="hljs-attr">"remainingAttendeeCapacity"</span>: <span class="hljs-number">20</span>,
+    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-01-27T11:00:00Z"</span>,
+    <span class="hljs-attr">"endDate"</span>: <span class="hljs-string">"2018-01-27T12:00:00Z"</span>,
+    <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT1H"</span>,
+    <span class="hljs-attr">"location"</span>: {}
 }</span></pre>
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingAttendeeCapacity</code> property of the <strong>event</strong> is up to date and includes a
@@ -1302,45 +1298,41 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-7-viewi
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/slots/324</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-8-slot-response">
           <div class="marker"><span>Example 8</span><span class="example-title">: Slot response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
 <span class="json">
 {
-  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
-  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/324"</span>,
-  <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">324</span>,
-  <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
-  <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T11:00:00Z"</span>,
-  <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
-  <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">3</span>,
-  <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>,
-   <span class="hljs-attr">"offers"</span>: [
-     {
-       <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-       <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
-       <span class="hljs-attr">"price"</span>: <span class="hljs-string">"15"</span>,
-       <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
-       <span class="hljs-string">"potentialAction"</span>: [
-         {
-           <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
-           <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
-           <span class="hljs-attr">"target"</span>: {
-             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-             <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-             <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-             <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
-           }
-         }
-       ]
-     }
-   ]
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/324"</span>,
+    <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">324</span>,
+    <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
+    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T11:00:00Z"</span>,
+    <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
+    <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-attr">"offers"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">15.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+        <span class="hljs-attr">"potentialAction"</span>: [{
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
+            <span class="hljs-attr">"target"</span>: {
+                <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+                <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+                <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+                <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+            }
+        }]
+    }]
 }</span></pre>
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingUses</code> property of the <strong>slot</strong> is up to date and includes a
@@ -1350,78 +1342,71 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-9-viewi
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/facility-use/1</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-10-facility-use-response">
           <div class="marker"><span>Example 10</span><span class="example-title">: Facility use response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
 <span class="json">{
-  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://www.openactive.io/ns/oa.jsonld"</span>,
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FacilityUse"</span>,
-  <span class="hljs-attr">"url"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
-  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Example Leisure Centre Table Tennis"</span>,
-  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Table tennis tables are available to hire for thirty minute slots"</span>,
-  <span class="hljs-attr">"activity"</span>: <span class="hljs-string">"Table Tennis"</span>,
-  <span class="hljs-attr">"location"</span>: {
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Place"</span>,
-    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Example Leisure Centre"</span>,
-    <span class="hljs-attr">"address"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PostalAddress"</span>,
-      <span class="hljs-attr">"streetAddress"</span>: <span class="hljs-string">"1 High Street"</span>,
-      <span class="hljs-attr">"addressLocality"</span>: <span class="hljs-string">"Bristol"</span>,
-      <span class="hljs-attr">"postalCode"</span>: <span class="hljs-string">"BS1 4SD"</span>
-    }
-  },
-  <span class="hljs-attr">"offers"</span>: [
-      {
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://www.openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FacilityUse"</span>,
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Example Leisure Centre Table Tennis"</span>,
+    <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Table tennis tables are available to hire for thirty minute slots"</span>,
+    <span class="hljs-attr">"activity"</span>: <span class="hljs-string">"Table Tennis"</span>,
+    <span class="hljs-attr">"location"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Place"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Example Leisure Centre"</span>,
+        <span class="hljs-attr">"address"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PostalAddress"</span>,
+            <span class="hljs-attr">"streetAddress"</span>: <span class="hljs-string">"1 High Street"</span>,
+            <span class="hljs-attr">"addressLocality"</span>: <span class="hljs-string">"Bristol"</span>,
+            <span class="hljs-attr">"postalCode"</span>: <span class="hljs-string">"BS1 4SD"</span>
+        }
+    },
+    <span class="hljs-attr">"offers"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
-        <span class="hljs-attr">"price"</span>: <span class="hljs-string">"10"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"potentialAction"</span>: [
-          {
+        <span class="hljs-attr">"potentialAction"</span>: [{
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
             <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
             <span class="hljs-attr">"target"</span>: {
-              <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-              <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-              <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-              <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+                <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+                <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+                <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+                <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
             }
-          }
-        ]
-      }
-  ],
-  <span class="hljs-attr">"event"</span>: [
-      {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/123"</span>,
-        <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
-        <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T10:00:00Z"</span>,
-        <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
-        <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>
-      },
-      {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/234"</span>,
-        <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
-        <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T11:00:00Z"</span>,
-        <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
-        <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">3</span>,
-        <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>,
-         <span class="hljs-attr">"offers"</span>: [
-           {
-              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
-              <span class="hljs-attr">"price"</span>: <span class="hljs-string">"15"</span>,
-              <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
-           }
-         ]
-      }
-  ]
+        }]
+    }],
+    <span class="hljs-attr">"event"</span>: [{
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/123"</span>,
+            <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
+            <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T10:00:00Z"</span>,
+            <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
+            <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>
+        },
+        {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Slot"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/234"</span>,
+            <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
+            <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T11:00:00Z"</span>,
+            <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
+            <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">3</span>,
+            <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>,
+            <span class="hljs-attr">"offers"</span>: [{
+                <span class="hljs-attr">"name"</span>: <span class="hljs-string">"30 minute hire"</span>,
+                <span class="hljs-attr">"price"</span>: <span class="hljs-number">15.00</span>,
+                <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+            }]
+        }
+    ]
 }</span></pre>
         </div></section><section><h4 id="assembling-a-set-of-offers-and-presenting-them-to-a-customer"><span class="secno">7.1.4 </span>Assembling a set of offers and presenting them to a customer</h4><p>The <strong>broker</strong> <em class="rfc2119" title="MUST">MUST</em> assemble a set of all applicable <strong>offers</strong> for an
 <strong>opportunity</strong> from the information supplied by the <strong>booking system</strong>.
@@ -1481,7 +1466,7 @@ contain the <code>encodingType</code> and the <code>httpMethod</code> which must
     <span class="hljs-string">"target"</span>: {
       <span class="hljs-string">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
       <span class="hljs-string">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-      <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
+      <span class="hljs-string">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
       <span class="hljs-string">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
     }
   }
@@ -1516,180 +1501,197 @@ process), the <code>broker</code> property should contain the details of the end
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">POST</span> <span class="hljs-string">/orders</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
     <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
-    <span class="hljs-attr">"broker"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
-        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
-    },
-    <span class="hljs-attr">"orderedItem"</span>: [{
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
-        <span class="hljs-attr">"acceptedOffer"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-            <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
+    <span class="hljs-attr">"acceptedOffer"</span>: [{
+          <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
+      <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
                 <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
             ],
             <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
             <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
             <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
             <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-            <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+            <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
             <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+      }],
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"orderQuantity"</span>:<span class="hljs-string">"1"</span>,
+        <span class="hljs-attr">"orderedItem"</span>: {
+          <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+          <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
         }
     }]
-}
-</span></pre>
+}</span></pre>
         </div><p>If successful the server will response with the location of a newly created
 <code>Order</code> resource:</p><div class="example" id="ex-13-creating-an-order-response">
           <div class="marker"><span>Example 13</span><span class="example-title">: Creating an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">201</span> Created
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
-<span class="hljs-attribute">Location</span>: /orders/123
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
+<span class="hljs-attribute">Location</span>: /orders/890
 
-<span class="json">{
-  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
-  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/123"</span>,
-  <span class="hljs-attr">"customer"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
-      <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
-      <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
-      <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
-  },
-  <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
-  <span class="hljs-attr">"broker"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
-      <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
-  },
-  <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
-  <span class="hljs-attr">"potentialAction"</span>: [
-    {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
-      <span class="hljs-attr">"target"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-      }
-    }
-  ],
-  <span class="hljs-attr">"orderedItem"</span>: [{
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-      <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-attr">"acceptedOffer"</span>: {
-          <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-          <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
-              <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
-          ],
-          <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-          <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
-          <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-          <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
-          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-          <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
-          <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
-      }
-  }]
-}
-</span></pre>
+<span class="json">
+{
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
+    <span class="hljs-attr">"acceptedOffer"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
+        <span class="hljs-attr">"itemOffered"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        },
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+        <span class="hljs-attr">"validTo"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>
+    }],
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"orderedItem"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        }
+    }],
+    <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
+    <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+    <span class="hljs-attr">"partOfInvoice"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
+        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+        <span class="hljs-attr">"totalPaymentDue"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    },
+    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+        }
+    }]
+}</span></pre>
         </div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example" id="ex-14-viewing-an-order-request">
           <div class="marker"><span>Example 14</span><span class="example-title">: Viewing an order - request</span></div>
-          <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
+          <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/890</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json</pre>
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-15-viewing-an-order-response">
           <div class="marker"><span>Example 15</span><span class="example-title">: Viewing an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> Created
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
 <span class="json">{
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
-  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/123"</span>,
-  <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">123</span>,
-  <span class="hljs-attr">"customer"</span>: {
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
-    <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
-    <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
-    <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
-  },
-  <span class="hljs-attr">"orderedItem"</span>: [
-    {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-      <span class="hljs-attr">"acceptedOffer"</span>: {
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
+    <span class="hljs-attr">"acceptedOffer"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-        <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
-            <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
-        ],
-        <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-        <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
         <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
+        <span class="hljs-attr">"itemOffered"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        },
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-        <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-      },
-      <span class="hljs-attr">"orderedItem"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
-      <span class="hljs-attr">"amount"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
-        <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
-      },
-    }
-  ],
-  <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
-  <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-  <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-  <span class="hljs-attr">"partOfInvoice"</span>: {
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
-    <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
-    <span class="hljs-attr">"totalPaymentDue"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
-      <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
-    }
-  },
-  <span class="hljs-attr">"potentialAction"</span>: [
-    {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
-      <span class="hljs-attr">"target"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-      }
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+        <span class="hljs-attr">"validTo"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>
+    }],
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
     },
-    {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
-      <span class="hljs-attr">"target"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-        <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-        <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-        <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-      }
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"orderedItem"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        }
+    }],
+    <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
+    <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+    <span class="hljs-attr">"partOfInvoice"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
+        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+        <span class="hljs-attr">"totalPaymentDue"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    },
+    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+        }
+    },
+  {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Cancel"</span>,
+    <span class="hljs-attr">"target"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
     }
-  ]
-}
-    </span></pre>
+  }]
+}</span></pre>
         </div></section><section><h4 id="deleting-an-order-orders-orderid-"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</h4><p>A <code>DELETE</code> request to an <strong>Order</strong> URI will delete the order. Deletion may only
 be used in the specific case for cancelling an <strong>order</strong> and the associated
 lease on a space in an <strong>event</strong> if the <strong>customer</strong> no longer wishes to take
@@ -1704,7 +1706,7 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
   <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
@@ -1715,7 +1717,7 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
       <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
       <span class="hljs-attr">"totalPaidToProvider"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"8.00"</span>,
+        <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
       }
     }
@@ -1725,74 +1727,69 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
           <div class="marker"><span>Example 17</span><span class="example-title">: Completing an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
-<span class="json">{
+<span class="json">
+{
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
-    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/535"</span>,
-    <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">535</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
+    <span class="hljs-attr">"acceptedOffer"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
+        <span class="hljs-attr">"itemOffered"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        },
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
+        <span class="hljs-attr">"validTo"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>
+    }],
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
     <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-        <span class="hljs-attr">"acceptedOffer"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-            <span class="hljs-attr">"acceptedPaymentMethod"</span>: [
-                <span class="hljs-string">"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>
-            ],
-            <span class="hljs-attr">"availabilityEnds"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-            <span class="hljs-attr">"availabilityStarts"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
-            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-            <span class="hljs-attr">"price"</span>: <span class="hljs-string">"33.00"</span>,
-            <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
-        },
-        <span class="hljs-attr">"orderedItem"</span>: <span class="hljs-string">"https://example.com/events/452"</span>,
-        <span class="hljs-attr">"amount"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
-            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"orderedItem"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
         }
     }],
     <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderDelivered"</span>,
-    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
     <span class="hljs-attr">"partOfInvoice"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
-        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentComplete"</span>,
         <span class="hljs-attr">"totalPaymentDue"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"10.00"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
             <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
         }
     },
-    <span class="hljs-attr">"payments"</span>: [{
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
-        <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
-        <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
-        <span class="hljs-attr">"totalPaidToProvider"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"8.00"</span>,
-            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
-        },
-        <span class="hljs-attr">"confirmationNumber"</span>: <span class="hljs-string">"T12371284"</span>
-    }],
-    <span class="hljs-attr">"potentialAction"</span>: [{
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
-        <span class="hljs-attr">"target"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v0.8+json"</span>,
-            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-        }
-    }]
+    <span class="hljs-attr">"potentialAction"</span>: [
+  {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Cancel"</span>,
+    <span class="hljs-attr">"target"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+    }
+  }]
 }</span></pre>
         </div></section></section><section><h3 id="ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</h3><p>Free <strong>opportunities</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>opportunities</strong>.
 A free <strong>event</strong> or <strong>slot</strong> is technically a free <strong>offer</strong> on a space for an
@@ -1808,7 +1805,7 @@ and <code>paymentMethodId</code> as optional properties.</p><div class="example"
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v0.8+json
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
   <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
@@ -1875,17 +1872,15 @@ created by a <strong>customer</strong>. In this current implementation, if the <
 wishes to present a view of all <strong>orders</strong> for a <strong>customer</strong>, it should keep
 an internal record.</p></section><section><h4 id="deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed"><span class="secno">7.7.3 </span>Deletion of personal data of the customer if the order is not completed</h4><p>If an <strong>order</strong> is not completed, the <strong>booking system</strong> <em class="rfc2119" title="SHOULD">SHOULD</em> delete all
 personal information of the <strong>customer</strong> provided to it as part of the <strong>order</strong>
-creation process.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="future-versions-of-this-api"><span class="secno">8. </span>Future versions of this API</h2><p>Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
-Booking API. Neither it, or 0.8, are yet feature complete and there are some requirements
-which are not satisfied by this version.</p><p>Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
+creation process.</p></section></section></section><section class="normative"><!--OddPage--><h2 id="future-versions-of-this-api"><span class="secno">8. </span>Future versions of this API</h2><p>Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
 resource to provide a payment and using PATCH to change the status of an <code>orderItem</code> to
 cancel an order provide the groundwork for known requirements such as multiple
 order items (shopping carts), cancellation of individual order items and also
 multipart payments.</p><p>Both <code>orderItems</code> and <code>payments</code> are modelled as collections to support
-extension of the version 0.5 specification towards multipart orders and
+extension of the version 1.0 specification towards multipart orders and
 payments without breaking changes in the Order model for subsequent versions.</p><p>The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
-API.</p><p>The currently known requirements not satisfied in version 0.8 are:</p><ul>
+API.</p><p>The currently known requirements not satisfied in version 1.0 are:</p><ul>
 <li>multiple part orders</li>
 <li>supporting multiple payments</li>
 <li>customer creation</li>
