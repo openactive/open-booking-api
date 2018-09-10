@@ -1497,7 +1497,8 @@ order.</p><section><h4 id="discovering-the-order-endpoint"><span class="secno">7
 <code>potentialAction</code> field <em class="rfc2119" title="MUST">MUST</em> contain one or more objects of type ReserveAction.</p><p>These ReserveAction objects must contain a <code>target</code> field containing an
 EntryPoint object.</p><p>The EntryPoint object <em class="rfc2119" title="MUST">MUST</em> state the <code>url</code> of the orders endpoint, and <em class="rfc2119" title="SHOULD">SHOULD</em>
 contain the <code>encodingType</code> and the <code>httpMethod</code> which must be POST as a new
-<strong>order</strong> object will be created on successful invocation.</p><p>An example is below:</p><div class="example" id="ex-11-example-of-a-reserveaction">
+<strong>order</strong> object will be created on successful invocation.</p><p>If the <strong>offer</strong> relates to a <strong>slot</strong> within a <code>FacilityUse</code>, the closest
+<code>potentialAction</code> property matching the type <code>ReserveAction</code> should be used.</p><p>An example is below:</p><div class="example" id="ex-11-example-of-a-reserveaction">
           <div class="marker"><span>Example 11</span><span class="example-title">: Example of a ReserveAction</span></div>
           <pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: [
   {

@@ -1611,6 +1611,9 @@ The EntryPoint object MUST state the `url` of the orders endpoint, and SHOULD
 contain the `encodingType` and the `httpMethod` which must be POST as a new
 **order** object will be created on successful invocation.
 
+If the **offer** relates to a **slot** within a `FacilityUse`, the closest
+`potentialAction` property matching the type `ReserveAction` should be used.
+
 An example is below:
 
 <pre class="example" title="Example of a ReserveAction">
@@ -1629,6 +1632,9 @@ An example is below:
 ]
 
 </pre>
+
+
+
 
 ### Pre-conditions for creating an order
 
