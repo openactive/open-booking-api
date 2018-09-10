@@ -700,6 +700,32 @@ the rescheduling of the event.
 4. The **broker** then cancels the order as described in step 2 of the previous
 session by making a PATCH request to the CancelAction.
 
+### Definition of a 'cancellable' oppportunity/offer
+
+In order to provide an excellent user experience for the **customer**, the
+**booking system** MUST provide information in it's terms of service about its
+cancellation policy. To avoid disappointment by the **customer**, **booking systems**
+MUST also make it clear prior to entering the booking workflow, whether specific
+opportunities and offers are cancellable, and if required, what the cancellation
+window is. The **broker** must always display information relating to whether the
+**opportunity**/**offer** is cancellable and what the cancellation window is,
+before the user has created an order.
+
+For an opportunity/offer to be cancellable it MUST:
+
+- contain an `isCancellable` boolean property set to 'true'
+
+If the opportunity or offer contains a `cancellationValidUntil` datetime property,
+it MUST NOT have already been exceeded.
+
+Different offers can potentially have different cancellation windows, or alternatively
+some offers may be cancellable, yet other offers on the same opportunity may
+not be cancellable. The data has been modelled to allow flexibility in business
+models for the **booking system** and the **seller**.
+
+Cancellable opportunities/offers will result in **orders** which contain a `CancelAction`
+in their `potentialAction` property.
+
     </section>
 
     <section class="normative">
@@ -1351,8 +1377,10 @@ Content-Length: ...
 		"description": "Winger space for Speedball.",
 		"id": "https://example.com/offers/1234",
 		"name": "Speedball winger position",
-		"price": 33.00,
-		"priceCurrency": "GBP"
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-04-29T12:14:35Z"
 	}],
 	"eventStatus": "https://schema.org/EventScheduled",
 	"maximumAttendeeCapacity": 30,
@@ -1703,17 +1731,20 @@ Accept: application/vnd.openactive.v1.0+json
         "familyName": "Capes"
     },
     "acceptedOffer": [{
-  		"type": "Offer",
-      "id": "https://example.com/offers/567",
-      "acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"validThrough": "2018-04-29T12:14:35Z",
-			"validFrom": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"name": "Speedball winger position",
-			"price": 10.00,
-			"priceCurrency": "GBP"
+      "type": "Offer",
+  		"description": "Winger space for Speedball.",
+  		"id": "https://example.com/offers/567",
+      "validThrough": "2018-04-29T12:14:35Z",
+      "validFrom": "2018-04-01T12:14:35Z",
+      "itemOffered": {
+  			"type": "Event",
+  			"id": "https://example.com/events/123"
+  		},
+  		"name": "Speedball winger position",
+  		"price": 10.00,
+  		"priceCurrency": "GBP",
+  		"isCancellable": true,
+  		"cancellationValidUntil": "2018-04-29T12:14:35Z"
   	}],
     "orderedItem": [{
         "orderQuantity":"1",
@@ -1741,18 +1772,20 @@ Location: /orders/890
 	"type": "Order",
 	"id": "https://example.com/orders/890",
 	"acceptedOffer": [{
-		"type": "Offer",
+    "type": "Offer",
 		"description": "Winger space for Speedball.",
 		"id": "https://example.com/offers/567",
-		"itemOffered": {
+    "validThrough": "2018-04-29T12:14:35Z",
+    "validFrom": "2018-04-01T12:14:35Z",
+    "itemOffered": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
 		},
 		"name": "Speedball winger position",
 		"price": 10.00,
 		"priceCurrency": "GBP",
-		"validFrom": "2018-04-29T12:14:35Z",
-		"validTo": "2018-04-01T12:14:35Z"
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-04-29T12:14:35Z"
 	}],
 	"broker": {
 		"type": "Organization",
@@ -1828,6 +1861,8 @@ Content-Length: ...
 		"type": "Offer",
 		"description": "Winger space for Speedball.",
 		"id": "https://example.com/offers/567",
+		"validThrough": "2018-04-29T12:14:35Z",
+		"validFrom": "2018-04-01T12:14:35Z",
 		"itemOffered": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1835,8 +1870,8 @@ Content-Length: ...
 		"name": "Speedball winger position",
 		"price": 10.00,
 		"priceCurrency": "GBP",
-		"validFrom": "2018-04-29T12:14:35Z",
-		"validTo": "2018-04-01T12:14:35Z"
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-04-29T12:14:35Z"
 	}],
 	"broker": {
 		"type": "Organization",
@@ -1846,15 +1881,15 @@ Content-Length: ...
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
-    "telephone": "020 811 8055",
+		"telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
 	"orderDate": "2018-02-20T11:00:00Z",
-  "orderedItem": [{
+	"orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
-    "orderItemStatus": "https://schema.org/OrderPaymentDue",
+		"orderItemStatus": "https://schema.org/OrderPaymentDue",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1873,25 +1908,26 @@ Content-Length: ...
 	},
 	"paymentDueDate": "2018-02-20T11:00:00Z",
 	"potentialAction": [{
-		"type": "PayAction",
-		"name": "Pay",
-		"target": {
-			"type": "EntryPoint",
-			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v1.0+json",
-			"httpMethod": "PATCH"
+			"type": "PayAction",
+			"name": "Pay",
+			"target": {
+				"type": "EntryPoint",
+				"urlTemplate": "https://example.com/orders/{order_id}",
+				"encodingType": "application/vnd.openactive.v1.0+json",
+				"httpMethod": "PATCH"
+			}
+		},
+		{
+			"type": "CancelAction",
+			"name": "Cancel",
+			"target": {
+				"type": "EntryPoint",
+				"urlTemplate": "https://example.com/orders/{order_id}",
+				"encodingType": "application/vnd.openactive.v1.0+json",
+				"httpMethod": "PATCH"
+			}
 		}
-	},
-  {
-    "type": "CancelAction",
-    "name": "Cancel",
-    "target": {
-      "type": "EntryPoint",
-      "urlTemplate": "https://example.com/orders/{order_id}",
-      "encodingType": "application/vnd.openactive.v1.0+json",
-      "httpMethod": "PATCH"
-    }
-  }]
+	]
 }
 
 </pre>
