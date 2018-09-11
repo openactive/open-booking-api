@@ -1257,6 +1257,8 @@ properties are present at a lower level.
 
 </pre>
 
+The URLs in the example are only illustrative.
+
     </section>
 
     <section class="normative">
@@ -1370,13 +1372,13 @@ opportunity are still available before proceeding with booking.
         <pre class="example" title="Viewing event availability">
 GET /events/452 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:50:35 GMT
 Accept: application/vnd.openactive.v1.0+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:50:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
@@ -1389,43 +1391,43 @@ Content-Length: ...
 	"name": "Speedball",
 	"offers": [{
 		"type": "Offer",
-		"validThrough": "2018-04-29T12:14:35Z",
-		"validFrom": "2018-04-01T12:14:35Z",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
 		"description": "Winger space for Speedball.",
 		"id": "https://example.com/offers/1234",
 		"name": "Speedball winger position",
 		"price": 10.00,
 		"priceCurrency": "GBP",
 		"isCancellable": true,
-		"cancellationValidUntil": "2018-04-29T12:14:35Z"
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
 	}],
 	"eventStatus": "https://schema.org/EventScheduled",
 	"maximumAttendeeCapacity": 30,
 	"remainingAttendeeCapacity": 20,
-	"startDate": "2018-01-27T11:00:00Z",
-	"endDate": "2018-01-27T12:00:00Z",
+	"startDate": "2018-10-30T11:00:00Z",
+	"endDate": "2018-10-30T12:00:00Z",
 	"duration": "PT1H",
 	"location": {},
-  "potentialAction": [{
-    "type": "ReserveAction",
-    "name": "Book",
-    "target": {
-      "type": "EntryPoint",
-      "urlTemplate": "https://example.com/orders",
-      "encodingType": "application/vnd.openactive.v1.0+json",
-      "httpMethod": "POST"
-    }
-  }],
-  "privacyPolicy": {
-      "type": "Terms",
-      "url": "https://example.com/privacy-policy",
-      "name": "Privacy Policy"
-  },
-  "termsAndConditions": {
-      "type": "Terms",
-      "url": "https://example.com/terms-and-conditions",
-      "name": "Terms and Conditions"
-  }
+	"potentialAction": [{
+		"type": "ReserveAction",
+		"name": "Book",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "POST"
+		}
+	}],
+	"privacyPolicy": {
+		"type": "Terms",
+		"url": "https://example.com/privacy-policy",
+		"name": "Privacy Policy"
+	},
+	"termsAndConditions": {
+		"type": "Terms",
+		"url": "https://example.com/terms-and-conditions",
+		"name": "Terms and Conditions"
+	}
 }
 
 </pre>
@@ -1439,13 +1441,13 @@ from in-progress **orders**.
 <pre class="example" title="Viewing slot availability">
 GET /slots/324 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Slot response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
@@ -1456,7 +1458,7 @@ Content-Length: ...
 	"id": "http://www.example.org/slots/324",
 	"identifier": 324,
 	"facilityUse": "http://www.example.org/facility-use/1",
-	"startDate": "2018-03-01T11:00:00Z",
+	"startDate": "2018-10-01T11:00:00Z",
 	"duration": "PT30M",
 	"remainingUses": 3,
 	"maximumUses": 4,
@@ -1488,13 +1490,13 @@ from in-progress **orders**.
 <pre class="example" title="Viewing slot availability via a facility use">
 GET /facility-use/1 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Facility use response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:51:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
@@ -1739,47 +1741,47 @@ customer's telephone number, an optional field, should be supplied.
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:52:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
-    "@context": "https://openactive.io/ns/oa.jsonld",
-    "type": "Order",
-    "broker": {
-        "type": "Organization",
-        "name": "MyFitnessApp",
-        "url": "https://myfitnessapp.example.com"
-    },
-    "customer": {
-        "type": "Person",
-        "email": "geoffcapes@example.com",
-        "telephone": "020 811 8055",
-        "givenName": "Geoff",
-        "familyName": "Capes"
-    },
-    "acceptedOffer": [{
-      "type": "Offer",
-  		"description": "Winger space for Speedball.",
-  		"id": "https://example.com/offers/567",
-      "validThrough": "2018-04-29T12:14:35Z",
-      "validFrom": "2018-04-01T12:14:35Z",
-      "itemOffered": {
-  			"type": "Event",
-  			"id": "https://example.com/events/123"
-  		},
-  		"name": "Speedball winger position",
-  		"price": 10.00,
-  		"priceCurrency": "GBP",
-  		"isCancellable": true,
-  		"cancellationValidUntil": "2018-04-29T12:14:35Z"
-  	}],
-    "orderedItem": [{
-        "orderQuantity":"1",
-        "orderedItem": {
-          "type": "Event",
-          "id": "https://example.com/events/123"
-        }
-    }]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"telephone": "020 811 8055",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"acceptedOffer": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
+	"orderedItem": [{
+		"orderQuantity": "1",
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		}
+	}]
 }
 
 </pre>
@@ -1789,7 +1791,7 @@ If successful the server will response with the location of a newly created
 
 <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:52:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Location: /orders/890
 
@@ -1799,12 +1801,12 @@ Location: /orders/890
 	"type": "Order",
 	"id": "https://example.com/orders/890",
 	"acceptedOffer": [{
-    "type": "Offer",
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
 		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/567",
-    "validThrough": "2018-04-29T12:14:35Z",
-    "validFrom": "2018-04-01T12:14:35Z",
-    "itemOffered": {
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
 		},
@@ -1812,7 +1814,7 @@ Location: /orders/890
 		"price": 10.00,
 		"priceCurrency": "GBP",
 		"isCancellable": true,
-		"cancellationValidUntil": "2018-04-29T12:14:35Z"
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
 	}],
 	"broker": {
 		"type": "Organization",
@@ -1822,15 +1824,15 @@ Location: /orders/890
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
-    "telephone": "020 811 8055",
+		"telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
-	"orderDate": "2018-02-20T11:00:00Z",
+	"orderDate": "2018-10-08T20:52:36Z",
 	"orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
-    "orderItemStatus": "https://schema.org/OrderPaymentDue",
+		"orderItemStatus": "https://schema.org/OrderPaymentDue",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1847,7 +1849,7 @@ Location: /orders/890
 			"currency": "GBP"
 		}
 	},
-	"paymentDueDate": "2018-02-20T11:00:00Z",
+	"paymentDueDate": "2018-10-08T21:07:36Z",
 	"potentialAction": [{
 		"type": "PayAction",
 		"name": "Pay",
@@ -1870,13 +1872,13 @@ To get the latest state of an order, perform a GET request on its URI.
     <pre class="example" title="Viewing an order - request">
 GET /orders/890 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:53:35 GMT
 Accept: application/vnd.openactive.v1.0+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:53:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
@@ -1886,10 +1888,10 @@ Content-Length: ...
 	"id": "https://example.com/orders/890",
 	"acceptedOffer": [{
 		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
 		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/567",
-		"validThrough": "2018-04-29T12:14:35Z",
-		"validFrom": "2018-04-01T12:14:35Z",
+		"id": "https://example.com/offers/1234",
 		"itemOffered": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -1898,7 +1900,7 @@ Content-Length: ...
 		"price": 10.00,
 		"priceCurrency": "GBP",
 		"isCancellable": true,
-		"cancellationValidUntil": "2018-04-29T12:14:35Z"
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
 	}],
 	"broker": {
 		"type": "Organization",
@@ -1912,7 +1914,7 @@ Content-Length: ...
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
-	"orderDate": "2018-02-20T11:00:00Z",
+	"orderDate": "2018-10-08T20:52:36Z",
 	"orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
@@ -1933,20 +1935,10 @@ Content-Length: ...
 			"currency": "GBP"
 		}
 	},
-	"paymentDueDate": "2018-02-20T11:00:00Z",
+	"paymentDueDate": "2018-10-08T21:07:36Z",
 	"potentialAction": [{
 			"type": "PayAction",
 			"name": "Pay",
-			"target": {
-				"type": "EntryPoint",
-				"urlTemplate": "https://example.com/orders/{order_id}",
-				"encodingType": "application/vnd.openactive.v1.0+json",
-				"httpMethod": "PATCH"
-			}
-		},
-		{
-			"type": "CancelAction",
-			"name": "Cancel",
 			"target": {
 				"type": "EntryPoint",
 				"urlTemplate": "https://example.com/orders/{order_id}",
@@ -1958,6 +1950,9 @@ Content-Length: ...
 }
 
 </pre>
+
+Note: The `paymentDueDate` is set by the date and time of the **order** and the
+`orderLeaseDuration`.
 
 ### Deleting an order (`/orders/{orderId}`)
 
@@ -1988,30 +1983,28 @@ returns a representation of the completed **order** with a 200 status code.
     <pre class="example" title="Completing an order - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:56:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
-  "type": "Order",
-  "payments": [
-    {
-      "type": "Payment",
-      "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-      "paymentMethodId": "3204",
-      "totalPaidToProvider": {
-        "type": "MonetaryAmount",
-        "value": 10.00,
-        "currency": "GBP"
-      }
-    }
-  ]
+	"type": "Order",
+	"payments": [{
+		"type": "Payment",
+		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+		"paymentMethodId": "3204",
+		"totalPaidToProvider": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	}]
 }
 
 </pre>
 
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
+Date: Mon, 8 Oct 2018 20:56:36 GMT
 Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
@@ -2022,8 +2015,10 @@ Content-Length: ...
 	"id": "https://example.com/orders/890",
 	"acceptedOffer": [{
 		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
 		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/567",
+		"id": "https://example.com/offers/1234",
 		"itemOffered": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -2031,8 +2026,8 @@ Content-Length: ...
 		"name": "Speedball winger position",
 		"price": 10.00,
 		"priceCurrency": "GBP",
-		"validFrom": "2018-04-29T12:14:35Z",
-		"validTo": "2018-04-01T12:14:35Z"
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
 	}],
 	"broker": {
 		"type": "Organization",
@@ -2042,15 +2037,15 @@ Content-Length: ...
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
-    "telephone": "020 811 8055",
+		"telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
-	"orderDate": "2018-02-20T11:00:00Z",
-  "orderedItem": [{
+	"orderDate": "2018-10-08T20:52:36Z",
+	"orderedItem": [{
 		"type": "OrderItem",
 		"orderQuantity": 1,
-    "orderItemStatus": "https://schema.org/OrderDelivered",
+		"orderItemStatus": "https://schema.org/OrderDelivered",
 		"orderedItem": {
 			"type": "Event",
 			"id": "https://example.com/events/123"
@@ -2066,20 +2061,33 @@ Content-Length: ...
 			"currency": "GBP"
 		}
 	},
-	"potentialAction": [
-  {
-    "type": "CancelAction",
-    "name": "Cancel",
-    "target": {
-      "type": "EntryPoint",
-      "urlTemplate": "https://example.com/orders/{order_id}",
-      "encodingType": "application/vnd.openactive.v1.0+json",
-      "httpMethod": "PATCH"
-    }
-  }]
+	"payments": [{
+		"type": "Payment",
+		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+		"paymentMethodId": "3204",
+		"totalPaidToProvider": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		},
+		"paymentDate": "2018-10-08T20:56:36Z"
+	}],
+	"potentialAction": [{
+		"type": "CancelAction",
+		"name": "Cancel",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders/{order_id}",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "PATCH"
+		}
+	}]
 }
 
 </pre>
+
+Note: If the record had been retrieved after the expiry of the cancellation window,
+the `CancelAction` would be omitted.
 
 ## Ordering a place at a free event/ordering a free slot
 
@@ -2101,7 +2109,7 @@ and `paymentMethodId` as optional properties.
 <pre class="example" title="Completing an free order with a payment of 0.00 - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
+Date: Mon, 8 Oct 2018 20:51:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
@@ -2258,13 +2266,19 @@ In a future version, it is imagined that an API method describing the service,
 and including such things as the links to Privacy Policy, Terms and Conditions
 and the target for a ReserveAction could be used to reduce data duplication.
 
+At the moment there is no provision for a **customer** to cancel an **order**
+after the cancellation window, yet they may wish to do this out of politeness,
+even though no refund is possible, with the benefit that their place may be
+taken by another participant.
+
 </section>
 
 <section class="normative">
 
-# New Open Active models defined in the 0.5 Booking API specification which are
-not yet reflected in the current version (1.1) of the Open Active Modelling
-Specification.
+# New Open Active models defined in the 1.0 Booking API specification
+
+These models are not yet reflected in the current version (1.1) of the Open
+Active Modelling Specification.
 
 ## Error
 
@@ -2348,6 +2362,11 @@ Specification.
       <td><code>confirmationNumber</code></td>
       <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">OPTIONAL</em></em></td>
       <td>A string identifier to confirm that a payment has been recorded by the booking system.</td>
+    </tr>
+    <tr>
+      <td><code>paymentDate</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">OPTIONAL</em></em></td>
+      <td>The date and time that payment has been recorded by the booking system, expressed as an ISO 8601 DateTime.</td>
     </tr>
   </tbody>
 <table>

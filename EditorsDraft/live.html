@@ -605,8 +605,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
       "id": "openidconnect"
     }
   },
-  "publishISODate": "2018-09-10T00:00:00.000Z",
-  "generatedSubtitle": "Draft Community Group Report 10 September 2018"
+  "publishISODate": "2018-09-11T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 11 September 2018"
 }</script><meta name="description" content="This document specifies an HTTP API for placing bookings to participate in
 physical activities, either by attending events or through the use of leisure
 or sports facilities."></head>
@@ -617,7 +617,7 @@ or sports facilities."></head>
   </a>
   <h1 class="title p-name" id="title">Open Booking API 1.0</h1>
   
-  <h2 id="draft-community-group-report-10-september-2018">Draft Community Group Report <time class="dt-published" datetime="2018-09-10">10 September 2018</time></h2>
+  <h2 id="draft-community-group-report-11-september-2018">Draft Community Group Report <time class="dt-published" datetime="2018-09-11">11 September 2018</time></h2>
   <dl>
     
     
@@ -683,7 +683,7 @@ contribute to the development of the specification.</p>
 </div></div><p>If you wish to make comments regarding this document, please send them to
     <a href="mailto:public-openactive@w3.org">public-openactive@w3.org</a>
     (<a href="mailto:public-openactive-request@w3.org?subject=subscribe">subscribe</a>,
-    <a href="https://lists.w3.org/Archives/Public/public-openactive/">archives</a>).</p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ol class="toc"><li class="tocline"><a href="#scope-and-requirements" class="tocxref"><span class="secno">1.1 </span>Scope and requirements</a><ol class="toc"><li class="tocline"><a href="#functionality-that-is-out-of-scope" class="tocxref"><span class="secno">1.1.1 </span>Functionality that is out of scope</a></li></ol></li><li class="tocline"><a href="#audience" class="tocxref"><span class="secno">1.2 </span>Audience</a></li></ol></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#typographical-conventions" class="tocxref"><span class="secno">3. </span>Typographical Conventions</a></li><li class="tocline"><a href="#key-concepts" class="tocxref"><span class="secno">4. </span>Key Concepts</a></li><li class="tocline"><a href="#booking-flow" class="tocxref"><span class="secno">5. </span>Booking Flow</a><ol class="toc"><li class="tocline"><a href="#high-level-summary-of-the-api" class="tocxref"><span class="secno">5.1 </span>High-level summary of the API</a></li><li class="tocline"><a href="#urls-used-in-the-description-of-the-api" class="tocxref"><span class="secno">5.2 </span>URLs used in the description of the API</a></li><li class="tocline"><a href="#workflow-diagram" class="tocxref"><span class="secno">5.3 </span>Workflow diagram</a></li><li class="tocline"><a href="#sequence-diagram" class="tocxref"><span class="secno">5.4 </span>Sequence diagram</a></li><li class="tocline"><a href="#step-by-step-process-description" class="tocxref"><span class="secno">5.5 </span>Step-by-step process description</a><ol class="toc"><li class="tocline"><a href="#complete-transaction" class="tocxref"><span class="secno">5.5.1 </span>Complete transaction</a></li><li class="tocline"><a href="#cancelling-a-lease" class="tocxref"><span class="secno">5.5.2 </span>Cancelling a Lease</a></li><li class="tocline"><a href="#handling-lease-expiry" class="tocxref"><span class="secno">5.5.3 </span>Handling lease expiry</a></li></ol></li><li class="tocline"><a href="#order-cancellation-and-refunds" class="tocxref"><span class="secno">5.6 </span>Order cancellation and refunds</a><ol class="toc"><li class="tocline"><a href="#customer-originated-cancellation" class="tocxref"><span class="secno">5.6.1 </span>Customer originated cancellation</a></li><li class="tocline"><a href="#booking-system-originated-cancellation" class="tocxref"><span class="secno">5.6.2 </span>Booking system originated cancellation</a></li><li class="tocline"><a href="#definition-of-a-cancellable-oppportunity-offer" class="tocxref"><span class="secno">5.6.3 </span>Definition of a 'cancellable' oppportunity/offer</a></li></ol></li></ol></li><li class="tocline"><a href="#common-requirements" class="tocxref"><span class="secno">6. </span>Common Requirements</a><ol class="toc"><li class="tocline"><a href="#media-types" class="tocxref"><span class="secno">6.1 </span>Media types</a></li><li class="tocline"><a href="#response-formats" class="tocxref"><span class="secno">6.2 </span>Response formats</a></li><li class="tocline"><a href="#url-discovery" class="tocxref"><span class="secno">6.3 </span>URL discovery</a></li><li class="tocline"><a href="#error-handling" class="tocxref"><span class="secno">6.4 </span>Error handling</a><ol class="toc"><li class="tocline"><a href="#order-creation-incomplete-customer-details" class="tocxref"><span class="secno">6.4.1 </span>Order creation : Incomplete customer details</a></li><li class="tocline"><a href="#order-creation-incomplete-broker-details" class="tocxref"><span class="secno">6.4.2 </span>Order creation : Incomplete broker details</a></li><li class="tocline"><a href="#order-creation-incomplete-offer-details" class="tocxref"><span class="secno">6.4.3 </span>Order creation : Incomplete offer details</a></li><li class="tocline"><a href="#order-creation-incomplete-opportunity-details" class="tocxref"><span class="secno">6.4.4 </span>Order creation : Incomplete opportunity details</a></li><li class="tocline"><a href="#order-creation-unavailable-offer" class="tocxref"><span class="secno">6.4.5 </span>Order creation : Unavailable offer</a></li><li class="tocline"><a href="#order-creation-unavailable-opportunity" class="tocxref"><span class="secno">6.4.6 </span>Order creation : Unavailable opportunity</a></li><li class="tocline"><a href="#order-creation-opportunity-full" class="tocxref"><span class="secno">6.4.7 </span>Order creation : Opportunity full</a></li><li class="tocline"><a href="#order-completion-incomplete-payment-details" class="tocxref"><span class="secno">6.4.8 </span>Order completion : Incomplete payment details</a></li><li class="tocline"><a href="#order-completion-anonymous-lease-expired" class="tocxref"><span class="secno">6.4.9 </span>Order completion : Anonymous lease expired</a></li><li class="tocline"><a href="#api-authentication-unauthenticated" class="tocxref"><span class="secno">6.4.10 </span>API authentication : Unauthenticated</a></li><li class="tocline"><a href="#api-authentication-no-api-token-provided" class="tocxref"><span class="secno">6.4.11 </span>API authentication : No API token provided</a></li><li class="tocline"><a href="#api-authentication-invalid-api-token-provided" class="tocxref"><span class="secno">6.4.12 </span>API authentication : Invalid API token provided</a></li><li class="tocline"><a href="#api-authentication-invalid-authorization-details-provided" class="tocxref"><span class="secno">6.4.13 </span>API authentication : Invalid authorization details provided</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-create-order" class="tocxref"><span class="secno">6.4.14 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-create-order" class="tocxref"><span class="secno">6.4.15 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-delete-order" class="tocxref"><span class="secno">6.4.16 </span>Technical errors : Temporarily unable to delete order</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-offer" class="tocxref"><span class="secno">6.4.17 </span>Generic errors : Unknown or incorrect offer</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-opportunity" class="tocxref"><span class="secno">6.4.18 </span>Generic errors : Unknown or incorrect opportunity</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-order" class="tocxref"><span class="secno">6.4.19 </span>Generic errors : Unknown or incorrect order</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-endpoint" class="tocxref"><span class="secno">6.4.20 </span>Generic errors : Unknown or incorrect endpoint</a></li><li class="tocline"><a href="#generic-errors-not-found" class="tocxref"><span class="secno">6.4.21 </span>Generic errors : Not found</a></li><li class="tocline"><a href="#generic-errors-method-not-allowed" class="tocxref"><span class="secno">6.4.22 </span>Generic errors : Method not allowed</a></li><li class="tocline"><a href="#generic-errors-gone" class="tocxref"><span class="secno">6.4.23 </span>Generic errors : Gone</a></li></ol></li><li class="tocline"><a href="#security" class="tocxref"><span class="secno">6.5 </span>Security</a></li><li class="tocline"><a href="#authentication" class="tocxref"><span class="secno">6.6 </span>Authentication</a><ol class="toc"><li class="tocline"><a href="#api-level-authentication" class="tocxref"><span class="secno">6.6.1 </span>API level authentication</a></li><li class="tocline"><a href="#customer-level-authentication" class="tocxref"><span class="secno">6.6.2 </span>Customer level authentication</a></li></ol></li><li class="tocline"><a href="#delivery-of-terms-and-conditions-and-privacy-policy" class="tocxref"><span class="secno">6.7 </span>Delivery of Terms and Conditions and Privacy Policy</a></li></ol></li><li class="tocline"><a href="#operations" class="tocxref"><span class="secno">7. </span>Operations</a><ol class="toc"><li class="tocline"><a href="#checking-availability-and-offers" class="tocxref"><span class="secno">7.1 </span>Checking availability and offers</a><ol class="toc"><li class="tocline"><a href="#definition-of-a-bookable-event" class="tocxref"><span class="secno">7.1.1 </span>Definition of a 'bookable' Event</a></li><li class="tocline"><a href="#definition-of-a-bookable-slot-facility-use" class="tocxref"><span class="secno">7.1.2 </span>Definition of a 'bookable' slot/facility use</a></li><li class="tocline"><a href="#checking-availability-and-offers-for-an-event-or-facility-use-slot" class="tocxref"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</a></li><li class="tocline"><a href="#assembling-a-set-of-offers-and-presenting-them-to-a-customer" class="tocxref"><span class="secno">7.1.4 </span>Assembling a set of offers and presenting them to a customer</a><ol class="toc"><li class="tocline"><a href="#collating-offers-for-an-event" class="tocxref"><span class="secno">7.1.4.1 </span>Collating offers for an event</a></li><li class="tocline"><a href="#collating-offers-for-the-use-of-a-facility" class="tocxref"><span class="secno">7.1.4.2 </span>Collating offers for the use of a facility</a></li></ol></li><li class="tocline"><a href="#obtaining-a-lease-on-a-space-within-an-opportunity" class="tocxref"><span class="secno">7.1.5 </span>Obtaining a lease on a space within an opportunity</a></li></ol></li><li class="tocline"><a href="#creating-and-updating-orders" class="tocxref"><span class="secno">7.2 </span>Creating and updating orders</a><ol class="toc"><li class="tocline"><a href="#discovering-the-order-endpoint" class="tocxref"><span class="secno">7.2.1 </span>Discovering the order endpoint</a></li><li class="tocline"><a href="#pre-conditions-for-creating-an-order" class="tocxref"><span class="secno">7.2.2 </span>Pre-conditions for creating an order</a></li><li class="tocline"><a href="#creating-a-new-order-orders-" class="tocxref"><span class="secno">7.2.3 </span>Creating a new order (<code>/orders</code>)</a></li><li class="tocline"><a href="#viewing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#deleting-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#completing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</a></li></ol></li><li class="tocline"><a href="#ordering-a-place-at-a-free-event-ordering-a-free-slot" class="tocxref"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</a></li><li class="tocline"><a href="#leases-and-the-orderleaseduration-property" class="tocxref"><span class="secno">7.4 </span>Leases and the orderLeaseDuration property</a></li><li class="tocline"><a href="#the-state-transitions-during-the-order-process" class="tocxref"><span class="secno">7.5 </span>The state transitions during the order process</a></li><li class="tocline"><a href="#actions-which-occur-after-order-completion-confirmations-and-refunds" class="tocxref"><span class="secno">7.6 </span>Actions which occur after order completion: confirmations and refunds</a><ol class="toc"><li class="tocline"><a href="#supplying-a-confirmation-to-the-customer" class="tocxref"><span class="secno">7.6.1 </span>Supplying a confirmation to the customer</a></li><li class="tocline"><a href="#refunding-a-customer-and-cancelling-an-order" class="tocxref"><span class="secno">7.6.2 </span>Refunding a customer and cancelling an order</a></li></ol></li><li class="tocline"><a href="#customers" class="tocxref"><span class="secno">7.7 </span>Customers</a><ol class="toc"><li class="tocline"><a href="#creation-of-customers-on-the-booking-system" class="tocxref"><span class="secno">7.7.1 </span>Creation of customers on the booking system</a></li><li class="tocline"><a href="#viewing-a-customer-s-previously-placed-orders" class="tocxref"><span class="secno">7.7.2 </span>Viewing a customer's previously placed orders</a></li><li class="tocline"><a href="#deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed" class="tocxref"><span class="secno">7.7.3 </span>Deletion of personal data of the customer if the order is not completed</a></li></ol></li></ol></li><li class="tocline"><a href="#future-versions-of-this-api" class="tocxref"><span class="secno">8. </span>Future versions of this API</a></li><li class="tocline"><a href="#new-open-active-models-defined-in-the-0-5-booking-api-specification-which-are" class="tocxref"><span class="secno">9. </span>New Open Active models defined in the 0.5 Booking API specification which are</a><ol class="toc"><li class="tocline"><a href="#error" class="tocxref"><span class="secno">9.1 </span>Error</a></li><li class="tocline"><a href="#payment" class="tocxref"><span class="secno">9.2 </span>Payment</a></li><li class="tocline"><a href="#acknowledgements" class="tocxref"><span class="secno">9.3 </span>Acknowledgements</a></li></ol></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ol class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ol></li></ol></nav><section class="informative"><!--OddPage--><h2 id="introduction"><span class="secno">1. </span>Introduction</h2><p><em>This section is non-normative.</em></p><p>The document is an output of the
+    <a href="https://lists.w3.org/Archives/Public/public-openactive/">archives</a>).</p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ol class="toc"><li class="tocline"><a href="#scope-and-requirements" class="tocxref"><span class="secno">1.1 </span>Scope and requirements</a><ol class="toc"><li class="tocline"><a href="#functionality-that-is-out-of-scope" class="tocxref"><span class="secno">1.1.1 </span>Functionality that is out of scope</a></li></ol></li><li class="tocline"><a href="#audience" class="tocxref"><span class="secno">1.2 </span>Audience</a></li></ol></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#typographical-conventions" class="tocxref"><span class="secno">3. </span>Typographical Conventions</a></li><li class="tocline"><a href="#key-concepts" class="tocxref"><span class="secno">4. </span>Key Concepts</a></li><li class="tocline"><a href="#booking-flow" class="tocxref"><span class="secno">5. </span>Booking Flow</a><ol class="toc"><li class="tocline"><a href="#high-level-summary-of-the-api" class="tocxref"><span class="secno">5.1 </span>High-level summary of the API</a></li><li class="tocline"><a href="#urls-used-in-the-description-of-the-api" class="tocxref"><span class="secno">5.2 </span>URLs used in the description of the API</a></li><li class="tocline"><a href="#workflow-diagram" class="tocxref"><span class="secno">5.3 </span>Workflow diagram</a></li><li class="tocline"><a href="#sequence-diagram" class="tocxref"><span class="secno">5.4 </span>Sequence diagram</a></li><li class="tocline"><a href="#step-by-step-process-description" class="tocxref"><span class="secno">5.5 </span>Step-by-step process description</a><ol class="toc"><li class="tocline"><a href="#complete-transaction" class="tocxref"><span class="secno">5.5.1 </span>Complete transaction</a></li><li class="tocline"><a href="#cancelling-a-lease" class="tocxref"><span class="secno">5.5.2 </span>Cancelling a Lease</a></li><li class="tocline"><a href="#handling-lease-expiry" class="tocxref"><span class="secno">5.5.3 </span>Handling lease expiry</a></li></ol></li><li class="tocline"><a href="#order-cancellation-and-refunds" class="tocxref"><span class="secno">5.6 </span>Order cancellation and refunds</a><ol class="toc"><li class="tocline"><a href="#customer-originated-cancellation" class="tocxref"><span class="secno">5.6.1 </span>Customer originated cancellation</a></li><li class="tocline"><a href="#booking-system-originated-cancellation" class="tocxref"><span class="secno">5.6.2 </span>Booking system originated cancellation</a></li><li class="tocline"><a href="#definition-of-a-cancellable-oppportunity-offer" class="tocxref"><span class="secno">5.6.3 </span>Definition of a 'cancellable' oppportunity/offer</a></li></ol></li></ol></li><li class="tocline"><a href="#common-requirements" class="tocxref"><span class="secno">6. </span>Common Requirements</a><ol class="toc"><li class="tocline"><a href="#media-types" class="tocxref"><span class="secno">6.1 </span>Media types</a></li><li class="tocline"><a href="#response-formats" class="tocxref"><span class="secno">6.2 </span>Response formats</a></li><li class="tocline"><a href="#url-discovery" class="tocxref"><span class="secno">6.3 </span>URL discovery</a></li><li class="tocline"><a href="#error-handling" class="tocxref"><span class="secno">6.4 </span>Error handling</a><ol class="toc"><li class="tocline"><a href="#order-creation-incomplete-customer-details" class="tocxref"><span class="secno">6.4.1 </span>Order creation : Incomplete customer details</a></li><li class="tocline"><a href="#order-creation-incomplete-broker-details" class="tocxref"><span class="secno">6.4.2 </span>Order creation : Incomplete broker details</a></li><li class="tocline"><a href="#order-creation-incomplete-offer-details" class="tocxref"><span class="secno">6.4.3 </span>Order creation : Incomplete offer details</a></li><li class="tocline"><a href="#order-creation-incomplete-opportunity-details" class="tocxref"><span class="secno">6.4.4 </span>Order creation : Incomplete opportunity details</a></li><li class="tocline"><a href="#order-creation-unavailable-offer" class="tocxref"><span class="secno">6.4.5 </span>Order creation : Unavailable offer</a></li><li class="tocline"><a href="#order-creation-unavailable-opportunity" class="tocxref"><span class="secno">6.4.6 </span>Order creation : Unavailable opportunity</a></li><li class="tocline"><a href="#order-creation-opportunity-full" class="tocxref"><span class="secno">6.4.7 </span>Order creation : Opportunity full</a></li><li class="tocline"><a href="#order-completion-incomplete-payment-details" class="tocxref"><span class="secno">6.4.8 </span>Order completion : Incomplete payment details</a></li><li class="tocline"><a href="#order-completion-anonymous-lease-expired" class="tocxref"><span class="secno">6.4.9 </span>Order completion : Anonymous lease expired</a></li><li class="tocline"><a href="#api-authentication-unauthenticated" class="tocxref"><span class="secno">6.4.10 </span>API authentication : Unauthenticated</a></li><li class="tocline"><a href="#api-authentication-no-api-token-provided" class="tocxref"><span class="secno">6.4.11 </span>API authentication : No API token provided</a></li><li class="tocline"><a href="#api-authentication-invalid-api-token-provided" class="tocxref"><span class="secno">6.4.12 </span>API authentication : Invalid API token provided</a></li><li class="tocline"><a href="#api-authentication-invalid-authorization-details-provided" class="tocxref"><span class="secno">6.4.13 </span>API authentication : Invalid authorization details provided</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-create-order" class="tocxref"><span class="secno">6.4.14 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-create-order" class="tocxref"><span class="secno">6.4.15 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a href="#technical-errors-temporarily-unable-to-delete-order" class="tocxref"><span class="secno">6.4.16 </span>Technical errors : Temporarily unable to delete order</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-offer" class="tocxref"><span class="secno">6.4.17 </span>Generic errors : Unknown or incorrect offer</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-opportunity" class="tocxref"><span class="secno">6.4.18 </span>Generic errors : Unknown or incorrect opportunity</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-order" class="tocxref"><span class="secno">6.4.19 </span>Generic errors : Unknown or incorrect order</a></li><li class="tocline"><a href="#generic-errors-unknown-or-incorrect-endpoint" class="tocxref"><span class="secno">6.4.20 </span>Generic errors : Unknown or incorrect endpoint</a></li><li class="tocline"><a href="#generic-errors-not-found" class="tocxref"><span class="secno">6.4.21 </span>Generic errors : Not found</a></li><li class="tocline"><a href="#generic-errors-method-not-allowed" class="tocxref"><span class="secno">6.4.22 </span>Generic errors : Method not allowed</a></li><li class="tocline"><a href="#generic-errors-gone" class="tocxref"><span class="secno">6.4.23 </span>Generic errors : Gone</a></li></ol></li><li class="tocline"><a href="#security" class="tocxref"><span class="secno">6.5 </span>Security</a></li><li class="tocline"><a href="#authentication" class="tocxref"><span class="secno">6.6 </span>Authentication</a><ol class="toc"><li class="tocline"><a href="#api-level-authentication" class="tocxref"><span class="secno">6.6.1 </span>API level authentication</a></li><li class="tocline"><a href="#customer-level-authentication" class="tocxref"><span class="secno">6.6.2 </span>Customer level authentication</a></li></ol></li><li class="tocline"><a href="#delivery-of-terms-and-conditions-and-privacy-policy" class="tocxref"><span class="secno">6.7 </span>Delivery of Terms and Conditions and Privacy Policy</a></li></ol></li><li class="tocline"><a href="#operations" class="tocxref"><span class="secno">7. </span>Operations</a><ol class="toc"><li class="tocline"><a href="#checking-availability-and-offers" class="tocxref"><span class="secno">7.1 </span>Checking availability and offers</a><ol class="toc"><li class="tocline"><a href="#definition-of-a-bookable-event" class="tocxref"><span class="secno">7.1.1 </span>Definition of a 'bookable' Event</a></li><li class="tocline"><a href="#definition-of-a-bookable-slot-facility-use" class="tocxref"><span class="secno">7.1.2 </span>Definition of a 'bookable' slot/facility use</a></li><li class="tocline"><a href="#checking-availability-and-offers-for-an-event-or-facility-use-slot" class="tocxref"><span class="secno">7.1.3 </span>Checking availability and offers for an event or facility use slot</a></li><li class="tocline"><a href="#assembling-a-set-of-offers-and-presenting-them-to-a-customer" class="tocxref"><span class="secno">7.1.4 </span>Assembling a set of offers and presenting them to a customer</a><ol class="toc"><li class="tocline"><a href="#collating-offers-for-an-event" class="tocxref"><span class="secno">7.1.4.1 </span>Collating offers for an event</a></li><li class="tocline"><a href="#collating-offers-for-the-use-of-a-facility" class="tocxref"><span class="secno">7.1.4.2 </span>Collating offers for the use of a facility</a></li></ol></li><li class="tocline"><a href="#obtaining-a-lease-on-a-space-within-an-opportunity" class="tocxref"><span class="secno">7.1.5 </span>Obtaining a lease on a space within an opportunity</a></li></ol></li><li class="tocline"><a href="#creating-and-updating-orders" class="tocxref"><span class="secno">7.2 </span>Creating and updating orders</a><ol class="toc"><li class="tocline"><a href="#discovering-the-order-endpoint" class="tocxref"><span class="secno">7.2.1 </span>Discovering the order endpoint</a></li><li class="tocline"><a href="#pre-conditions-for-creating-an-order" class="tocxref"><span class="secno">7.2.2 </span>Pre-conditions for creating an order</a></li><li class="tocline"><a href="#creating-a-new-order-orders-" class="tocxref"><span class="secno">7.2.3 </span>Creating a new order (<code>/orders</code>)</a></li><li class="tocline"><a href="#viewing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#deleting-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a href="#completing-an-order-orders-orderid-" class="tocxref"><span class="secno">7.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</a></li></ol></li><li class="tocline"><a href="#ordering-a-place-at-a-free-event-ordering-a-free-slot" class="tocxref"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</a></li><li class="tocline"><a href="#leases-and-the-orderleaseduration-property" class="tocxref"><span class="secno">7.4 </span>Leases and the orderLeaseDuration property</a></li><li class="tocline"><a href="#the-state-transitions-during-the-order-process" class="tocxref"><span class="secno">7.5 </span>The state transitions during the order process</a></li><li class="tocline"><a href="#actions-which-occur-after-order-completion-confirmations-and-refunds" class="tocxref"><span class="secno">7.6 </span>Actions which occur after order completion: confirmations and refunds</a><ol class="toc"><li class="tocline"><a href="#supplying-a-confirmation-to-the-customer" class="tocxref"><span class="secno">7.6.1 </span>Supplying a confirmation to the customer</a></li><li class="tocline"><a href="#refunding-a-customer-and-cancelling-an-order" class="tocxref"><span class="secno">7.6.2 </span>Refunding a customer and cancelling an order</a></li></ol></li><li class="tocline"><a href="#customers" class="tocxref"><span class="secno">7.7 </span>Customers</a><ol class="toc"><li class="tocline"><a href="#creation-of-customers-on-the-booking-system" class="tocxref"><span class="secno">7.7.1 </span>Creation of customers on the booking system</a></li><li class="tocline"><a href="#viewing-a-customer-s-previously-placed-orders" class="tocxref"><span class="secno">7.7.2 </span>Viewing a customer's previously placed orders</a></li><li class="tocline"><a href="#deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed" class="tocxref"><span class="secno">7.7.3 </span>Deletion of personal data of the customer if the order is not completed</a></li></ol></li></ol></li><li class="tocline"><a href="#future-versions-of-this-api" class="tocxref"><span class="secno">8. </span>Future versions of this API</a></li><li class="tocline"><a href="#new-open-active-models-defined-in-the-1-0-booking-api-specification" class="tocxref"><span class="secno">9. </span>New Open Active models defined in the 1.0 Booking API specification</a><ol class="toc"><li class="tocline"><a href="#error" class="tocxref"><span class="secno">9.1 </span>Error</a></li><li class="tocline"><a href="#payment" class="tocxref"><span class="secno">9.2 </span>Payment</a></li><li class="tocline"><a href="#acknowledgements" class="tocxref"><span class="secno">9.3 </span>Acknowledgements</a></li></ol></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ol class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ol></li></ol></nav><section class="informative"><!--OddPage--><h2 id="introduction"><span class="secno">1. </span>Introduction</h2><p><em>This section is non-normative.</em></p><p>The document is an output of the
 <a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a>. As part
 of the <a href="https://openactive.io">OpenActive</a> initiative, the community group is
 developing standards that will promote the publication and use of open
@@ -1243,7 +1243,7 @@ properties are present at a lower level.</p><div class="example" id="ex-5-proper
       <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://example.com/terms-and-conditions"</span>,
       <span class="hljs-string">"name"</span>: <span class="hljs-string">"Terms and Conditions"</span>
   }</pre>
-        </div></section></section><section class="normative"><!--OddPage--><h2 id="operations"><span class="secno">7. </span>Operations</h2><section><h3 id="checking-availability-and-offers"><span class="secno">7.1 </span>Checking availability and offers</h3><p>This specification assumes that a <em>broker</em> has already obtained opportunity
+        </div><p>The URLs in the example are only illustrative.</p></section></section><section class="normative"><!--OddPage--><h2 id="operations"><span class="secno">7. </span>Operations</h2><section><h3 id="checking-availability-and-offers"><span class="secno">7.1 </span>Checking availability and offers</h3><p>This specification assumes that a <em>broker</em> has already obtained opportunity
 data from a <em>booking system</em> that includes descriptions of <strong>events</strong>,
 <strong>facilities</strong>, <strong>slots</strong> etc. For example by harvesting data via an [<cite><a class="bibref" href="#bib-rpde">RPDE</a></cite>]
 feed.</p><p>The availability of an <strong>event</strong>, or <code>subEvent</code>, or <strong>facility</strong> (either as a
@@ -1315,12 +1315,12 @@ opportunity are still available before proceeding with booking.</p><div class="e
           <div class="marker"><span>Example 6</span><span class="example-title">: Viewing event availability</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/events/452</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:50:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-7-event-response">
           <div class="marker"><span>Example 7</span><span class="example-title">: Event response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:50:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
@@ -1333,43 +1333,43 @@ opportunity are still available before proceeding with booking.</p><div class="e
     <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball"</span>,
     <span class="hljs-attr">"offers"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-10-29T11:00:00Z"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
         <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
         <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
         <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
-        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>
+        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
     }],
     <span class="hljs-attr">"eventStatus"</span>: <span class="hljs-string">"https://schema.org/EventScheduled"</span>,
     <span class="hljs-attr">"maximumAttendeeCapacity"</span>: <span class="hljs-number">30</span>,
     <span class="hljs-attr">"remainingAttendeeCapacity"</span>: <span class="hljs-number">20</span>,
-    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-01-27T11:00:00Z"</span>,
-    <span class="hljs-attr">"endDate"</span>: <span class="hljs-string">"2018-01-27T12:00:00Z"</span>,
+    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-10-30T11:00:00Z"</span>,
+    <span class="hljs-attr">"endDate"</span>: <span class="hljs-string">"2018-10-30T12:00:00Z"</span>,
     <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT1H"</span>,
     <span class="hljs-attr">"location"</span>: {},
-  <span class="hljs-attr">"potentialAction"</span>: [{
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
-    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
-    <span class="hljs-attr">"target"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
-      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ReserveAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Book"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"POST"</span>
+        }
+    }],
+    <span class="hljs-attr">"privacyPolicy"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Terms"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://example.com/privacy-policy"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Privacy Policy"</span>
+    },
+    <span class="hljs-attr">"termsAndConditions"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Terms"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://example.com/terms-and-conditions"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Terms and Conditions"</span>
     }
-  }],
-  <span class="hljs-attr">"privacyPolicy"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Terms"</span>,
-      <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://example.com/privacy-policy"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Privacy Policy"</span>
-  },
-  <span class="hljs-attr">"termsAndConditions"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Terms"</span>,
-      <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://example.com/terms-and-conditions"</span>,
-      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Terms and Conditions"</span>
-  }
 }</span></pre>
         </div><p>The <strong>booking system</strong> <em class="rfc2119" title="MUST">MUST</em> ensure that the data presented to the <strong>broker</strong> in
 the <code>remainingAttendeeCapacity</code> property of the <strong>event</strong> is up to date and includes a
@@ -1378,12 +1378,12 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-8-viewi
           <div class="marker"><span>Example 8</span><span class="example-title">: Viewing slot availability</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/slots/324</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-9-slot-response">
           <div class="marker"><span>Example 9</span><span class="example-title">: Slot response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:51:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
@@ -1394,7 +1394,7 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-8-viewi
     <span class="hljs-attr">"id"</span>: <span class="hljs-string">"http://www.example.org/slots/324"</span>,
     <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">324</span>,
     <span class="hljs-attr">"facilityUse"</span>: <span class="hljs-string">"http://www.example.org/facility-use/1"</span>,
-    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-03-01T11:00:00Z"</span>,
+    <span class="hljs-attr">"startDate"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
     <span class="hljs-attr">"duration"</span>: <span class="hljs-string">"PT30M"</span>,
     <span class="hljs-attr">"remainingUses"</span>: <span class="hljs-number">3</span>,
     <span class="hljs-attr">"maximumUses"</span>: <span class="hljs-number">4</span>,
@@ -1422,12 +1422,12 @@ from in-progress <strong>orders</strong>.</p><div class="example" id="ex-10-view
           <div class="marker"><span>Example 10</span><span class="example-title">: Viewing slot availability via a facility use</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/facility-use/1</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
         </div><div class="example" id="ex-11-facility-use-response">
           <div class="marker"><span>Example 11</span><span class="example-title">: Facility use response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:51:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
@@ -1583,7 +1583,7 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
           <div class="marker"><span>Example 13</span><span class="example-title">: Creating an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">POST</span> <span class="hljs-string">/orders</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
@@ -1602,26 +1602,26 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
     <span class="hljs-attr">"acceptedOffer"</span>: [{
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-          <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-          <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
-      <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-      <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
-      <span class="hljs-attr">"itemOffered"</span>: {
-              <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
-              <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
-          },
-          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-          <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
-          <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-          <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
-          <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>
-      }],
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-10-29T11:00:00Z"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+        <span class="hljs-attr">"itemOffered"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        },
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+        <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
+    }],
     <span class="hljs-attr">"orderedItem"</span>: [{
-        <span class="hljs-attr">"orderQuantity"</span>:<span class="hljs-string">"1"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-string">"1"</span>,
         <span class="hljs-attr">"orderedItem"</span>: {
-          <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
-          <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
         }
     }]
 }</span></pre>
@@ -1629,7 +1629,7 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
 <code>Order</code> resource:</p><div class="example" id="ex-14-creating-an-order-response">
           <div class="marker"><span>Example 14</span><span class="example-title">: Creating an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">201</span> Created
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Location</span>: /orders/890
 
@@ -1639,89 +1639,11 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
     <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
     <span class="hljs-attr">"acceptedOffer"</span>: [{
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
-        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
-    <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-    <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
-    <span class="hljs-attr">"itemOffered"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
-            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
-        },
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
-        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
-        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
-        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>
-    }],
-    <span class="hljs-attr">"broker"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
-        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
-    },
-    <span class="hljs-attr">"customer"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
-        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
-    <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
-        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
-        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
-    },
-    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-    <span class="hljs-attr">"orderedItem"</span>: [{
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
-        <span class="hljs-attr">"orderedItem"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
-            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
-        }
-    }],
-    <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
-    <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
-    <span class="hljs-attr">"partOfInvoice"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
-        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
-        <span class="hljs-attr">"totalPaymentDue"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
-            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
-        }
-    },
-    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-    <span class="hljs-attr">"potentialAction"</span>: [{
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
-        <span class="hljs-attr">"target"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-        }
-    }]
-}</span></pre>
-        </div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example" id="ex-15-viewing-an-order-request">
-          <div class="marker"><span>Example 15</span><span class="example-title">: Viewing an order - request</span></div>
-          <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/890</span> HTTP/1.1
-<span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
-<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
-        </div><div class="example" id="ex-16-viewing-an-order-response">
-          <div class="marker"><span>Example 16</span><span class="example-title">: Viewing an order - response</span></div>
-          <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> Created
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
-<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
-<span class="hljs-attribute">Content-Length</span>: ...
-
-<span class="json">{
-    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
-    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
-    <span class="hljs-attr">"acceptedOffer"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-10-29T11:00:00Z"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
         <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
-        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
         <span class="hljs-attr">"itemOffered"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
@@ -1730,7 +1652,7 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
         <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
-        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>
+        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
     }],
     <span class="hljs-attr">"broker"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
@@ -1744,7 +1666,7 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
-    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-10-08T20:52:36Z"</span>,
     <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
         <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
@@ -1765,7 +1687,85 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
             <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
         }
     },
-    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
+    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-10-08T21:07:36Z"</span>,
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+        }
+    }]
+}</span></pre>
+        </div></section><section><h4 id="viewing-an-order-orders-orderid-"><span class="secno">7.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</h4><p>To get the latest state of an order, perform a GET request on its URI.</p><div class="example" id="ex-15-viewing-an-order-request">
+          <div class="marker"><span>Example 15</span><span class="example-title">: Viewing an order - request</span></div>
+          <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/orders/890</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:53:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json</pre>
+        </div><div class="example" id="ex-16-viewing-an-order-response">
+          <div class="marker"><span>Example 16</span><span class="example-title">: Viewing an order - response</span></div>
+          <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> Created
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:53:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
+<span class="hljs-attribute">Content-Length</span>: ...
+
+<span class="json">{
+    <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/ns/oa.jsonld"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
+    <span class="hljs-attr">"acceptedOffer"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-10-29T11:00:00Z"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
+        <span class="hljs-attr">"itemOffered"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        },
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
+        <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
+        <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+        <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
+    }],
+    <span class="hljs-attr">"broker"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"MyFitnessApp"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://myfitnessapp.example.com"</span>
+    },
+    <span class="hljs-attr">"customer"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
+        <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
+        <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
+        <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
+        <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
+    },
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-10-08T20:52:36Z"</span>,
+    <span class="hljs-attr">"orderedItem"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+        <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+        <span class="hljs-attr">"orderedItem"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
+            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
+        }
+    }],
+    <span class="hljs-attr">"orderLeaseDuration"</span>: <span class="hljs-string">"PT15M"</span>,
+    <span class="hljs-attr">"orderStatus"</span>: <span class="hljs-string">"https://schema.org/OrderPaymentDue"</span>,
+    <span class="hljs-attr">"partOfInvoice"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Invoice"</span>,
+        <span class="hljs-attr">"paymentStatus"</span>: <span class="hljs-string">"PaymentDue"</span>,
+        <span class="hljs-attr">"totalPaymentDue"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    },
+    <span class="hljs-attr">"paymentDueDate"</span>: <span class="hljs-string">"2018-10-08T21:07:36Z"</span>,
     <span class="hljs-attr">"potentialAction"</span>: [{
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PayAction"</span>,
             <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Pay"</span>,
@@ -1775,20 +1775,11 @@ customer's telephone number, an optional field, should be supplied.</p><div clas
                 <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
                 <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
             }
-        },
-        {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Cancel"</span>,
-            <span class="hljs-attr">"target"</span>: {
-                <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-                <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-                <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-                <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-            }
         }
     ]
 }</span></pre>
-        </div></section><section><h4 id="deleting-an-order-orders-orderid-"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</h4><p>A <code>DELETE</code> request to an <strong>Order</strong> URI will delete the order. Deletion may only
+        </div><p>Note: The <code>paymentDueDate</code> is set by the date and time of the <strong>order</strong> and the
+<code>orderLeaseDuration</code>.</p></section><section><h4 id="deleting-an-order-orders-orderid-"><span class="secno">7.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</h4><p>A <code>DELETE</code> request to an <strong>Order</strong> URI will delete the order. Deletion may only
 be used in the specific case for cancelling an <strong>order</strong> and the associated
 lease on a space in an <strong>event</strong> if the <strong>customer</strong> no longer wishes to take
 up the opportunity.</p><p>A <code>DELETE</code> request <em class="rfc2119" title="MUST NOT">MUST NOT</em> be used to cancel an existing completed <strong>order</strong>
@@ -1801,28 +1792,26 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
           <div class="marker"><span>Example 17</span><span class="example-title">: Completing an order - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:56:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
-  <span class="hljs-attr">"payments"</span>: [
-    {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
-      <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
-      <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
-      <span class="hljs-attr">"totalPaidToProvider"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
-        <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
-        <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
-      }
-    }
-  ]
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Order"</span>,
+    <span class="hljs-attr">"payments"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
+        <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
+        <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
+        <span class="hljs-attr">"totalPaidToProvider"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        }
+    }]
 }</span></pre>
         </div><div class="example" id="ex-18-completing-an-order-response">
           <div class="marker"><span>Example 18</span><span class="example-title">: Completing an order - response</span></div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:36 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:56:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.v1.0+json
 <span class="hljs-attribute">Content-Length</span>: ...
 
@@ -1833,8 +1822,10 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
     <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/orders/890"</span>,
     <span class="hljs-attr">"acceptedOffer"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Offer"</span>,
+        <span class="hljs-attr">"validThrough"</span>: <span class="hljs-string">"2018-10-29T11:00:00Z"</span>,
+        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>,
         <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Winger space for Speedball."</span>,
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/567"</span>,
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/offers/1234"</span>,
         <span class="hljs-attr">"itemOffered"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
@@ -1842,8 +1833,8 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"validFrom"</span>: <span class="hljs-string">"2018-04-29T12:14:35Z"</span>,
-        <span class="hljs-attr">"validTo"</span>: <span class="hljs-string">"2018-04-01T12:14:35Z"</span>
+        <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
     }],
     <span class="hljs-attr">"broker"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Organization"</span>,
@@ -1853,15 +1844,15 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
     <span class="hljs-attr">"customer"</span>: {
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Person"</span>,
         <span class="hljs-attr">"email"</span>: <span class="hljs-string">"geoffcapes@example.com"</span>,
-    <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
+        <span class="hljs-attr">"telephone"</span>: <span class="hljs-string">"020 811 8055"</span>,
         <span class="hljs-attr">"givenName"</span>: <span class="hljs-string">"Geoff"</span>,
         <span class="hljs-attr">"familyName"</span>: <span class="hljs-string">"Capes"</span>
     },
-    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-02-20T11:00:00Z"</span>,
-  <span class="hljs-attr">"orderedItem"</span>: [{
+    <span class="hljs-attr">"orderDate"</span>: <span class="hljs-string">"2018-10-08T20:52:36Z"</span>,
+    <span class="hljs-attr">"orderedItem"</span>: [{
         <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
         <span class="hljs-attr">"orderQuantity"</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderDelivered"</span>,
+        <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://schema.org/OrderDelivered"</span>,
         <span class="hljs-attr">"orderedItem"</span>: {
             <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Event"</span>,
             <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/events/123"</span>
@@ -1877,19 +1868,30 @@ returns a representation of the completed <strong>order</strong> with a 200 stat
             <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
         }
     },
-    <span class="hljs-attr">"potentialAction"</span>: [
-  {
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
-    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Cancel"</span>,
-    <span class="hljs-attr">"target"</span>: {
-      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
-      <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
-      <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
-      <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
-    }
-  }]
+    <span class="hljs-attr">"payments"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Payment"</span>,
+        <span class="hljs-attr">"paymentMethod"</span>: <span class="hljs-string">"https://purl.org/goodrelations/v1#PaymentMethodCreditCard"</span>,
+        <span class="hljs-attr">"paymentMethodId"</span>: <span class="hljs-string">"3204"</span>,
+        <span class="hljs-attr">"totalPaidToProvider"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MonetaryAmount"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-number">10.00</span>,
+            <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"GBP"</span>
+        },
+        <span class="hljs-attr">"paymentDate"</span>: <span class="hljs-string">"2018-10-08T20:56:36Z"</span>
+    }],
+    <span class="hljs-attr">"potentialAction"</span>: [{
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancelAction"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Cancel"</span>,
+        <span class="hljs-attr">"target"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"EntryPoint"</span>,
+            <span class="hljs-attr">"urlTemplate"</span>: <span class="hljs-string">"https://example.com/orders/{order_id}"</span>,
+            <span class="hljs-attr">"encodingType"</span>: <span class="hljs-string">"application/vnd.openactive.v1.0+json"</span>,
+            <span class="hljs-attr">"httpMethod"</span>: <span class="hljs-string">"PATCH"</span>
+        }
+    }]
 }</span></pre>
-        </div></section></section><section><h3 id="ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</h3><p>Free <strong>opportunities</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>opportunities</strong>.
+        </div><p>Note: If the record had been retrieved after the expiry of the cancellation window,
+the <code>CancelAction</code> would be omitted.</p></section></section><section><h3 id="ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">7.3 </span>Ordering a place at a free event/ordering a free slot</h3><p>Free <strong>opportunities</strong> <em class="rfc2119" title="MUST">MUST</em> follow the same workflow as paid <strong>opportunities</strong>.
 A free <strong>event</strong> or <strong>slot</strong> is technically a free <strong>offer</strong> on a space for an
 opportunity. There <em class="rfc2119" title="MUST">MUST</em> be at least one offer with a price property of <code>0.00</code>.
 For free Offers publishers <em class="rfc2119" title="MAY">MAY</em> leave out the priceCurrency. If a priceCurrency
@@ -1902,7 +1904,7 @@ and <code>paymentMethodId</code> as optional properties.</p><div class="example"
           <div class="marker"><span>Example 19</span><span class="example-title">: Completing an free order with a payment of 0.00 - request</span></div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/orders/123</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
-<span class="hljs-attribute">Date</span>: Tue, 07 Jun 2018 20:51:35 GMT
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:51:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.v1.0+json
 
 <span class="json">{
@@ -1989,8 +1991,11 @@ requirements are in scope for version 1.0 and would encourage people to shape
 future iterations of the specification by becoming involved in the communities
 associated with Open Active and the open specification.</p><p>In a future version, it is imagined that an API method describing the service,
 and including such things as the links to Privacy Policy, Terms and Conditions
-and the target for a ReserveAction could be used to reduce data duplication.</p></section><section class="normative"><!--OddPage--><h2 id="new-open-active-models-defined-in-the-0-5-booking-api-specification-which-are"><span class="secno">9. </span>New Open Active models defined in the 0.5 Booking API specification which are</h2><p>not yet reflected in the current version (1.1) of the Open Active Modelling
-Specification.</p><section><h3 id="error"><span class="secno">9.1 </span>Error</h3><table>
+and the target for a ReserveAction could be used to reduce data duplication.</p><p>At the moment there is no provision for a <strong>customer</strong> to cancel an <strong>order</strong>
+after the cancellation window, yet they may wish to do this out of politeness,
+even though no refund is possible, with the benefit that their place may be
+taken by another participant.</p></section><section class="normative"><!--OddPage--><h2 id="new-open-active-models-defined-in-the-1-0-booking-api-specification"><span class="secno">9. </span>New Open Active models defined in the 1.0 Booking API specification</h2><p>These models are not yet reflected in the current version (1.1) of the Open
+Active Modelling Specification.</p><section><h3 id="error"><span class="secno">9.1 </span>Error</h3><table>
 <thead>
 <tr><th>Property</th>
 <th>Status</th>
@@ -2066,6 +2071,11 @@ Specification.</p><section><h3 id="error"><span class="secno">9.1 </span>Error</
       <td><code>confirmationNumber</code></td>
       <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
       <td>A string identifier to confirm that a payment has been recorded by the booking system.</td>
+    </tr>
+    <tr>
+      <td><code>paymentDate</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></em></td>
+      <td>The date and time that payment has been recorded by the booking system, expressed as an ISO 8601 DateTime.</td>
     </tr>
   </tbody>
 </table></section><section class="appendix informative"><h3 id="acknowledgements"><span class="secno">9.3 </span>Acknowledgements</h3><p><em>This section is non-normative.</em></p><p>The editors thank
