@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Open Booking API 0.7</title>
+    <title>Open Booking API 1.0</title>
 
     <script type="text/javascript" class='remove'>
         var respecConfig = {
@@ -58,7 +58,7 @@
                 href: "https://github.com/openactive/open-booking-api/issues/"
             }, {
                 key: "Version",
-                value: "0.7"
+                value: "1.0"
             }],
 
             logos: [{
@@ -561,9 +561,9 @@ associated APIs such as RDPE in the Open Active ecosystem.
 
 ## Step-by-step process description
 
-The 0.5, and higher, versions of the Booking API supports single items per **order** and
+The 1.0, and higher, versions of the Booking API supports single items per **order** and
 single **payments** per **order**. Future versions of the specification may support
-multiple items and multipart **payments**, 0.7 still does not.
+multiple items and multipart **payments** which are out of scope for the 1.0 release.
 
 ### Complete transaction
 
@@ -604,31 +604,6 @@ such as authorization codes. This is an implementation detail and is thus,
 out of scope for the Booking API and specification.
 
 
-### Order cancellation and refund
-
-Since the **broker** is the party which initiates the third-party **payment**
-and is the entity which notifies the **booking system** of **payment** and
-creates the **order** on behalf of the **customer**, the **broker** is also the
-entity which handles refunds and cancellation.
-
-The workflow to deal with a cancellation and refund of an order is described
-below:
-
-1. The **broker** intiates a refund for the **customer** using the mechanisms
-provided by the third-party payment provider.
-
-2. The **broker** notifies the **booking system** of the cancellation by making
-a PATCH request to the specific order endpoint (/orders/123 in the example) of
-the **booking system**. The PATCH request body should contain an updated
-order item in the `orderedItem` property, with the `orderItemStatus` set to
-https://schema.org/OrderCancelled to indicate that the ordered item in
-the **order** is no longer required.
-
-3. The **booking system** responds to the **broker** with a representation of
-the **order** with the `orderStatus` property set to
-https://schema.org/OrderCancelled with a status of 200. The **order** is now
-deemed to be cancelled.
-
 ### Cancelling a Lease
 
 If the **customer** no longer wants to proceed with a particular **offer**, the
@@ -651,6 +626,105 @@ The **booking system** should respond to requests for **orders** with an expired
 lease with a 410 status code with an error specifying the `errorType` as
 https://openactive.io/errors/anonymous_lease_expired until the underlying
 **order** resource is removed.
+
+## Order cancellation and refunds
+
+Since the **broker** is the party which initiates the third-party **payment**
+and is the entity which notifies the **booking system** of **payment** and
+creates the **order** on behalf of the **customer**, the **broker** is also the
+entity which handles refunds and cancellation. It should be noted that not all
+opportunities/offers are cancellable by the customer.
+
+There are two distinct types of cancellation:
+
+- **customer** originated cancellation
+- **booking system** originated cancellation
+
+These two different types of cancellation have very different workflows which
+are outlined below.
+
+### Customer originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **customer**
+is described below. For clarity, it is assumed that the order being cancelled
+may be cancelled (see section around Cancellable offers/opportunities).
+
+1. The **broker** intiates a refund for the **customer** using the mechanisms
+provided by the third-party payment provider.
+
+2. The **broker** notifies the **booking system** of the cancellation by making
+a PATCH request to the specific order endpoint (/orders/123 in the example) of
+the **booking system**. The PATCH request body should contain an updated
+order item in the `orderedItem` property, with the `orderItemStatus` set to
+https://schema.org/OrderCancelled to indicate that the ordered item in
+the **order** is no longer required.
+
+3. The **booking system** responds to the **broker** with a representation of
+the **order** with the `orderStatus` property set to
+https://schema.org/OrderCancelled with a status of 200. The **order** is now
+deemed to be cancelled.
+
+### Booking system originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **booking
+system** is described below. Only the **booking system** can cancel  **orders**
+relating to **opportunities** and **offers** which are not otherwise cancellable.
+
+This is to be used in situations where the underlying **opportunity**/**offer**
+needs to be cancelled, thus necessitating the cancellation of a **customer's**
+order.
+
+The mechanism for the **booking system** to notify the **broker** that an
+**order** is cancelled is through a webhook, where the **booking
+system** POSTs data relating to the orders which are cancelled to the
+**broker**. The **booking system** MUST only POST **orders** to a **broker**
+which have been initiated by that **broker**. No **customer** details should be
+transmitted in the POST to the webhook.
+
+The process of registering webhooks by the **broker** with the **booking system**
+is out of scope for this specification. One possible addition in a later version
+of the Booking API specification is the extension of this mechanism to cover
+opportunities that are rescheduled.
+
+1. The POST sent by the **booking system** to the webhook receiver of the **broker**
+should contain an array of cancelled **orders**.
+
+2. The **broker** parses the array of cancelled orders and matches them to existing
+**orders** from **customers**.
+
+3. The **broker** refunds the customer and alerts them to the cancellation. It
+is good practice for the **booking system** to also notify the **customer** of
+the cancellation, where they can potentially provide more information about
+the rescheduling of the event.
+
+4. The **broker** then cancels the order as described in step 2 of the previous
+session by making a PATCH request to the CancelAction.
+
+### Definition of a 'cancellable' oppportunity/offer
+
+In order to provide an excellent user experience for the **customer**, the
+**booking system** MUST provide information about its cancellation policy in
+its Terms and Conditions . To avoid disappointment by the **customer**, **booking
+systems** MUST also make it clear prior to entering the booking workflow, whether
+specific opportunities and offers are cancellable, and if required, what the
+cancellation window is. The **broker** must always display information relating
+to whether the **opportunity**/**offer** is cancellable and what the
+cancellation window is, before the user has created an order.
+
+For an opportunity/offer to be cancellable it MUST:
+
+- contain an `isCancellable` boolean property set to 'true'
+
+If the opportunity or offer contains a `cancellationValidUntil` datetime property,
+it MUST NOT have already been exceeded.
+
+Different offers can potentially have different cancellation windows, or alternatively
+some offers may be cancellable, yet other offers on the same opportunity may
+not be cancellable. The data has been modelled to allow flexibility in business
+models for the **booking system** and the **seller**.
+
+Cancellable opportunities/offers will result in **orders** which contain a `CancelAction`
+in their `potentialAction` property.
 
     </section>
 
@@ -678,7 +752,7 @@ application/vnd.openactive[.version]+json
 The current media type is:
 
 ```
-application/vnd.openactive.0.7+json
+application/vnd.openactive.1.0+json
 ```
 
 **Brokers** specifying a media type without a version, such as:
@@ -687,7 +761,7 @@ application/vnd.openactive.0.7+json
 application/vnd.openactive+json
 ```
 
-will recieve data in in the most current format which is 0.7.
+will recieve data in in the most current format which is 1.0.
 
 If you are building an application as a **broker** and care about the stability
 of the response, or have a client application which is tied to a specific
@@ -739,7 +813,7 @@ An example is below:
           "target": {
             "type": "EntryPoint",
             "urlTemplate": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v0.7+json",
+            "encodingType": "application/vnd.openactive.v1.0+json",
             "httpMethod": "PATCH"
           }
         }
@@ -767,21 +841,21 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v0.7+json` and include at least one
+content type of `application/vnd.openactive.v1.0+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
 <pre class="example" title="Error response format">
-            {
-              "@context": "https://openactive.io/ns/oa.jsonld",
-              "type": "Error",
-              "errorType": "https://openactive.io/errors/incomplete_customer_details",
-              "title": "Incomplete customer details",
-              "details": "No customer details supplied",
-              "status": "400",
-              "instance": "/orders",
-              "method": "POST"
-            }
+{
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Error",
+  "errorType": "https://openactive.io/errors/incomplete_customer_details",
+  "title": "Incomplete customer details",
+  "details": "No customer details supplied",
+  "status": 400,
+  "instance": "/orders",
+  "method": "POST"
+}
 </pre>
 
 * `errorType` – a URI reference [[!RFC3986]] that identifies the problem type. This
@@ -802,11 +876,7 @@ the problem. It may or may not yield further information if dereferenced.
 * `requestId`  – used by technical support for diagnostics purposes.
 
 
-### Standard URIs for common errors
-
-https://openactive.io/errors/incomplete_customer_details
-
-Status code: 400
+### Order creation : Incomplete customer details
 
 Use cases:
 
@@ -815,9 +885,13 @@ object.
 
 - if the `customer` property supplied is not a valid schema:Person object.
 
-https://openactive.io/errors/incomplete_broker_details
+errorType URI:
+
+- https://openactive.io/errors/incomplete_customer_details
 
 Status code: 400
+
+### Order creation : Incomplete broker details
 
 Use cases:
 
@@ -826,10 +900,13 @@ the **broker**
 
 - if the `broker` property supplied is not a valid schema:Organisation object.
 
+errorType URI:
 
-https://openactive.io/errors/incomplete_offer_details
+- https://openactive.io/errors/incomplete_broker_details
 
 Status code: 400
+
+### Order creation : Incomplete offer details
 
 Use cases:
 
@@ -838,13 +915,13 @@ Use cases:
 - if the `acceptedOffer` is not a URL which corresponds to an **offer** on the
 **booking system**
 
+errorType URI:
 
-https://openactive.io/errors/incomplete_event_details
-https://openactive.io/errors/incomplete_facilityuse_details
-https://openactive.io/errors/incomplete_slot_details
-https://openactive.io/errors/incomplete_opportunity_details
+- https://openactive.io/errors/incomplete_offer_details
 
 Status code: 400
+
+### Order creation : Incomplete opportunity details
 
 Use cases:
 
@@ -853,111 +930,268 @@ Use cases:
 - if the `orderedItem` is not a URL which corresponds to an **opportunity** on
 the **booking system**
 
+errorType URIs:
 
-https://openactive.io/errors/unavailable_offer
+- https://openactive.io/errors/incomplete_event_details
+- https://openactive.io/errors/incomplete_facilityuse_details
+- https://openactive.io/errors/incomplete_slot_details
+- https://openactive.io/errors/incomplete_opportunity_details
 
 Status code: 400
+
+### Order creation : Unavailable offer
 
 Use cases:
 
 - if the **offer** contained in the `acceptedOffer` property is not bookable
 
-https://openactive.io/errors/unavailable_event
-https://openactive.io/errors/unavailable_facilityuse
-https://openactive.io/errors/unavailable_slot
-https://openactive.io/errors/unavailable_opportunity
+errorType URI:
+
+- https://openactive.io/errors/unavailable_offer
 
 Status code: 400
+
+### Order creation : Unavailable opportunity
 
 Use cases:
 
 - if the **opportunity** contained in the `orderedItem` property is not bookable
 
-https://openactive.io/errors/event_is_full
-https://openactive.io/errors/slot_is_full
-https://openactive.io/errors/opportunity_is_full
+errorType URIs:
+
+- https://openactive.io/errors/unavailable_event
+- https://openactive.io/errors/unavailable_facilityuse
+- https://openactive.io/errors/unavailable_slot
+- https://openactive.io/errors/unavailable_opportunity
 
 Status code: 400
+
+### Order creation : Opportunity full
 
 Use cases:
 
 - if there are no available spaces for the **opportunity** contained in the
 `orderedItem` property
 
-https://openactive.io/errors/incomplete_payment_details
+errorType URIs:
+
+- https://openactive.io/errors/event_is_full
+- https://openactive.io/errors/slot_is_full
+- https://openactive.io/errors/opportunity_is_full
 
 Status code: 400
+
+### Order completion : Incomplete payment details
 
 Use cases:
 
 - if the `paymentMethod` or `paymentMethodId` properties are missing or
 incorrect
 
-https://openactive.io/errors/anonymous_lease_expired
+errorType URI:
 
-Status code: 410
+- https://openactive.io/errors/incomplete_payment_details
+
+Status code: 400
+
+### Order completion : Anonymous lease expired
 
 Use cases:
 
 - if **broker** did not supply **payment** details between the creation of the
 **order** and the expiration of the lease.
 
-https://openactive.io/errors/no_api_token_provided
+errorType URI:
+
+- https://openactive.io/errors/anonymous_lease_expired
+
+Status code: 410
+
+### API authentication : Unauthenticated
+
+Use cases:
+
+- if **broker** did not supply any form of authentication
+
+errorType URI:
+
+- https://openactive.io/errors/unauthenticated
 
 Status code: 403
+
+### API authentication : No API token provided
 
 Use cases:
 
 - if **broker** did not supply an API key
 
-https://openactive.io/errors/invalid_api_token_provided
+errorType URI:
 
-Status code: 401
+- https://openactive.io/errors/no_api_token_provided
+
+Status code: 403
+
+### API authentication : Invalid API token provided
 
 Use cases:
 
 - if **broker** supplied an invalid API key, either malformed or expired
 
-https://openactive.io/errors/temporarily_unable_to_create_order
+errorType URI:
 
-Status code: 500
+- https://openactive.io/errors/invalid_api_token_provided
+
+Status code: 401
+
+### API authentication : Invalid authorization details provided
+
+Use cases:
+
+- if **broker** supplied an invalid set of authorization details, either
+malformed or expired
+
+errorType URI:
+
+- https://openactive.io/errors/invalid_authorization_details
+
+Status code: 401
+
+### Technical errors : Temporarily unable to create order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to create an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/temporarily_unable_to_update_order
+errorType URI:
+
+- https://openactive.io/errors/temporarily_unable_to_create_order
 
 Status code: 500
+
+### Technical errors : Temporarily unable to create order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to update an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/temporarily_unable_to_delete_order
+errorType URI:
+
+- https://openactive.io/errors/temporarily_unable_to_update_order
 
 Status code: 500
+
+### Technical errors : Temporarily unable to delete order
 
 Use cases:
 
 - if **booking platform** is unable for technical reasons to delete an **order**
 where the data provided to it is sufficient to allow it to do so
 
-https://openactive.io/errors/unknown_or_incorrect_offer
+errorType URI:
 
-Status code: 404
+- https://openactive.io/errors/temporarily_unable_to_delete_order
+
+Status code: 500
+
+### Generic errors : Unknown or incorrect offer
 
 Use cases:
 
-- where a **booking platform** has no **offer** matching the offer requested
+- where a **booking platform** has no **offer** matching the one requested
 
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_offer
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect opportunity
+
+Use cases:
+
+- where a **booking platform** has no **opportunity** matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_opportunity
+- https://openactive.io/errors/unknown_or_incorrect_event
+- https://openactive.io/errors/unknown_or_incorrect_facilityuse
+- https://openactive.io/errors/unknown_or_incorrect_slot
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect order
+
+Use cases:
+
+- where a **booking platform** has no **order** matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_order
+
+Status code: 404
+
+### Generic errors : Unknown or incorrect endpoint
+
+Use cases:
+
+- where a **booking platform** has no endpoint matching the one requested
+
+errorType URI:
+
+- https://openactive.io/errors/unknown_or_incorrect_endpoint
+
+Status code: 404
+
+### Generic errors : Not found
+
+Use cases:
+
+- where a **booking platform** does not have the generic resource specified
+
+errorType URI:
+
+- https://openactive.io/errors/not_found
+
+Status code: 404
+
+
+
+### Generic errors : Method not allowed
+
+Use cases:
+
+- where a **booking platform** does not a speficic HTTP method for the endpoint
+requested with that specific HTTP verb
+
+errorType URI:
+
+- https://openactive.io/errors/method_not_allowed
+
+Status code: 405
+
+### Generic errors : Gone
+
+Use cases:
+
+- where an **order** has been cancelled and the underlying resources are marked
+for deletion
+
+errorType URI:
+
+- https://openactive.io/errors/gone
+
+Status code: 410
 ## Security
 
 All HTTP requests and responses SHOULD be secured using SSL.
 
 ## Authentication
+
+### API level authentication
 
 All of the API transactions described in this document SHOULD require
 authentication.
@@ -967,9 +1201,8 @@ recommendation is that implementers SHOULD consider using [[OAuth2]] as it is
 well-defined, widely supported and can be used in a variety of different
 application flows (e.g. via a Javascript web application or between servers).
 
-Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
-way of verifying the identity of customer. It is a thin layer that sits
-atop OAuth2.
+Other server to server authentication mechanisms such as basic authentication,
+API key or bearer tokern based mechanisms are also appropriate.
 
 One principle relating to authentication and the Booking API is that **orders**
 created by a specific **broker** SHOULD NOT be able to be changed by any other
@@ -977,7 +1210,20 @@ created by a specific **broker** SHOULD NOT be able to be changed by any other
 subsequent requests to an **order** should only be initiated by the **broker**
 which created the **order**.
 
-## Delivery of terms and conditions
+### Customer level authentication
+
+Where necessary, OpenID Connect ([[OpenIdConnect]]) provides a standard
+way of verifying the identity of customer. It is a thin layer that sits
+atop OAuth2.
+
+One principle relating to authentication and the Booking API is that **orders**
+created by a specific **customer** SHOULD NOT be able to be changed by any other
+**customer**. It is the responsibility of the **booking system** to ensure that
+subsequent requests to an **order** should only be initiated by the **customer**
+which created the **order**.
+
+
+## Delivery of Terms and Conditions and Privacy Policy
 
 The **broker** should make the **customer** aware of and assent to any specific
 Terms and Conditions and Privacy Policy for using their service at the point of
@@ -988,11 +1234,30 @@ Since, during **booking**, the details of the **customer** are provided to the
 **customer** of this any implications with resepct to GDPR and any other
 data protection legislation.
 
-Any specific Terms and Conditions for the **offer** being taken, or Terms and
-Conditions relating to the **seller** should be made available via a URL as a
-`termsOfService` property on the **offer**. (https://pending.schema.org/termsOfService)
+Specific Terms and Conditions/Privacy Policy for the **booking service**/**seller**
+and/or the **opportynity**/**offer** being taken MUST be made available using the
+`privacyPolicy` and `termsAndConditions` properties described in the example at
+the most appropriate level. If the properties are present at the **opportunity**
+level, they apply to all included **opportunities** and **offers** unless the
+properties are present at a lower level.
 
 
+<pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
+
+  "privacyPolicy": {
+		"type": "Terms",
+		"url": "https://example.com/privacy-policy",
+		"name": "Privacy Policy"
+	},
+	"termsAndConditions": {
+		"type": "Terms",
+		"url": "https://example.com/terms-and-conditions",
+		"name": "Terms and Conditions"
+	}
+
+</pre>
+
+The URLs in the example are only illustrative.
 
     </section>
 
@@ -1107,47 +1372,62 @@ opportunity are still available before proceeding with booking.
         <pre class="example" title="Viewing event availability">
 GET /events/452 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:50:35 GMT
+Accept: application/vnd.openactive.v1.0+json
         </pre>
 
         <pre class="example" title="Event response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:50:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Event",
-  "identifier": 452,
-  "id": "https://example.com/events/452",
-  "name": "Speedball",
-  "offers": [
-    {
-      "type": "Offer",
-      "acceptedPaymentMethod": [
-          "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-      ],
-      "availabilityEnds": "2018-04-29T12:14:35Z",
-      "availabilityStarts": "2018-04-01T12:14:35Z",
-      "description": "Winger space for Speedball.",
-      "id": "https://example.com/offers/1234",
-      "name": "Speedball winger position",
-      "price": "33.00",
-      "priceCurrency": "GBP",
-    }
-  ],
-  "eventStatus": "https://schema.org/EventScheduled",
-  "maximumAttendeeCapacity": 30,
-  "remainingAttendeeCapacity": 20,
-  "startDate": "2018-01-27T11:00:00Z",
-  "endDate": "2018-01-27T12:00:00Z",
-  "duration": "PT1H",
-  "location": {
-    ...
-  }
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Event",
+	"identifier": 452,
+	"id": "https://example.com/events/452",
+	"name": "Speedball",
+	"offers": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
+	"eventStatus": "https://schema.org/EventScheduled",
+	"maximumAttendeeCapacity": 30,
+	"remainingAttendeeCapacity": 20,
+	"startDate": "2018-10-30T11:00:00Z",
+	"endDate": "2018-10-30T12:00:00Z",
+	"duration": "PT1H",
+	"location": {},
+	"potentialAction": [{
+		"type": "ReserveAction",
+		"name": "Book",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "POST"
+		}
+	}],
+	"privacyPolicy": {
+		"type": "Terms",
+		"url": "https://example.com/privacy-policy",
+		"name": "Privacy Policy"
+	},
+	"termsAndConditions": {
+		"type": "Terms",
+		"url": "https://example.com/terms-and-conditions",
+		"name": "Terms and Conditions"
+	}
 }
 
 </pre>
@@ -1161,47 +1441,43 @@ from in-progress **orders**.
 <pre class="example" title="Viewing slot availability">
 GET /slots/324 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Slot response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Slot",
-  "id": "http://www.example.org/slots/324",
-  "identifier": 324,
-  "facilityUse": "http://www.example.org/facility-use/1",
-  "startDate": "2018-03-01T11:00:00Z",
-  "duration": "PT30M",
-  "remainingUses": 3,
-  "maximumUses": 4,
-   "offers": [
-     {
-       "type": "Offer",
-       "name": "30 minute hire",
-       "price": "15",
-       "priceCurrency": "GBP"
-       "potentialAction": [
-         {
-           "type": "ReserveAction",
-           "name": "Book",
-           "target": {
-             "type": "EntryPoint",
-             "urlTemplate": "https://example.com/orders",
-             "encodingType": "application/vnd.openactive.v0.7+json",
-             "httpMethod": "POST"
-           }
-         }
-       ]
-     }
-   ]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Slot",
+	"id": "http://www.example.org/slots/324",
+	"identifier": 324,
+	"facilityUse": "http://www.example.org/facility-use/1",
+	"startDate": "2018-10-01T11:00:00Z",
+	"duration": "PT30M",
+	"remainingUses": 3,
+	"maximumUses": 4,
+	"offers": [{
+		"type": "Offer",
+		"name": "30 minute hire",
+		"price": 15.00,
+		"priceCurrency": "GBP"
+	}],
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
+    }
+  }]
 }
 
 </pre>
@@ -1214,80 +1490,73 @@ from in-progress **orders**.
 <pre class="example" title="Viewing slot availability via a facility use">
 GET /facility-use/1 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v1.0+json
 </pre>
 
 <pre class="example" title="Facility use response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:51:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-  "@context": "https://www.openactive.io/ns/oa.jsonld",
-  "type": "FacilityUse",
-  "url": "http://www.example.org/facility-use/1",
-  "name": "Example Leisure Centre Table Tennis",
-  "description": "Table tennis tables are available to hire for thirty minute slots",
-  "activity": "Table Tennis",
-  "location": {
-    "type": "Place",
-    "name": "Example Leisure Centre",
-    "address": {
-      "type": "PostalAddress",
-      "streetAddress": "1 High Street",
-      "addressLocality": "Bristol",
-      "postalCode": "BS1 4SD"
+	"@context": "https://www.openactive.io/ns/oa.jsonld",
+	"type": "FacilityUse",
+	"url": "http://www.example.org/facility-use/1",
+	"name": "Example Leisure Centre Table Tennis",
+	"description": "Table tennis tables are available to hire for thirty minute slots",
+	"activity": "Table Tennis",
+	"location": {
+		"type": "Place",
+		"name": "Example Leisure Centre",
+		"address": {
+			"type": "PostalAddress",
+			"streetAddress": "1 High Street",
+			"addressLocality": "Bristol",
+			"postalCode": "BS1 4SD"
+		}
+	},
+	"offers": [{
+		"type": "Offer",
+		"name": "30 minute hire",
+		"price": 10.00,
+		"priceCurrency": "GBP"
+	}],
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
     }
-  },
-  "offers": [
-      {
-        "type": "Offer",
-        "name": "30 minute hire",
-        "price": "10",
-        "priceCurrency": "GBP",
-        "potentialAction": [
-          {
-            "type": "ReserveAction",
-            "name": "Book",
-            "target": {
-              "type": "EntryPoint",
-              "urlTemplate": "https://example.com/orders",
-              "encodingType": "application/vnd.openactive.v0.7+json",
-              "httpMethod": "POST"
-            }
-          }
-        ]
-      }
-  ],
-  "event": [
-      {
-        "type": "Slot",
-        "id": "http://www.example.org/slots/123",
-        "facilityUse": "http://www.example.org/facility-use/1",
-        "startDate": "2018-03-01T10:00:00Z",
-        "duration": "PT30M",
-        "remainingUses": 0,
-        "maximumUses": 4
-      },
-      {
-        "type": "Slot",
-        "id": "http://www.example.org/slots/234",
-        "facilityUse": "http://www.example.org/facility-use/1",
-        "startDate": "2018-03-01T11:00:00Z",
-        "duration": "PT30M",
-        "remainingUses": 3,
-        "maximumUses": 4,
-         "offers": [
-           {
-              "name": "30 minute hire",
-              "price": "15",
-              "priceCurrency": "GBP"
-           }
-         ]
-      }
-  ]
+  }],
+	"event": [{
+			"type": "Slot",
+			"id": "http://www.example.org/slots/123",
+			"facilityUse": "http://www.example.org/facility-use/1",
+			"startDate": "2018-03-01T10:00:00Z",
+			"duration": "PT30M",
+			"remainingUses": 0,
+			"maximumUses": 4
+		},
+		{
+			"type": "Slot",
+			"id": "http://www.example.org/slots/234",
+			"facilityUse": "http://www.example.org/facility-use/1",
+			"startDate": "2018-03-01T11:00:00Z",
+			"duration": "PT30M",
+			"remainingUses": 3,
+			"maximumUses": 4,
+			"offers": [{
+				"name": "30 minute hire",
+				"price": 15.00,
+				"priceCurrency": "GBP"
+			}]
+		}
+	]
 }
 
 </pre>
@@ -1399,9 +1668,13 @@ The EntryPoint object MUST state the `url` of the orders endpoint, and SHOULD
 contain the `encodingType` and the `httpMethod` which must be POST as a new
 **order** object will be created on successful invocation.
 
+If the **offer** relates to a **slot** within a `FacilityUse`, the closest
+`potentialAction` property matching the type `ReserveAction` should be used.
+
 An example is below:
 
 <pre class="example" title="Example of a ReserveAction">
+
 "potentialAction": [
   {
     "type": "ReserveAction",
@@ -1409,12 +1682,16 @@ An example is below:
     "target": {
       "type": "EntryPoint",
       "urlTemplate": "https://example.com/orders",
-      "encodingType": "application/vnd.openactive.v0.7+json",
+      "encodingType": "application/vnd.openactive.v1.0+json",
       "httpMethod": "POST"
     }
   }
 ]
+
 </pre>
+
+
+
 
 ### Pre-conditions for creating an order
 
@@ -1457,45 +1734,56 @@ various **brokers**, independently of API key provisioning at the
 process), the `broker` property should contain the details of the end-user
 **broker** rather than the middleware.
 
+To acheive compliance with Apple Pay, Google Pay and Google Reserve, the
+customer's telephone number, an optional field, should be supplied.
+
 
         <pre class="example" title="Creating an order - request">
 POST /orders HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:52:35 GMT
+Accept: application/vnd.openactive.v1.0+json
 
 {
 	"@context": "https://openactive.io/ns/oa.jsonld",
 	"type": "Order",
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
 	"broker": {
 		"type": "Organization",
 		"name": "MyFitnessApp",
 		"url": "https://myfitnessapp.example.com"
 	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"telephone": "020 811 8055",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"acceptedOffer": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
 	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"availabilityEnds": "2018-04-29T12:14:35Z",
-			"availabilityStarts": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
-			"name": "Speedball winger position",
-			"price": "33.00",
-			"priceCurrency": "GBP"
+		"orderQuantity": "1",
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
 		}
 	}]
 }
+
 </pre>
 
 If successful the server will response with the location of a newly created
@@ -1503,57 +1791,77 @@ If successful the server will response with the location of a newly created
 
 <pre class="example" title="Creating an order - response">
 HTTP/1.1 201 Created
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
-Location: /orders/123
+Date: Mon, 8 Oct 2018 20:52:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
+Location: /orders/890
+
 
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
-  "type": "Order",
-  "id": "https://example.com/orders/123",
-  "customer": {
-  	"type": "Person",
-  	"email": "geoffcapes@example.com",
-  	"givenName": "Geoff",
-  	"familyName": "Capes"
-  },
-  "orderLeaseDuration": "PT15M",
-  "broker": {
-  	"type": "Organization",
-  	"name": "MyFitnessApp",
-  	"url": "https://myfitnessapp.example.com"
-  },
-  "orderStatus": "https://schema.org/OrderPaymentDue",
-  "potentialAction": [
-    {
-      "type": "PayAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.7+json",
-        "httpMethod": "PATCH"
-      }
-    }
-  ],
-  "orderedItem": [{
-  	"type": "OrderItem",
-  	"orderQuantity": 1,
-  	"acceptedOffer": {
-  		"type": "Offer",
-  		"acceptedPaymentMethod": [
-  			"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-  		],
-  		"availabilityEnds": "2018-04-29T12:14:35Z",
-  		"availabilityStarts": "2018-04-01T12:14:35Z",
-  		"description": "Winger space for Speedball.",
-  		"id": "https://example.com/offers/1234",
-  		"name": "Speedball winger position",
-  		"price": "33.00",
-  		"priceCurrency": "GBP"
-  	}
-  }]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"telephone": "020 811 8055",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"orderDate": "2018-10-08T20:52:36Z",
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"orderItemStatus": "https://schema.org/OrderPaymentDue",
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		}
+	}],
+	"orderLeaseDuration": "PT15M",
+	"orderStatus": "https://schema.org/OrderPaymentDue",
+	"partOfInvoice": {
+		"type": "Invoice",
+		"paymentStatus": "PaymentDue",
+		"totalPaymentDue": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	},
+	"paymentDueDate": "2018-10-08T21:07:36Z",
+	"potentialAction": [{
+		"type": "PayAction",
+		"name": "Pay",
+		"target": {
+			"type": "EntryPoint",
+			"urlTemplate": "https://example.com/orders/{order_id}",
+			"encodingType": "application/vnd.openactive.v1.0+json",
+			"httpMethod": "PATCH"
+		}
+	}]
 }
+
 </pre>
 
 
@@ -1562,88 +1870,89 @@ Location: /orders/123
 To get the latest state of an order, perform a GET request on its URI.
 
     <pre class="example" title="Viewing an order - request">
-GET /orders/123 HTTP/1.1
+GET /orders/890 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:53:35 GMT
+Accept: application/vnd.openactive.v1.0+json
     </pre>
 
     <pre class="example" title="Viewing an order - response">
 HTTP/1.1 200 Created
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:53:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-  "type": "Order",
-  "id": "https://example.com/orders/123",
-  "identifier": 123,
-  "customer": {
-    "type": "Person",
-    "email": "geoffcapes@example.com",
-    "givenName": "Geoff",
-    "familyName": "Capes"
-  },
-  "orderedItem": [
-    {
-      "type": "OrderItem",
-      "acceptedOffer": {
-        "type": "Offer",
-        "acceptedPaymentMethod": [
-            "http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-        ],
-        "availabilityEnds": "2018-04-29T12:14:35Z",
-        "availabilityStarts": "2018-04-01T12:14:35Z",
-        "description": "Winger space for Speedball.",
-        "id": "https://example.com/offers/1234",
-        "name": "Speedball winger position",
-        "price": "33.00",
-        "priceCurrency": "GBP",
-      },
-      "orderedItem": "https://example.com/events/452",
-      "amount": {
-        "type": "MonetaryAmount",
-        "value": "10.00",
-        "currency": "GBP"
-      },
-    }
-  ],
-  "orderStatus": "https://schema.org/OrderPaymentDue",
-  "paymentDueDate": "2018-02-20T11:00:00Z",
-  "orderDate": "2018-02-20T11:00:00Z",
-  "partOfInvoice": {
-    "type": "Invoice",
-    "paymentStatus": "PaymentDue",
-    "totalPaymentDue": {
-      "type": "MonetaryAmount",
-      "value": "10.00",
-      "currency": "GBP"
-    }
-  },
-  "potentialAction": [
-    {
-      "type": "PayAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.7+json",
-        "httpMethod": "PATCH"
-      }
-    },
-    {
-      "type": "CancelAction",
-      "name": "Pay",
-      "target": {
-        "type": "EntryPoint",
-        "urlTemplate": "https://example.com/orders/{order_id}",
-        "encodingType": "application/vnd.openactive.v0.7+json",
-        "httpMethod": "PATCH"
-      }
-    }
-  ]
+	"@context": "https://openactive.io/ns/oa.jsonld",
+	"type": "Order",
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
+	"customer": {
+		"type": "Person",
+		"email": "geoffcapes@example.com",
+		"telephone": "020 811 8055",
+		"givenName": "Geoff",
+		"familyName": "Capes"
+	},
+	"orderDate": "2018-10-08T20:52:36Z",
+	"orderedItem": [{
+		"type": "OrderItem",
+		"orderQuantity": 1,
+		"orderItemStatus": "https://schema.org/OrderPaymentDue",
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		}
+	}],
+	"orderLeaseDuration": "PT15M",
+	"orderStatus": "https://schema.org/OrderPaymentDue",
+	"partOfInvoice": {
+		"type": "Invoice",
+		"paymentStatus": "PaymentDue",
+		"totalPaymentDue": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	},
+	"paymentDueDate": "2018-10-08T21:07:36Z",
+	"potentialAction": [{
+			"type": "PayAction",
+			"name": "Pay",
+			"target": {
+				"type": "EntryPoint",
+				"urlTemplate": "https://example.com/orders/{order_id}",
+				"encodingType": "application/vnd.openactive.v1.0+json",
+				"httpMethod": "PATCH"
+			}
+		}
+	]
 }
-    </pre>
+
+</pre>
+
+Note: The `paymentDueDate` is set by the date and time of the **order** and the
+`orderLeaseDuration`.
 
 ### Deleting an order (`/orders/{orderId}`)
 
@@ -1674,74 +1983,81 @@ returns a representation of the completed **order** with a 200 status code.
     <pre class="example" title="Completing an order - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:56:35 GMT
+Accept: application/vnd.openactive.v1.0+json
 
 {
-  "type": "Order",
-  "payments": [
-    {
-      "type": "Payment",
-      "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-      "paymentMethodId": "3204",
-      "totalPaidToProvider": {
-        "type": "MonetaryAmount",
-        "value": "8.00",
-        "currency": "GBP"
-      }
-    }
-  ]
+	"type": "Order",
+	"payments": [{
+		"type": "Payment",
+		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+		"paymentMethodId": "3204",
+		"totalPaidToProvider": {
+			"type": "MonetaryAmount",
+			"value": 10.00,
+			"currency": "GBP"
+		}
+	}]
 }
 
 </pre>
 
 <pre class="example" title="Completing an order - response">
 HTTP/1.1 200 OK
-Date: Tue, 07 Jun 2018 20:51:36 GMT
-Content-Type: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:56:36 GMT
+Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
+
 {
+	"@context": "https://openactive.io/ns/oa.jsonld",
 	"type": "Order",
-	"id": "https://example.com/orders/535",
-	"identifier": 535,
+	"id": "https://example.com/orders/890",
+	"acceptedOffer": [{
+		"type": "Offer",
+		"validThrough": "2018-10-29T11:00:00Z",
+		"validFrom": "2018-10-01T11:00:00Z",
+		"description": "Winger space for Speedball.",
+		"id": "https://example.com/offers/1234",
+		"itemOffered": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
+		},
+		"name": "Speedball winger position",
+		"price": 10.00,
+		"priceCurrency": "GBP",
+		"isCancellable": true,
+		"cancellationValidUntil": "2018-10-28T11:00:00Z"
+	}],
+	"broker": {
+		"type": "Organization",
+		"name": "MyFitnessApp",
+		"url": "https://myfitnessapp.example.com"
+	},
 	"customer": {
 		"type": "Person",
 		"email": "geoffcapes@example.com",
+		"telephone": "020 811 8055",
 		"givenName": "Geoff",
 		"familyName": "Capes"
 	},
+	"orderDate": "2018-10-08T20:52:36Z",
 	"orderedItem": [{
 		"type": "OrderItem",
-		"acceptedOffer": {
-			"type": "Offer",
-			"acceptedPaymentMethod": [
-				"http://purl.org/goodrelations/v1#PaymentMethodCreditCard"
-			],
-			"availabilityEnds": "2018-04-29T12:14:35Z",
-			"availabilityStarts": "2018-04-01T12:14:35Z",
-			"description": "Winger space for Speedball.",
-			"id": "https://example.com/offers/1234",
-			"name": "Speedball winger position",
-			"price": "33.00",
-			"priceCurrency": "GBP"
-		},
-		"orderedItem": "https://example.com/events/452",
-		"amount": {
-			"type": "MonetaryAmount",
-			"value": "10.00",
-			"currency": "GBP"
+		"orderQuantity": 1,
+		"orderItemStatus": "https://schema.org/OrderDelivered",
+		"orderedItem": {
+			"type": "Event",
+			"id": "https://example.com/events/123"
 		}
 	}],
 	"orderStatus": "https://schema.org/OrderDelivered",
-	"paymentDueDate": "2018-02-20T11:00:00Z",
-	"orderDate": "2018-02-20T11:00:00Z",
 	"partOfInvoice": {
 		"type": "Invoice",
-		"paymentStatus": "PaymentDue",
+		"paymentStatus": "PaymentComplete",
 		"totalPaymentDue": {
 			"type": "MonetaryAmount",
-			"value": "10.00",
+			"value": 10.00,
 			"currency": "GBP"
 		}
 	},
@@ -1751,32 +2067,36 @@ Content-Length: ...
 		"paymentMethodId": "3204",
 		"totalPaidToProvider": {
 			"type": "MonetaryAmount",
-			"value": "8.00",
+			"value": 10.00,
 			"currency": "GBP"
 		},
-		"confirmationNumber": "T12371284"
+		"paymentDate": "2018-10-08T20:56:36Z"
 	}],
 	"potentialAction": [{
 		"type": "CancelAction",
-		"name": "Pay",
+		"name": "Cancel",
 		"target": {
 			"type": "EntryPoint",
 			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v0.7+json",
+			"encodingType": "application/vnd.openactive.v1.0+json",
 			"httpMethod": "PATCH"
 		}
 	}]
 }
 
-    </pre>
+</pre>
+
+Note: If the record had been retrieved after the expiry of the cancellation window,
+the `CancelAction` would be omitted.
 
 ## Ordering a place at a free event/ordering a free slot
 
 Free **opportunities** MUST follow the same workflow as paid **opportunities**.
 A free **event** or **slot** is technically a free **offer** on a space for an
-opportunity. There MUST be at least one **offer** with a `price` property of
-"0.00". The `priceCurrency` SHOULD still be defined, where possible and
-appropriate, for data consistency and completeness.
+opportunity. There MUST be at least one offer with a price property of `0.00`.
+For free Offers publishers MAY leave out the priceCurrency. If a priceCurrency
+is not available then brokers SHOULD display a suitable default currency when
+displaying a zero price.
 
 The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
@@ -1786,11 +2106,11 @@ shown below.
 in the Booking API specification where a `Payment` object has `paymentMethod`
 and `paymentMethodId` as optional properties.
 
-<pre class="example" title="Completing an free order with a payment of '0.00' - request">
+<pre class="example" title="Completing an free order with a payment of 0.00 - request">
 PATCH /orders/123 HTTP/1.1
 Host: example.com
-Date: Tue, 07 Jun 2018 20:51:35 GMT
-Accept: application/vnd.openactive.v0.7+json
+Date: Mon, 8 Oct 2018 20:51:35 GMT
+Accept: application/vnd.openactive.v1.0+json
 
 {
   "type": "Order",
@@ -1798,7 +2118,7 @@ Accept: application/vnd.openactive.v0.7+json
     "type": "Payment",
     "totalPaidToProvider": {
       "type": "MonetaryAmount",
-      "value": "0.00",
+      "value": 0.00,
       "currency": "GBP"
     }
   }]
@@ -1810,7 +2130,7 @@ Accept: application/vnd.openactive.v0.7+json
 
 If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
-410 status code).
+`410` status code).
 
 The **broker** should then create a new **order** for the
 **customer** in order to generate a new lease.
@@ -1884,7 +2204,7 @@ After initiating a refund, the **broker** should cancel the
 **order** by submitting a PATCH request to the URL defined in the `CancelAction`
 prescribed in the `potentialAction` property of the **order** response.
 
-The process of cancellation is documented in Section 5.5.2
+The process of cancellation is documented in Section 5.6
 
 ## Customers
 
@@ -1915,25 +2235,21 @@ creation process.
 
 # Future versions of this API
 
-Version 0.5 of the API was a stepping stone towards the 1.0 specification of the
-Booking API. Neither it, or 0.7, are yet feature complete and there are some requirements
-which are not satisfied by this version.
-
-Some of the patterns within version 0.5 and higher, for example the PATCHing of an order
+Some of the patterns within version 1.0, for example the PATCHing of an order
 resource to provide a payment and using PATCH to change the status of an `orderItem` to
 cancel an order provide the groundwork for known requirements such as multiple
 order items (shopping carts), cancellation of individual order items and also
 multipart payments.
 
 Both `orderItems` and `payments` are modelled as collections to support
-extension of the version 0.5 specification towards multipart orders and
+extension of the version 1.0 specification towards multipart orders and
 payments without breaking changes in the Order model for subsequent versions.
 
 The new models for Payment and for Error enhance the Open Active model
 specification to make it more transactional when used as part of the Booking
 API.
 
-The currently known requirements not satisfied in version 0.7 are:
+The currently known requirements not satisfied in version 1.0 are:
 
 - multiple part orders
 - supporting multiple payments
@@ -1946,15 +2262,23 @@ requirements are in scope for version 1.0 and would encourage people to shape
 future iterations of the specification by becoming involved in the communities
 associated with Open Active and the open specification.
 
+In a future version, it is imagined that an API method describing the service,
+and including such things as the links to Privacy Policy, Terms and Conditions
+and the target for a ReserveAction could be used to reduce data duplication.
 
+At the moment there is no provision for a **customer** to cancel an **order**
+after the cancellation window, yet they may wish to do this out of politeness,
+even though no refund is possible, with the benefit that their place may be
+taken by another participant.
 
 </section>
 
 <section class="normative">
 
-# New Open Active models defined in the 0.5 Booking API specification which are
-not yet reflected in the current version (1.1) of the Open Active Modelling
-Specification.
+# New Open Active models defined in the 1.0 Booking API specification
+
+These models are not yet reflected in the current version (2.0) of the Open
+Active Modelling Specification.
 
 ## Error
 
@@ -1989,6 +2313,11 @@ Specification.
 <td><code>method</code></td>
 <td><em class="rfc2119"><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></em></td>
 <td>The method of the request (e.g. GET).</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><em class="rfc2119"><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></em></td>
+<td>An integer representing the HTTP status code.</td>
 </tr>
 <tr>
 <td><code>invalid-params</code></td>
@@ -2033,6 +2362,11 @@ Specification.
       <td><code>confirmationNumber</code></td>
       <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">OPTIONAL</em></em></td>
       <td>A string identifier to confirm that a payment has been recorded by the booking system.</td>
+    </tr>
+    <tr>
+      <td><code>paymentDate</code></td>
+      <td><em class="rfc2119"><em class="rfc2119" title="REQUIRED">OPTIONAL</em></em></td>
+      <td>The date and time that payment has been recorded by the booking system, expressed as an ISO 8601 DateTime.</td>
     </tr>
   </tbody>
 <table>
