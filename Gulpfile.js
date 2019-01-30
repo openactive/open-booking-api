@@ -47,9 +47,9 @@ gulp.task('editorsdraft', function() {
 
   var thisDir = path.dirname(fs.realpathSync(__filename));
 
-  const src = "http://localhost:4000/EditorsDraft/index.html";
+  const src = "http://localhost:4000/EditorsDraft/edit.html";
   console.log(src);
-  const out = "./EditorsDraft/live.html";
+  const out = "./EditorsDraft/index.html";
   const whenToHalt = {
     haltOnError: false,
     haltOnWarn: false,
