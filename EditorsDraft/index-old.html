@@ -308,14 +308,13 @@ an event or for the use of a facility
 make use of a facility, whilst placing a booking
 * __Booking__ – placing and viewing bookings, and where necessary, confirming
 receipt of payment from users
-* __Multiple order items__ - handling bookings for multiple events ("shopping carts") and for groups of users
-* __Child booking__ - booking on behalf of a child
 
 A number of additional requirements that relate to the booking of events and
 facilities are currently out of scope:
 
 * creating and managing accounts for users
 * more complex pricing options, e.g. membership based pricing
+* handling bookings for multiple events ("shopping carts") or for groups of users
 * waiting lists for events
 
 It is possible that future versions of this specification may include support
@@ -330,7 +329,7 @@ These have been declared as permanently out of scope because they are either
 adequately covered by existing specifications, or will be covered by future
 work of the OpenActive Community Group.
 
-The functionality that is currently defined as out of scope includes:
+The functionality that is currrently defined as out of scope includes:
 
 * __API authentication and security__ – while the specification recommends some
 best practices relating to authentication and security it does not mandate a
@@ -423,7 +422,7 @@ by this specification is scoped tightly to only specify interactions between the
             a <strong>Broker</strong>.</dd>
             <dt><strong>Broker</strong></dt>
             <dd>The organisation or developer providing an application that
-            allows <strong>Customer</strong>s to make bookings. Those applications will be
+            allows Customers to make bookings. Those applications will be
             clients of the API defined in this specification</dd>
             <dt><strong>Booking System</strong></dt>
             <dd>The organisation or developer providing an application that
@@ -462,11 +461,9 @@ Note that some or all steps may not actually be visible to the user if details a
 
 ## High-level summary of the API
 
-- **Broker** generates session [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which it uses throughout the process.
+- After both "**1. Select**" and "**2. Register / Login**", the **Broker** calls the **Booking System** to confirm the price and availability of the selected items using an **OrderQuote**, and retrieve a total order price. These calls are illustrated as checkpoints **C1** and **C2** on the diagram below.
 
-- After both "**1. Select**" and "**2. Register / Login**", the **Broker** calls the **Booking System** to confirm the price and availability of the selected items using an `OrderQuote`, and retrieve a total order price. These calls are illustrated as checkpoints **C1** and **C2** on the diagram below.
-
-- After "**3. Book and Pay**", the **Broker** first _authorizes_ the payment for the total order price (if required by the payment provider), then confirms the booking with **Booking System** using an `Order` (**B** on the diagram below), and finally _captures_ the payment.
+- After "**3. Book and Pay**", the **Broker** first _authorizes_ the payment for the total order price (if required by the payment provider), then confirms the booking with **Booking System** using an **Order** (**B** on the diagram below), and finally _captures_ the payment.
 
 
 <figure>
@@ -487,9 +484,9 @@ If **B** fails, the **Broker** MUST cancel the payment without any consequence t
 
 ### Booking System contract with the Broker
 
-- The **Booking System** MUST respond to **C1** (without customer details) with an `OrderQuote` that includes an indicative total order price, or a relevant error.
-- The **Booking System** MUST respond to **C2** (with customer details) with an `OrderQuote` that includes an exact total order price, or a relevant error.
-- The **Booking System** MUST respond to **B** with a completed `Order`, or a relevant error. The whole booking succeeds or fails as one.
+- The **Booking System** MUST respond to **C1** (without customer details) with an **OrderQuote** that includes an indicative total order price, or a relevant error.
+- The **Booking System** MUST respond to **C2** (with customer details) with an **OrderQuote** that includes an exact total order price, or a relevant error.
+- The **Booking System** MUST respond to **B** with a completed **Order**, or a relevant error. The whole booking succeeds or fails as one.
 
 With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
@@ -497,12 +494,11 @@ With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 In order to ensure that items cannot be "stolen" from a **Customer**'s shopping basket by another **Customer**, the use of leases are RECOMMENDED, however they are not required to ensure a low barrier of entry for implementers of the specification.
 
-Individually at **C1** and **C2**, the **Booking System** can opt to create (or extend) a lease for the **Broker**. Whether they opt to do so may depend on the **Booking System**'s capability to support leases, or on the **Seller**'s configuration of the **Booking System**. At **C1** the lease is anonymous, at **C2** customer details are provided.
+Individually at **C1** and **C2**, the **Booking System** can opt to create (or extend) a lease for the **Broker**. Whether they opt to do so may depend on the **Booking System**’s capability to support leases, or on the **Seller**’s configuration of the **Booking System**. At **C1** the lease is anonymous, at **C2** customer details are provided.
 
 If a lease is created at **C1** and/or **C2** it is used during **B**, if not or if it had expired the booking completes anyway provided sufficient inventory is available.
 
-The specification is designed to allow for leasing to be implemented at a later stage by a **Booking System** without affecting the **Broker**'s implementation.
-
+The specification is designed to allow for leasing to be implemented at a later stage by a **Booking System** without affecting the **Broker**’s implementation.
 
 
 ## Step-by-step process description
@@ -516,14 +512,14 @@ i) "**1. Select**" - User browses broker site anonymously and adds something to 
 
   - **Broker** generates session UUID
 
-ii) **C1** - **Broker** call with `OrderQuote` including UUID without a Person object to check availability and that the combination of items requested can be purchased (call is idempotent)
+ii) **C1** - **Broker** call with **OrderQuote** including UUID without a Person object to check availability and that the combination of items requested can be purchased (call is idempotent)
 
-  - **Booking System** creates anonymous lease for that UUID if it is supported, otherwise it provides a simple availability and totalPaymentDue confirmation. Response 200 indicates quote has been successfully produced (which implies all requested items are available). Response may include "orderLeaseExpiry" to indicate a lease has also been created against the UUID.
-  - `OrderQuote` includes total pricing confirmation in response for basket to be updated, as well as enumerated orderedItems with their respective details that can be rendered by the **Broker** to ensure accuracy (rather than relying on syncing with the open feed).
+  - **Booking System** creates anonymous lease for that UUID if it is supported, otherwise it provides a simple availability and totalPaymentDue confirmation. Response 200 indicates quote has been successfully produced (which implies all requested items are available). Response may include “orderLeaseExpiry” to indicate a lease has also been created against the UUID.
+  - **OrderQuote** includes total pricing confirmation in response for basket to be updated, as well as enumerated orderedItems with their respective details that can be rendered by the **Broker** to ensure accuracy (rather than relying on syncing with the open feed).
 
 iii) "**2. Register / Login**" - User clicks checkout and enters personal details
 
-iv) **C2** - **Broker** call with `OrderQuote` including UUID with a Person object to check viability (call is idempotent)
+iv) **C2** - **Broker** call with **OrderQuote** including UUID with a Person object to check viability (call is idempotent)
 
   - Booking system creates named lease for that UUID if it is supported, otherwise it provides a simple availability and totalPaymentDue confirmation. Works exactly as **C1**.
 
@@ -531,7 +527,7 @@ v) "**3. Book and Pay**" - User enters payment details and clicks Book
 
 vi) **Authorise Payment** - **Broker** pre-authorises totalPaymentDue from payment provider, using UUID as a reference
 
-vii) **B** - **Broker** call with `Order` including UUID with a Person object to check viability and with a Payment object for the total amount pre-authed (call is idempotent, can be retried if 500 returned).
+vii) **B** - **Broker** call with **Order** including UUID with a Person object to check viability and with a Payment object for the total amount pre-authed (call is idempotent, can be retried if 500 returned).
 
   - If the total payment amount in the Payment object is different to the current totalPaymentDue (which might have changed since **C2**, e.g. if the headline price is changed in the booking system between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
 
@@ -539,7 +535,7 @@ vii) **B** - **Broker** call with `Order` including UUID with a Person object to
 
   - If the booking succeeds only for some basket items, the whole transaction is rolled back and the entire booking fails.
 
-  - If there's a failure, e.g. no response from server, then **Broker** can resubmit with same UUID. The Booking System will need to track UUID supplied by **Broker** against any successful orders, to ensure that it can update **Broker** on the order status if a previous request with that UUID was successful. **Broker** MUST NOT reuse UUIDs across multiple orders.
+  - If there's a failure, e.g. no response from server, then **Broker** can resubmit with same UUID. The Booking System will need to track UUID supplied by **Broker** against any successful orders, to ensure that it can update **Broker** on the order status if a previous request with that UUID was successful. **Broker** must not reuse UUIDs across multiple orders.
 
   - The booking is considered as complete and paid by the **Booking System** at this point
 
@@ -547,373 +543,328 @@ viii) **Capture Payment** - **Broker** captures totalPaymentDue from payment pro
 
   - If an error occurs during capture (very unlikely but possible due to system failure), and this may only be noticed after the event due to server failure and observation of logs, the **Broker** must either:
     - Initiate manual capture via e.g. the Stripe console. Note the pre-auth will typically last for 7 days, so manual capture is still possible after the event.
-    - Capture the payment from the user manually (MLP's preferred method, if manual capture not possible).
+    - Capture the payment from the user manually (MLP’s preferred method, if manual capture not possible).
     - Absorb the loss and make a new payment for the same amount with the same UUID in the payment provider (better for UX / customer service, if manual capture not possible).
-    - Send a cancellation request to the booking system and notify the **Customer** of the error in good time before the event.
+    - Send a cancellation request to the booking system and notify the customer of the error in good time before the event.
 
- - It is the **Broker**'s responsibility to ensure that payment has been captured.
-
-</section>
-
-
-<section class="normative">
-# Broker Roles
-
-A **Broker** is an actor that arranges transactions between a **Seller** and **Customer**, either directly or indirectly.
-
-From a contractual and taxation perspective, there are two types of Broker, and agent (`AgentBroker`), and a reseller (`ResellerBroker`), as well direct purchase (`NoBroker`).
-
-Note that this specification does not deal with contractual relationships, and simply provides a mechanism to record bookings.
-
-## `ResellerBroker`
-
-### Definition
-A reseller is a company or individual that purchases goods or services with the intention of selling them rather than consuming or using them. This is usually done for profit (but could be resold at a loss).
-
-### Contractual Relationships
-In the context of OpenActive, a `ResellerBroker` contracts directly with the **Seller** as a business-to-business relationship to purchase access to the opportunity. It then, at a later point in time (which may only be milliseconds later), separately forms a contractual relationship with the **Customer**, who purchases access to the opportunity from the `ResellerBroker`.
-
-<figure>
- <img src="ResellerBroker.png" alt="ResellerBroker relationships">
- <figcaption>Contractual relationships in ResellerBroker mode</figcaption>
-</figure>
-
-
-### Taxation
-The `ResellerBroker`'s purchase from the **Seller** is business-to-business, which is subject to the appropriate taxation based on the `ResellerBroker` as the **Customer**.
-The **Customer**'s purchase from the `ResellerBroker` is business-to-consumer, which is subject to the appropriate taxation based on the `ResellerBroker` as the **Seller**.
-
-Hence any tax exception that the **Customer** may enjoy when purchasing directly from the **Seller** (e.g. if the **Seller** is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is not relevant here, as no direct contractual relationship is formed between **Seller** and **Customer**.
-
-### Scope of Specification
-This specification is designed to govern the interaction between the `ResellerBroker` and **Seller**. It does include provision for the interaction between the `ResellerBroker` and **Customer** explicitly, though it may be repurposed by the broker to perform this function by treating the Broker as a Booking system. This specification also does not include provision for the recording of the execution of the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
-When the brokerRole is set to `ResellerBroker`, this indicates that the payee for accounting and tax purposes is the "broker" specified in the Order.
-Note that the `customer` may still optionally be included in the Order, for example to help front-of-house staff identify the **Customer**.
-
-### Conformance criteria
-When the booking system generates the Invoice in the response at B, the `Invoice.customer` property MUST be equal to `Order.broker`, `Order.broker` MUST be provided and `Order.customer` is optional.
-
-
-##  `AgentBroker`
-
-### Definition
-An agent is authorized to act on behalf of another (the **Seller**, or "principle") to create legal relations with a third party (the **Customer**). Succinctly, it may be referred to as the equal relationship between a **Seller** and an agent whereby the principal, expressly or implicitly, authorizes the agent to work under his or her control and on his or her behalf. The agent is required to negotiate on behalf of the principal (**Seller**) and/or bring them and third parties (**Customer**s) into contractual relationship.
-
-### Contractual Relationships
-There are three separate types of contractual relationship involved:
-`AgentBroker` with **Seller**, known as the principal-agent relationship or "internal" relationship;
-`AgentBroker` with **Customer** with whom they deal on their **Seller**'s behalf ("external relationship"); and
-**Seller** with **Customer** when arranged by an `AgentBroker`.
-
-<figure>
- <img src="AgentBroker.png" alt="AgentBroker relationships">
- <figcaption>Contractual relationships in AgentBroker mode</figcaption>
-</figure>
-
-### Taxation
-While facilitated by the `AgentBroker`, the primary purchase is made by the **Customer** directly from the **Seller**, as would be the case if the **Customer** was to purchase from the **Seller** independently.
-Hence any tax exception that the **Customer** may enjoy when purchasing directly from the **Seller** (e.g. if the **Seller** is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is relevant here.
-
-The **Customer**'s relationship with `AgentBroker` is business-to-consumer. Hence any additional services (e.g. customer-facing booking fees) are subject to the appropriate taxation based on the `AgentBroker` as the `seller`.
-
-The `AgentBroker`'s relationship with the **Seller** is business-to-business. Hence any additional services (e.g. booking commission) are subject to the appropriate taxation.
-
-### Scope of Specification
-This specification is designed to govern the recording of the execution of the contractual relationship between the **Customer** and **Seller**.
-The scope of this specification does not include the contractual relationship between the `AgentBroker` and the **Seller** (e.g. for booking commission), between the `AgentBroker` and the **Customer** (e.g. for booking fees) or with any payment provider (e.g. for payment processing fees). Such relationships and the reconciliation of associated invoices MUST be handled separately.
-When the brokerRole is set to "AgentBroker", this indicates that the payee for accounting and tax purposes is the `customer` specified in the Order.
-
-### Conformance criteria
-When the booking system generates the Invoice, the `Invoice.customer` property MUST be equal to `Order.customer`, `Order.broker` MUST be provided and `Order.customer` MUST be provided.
-
-## `NoBroker`
-
-### Definition
-This specification supports direct purchase by a **Customer** (for example in the context of the **Seller**'s own website, or for businesses that purchase large volumes of FacilityUse slots to run leagues).
-
-### Contractual Relationships
-The contractual relationship is a simple one between the **Seller** and the **Customer**.
-
-<figure>
- <img src="NoBroker.png" alt="NoBroker relationships">
- <figcaption>Contractual relationships in NoBroker mode</figcaption>
-</figure>
-
-### Taxation
-The purchase is made by the **Customer** directly from the **Seller**, as would be the case if the **Customer** was to purchase from the **Seller** outside of this specification.
-Hence any tax exception that the **Customer** may enjoy when purchasing directly from the **Seller** (e.g. if the **Seller** is an VAT exempt eligible body) is relevant here.
-
-### Scope of Specification
-This specification is designed to govern the recording of the execution of the contractual relationship between the **Customer** and **Seller**.
-The scope of this specification does not include the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
-
-When the brokerRole is set to "NoBroker", this indicates that the payee for accounting and tax purposes is the `customer` specified in the Order.
-
-### Conformance criteria
-When the booking system generates the Invoice, the `Invoice.customer` property MUST be equal to `Order.customer`, `Order.broker` MUST NOT be provided and `Order.customer` MUST be provided.
+ - It is the **Broker**’s responsibility to ensure that payment has been captured.
 
 </section>
 
+    <section>
+# Key Concepts
+
+        <dl class="typography">
+            <dt><strong>confirmation</strong></dt>
+            <dd>The process of contacting a customer following the placement
+            of a successful order, e.g. to provide tickets, attendance details,
+            etc. This specification does not define this process</dd>
+            <dt><strong>event</strong></dt>
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#events">Event</a>
+                is an opportunity to take part in a physical activity. Events
+                take place at a specific location and at an agreed date
+                and time.</dd>
+            <dt><strong>facility</strong></dt>
+            <dd>A sporting facility, e.g. a squash court, table tennis table or
+            football pitch.</dd>
+            <dt><strong>facilityuse</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-facility-use-code-oa-facilityuse-code-code-oa-individualfacilityuse-code-">FacilityUse</a>
+            is an generic opportunity to utilise the facilities of a seller in order
+            to take part in a physical activity. FacilityUses are not
+            scheduled, and their slots are an equivalent for an Event in being an
+            opportunity which can be booked.</dd>
+            <dt><strong>lease</strong></dt>
+            <dd>A temporary reservation of a space at an event or for the use
+            of a facility. Leases provide a limited time window during which
+            a customer can place a booking and still be guaranteed a place at
+            an event (or use of the facility).</dd>
+            <dt><strong>offer</strong></dt>
+            <dd>An <a href="https://openactive.io/modelling-opportunity-data/#offers">Offer</a>
+                describes the terms under which a customer may participate in an
+                event or use a facility.</dd>
+            <dt><strong>opportunity</strong></dt>
+            <dd>An opportunity is a generic term to describe an opportunity to
+            be active. Currently an opportunity is either an Event (for
+            scheduled events, such as a yoga class) or a Slot for a FacilityUse
+            (for non-scheduled use of the facilities of a seller).</dd>
+            <dt><strong>order</strong></dt>
+            <dd>Describes the in-process or completed booking. An order may be
+            made up of several order items. An order results in a customer
+            having a confirmed reservation.</dd>
+            <dt><strong>payment</strong></dt>
+            <dd>The process of taking funds from a customer in order to place
+            an order. Payment is managed between the customer and the broker.</dd>
+            <dt><strong>reconciliation</strong></dt>
+            <dd>The process by which brokers and booking systems confirm that
+            payment(s) have been taken on behalf of customers, to ensure that
+            money is appropriately exchanged between the brokers, booking systems
+            and sellers. This specification does not define this process.</dd>
+            <dt><strong>refund</strong></dt>
+            <dd>The process of returning funds to a customer, e.g. if an order
+            is cancelled. This specification does not define this process.</dd>
+            <dt><strong>reservation</strong></dt>
+            <dd>A reservation for a customer to attend an event or for the use
+            of a facility. A reservation is created for every item in an order.</dd>
+            <dt><strong>slot</strong></dt>
+            <dd>A <a href="https://www.openactive.io/modelling-opportunity-data/#describing-slots-code-oa-slot-code-">Slot</a>
+            is an opportunity to use a facility at a specific time and for a
+            specified duration. A Slot is therefore a specific type of Event,
+            although it has a more constrained set of properties.</dd>
+        </dl>
+
+    </section>
 
 <section class="normative">
 
-# Tax
-
-## Tax receipts
-
-Due to the variety of business models in use in OpenActive, the **Booking System** MUST NOT send receipts directly to the **Customer** for `AgentBroker` and `ResellerBroker` bookings.
-
-In order to ensure that the **Customer** is provided with correct tax receipt, if `totalPaymentTaxSpecification` is provided in the `Order` upon booking completion, the **Broker** MUST either (a) send a tax receipt to the **Customer** and/or (b) offer a means to allow the **Customer** to easily retrieve a full tax receipt at any future date for any previous booking made. As it is ultimately the **Seller**'s responsibility to send tax receipts, they need to be confident that the **Broker** is making tax information available to its customers in an accurate and timely manner.
-
-The tax receipt sent by the **Broker** MUST comply with any legal requirements of the jurisdiction of operation.
-
-Note by following specification, for all broker modes where a **Seller** may need to issue a tax receipt manually for any reason, the **Seller** will have the details of the **Customer** and the transaction.
-
-## Tax calculation
-
-### B2C tax calculation by Booking System is mandatory
-
-For `AgentBroker` and `NoBroker` modes, where the customer is of type `Person` and a tax receipt is usually generated by the **Booking System**, the tax calculation and associated properties this specification MUST be implemented by the **Booking System** (even if the resulting tax amount is zero).
-
-### B2B tax calculation by Booking System is optional
-
-Tax calculation at the **Booking System** is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a customer of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and both `acceptedOffer` and `unitPriceOverride` must be set to use “net” VAT scheme (i.e. explicitly not including tax calculation). This applies to both `OrderQuote` and to the final `Order`.
-
-This allows tax to be calculated by the `ResellerBroker` or business **Customer** and reconciled outside of this specification.
-
-## Tax mode
-
-The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is specified at the `Order` level, and must be consistent throughout the whole `Order`.
-
-
-
-
-</section>
-
-<section class="normative">
-# Modelling
-
-## `Order` and `OrderQuote`
-
-`OrderQuote` subclasses `Order`, and they both contain exactly the same properties. These are listed below.
-
-### Example
-
-```json
-
-Paste updated full fat example here
-
-```
-
-</section>
-
-
-<section class="normative">
-# Booking Operations
-
-## Amending the OrderQuote before **B**
-
-The **Broker** MAY call **C1** and MUST call **C2** when the **Customer** updates their basket to add and remove items.
-
-When repeated calls to **C1** or **C2** are made with the same UUID, the **Booking System** MUST expire the leases of items that have been removed from the basket.
-
-All leases may be cancelled by submitting an `OrderQuote` with the same UUID but without any `orderItem`s as either **C1** or **C2**. The **Broker** SHOULD make a reasonable attempt to cancel all leases when it is aware that a **Customer** has abandoned their journey. For **Booking Systems** that have not implemented leasing, an `OrderQuote` without any `orderItem`s can simply be ignored.
-
-
-## Amending the Order after **B**, including Customer initiated cancellation
-
-To update an existing Order, the **Broker** MUST:
-
-1. Submit an `OrderQuote` with the same UUID and an `orderStatus` of `https://schema.org/OrderCancelled`. The `orderItem`s array may still be included but MUST not be respected by the *Booking System*. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the cancellation. Note that cancellation fees may be included in the response and final `totalPaymentDue`, which may not be zero.
-
-2. Submit another `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which may include an additional `Payment` or `Refund`) to balance the `totalPaymentDue`. This is only required if the `totalPaymentDue` is affected by the update, so for example when rescheduling an existing booking this is not required.
-
-3. _Authorize_ the relevant payment, or issue a refund, if appropriate.
-
-4. Submit an `Order` identical to the `OrderQuote` in the previous step (which includes the new `transaction` array). If the `OrderQuote` in step 2 is accepted by the **Booking System**, the **Booking System** MUST accept the subsequent `Order`, update assuming the pricing has not changed in the mean time. Any errors related to Order state MUST be returned by the call to `OrderQuote` as well as call to `Order`.
-
-5. _Capture_ the relevant payment, if appropriate.
-
-
-Note that the existing contents of the **transaction** array (existing Payments or Refunds) may be updated by providing a new transaction array in the `Order`, however the update may fail if transactions have already been reconciled by the **Booking System**.
-
-To cancel the whole `Order`, the **Broker** follows the above process with an empty `orderedItem` array.
-
-When the `Order` is updated by the **Booking System**, its `orderNumber` MUST remain the same, however its `invoiceNumber` (within the associated `Invoice`) MUST be incremented to reflect the issuing of a replacement invoice, for tax purposes. The previous invoice is considered void.
-
-
-Example:
-
-```javascript
-
-
-```
-
-## Cancellation fees and other miscellaneous line items from the Booking System
-
-When requesting an `OrderQuote`, the **Booking System** may add booking fees, cancellation fees, or
-other administrative fees to the `OrderQuote`. The `additionalFee` array of the `Order` contains details of these, and their total is included in `totalPaymentDue`. `additionalFee` may OPTIONALLY be stored by the **Broker** and included in the `Order`, however the **Booking System** MUST use the same business logic for `Order` as for `OrderQuote`, so it will ignore any `additionalFee` provided and simply recalculate it. The `Order` MUST always complete successfully when the sum of the `amount` values in the `transaction` array is equal to the `totalPaymentDue`, whether or not the `additionalFee` data has been explicitly included.
-
-`additionalFee` array includes `OrderItem`s which MUST have `name` and `acceptedOffer` specified, and MAY also have unitTaxSpecification specified. They MUST NOT specify `orderedItem`.
-
-```json
-  "additionalFee": [
-    {
-      "type": "OrderItem",
-      "name": "Cancellation charge",
-      "acceptedOffer": {
-        "type": "Offer",
-        "price": 10.00,
-        "priceCurrency": "GBP"
-      },
-      "unitTaxSpecification": [
-        {
-          "type": "TaxChargeSpecification",
-          "typeIdentifier": "VAT-20",
-          "rateIdentifier": "20",
-          "name": "VAT at 20%",
-          "price": 1.00,
-          "priceCurrency": "GBP",
-          "rate": 0.2
-        }
-      ]
-    }
-  ]
-```
-
-
-## Booking System initiated cancellations and updates
-
-An secure RPDE feed of `Order`s MUST be provided by the **Booking System**. This allows the **Broker** to maintain an updated state of all bookings across a number of **Booking System**s, even when changes are made outside of the **Broker**.
-
-This also allows the **Broker** to handle refunds to cancellations, and process notifications to **Customer**s in a consistent way.
-
-### `BrokerRefundRequested` items
-
-Items in the feed with the `orderStatus` of `https://openactive.io/BrokerRefundRequested` require action from the **Broker** over and above a simple notification.
-
-Such `Order` items will include an existing UUID and an amended `orderedItem` array and `totalPaymentDue`. The difference between this and the sum of the `amount` values in the `transaction` array will reflect the refund due.
-
-For such items, as with updating an existing Order, the **Broker** MUST:
-
-1. Submit an `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which will include the additional `Refund`) to balance the `totalPaymentDue`. The **Broker** may alternatively submit an `OrderQuote` with an updated `orderedItem` to balance the total in the `transaction` array, in order to "rebook" the Customer onto another opportunity.
-
-2. _Authorize_ any relevant additional payment, or issue a refund, if appropriate.
-
-4. Submit an `Order` identical to the `OrderQuote` in the previous step (which includes the new `transaction` array). If the `OrderQuote` in step 1 is accepted by the **Booking System**, the **Booking System** MUST accept the subsequent `Order`, update assuming the pricing has not changed in the mean time. Any errors related to Order state MUST be returned by the call to `OrderQuote` as well as call to `Order`.
-
-4. _Capture_ the relevant payment, if appropriate.
-
-
-Following a successful update, the `Order` MUST appear in the RPDE feed with the OrderComplete status.
-
-Note this mechanism MUST only be used to trigger refunds, and MUST NOT be used by the **Booking System** to request additional payment from the **Customer**. A Booking System may add additional entries to the `transaction` array (which would trigger an OrderComplete update), however these MUST be settled directly with the Customer and not via the Broker.
-
-
-
-### `OrderComplete` items
-
-Items in the feed with the `orderStatus` of `https://openactive.io/OrderComplete` require attention from the **Broker**, and SHOULD trigger a notification to the `Customer` based on the delta between the **Broker**'s last recorded state of the `Order` and the `Order` in the feed.
-
-In the case where the `invoiceNumber` is updated it is considered a replacement invoice, and the previous invoice stored by the **Broker** MUST be considered void. The previous invoice MAY be stored by the **Broker** for the **Customer**'s convenience if marked as void explicitly.
-
-Replacement invoices generated by the **Broker** MUST clearly indicate that they replace the previous invoice for the same order.
-
-
-```json
-  {
-    "next": "https://www.example.com/api/rpde/orders?afterTimestamp=1521565719&afterId=C5EE1E55-2DE6-44F7-A865-42F268A82C63",
-    "items": [
-      {
-        "state": "updated",
-        "kind": "Order",
-        "id": "123e4567-e89b-12d3-a456-426655440000",
-        "modified": 1521565719,
-        "data": {
-          "@context": "https://openactive.io/",
-          "type": "Order",
-          "id": "https://example.com/orders/123e4567-e89b-12d3-a456-426655440000"
-          "orderNumber": "12d3-a456-426655440000",
-          "orderStatus": "https://openactive.io/OrderComplete",
-          "seller": {
-            "type": "Organization",
-            "identifier": "CRUOZWJ1",
-            "name": "Better",
-            "legalName": "Greenwich Leisure Limited"
-          },
-          "brokerRole": "https://openactive.io/BrokerAgent",
-          "broker": {
-            "type": "Organization",
-            "name": "MyFitnessApp",
-            "url": "https://myfitnessapp.example.com",
-            "description": "A fitness app for all the community",
-            "logo": {
-              "type": "ImageObject",
-              "url": "http://data.myfitnessapp.org.uk/images/logo.png"
-            }
-          },
-          "orderedItem": [
-            {
-              "type": "OrderItem",
-              "orderQuantity": 2,
-              "unitTaxSpecification": [
-                {
-                  "type": "TaxChargeSpecification",
-                  "name": "VAT at 0% for EU transactions",
-                  "price": 1.00,
-                  "priceCurrency": "GBP",
-                  "rate": 0.2
-                }
-              ],
-              "acceptedOffer": {
-                "type": "Offer",
-                "id": "https://example.com/events/452#/offers/878",
-                "validThrough": "2018-10-29T11:00:00Z",
-                "validFrom": "2018-10-01T11:00:00Z",
-                "description": "Winger space for Speedball.",
-                "name": "Speedball winger position",
-                "price": 10.00,
-                "priceCurrency": "GBP",
-                "isCancellable": true,
-                "cancellationValidUntil": "2018-10-28T11:00:00Z"
-              },
-              "orderedItem": {
-                "type": "ScheduledSession",
-                "identifier": 123, //expanded by booking system
-                "id": "https://example.com/events/452/subEvents/132",
-                "eventStatus": "https://schema.org/EventScheduled",
-                "maximumAttendeeCapacity": 30,
-                "remainingAttendeeCapacity": 20,
-                "startDate": "2018-10-30T11:00:00Z",
-                "endDate": "2018-10-30T12:00:00Z",
-                "duration": "PT1H",
-                "superEvent": {
-                  "type": "SessionSeries",
-                  "id": "https://example.com/events/452",
-                  "name": "Speedball",
-                  "duration": "PT1H",
-                  "organizer": {
-                    "type": "Organization",
-                    "name": "Central Speedball Association",
-                    "url": "http://www.speedball-world.com",
-                    "termsOfService": {
-                      "type": "TermsOfService",
-                      "url": "url"
-                    }
-                  },
-                  "location": {}
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-```
-
-</section>
-
+# Booking Flow
+
+## High-level summary of the API
+
+This API defines a means for a **booking system** to expose an HTTP API that
+may be used by a **broker** to place bookings for **opportunities** on behalf of
+a **customer**. By exposing this API the booking system can support a **seller**
+in reaching a wider audience.
+
+A **broker** provides **customers** with an application that helps them to discover
+**opportunities** to be physically active. The customer may then choose to make
+a booking to attend an **event** or to make use of a **facility**.
+
+The **broker** will check the availability of the **opportunity** in order to check
+whether the **customer** can still attend. The **broker** will also present the
+**customer** with information about any costs associated with taking up the
+**opportunity**. This involves identifying the applicable **offers** and
+presenting them to the user. The customer should be made aware of any terms and
+conditions and any restrictions relating to age, gender or ability, as part of
+the process of proceeding to being in a position to make a booking.
+
+If there is still availability and the **customer** is happy to accept an
+**offer**, then the **customer** can proceed to make a booking. The broker
+creates an **order** on behalf of the user.
+
+Creating the **order** will also create a temporary **lease** that will reserve
+a space for the **customer** to take up the **opportunity** while the
+rest of the workflow completes.
+
+If the **offers** for an event or use of a facility indicate that the user must
+pay, then the broker will take the customer through a separate **payment**
+workflow. This workflow is not defined by this specification.
+
+Once **payment** has been completed, the **broker** will update the
+**booking platform** to indicate that **payment** has been taken. The
+**booking** process is then completed and the **order** is maked as completed.
+
+The completion of the **order** will result in the **lease** being removed and a
+permanent **reservation** being created on behalf of the **customer**. The
+**customer** may receive **confirmation** from either the **broker** or
+**booking system** (or both) that provides details about how and when they can
+attend the **event** or use the booked **facility**.
+
+Separately the **broker** and **booking system** will go through a
+**reconciliation** process to transfer funds or otherwise report on successful
+transactions. A **customer** might also cancel an **order** and will then
+receive a **refund**. The reconciliation processes is not defined by this
+specification. The details will depend on the business model and agreements in
+place between the **broker** and **booking system**. The cancellation workflow
+is defined in this specification in terms of the steps that the **broker** must
+undertake to provide the **booking system** with notification of the
+cancellation.
+
+## URLs used in the description of the API
+
+The following sections contain URIs which are for guidance, and are used as
+examples only. For example, /events/452 is used to represent the canonical
+reference to the web representation of an Event with an id of 452. The URI could
+alternatively be /sessions/452 if session is the term used to describe the
+specific type of Event by a particular seller or booking system or by /slots/452
+if dealing with a **slot** for use of a **facility**. All URIs should
+however be long lived identifiers and canonical and should not be recycled.
+Adherence to the workflows within this specification is required to develop a
+compliant **booking system**/**broker** implementation of this API and
+associated APIs such as RDPE in the Open Active ecosystem.
+
+## Workflow diagram
+
+    <figure>
+     <img src="flow-diagram.png" alt="Flow diagram">
+     <figcaption>Simple illustration of booking workflow</figcaption>
+    </figure>
+
+
+## Sequence diagram
+
+    <figure>
+     <img src="sequence-diagram.png" alt="Sequence diagram">
+     <figcaption>Sequence diagram showing API interactions</figcaption>
+    </figure>
+
+## Step-by-step process description
+
+The 1.0, and higher, versions of the Booking API supports single items per **order** and
+single **payments** per **order**. Future versions of the specification may support
+multiple items and multipart **payments** which are out of scope for the 1.0 release.
+
+### Complete transaction
+
+1. The **broker** requests details on a specific **opportunity** from the
+**booking system** (/events/452 in example) in order to discover available
+**offers**. These offers are subsequently presented to the **customer**.
+2. The **customer** chooses an bookable **offer** (see definition of a bookable
+event).
+3. If the **offer** for the **opportunity** is bookable, the broker makes a POST
+request to the **orders** endpoint (/orders in the examples) containing a
+Person object describing the **customer**, and information about the **offer**
+and **opportunity** selected. At a minimum, this Person object should
+contain the `email` address for the **customer**, and if possible the `givenName`
+and `familyName`. The **booking system** creates a timed **lease** on the space
+in the **opportunity** which is being booked. At this point the **offer** is
+deemed to be accepted and an **order** is created.
+The **booking system** sends a 201
+status code, with a representation of the **order** in the body of the response,
+and with a Location header set containing the URI for the web representation of
+the created **Order** object.
+4. If there is a price for the **offer**, the **broker** takes payment from the
+**customer** via a third party payment provider.
+5. The **broker** notifies the **seller** of the payment by making a PATCH
+request to the specific order endpoint (/orders/123 in the example) of the
+**booking system**. This should include details of the `paymentMethod` and the
+`paymentMethodId` (commonly the last four digits of the card which can be used
+by the **seller** to identify the **customer**). The **broker** should store any
+details about the transaction which are needed for processing refunds or in the
+case of chargebacks. This is out of scope for the Booking API spec and is the
+responsibility of the **broker**.
+6. The **booking system** notifies the **broker** of a successful order
+completion by returning a response with a 200 status code and an object with an
+appropriate value for the `confirmationCode` field.
+
+The **broker** is the entity initiating **payment** and as the merchant in the
+transaction is responsible for storing records of the **payment** transaction
+such as authorization codes. This is an implementation detail and is thus,
+out of scope for the Booking API and specification.
+
+
+### Cancelling a Lease
+
+If the **customer** no longer wants to proceed with a particular **offer**, the
+lease for the space in the **opportunity** and the **order** may be cancelled by
+issuing a DELETE request to the specific order endpoint (/orders/123 in the
+example) of the **booking system**.
+
+The **booking system** SHOULD release the space in the **event** and delete the
+underlying resource. Any subsequent requests to this resource should result in a
+404 response.
+
+### Handling lease expiry
+
+If the lease has expired during the **payment** process, the **broker** SHOULD
+check whether the **opportunity** is still bookable and if the selected
+**offer** is still available. If they are, the **broker** should create a
+new **order** using the workflow described above.
+
+The **booking system** should respond to requests for **orders** with an expired
+lease with a 410 status code with an error specifying the `errorType` as
+https://openactive.io/errors/anonymous_lease_expired until the underlying
+**order** resource is removed.
+
+## Order cancellation and refunds
+
+Since the **broker** is the party which initiates the third-party **payment**
+and is the entity which notifies the **booking system** of **payment** and
+creates the **order** on behalf of the **customer**, the **broker** is also the
+entity which handles refunds and cancellation. It should be noted that not all
+opportunities/offers are cancellable by the customer.
+
+There are two distinct types of cancellation:
+
+- **customer** originated cancellation
+- **booking system** originated cancellation
+
+These two different types of cancellation have very different workflows which
+are outlined below.
+
+### Customer originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **customer**
+is described below. For clarity, it is assumed that the order being cancelled
+may be cancelled (see section around Cancellable offers/opportunities).
+
+1. The **broker** intiates a refund for the **customer** using the mechanisms
+provided by the third-party payment provider.
+
+2. The **broker** notifies the **booking system** of the cancellation by making
+a PATCH request to the specific order endpoint (/orders/123 in the example) of
+the **booking system**. The PATCH request body should contain an updated
+order item in the `orderedItem` property, with the `orderItemStatus` set to
+https://schema.org/OrderCancelled to indicate that the ordered item in
+the **order** is no longer required.
+
+3. The **booking system** responds to the **broker** with a representation of
+the **order** with the `orderStatus` property set to
+https://schema.org/OrderCancelled with a status of 200. The **order** is now
+deemed to be cancelled.
+
+### Booking system originated cancellation
+
+The workflow to deal with the cancellation and refund of an order by the **booking
+system** is described below. Only the **booking system** can cancel  **orders**
+relating to **opportunities** and **offers** which are not otherwise cancellable.
+
+This is to be used in situations where the underlying **opportunity**/**offer**
+needs to be cancelled, thus necessitating the cancellation of a **customer's**
+order.
+
+The mechanism for the **booking system** to notify the **broker** that an
+**order** is cancelled is through a webhook, where the **booking
+system** POSTs data relating to the orders which are cancelled to the
+**broker**. The **booking system** MUST only POST **orders** to a **broker**
+which have been initiated by that **broker**. No **customer** details should be
+transmitted in the POST to the webhook.
+
+The process of registering webhooks by the **broker** with the **booking system**
+is out of scope for this specification. One possible addition in a later version
+of the Booking API specification is the extension of this mechanism to cover
+opportunities that are rescheduled.
+
+1. The POST sent by the **booking system** to the webhook receiver of the **broker**
+should contain an array of cancelled **orders**.
+
+2. The **broker** parses the array of cancelled orders and matches them to existing
+**orders** from **customers**.
+
+3. The **broker** refunds the customer and alerts them to the cancellation. It
+is good practice for the **booking system** to also notify the **customer** of
+the cancellation, where they can potentially provide more information about
+the rescheduling of the event.
+
+4. The **broker** then cancels the order as described in step 2 of the previous
+session by making a PATCH request to the CancelAction.
+
+### Definition of a 'cancellable' oppportunity/offer
+
+In order to provide an excellent user experience for the **customer**, the
+**booking system** MUST provide information about its cancellation policy in
+its Terms and Conditions . To avoid disappointment by the **customer**, **booking
+systems** MUST also make it clear prior to entering the booking workflow, whether
+specific opportunities and offers are cancellable, and if required, what the
+cancellation window is. The **broker** must always display information relating
+to whether the **opportunity**/**offer** is cancellable and what the
+cancellation window is, before the user has created an order.
+
+For an opportunity/offer to be cancellable it MUST:
+
+- contain an `isCancellable` boolean property set to 'true'
+
+If the opportunity or offer contains a `cancellationValidUntil` datetime property,
+it MUST NOT have already been exceeded.
+
+Different offers can potentially have different cancellation windows, or alternatively
+some offers may be cancellable, yet other offers on the same opportunity may
+not be cancellable. The data has been modelled to allow flexibility in business
+models for the **booking system** and the **seller**.
+
+Cancellable opportunities/offers will result in **orders** which contain a `CancelAction`
+in their `potentialAction` property.
+
+    </section>
 
     <section class="normative">
 # Common Requirements
@@ -1016,7 +967,7 @@ for a specific action based on patterns within previously used URLs.
 
 It is the responsibility of **booking platforms** to advertise the URL for
 further activity in the booking workflow at the point of need. For example they
-MUST advertise the URL for `Order` creation when a **broker** requests
+MUST advertise the URL for **order** creation when a **broker** requests
 a specific **opportunity** resource and SHOULD advertise it in their RDPE feeds
 since both of these points within the booking workflow are places where a \
 **customer** may wish to check availability.
@@ -1186,7 +1137,7 @@ Status code: 400
 Use cases:
 
 - if **broker** did not supply **payment** details between the creation of the
-`Order` and the expiration of the lease.
+**order** and the expiration of the lease.
 
 errorType URI:
 
@@ -1247,7 +1198,7 @@ Status code: 401
 
 Use cases:
 
-- if **booking platform** is unable for technical reasons to create an `Order`
+- if **booking platform** is unable for technical reasons to create an **order**
 where the data provided to it is sufficient to allow it to do so
 
 errorType URI:
@@ -1260,7 +1211,7 @@ Status code: 500
 
 Use cases:
 
-- if **booking platform** is unable for technical reasons to update an `Order`
+- if **booking platform** is unable for technical reasons to update an **order**
 where the data provided to it is sufficient to allow it to do so
 
 errorType URI:
@@ -1273,7 +1224,7 @@ Status code: 500
 
 Use cases:
 
-- if **booking platform** is unable for technical reasons to delete an `Order`
+- if **booking platform** is unable for technical reasons to delete an **order**
 where the data provided to it is sufficient to allow it to do so
 
 errorType URI:
@@ -1313,7 +1264,7 @@ Status code: 404
 
 Use cases:
 
-- where a **booking platform** has no `Order` matching the one requested
+- where a **booking platform** has no **order** matching the one requested
 
 errorType URI:
 
@@ -1364,7 +1315,7 @@ Status code: 405
 
 Use cases:
 
-- where an `Order` has been cancelled and the underlying resources are marked
+- where an **order** has been cancelled and the underlying resources are marked
 for deletion
 
 errorType URI:
@@ -1394,8 +1345,8 @@ API key or bearer tokern based mechanisms are also appropriate.
 One principle relating to authentication and the Booking API is that **orders**
 created by a specific **broker** SHOULD NOT be able to be changed by any other
 **broker**. It is the responsibility of the **booking system** to ensure that
-subsequent requests to an `Order` should only be initiated by the **broker**
-which created the `Order`.
+subsequent requests to an **order** should only be initiated by the **broker**
+which created the **order**.
 
 ### Customer level authentication
 
@@ -1406,8 +1357,8 @@ atop OAuth2.
 One principle relating to authentication and the Booking API is that **orders**
 created by a specific **customer** SHOULD NOT be able to be changed by any other
 **customer**. It is the responsibility of the **booking system** to ensure that
-subsequent requests to an `Order` should only be initiated by the **customer**
-which created the `Order`.
+subsequent requests to an **order** should only be initiated by the **customer**
+which created the **order**.
 
 
 ## Delivery of Terms and Conditions and Privacy Policy
@@ -1544,7 +1495,7 @@ must be over a certain age as a supervising adult if some of the party are
 minors. It is the responsibility of the **booking platform** to make the terms
 and conditions of **booking** available to the **broker** and it is the
 responsibility of the **broker** to ensure that the **customer** is aware of
-these conditions before entering the `Order` workflow.
+these conditions before entering the **order** workflow.
 
 ### Checking availability and offers for an event or facility use slot
 
@@ -1780,7 +1731,7 @@ requested a subset in some form of preferences (e.g. only show adult classes
 and offers).
 
 The **customer** selects one of these **offers** and when all pre-conditions
-have been met, the **broker** enters the `Order` creation workflow on behalf
+have been met, the **broker** enters the **order** creation workflow on behalf
 of the customer.
 
 #### Collating offers for the use of a facility
@@ -1818,7 +1769,7 @@ shopping cart functionality is out of scope for v1.0 of this specification).
 
 The **broker** MUST ensure that it has obtained all of the relevant details
 about a **customer** before getting to the point where it attempts to place an
-`Order`. The lease is not designed as a pause in the process whilst a
+**order**. The lease is not designed as a pause in the process whilst a
 **customer** is registered by a **broker**.
 
 The client may then present the updated availability and suitable **offers** to
@@ -1830,13 +1781,13 @@ the customer.
 **brokers** to initiate the **booking** workflow.
 
 **Orders** initiated by a specific **broker** SHOULD only be able to be updated
-by the same **broker**. For the purpose of creating and updating an `Order`
+by the same **broker**. For the purpose of creating and updating an **order**
 the only reliable mechanism for ensuring that the **broker** is the same across
 requests is via authentication/identification by API keys or Authoriztion
-headers. The **broker** property within the `Order` is for information only.
+headers. The **broker** property within the **order** is for information only.
 
 It is the responsibility of the **booking system** to ensure that only the
-**broker** which created the `Order` can update, complete and cancel an
+**broker** which created the **order** can update, complete and cancel an
 order.
 
 ### Discovering the order endpoint
@@ -1853,7 +1804,7 @@ EntryPoint object.
 
 The EntryPoint object MUST state the `url` of the orders endpoint, and SHOULD
 contain the `encodingType` and the `httpMethod` which must be POST as a new
-`Order` object will be created on successful invocation.
+**order** object will be created on successful invocation.
 
 If the **offer** relates to a **slot** within a `FacilityUse`, the closest
 `potentialAction` property matching the type `ReserveAction` should be used.
@@ -1882,7 +1833,7 @@ An example is below:
 
 ### Pre-conditions for creating an order
 
-Before creating an `Order` the **broker** MUST:
+Before creating an **order** the **broker** MUST:
 
 - have obtained **customer** information
 - have determined that the **opportunity** is bookable (see sections on the
@@ -1895,7 +1846,7 @@ to third-party (the **booking system** and the **seller**) and made the customer
 aware of and assent to any legitimate privacy policy and terms and conditions
 - have already obtained permission to use API
 
-Before creating an `Order` the **broker** SHOULD:
+Before creating an **order** the **broker** SHOULD:
 
 - have registered the **customer** (or have the **customer's** details to hand)
 - have identified the **customer's** preferred payment options
@@ -1903,8 +1854,8 @@ Before creating an `Order` the **broker** SHOULD:
 ### Creating a new order (`/orders`)
 
 A POST request to the `/orders` endpoint of the **booking system** will result
-in server creating an new `Order`. A time limited lease will be created for
-spaces in the **event** referenced in the `Order`.
+in server creating an new **Order**. A time limited lease will be created for
+spaces in the **event** referenced in the **Order**.
 
 The `broker` property in the request body is to help the **booking platform** to
 clarify who is making request and to help them in situations such as queries
@@ -2138,33 +2089,33 @@ Content-Length: ...
 
 </pre>
 
-Note: The `paymentDueDate` is set by the date and time of the `Order` and the
+Note: The `paymentDueDate` is set by the date and time of the **order** and the
 `orderLeaseDuration`.
 
 ### Deleting an order (`/orders/{orderId}`)
 
-A `DELETE` request to an `Order` URI will delete the order. Deletion may only
-be used in the specific case for cancelling an `Order` and the associated
+A `DELETE` request to an **Order** URI will delete the order. Deletion may only
+be used in the specific case for cancelling an **order** and the associated
 lease on a space in an **event** if the **customer** no longer wishes to take
 up the opportunity.
 
-A `DELETE` request MUST NOT be used to cancel an existing completed `Order`
+A `DELETE` request MUST NOT be used to cancel an existing completed **order**
 as part of a refund/cancellation workflow. An appropriate approach for that is
 defined elsewhere.
 
 ### Completing an order (`/orders/{orderId}`)
 
-An `Order` is completed by the **broker** submitting notification that the
+An **order** is completed by the **broker** submitting notification that the
 **customer** has made a payment via a third-party payment gateway.
 
-An `Order` is not considered complete until payment has occurred.
+An **order** is not considered complete until payment has occurred.
 
 **Brokers** MUST update the **booking system** to indicate that **payment** has
 been taken.
 
 Once the **booking system** is content with the payments, it then sets the
 `orderStatus` property of the `Order` to https://schema.org/OrderDelivered and
-returns a representation of the completed `Order` with a 200 status code.
+returns a representation of the completed **order** with a 200 status code.
 
 
     <pre class="example" title="Completing an order - request">
@@ -2285,7 +2236,7 @@ For free Offers publishers MAY leave out the priceCurrency. If a priceCurrency
 is not available then brokers SHOULD display a suitable default currency when
 displaying a zero price.
 
-The `Order` workflow MUST be followed as described for **offers** with a
+The **order** workflow MUST be followed as described for **offers** with a
 payment. The PATCH to the URL defined in `PayAction` should follow the example
 shown below.
 
@@ -2315,11 +2266,11 @@ Accept: application/vnd.openactive.v1.0+json
 
 ## Leases and the orderLeaseDuration property
 
-If the lease expires during **payment**, the **broker** MAY delete the `Order`
+If the lease expires during **payment**, the **broker** MAY delete the **order**
 (if the **booking system** has not already done so, returning a response with a
 `410` status code).
 
-The **broker** should then create a new `Order` for the
+The **broker** should then create a new **order** for the
 **customer** in order to generate a new lease.
 
 Before creating a new order, the **broker** MUST check the **opportunity** and
@@ -2332,14 +2283,14 @@ should be refunded if payment has been taken.
 
 ## The state transitions during the order process
 
-1. An `Order` object is created by a **broker** invoking the orders endpoint
+1. An **order** object is created by a **broker** invoking the orders endpoint
 with a POST request containing details of the **broker** (represented as a
 schema:Organisation), **customer** (represented as a schema:Person) and details
 of the selected **event** and **offer** as components of a schema:OrderItem
 object.
-The **booking system** returns a representation of the `Order` object to the
+The **booking system** returns a representation of the **order** object to the
 **broker** in a response with a 201 status and the URL for the object in the
-`Location` header. The `orderStatus` of the `Order` at this point in the flow
+`Location` header. The `orderStatus` of the **order** at this point in the flow
 should be https://schema.org/OrderPaymentDue
 2. Concurrently the **booking system** also creates a lease for a space in the
 **event** for the **customer** for the duration specified in the
@@ -2350,16 +2301,16 @@ should be https://schema.org/OrderPaymentDue
 of the lease, the **broker** sends notification of the payment with a PATCH
 request to the specific order end point (/orders/123 in the examples) with
 details of the **payment** in the `paymentMethod` and `paymentMethodId`
-properties. At this point the `Order` is deemed to be completed. The
+properties. At this point the **order** is deemed to be completed. The
 `orderStatus` property should be currently set to
 `https://schema.org/OrderDelivered` and the `confirmationNumber`
 property set to an appropriate unique value by the **booking system**. At this
-point in the flow, the `Order` is deemed to be complete.
+point in the flow, the **order** is deemed to be complete.
 
-If the lease expires before the payment is made, the `Order` should either be
+If the lease expires before the payment is made, the **order** should either be
 deleted by the **broker** or be deleted by the **booking system** at some point
 after expiry. The `orderStatus` property should be set to
-https://schema.org/OrderCancelled to indicate that the `Order` cannot proceed
+https://schema.org/OrderCancelled to indicate that the **order** cannot proceed
 to completion.
 
 ## Actions which occur after order completion: confirmations and refunds
@@ -2370,9 +2321,9 @@ completing an order. This section describes some potential interactions.
 ### Supplying a confirmation to the customer
 
 The **broker** SHOULD provide the **customer** with confirmation of a successful
-payment having been made through the third-party system and that the `Order`
+payment having been made through the third-party system and that the **order**
 has been completed successfully. The **broker** will have access to a completed
-`Order` which will contain a `confirmationCode` property.
+**order** which will contain a `confirmationCode` property.
 
 The **booking system** may also provide the **customer** with a confirmation that
 the space at the **opportunity** has been booked on their behalf.
@@ -2388,8 +2339,8 @@ The refund process should be considered to be asynchronous for the purposes of
 this specification.
 
 After initiating a refund, the **broker** should cancel the
-`Order` by submitting a PATCH request to the URL defined in the `CancelAction`
-prescribed in the `potentialAction` property of the `Order` response.
+**order** by submitting a PATCH request to the URL defined in the `CancelAction`
+prescribed in the `potentialAction` property of the **order** response.
 
 The process of cancellation is documented in Section 5.6
 
@@ -2412,8 +2363,8 @@ an internal record.
 
 ### Deletion of personal data of the customer if the order is not completed
 
-If an `Order` is not completed, the **booking system** SHOULD delete all
-personal information of the **customer** provided to it as part of the `Order`
+If an **order** is not completed, the **booking system** SHOULD delete all
+personal information of the **customer** provided to it as part of the **order**
 creation process.
 
 </section>
@@ -2453,7 +2404,7 @@ In a future version, it is imagined that an API method describing the service,
 and including such things as the links to Privacy Policy, Terms and Conditions
 and the target for a ReserveAction could be used to reduce data duplication.
 
-At the moment there is no provision for a **customer** to cancel an `Order`
+At the moment there is no provision for a **customer** to cancel an **order**
 after the cancellation window, yet they may wish to do this out of politeness,
 even though no refund is possible, with the benefit that their place may be
 taken by another participant.

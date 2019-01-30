@@ -462,8 +462,6 @@ Note that some or all steps may not actually be visible to the user if details a
 
 ## High-level summary of the API
 
-- **Broker** generates session [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which it uses throughout the process.
-
 - After both "**1. Select**" and "**2. Register / Login**", the **Broker** calls the **Booking System** to confirm the price and availability of the selected items using an `OrderQuote`, and retrieve a total order price. These calls are illustrated as checkpoints **C1** and **C2** on the diagram below.
 
 - After "**3. Book and Pay**", the **Broker** first _authorizes_ the payment for the total order price (if required by the payment provider), then confirms the booking with **Booking System** using an `Order` (**B** on the diagram below), and finally _captures_ the payment.
@@ -717,14 +715,14 @@ The **Broker** MAY call **C1** and MUST call **C2** when the **Customer** update
 
 When repeated calls to **C1** or **C2** are made with the same UUID, the **Booking System** MUST expire the leases of items that have been removed from the basket.
 
-All leases may be cancelled by submitting an `OrderQuote` with the same UUID but without any `orderItem`s as either **C1** or **C2**. The **Broker** SHOULD make a reasonable attempt to cancel all leases when it is aware that a **Customer** has abandoned their journey. For **Booking Systems** that have not implemented leasing, an `OrderQuote` without any `orderItem`s can simply be ignored.
+All leases may be cancelled by submitting an `OrderQuote` with the same UUID but without an orderItems as either **C1** or **C2**. The **Broker** SHOULD make a reasonable attempt to cancel all leases when it is aware that a Customer has abandoned their journey.
 
 
 ## Amending the Order after **B**, including Customer initiated cancellation
 
 To update an existing Order, the **Broker** MUST:
 
-1. Submit an `OrderQuote` with the same UUID and an `orderStatus` of `https://schema.org/OrderCancelled`. The `orderItem`s array may still be included but MUST not be respected by the *Booking System*. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the cancellation. Note that cancellation fees may be included in the response and final `totalPaymentDue`, which may not be zero.
+1. Submit an `OrderQuote` with the same UUID and the amended `orderedItem` array. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the amendment. Leases should be created at this stage as with a new `OrderQuote`.
 
 2. Submit another `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which may include an additional `Payment` or `Refund`) to balance the `totalPaymentDue`. This is only required if the `totalPaymentDue` is affected by the update, so for example when rescheduling an existing booking this is not required.
 
