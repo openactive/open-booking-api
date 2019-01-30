@@ -697,12 +697,292 @@ The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is 
 
 `OrderQuote` subclasses `Order`, and they both contain exactly the same properties. These are listed below.
 
+
 ### Example
 
-```json
-
-Paste updated full fat example here
-
+```javascript
+  {
+    "@context": "https://openactive.io/",
+    "type": "OrderQuote",
+    "orderNumber": "urn:uuid:123e4567-e89b-12d3-a456-426655440000", //broker
+    "seller": {
+      "type": "Organization",
+      "identifier": "CRUOZWJ1",
+      "name": "Better",
+      "legalName": "Greenwich Leisure Limited",
+      "description": "A charitable social enterprise for all the community",
+      "url": "https://www.better.org.uk",
+      "logo": {
+        "type": "ImageObject",
+        "url": "http://data.better.org.uk/images/logo.png"
+      },
+      "telephone": "020 3457 8700",
+      "email": "customerservices@gll.org",
+      "vatID": "GB 789 1234 56",
+      "address": {
+        "type": "PostalAddress",
+        "streetAddress": "Alan Peacock Way",
+        "addressLocality": "Village East",
+        "addressRegion": "Middlesbrough",
+        "postalCode": "TS4 3AE",
+        "addressCountry": "GB"
+      }
+    },
+    "brokerRole": "https://openactive.io/BrokerAgent", //broker
+    "broker": { //broker
+      "type": "Organization",
+      "name": "MyFitnessApp",
+      "url": "https://myfitnessapp.example.com",
+      "description": "A fitness app for all the community",
+      "logo": {
+        "type": "ImageObject",
+        "url": "http://data.myfitnessapp.org.uk/images/logo.png"
+      },
+      "address": {
+        "type": "PostalAddress",
+        "streetAddress": "Alan Peacock Way",
+        "addressLocality": "Village East",
+        "addressRegion": "Middlesbrough",
+        "postalCode": "TS4 3AE",
+        "addressCountry": "GB"
+      }
+    },
+    "customer": { //broker
+      "type": "Person",
+      "email": "geoffcapes@example.com",
+      "telephone": "020 811 8055",
+      "givenName": "Geoff",
+      "familyName": "Capes"
+    },
+    "bookingService": { //booking system
+      "type": "BookingService",
+      "name": "Playwaze",
+      "url": "http://www.playwaze.com",
+      "termsOfService": {
+        "type": "TermsOfService",
+        "url": "url"
+      }
+    },
+    "requestLease": true, // broker
+    "lease": { // booking system
+      "type": "Lease",
+      "leaseExpiry": "2018-10-01T11:00:00Z"
+    },
+    "orderedItem": [ //broker
+      {
+        "type": "OrderItem",
+        "orderQuantity": 2,
+        "unitPriceSpecification": { //broker if priceOverride is true, booking system otherwise
+          "type": "UnitPriceSpecification",
+          "name": "Two for one",
+          "price": 5.00,
+          "priceCurrency": "GBP",
+          "valueAddedTaxIncluded": true
+        },
+        "unitTaxSpecification": [ //broker if priceOverride is true, booking system otherwise
+          {
+            "type": "TaxChargeSpecification",
+            "name": "VAT at 0% for EU transactions",
+            "price": 1.00,
+            "priceCurrency": "GBP",
+            "rate": 0.2
+          }
+        ],
+        "acceptedOffer": {
+          "type": "Offer", //expanded by booking system
+          "id": "https://example.com/events/452#/offers/878", // broker
+          "validThrough": "2018-10-29T11:00:00Z",
+          "validFrom": "2018-10-01T11:00:00Z",
+          "description": "Winger space for Speedball.",
+          "name": "Speedball winger position",
+          "price": 10.00,
+          "priceCurrency": "GBP",
+          "isCancellable": true,
+          "cancellationValidUntil": "2018-10-28T11:00:00Z"
+        },
+        "orderedItem": {
+          "type": "ScheduledSession",
+          "identifier": 123, //expanded by booking system
+          "id": "https://example.com/events/452/subEvents/132",
+          "eventStatus": "https://schema.org/EventScheduled",
+          "maximumAttendeeCapacity": 30,
+          "remainingAttendeeCapacity": 20,
+          "startDate": "2018-10-30T11:00:00Z",
+          "endDate": "2018-10-30T12:00:00Z",
+          "duration": "PT1H",
+          "superEvent": {
+            "type": "SessionSeries",
+            "id": "https://example.com/events/452",
+            "name": "Speedball",
+            "duration": "PT1H",
+            "organizer": {
+              "type": "Organization",
+              "name": "Central Speedball Association",
+              "url": "http://www.speedball-world.com",
+              "termsOfService": {
+                "type": "TermsOfService",
+                "url": "url"
+              }
+            },
+            "location": {}
+          }
+        }
+      }
+    ],
+    "additionalFee": [  //broker
+      {
+        "type": "OrderItem",
+        "name": "Cancellation charge",
+        "acceptedOffer": {
+          "type": "Offer",
+          "price": 10.00,
+          "priceCurrency": "GBP"
+        },
+        "unitTaxSpecification": [
+          {
+            "type": "TaxChargeSpecification",
+            "typeIdentifier": "VAT-20",
+            "rateIdentifier": "20",
+            "name": "VAT at 20%",
+            "price": 1.00,
+            "priceCurrency": "GBP",
+            "rate": 0.2
+          }
+        ]
+      }
+    ],
+    "orderStatus": "https://openactive.io/OrderComplete", //broker
+    "partOfInvoice": [ // booking system
+      {
+        "type": "Invoice",
+        "paymentStatus": "https://openactive.io/PaymentQuote",
+        "invoiceNumber": "000001",
+        "identifier": "000001",
+        "customer": {
+          "type": "Person",
+          "email": "geoffcapes@example.com",
+          "telephone": "020 811 8055",
+          "givenName": "Geoff",
+          "familyName": "Capes"
+        },
+        "provider": {
+          "type": "Organization",
+          "identifier": "CRUOZWJ1",
+          "name": "Better",
+          "legalName": "Greenwich Leisure Limited",
+          "description": "A charitable social enterprise for all the community",
+          "url": "https://www.better.org.uk",
+          "logo": {
+            "type": "ImageObject",
+            "url": "http://data.better.org.uk/images/logo.png"
+          },
+          "telephone": "020 3457 8700",
+          "email": "customerservices@gll.org",
+          "vatID": "GB 789 1234 56",
+          "address": {
+            "type": "PostalAddress",
+            "streetAddress": "Alan Peacock Way",
+            "addressLocality": "Village East",
+            "addressRegion": "Middlesbrough",
+            "postalCode": "TS4 3AE",
+            "addressCountry": "GB"
+          }
+        },
+        "totalPaymentDue": {
+          "type": "PriceSpecification",
+          "price": 5.00,
+          "priceCurrency": "GBP",
+          "valueAddedTaxIncluded": true
+        },
+        "totalTaxSpecification": [
+          {
+            "type": "TaxChargeSpecification",
+            "name": "VAT at 0% for EU transactions",
+            "price": 1.00,
+            "priceCurrency": "GBP",
+            "rate": 0.2
+          }
+        ]
+      }
+    ],
+    "transaction": [ // broker (& booking system for amends)
+      {
+        "type": "Payment",
+        "name": "Credit card payment",
+        "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+        "paymentMethodId": "re_1DckvZKarmweGdVCdOt4GBMc",
+        "receiptNumber": "0023400",
+        "transactionStatus": "https://openactive.io/TransactionReconciled", // booking system
+        "last4": "1234",
+        "payee": {
+          "type": "Person",
+          "email": "geoffcapes@example.com",
+          "telephone": "020 811 8055",
+          "givenName": "Geoff",
+          "familyName": "Capes"
+        },
+        "amount": {
+          "type": "MonetaryAmount",
+          "value": 8.00,
+          "currency": "GBP"
+        }
+      },
+      {
+        "type": "Payment",
+        "name": "Amex Fitness Credits",
+        "paymentMethod": "https://openactive.io/PaymentMethodVoucher",
+        "paymentMethodId": "3204",
+        "payee": {
+          "type": "Person",
+          "email": "geoffcapes@example.com",
+          "telephone": "020 811 8055",
+          "givenName": "Geoff",
+          "familyName": "Capes"
+        },
+        "amount": {
+          "type": "MonetaryAmount",
+          "value": 1.00,
+          "currency": "GBP"
+        }
+      },
+      {
+        "type": "Payment",
+        "name": "MyFitnessApp Discount",
+        "paymentMethod": "https://purl.org/goodrelations/v1#ByInvoice",
+        "paymentMethodId": "3204",
+        "payee": {
+          "type": "Organization",
+          "name": "MyFitnessApp",
+          "url": "https://myfitnessapp.example.com"
+        },
+        "amount": {
+          "type": "MonetaryAmount",
+          "value": 1.00,
+          "currency": "GBP"
+        }
+      },
+      {
+        "type": "Refund",
+        "name": "Credit card refund",
+        "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+        "paymentMethodId": "re_1DckvZKarmweGdVCdOt4GBMc",
+        "receiptNumber": "0023400",
+        "last4": "1234",
+        "payee": {
+          "type": "Person",
+          "email": "geoffcapes@example.com",
+          "telephone": "020 811 8055",
+          "givenName": "Geoff",
+          "familyName": "Capes"
+        },
+        "amount": {
+          "type": "MonetaryAmount",
+          "value": -8.00,
+          "currency": "GBP"
+        }
+      }
+    ]
+  }
 ```
 
 </section>
@@ -720,11 +1000,11 @@ When repeated calls to **C1** or **C2** are made with the same UUID, the **Booki
 All leases may be cancelled by submitting an `OrderQuote` with the same UUID but without any `orderItem`s as either **C1** or **C2**. The **Broker** SHOULD make a reasonable attempt to cancel all leases when it is aware that a **Customer** has abandoned their journey. For **Booking Systems** that have not implemented leasing, an `OrderQuote` without any `orderItem`s can simply be ignored.
 
 
-## Amending the Order after **B**, including Customer initiated cancellation
+## Customer initiated cancellation after **B**
 
 To cancel an existing Order, the **Broker** MUST:
 
-1. Submit an `OrderQuote` with the same UUID and an `orderStatus` of `https://schema.org/OrderCancelled`. The `orderItem`s array may still be included but MUST not be respected by the *Booking System*. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the cancellation. Note that cancellation fees may be included in the response and final `totalPaymentDue`, which may not be zero.
+1. Submit an `OrderQuote` with the original `Order`'s UUID and an `orderStatus` of `https://schema.org/OrderCancelled`. The `orderItem`s array may still be included but MUST not be respected by the *Booking System*. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the cancellation. Note that cancellation fees may be included in the response and final `totalPaymentDue`, which may not be zero. If the Order cannot be cancelled, this call will return an error.
 
 2. Submit another `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which may include an additional `Refund`) to balance the `totalPaymentDue`.
 
@@ -744,6 +1024,31 @@ Example:
 
 
 ```
+
+## Amending the Order after **B**
+
+To amend an existing Order, which may not qualify for a cancellation fee, the **Broker** MUST interleave the normal steps for new booking and cancellation as follows:
+
+1. Request an `OrderQuote` for the new `orderItem`s with a new UUID, using C2.
+
+2. Request an `OrderQuote` for the cancellation with the old UUID, using Step 1 and Step 2 from the previous section. The only difference is that the `orderStatus` MUST be set to `https://openactive.io/OrderRebooked`, which MAY affect the cancellation fees applied by the `Booking System`.
+
+3. Continue only if both `OrderQuote`s are returned successfully.
+
+4. When the above are returned the information must be displayed to the Customer if any cancellation fees or price difference exists between the two Orders, for the Customer to confirm.
+
+5. Submit the `Order` for booking must, with a new payment taken (for consistency in terms of tax) using the normal Authorize and Capture process.
+
+6. Issue a refund for the old Order, then submit the `Order` for cancellation.
+
+The new `Order` is completed as described in the new booking process, and the existing `Order` is cancelled as described in the cancellation process.
+
+Note in the simple case where no difference in cancellation fees exists the above does not require any additional implementation work for the Booking System, as both interleaved flows are identical to standard booking and cancellation.
+
+<div class="note">Do we need to link the old and new bookings together?</div>
+
+
+
 
 ## Cancellation fees and other miscellaneous line items from the Booking System
 
