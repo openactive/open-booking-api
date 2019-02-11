@@ -677,7 +677,7 @@ The **Broker** has visibility of all components, while for simplicity of impleme
 
 | Component | Description | Owner | Audit |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|-----------|
-| `Order` | A mutable object that encompasses the live state of the bookable `Event`s within the booking system. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the **Seller**. A single POST to **B** MAY create multiple `Order`s, to accommodate the variety of internal **Booking System** models. All fragment `Order`s will share the same `paymentIdentifier` to allow them to be reconciled by the **Broker**. | **Booking System** | Mutable |
+| `Order` | A mutable object that encompasses the live state of the bookable `Event`s within the booking system. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the **Seller** | **Booking System** | Mutable |
 | **Invoice** | An immutable object that is a legal representation of the purchase, which MUST be rendered to the **Customer** as a legally permissible tax receipt, and exist as a tax point. A new **Invoice** MUST be generated for the `Order` to replace the previous **Invoice** each occasion that an `orderItem` within an `Order` is cancelled. | **Broker** | Immutable |
 | **Payment** | A immutable object that represents the original payment to the **Seller** for the initial `Order`. Although modelling the **Payment** is outside the scope of this specification, it is recommended that one payment exists for each `Order`. | **Payment Provider** | Immutable |
 | **Refund** | An immutable object that represents each refund made against the **Payment**, up to the **Payment**'s total amount | **Payment Provider** | Immutable |
@@ -697,7 +697,7 @@ Note by following specification, for all broker modes where a **Seller** may nee
 
 ## Payments and Refunds
 
-Although the details of **Payment**s and **Refund**s are not in the scope of this specification, a single **Payment** MUST be related to each `Order`, and a unique reference to this Payment MUST be included in the `paymentIdentifier` of the `Order` sent to the **Booking System**. Note that this **Payment** is permitted to represent a virtual **Payment** consolidating a number of actual **Payments** to allow for a wide variety of **Payment** methods used, however it must still be uniquely resolvable.
+Although the details of **Payment**s and **Refund**s are not in the scope of this specification, a single **Payment** MUST be related to each `Order`, and a unique reference to this Payment MUST be included in the `paymentMethodId` of the `Order` sent to the **Booking System**. Note that this **Payment** is permitted to represent a virtual **Payment** consolidating a number of actual **Payments** to allow for a wide variety of **Payment** methods used, however it must still be uniquely resolvable.
 
 ## Tax calculation
 
@@ -723,7 +723,7 @@ The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is 
 
 
 <section class="normative">
-# Order Operations
+# Booking Operations
 
 ## Amending the OrderQuote before **B**
 
@@ -737,88 +737,150 @@ All leases may be cancelled by submitting an `OrderQuote` with the same UUID but
 
 Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after **B**, however `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification.
 
-The cancellation may be requested by either the **Customer** or the **Seller**, and results in an updated `Order` item (or items) on the RPDE feed. Once a cancellation status is placed on the RPDE feed it is assumed by the **Booking System** to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
+The cancellation may be requested by either the **Customer** or the **Seller**, and results in an updated `Order` item on the RPDE feed. Once a cancellation status is placed on the RPDE feed it is assumed by the **Booking System** to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
 
 ### Customer requested cancellation
 
-To cancel an existing OrderItem, the **Broker** MUST:
 
-1. Use the latest state of the `Order` from the RPDE feed to determine which `OrderItem`s may be cancelled. If `isCancellable` is `true`, a DELETE against the `OrderItem` `id` MUST succeed.
-
-2. For each `OrderItem` to be cancelled, a DELETE must be submitted using the URI `id` of the `OrderItem` from the feed. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
-
-3. Process any refunds based on the resulting updates to the RPDE feed. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the RPDE feed.
-
-To cancel an entire `Order`, a DELETE request must be made to each `OrderItem` within it individually. To minimise the number of updates in the RPDE feed, it is recommended that multiple DELETEs are sent in quick succession.
-
-### Seller requested cancellation
-
-`OrderItems` cancelled by the Seller will have `orderItemStatus` set to `https://openactive.io/SellerCancelled` in the RPDE feed, and refunds MUST be processed in response to the RPDE updates.
+### Provider requested cancellation
 
 
 
-## Amending the Order after **B**
-
-`OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification. A new `Order` must be created, and the old `Order` cancelled.
-
-For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, the following steps are recommended for the **Broker**:
-
-1. Request an `OrderQuote` for the new `orderItem`s with a new UUID, using **C2**.
-
-2. Check the latest stored state of `Order`s from the RPDE feed to ensure that old `orderItem` `isCancellable`, and retrieve the `paymentIdentifier`.
-
-3. Clearly display messaging to the **Customer** that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be displayed to the **Customer** if any price difference exists between the two Orders, for the **Customer** to confirm.
-
-4. Request new payment details from the **Customer** and Authorise the amount specified by **C2**, then DELETE the old `orderItem`, and if successful, complete **B** as normal.
-
-The new `Order` is completed as described in the new booking process, and the existing `Order` is cancelled with the refund processed as described in the next section.
 
 
 
-## Notifications, updates and refunds
 
-An secure RPDE feed of `Order`s MUST be provided by the **Booking System**, with the contents of the feed specific to the authenticating **Broker**. This allows the **Broker** to maintain an updated state of all their bookings across a number of **Booking System**s, even when changes are made outside of the **Broker**.
 
-This also allows the **Broker** to handle refunds to cancellations, and process notifications to **Customer**s in a consistent way.
 
-### Booking System: Updating RPDE `Order`s
 
-A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models. The **Booking System** must ensure that the `Order`s in the RPDE feed represent the current state of `OrderItem`s within the system.
+## Customer initiated cancellation after **B**
 
-In order to allow a natural batching of updates in the RPDE feed, where multiple cancellations may be made across multiple `Order`s for the same **Customer**, cancellation updates made to `Order`s in the feed by the **Booking System** MUST be posted with a modified date 30 seconds into the future. The following query will easily exclude such updates while still meeting the RPDE specification:
+To cancel an existing Order, the **Broker** MUST:
 
-```sql
+1. Submit an `OrderQuote` with the original `Order`'s UUID and an `orderStatus` of `https://schema.org/OrderCancelled`. The `orderItem`s array may still be included but MUST not be respected by the *Booking System*. The **Booking System** will respond with a `totalPaymentDue`, and the difference between this and the sum of the `amount` values in the `transaction` array will reflect any payment or refund due to complete the cancellation. Note that cancellation fees may be included in the response and final `totalPaymentDue`, which may not be zero. If the Order cannot be cancelled, this call will return an error.
 
-WHERE modified <= GETDATE()
+2. Submit another `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which may include an additional `Refund`) to balance the `totalPaymentDue`.
+
+3. Issue a refund, if appropriate.
+
+4. Submit an `Order` identical to the `OrderQuote` in the previous step (which includes the new `transaction` array). If the `OrderQuote` in step 2 is accepted by the **Booking System**, the **Booking System** MUST accept the subsequent `Order`, update assuming the pricing has not changed in the mean time. Any errors related to Order state MUST be returned by the call to `OrderQuote` as well as call to `Order`.
+
+Note that the existing contents of the **transaction** array (existing Payments or Refunds) may be updated by providing a new transaction array in the `Order`, however the update may fail if transactions have already been reconciled by the **Booking System**.
+
+
+When the `Order` is updated by the **Booking System**, its `orderNumber` MUST remain the same, however its `invoiceNumber` (within the associated `Invoice`) MUST be incremented to reflect the issuing of a replacement invoice, for tax purposes. The previous invoice is considered void.
+
+
+Example:
+
+```javascript
+
 
 ```
 
-### Broker: Processing RPDE `Order`s
+## Amending the Order after **B**
 
-The **Broker** MUST maintain an up-to-date store of `Order`s received from the **Booking System**. Each `Order` received is compared to the last `Order` stored, and any differences between the old and new content trigger notifications and refunds to the **Customer**, as well as updating the **Broker**'s store.
+To amend an existing Order, which may not qualify for a cancellation fee, the **Broker** MUST interleave the normal steps for new booking and cancellation as follows:
 
-Hence it is important for the **Broker** to consider their store of `Order`s as durable, and not simply a cache, to ensure their customers always get relevant notifications.
+1. Request an `OrderQuote` for the new `orderItem`s with a new UUID, using C2.
 
-A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models, and hence only RPDE feed `Order`s are intended to be stored by the **Broker**. When the **Booking System** chooses to split an `Order` in the feed, all fragment `Order`s will share the same `paymentIdentifier` to allow them to be reconciled by the **Broker**.
+2. Request an `OrderQuote` for the cancellation with the old UUID, using Step 1 and Step 2 from the previous section. The only difference is that the `orderStatus` MUST be set to `https://openactive.io/OrderRebooked`, which MAY affect the cancellation fees applied by the `Booking System`.
 
-### New `Orders`
+3. Continue only if both `OrderQuote`s are returned successfully.
 
-New (unrecognised) `Order` items in the RPDE feed may be used to notify the **Customer** with a VAT receipt, but MUST be stored by the **Broker**.
+4. When the above are returned the information must be displayed to the Customer if any cancellation fees or price difference exists between the two Orders, for the Customer to confirm.
 
-### Cancellation, refund calculation and notification
+5. Submit the `Order` for booking must, with a new payment taken (for consistency in terms of tax) using the normal Authorize and Capture process.
 
-Regardless of the source of the cancellation, the process for refunding and notifying the **Customer** and updating the **Broker**'s records is exactly the same.
+6. Issue a refund for the old Order, then submit the `Order` for cancellation.
 
-The **Broker** MUST process refunds for each new cancellation found in the feed, and it is the **Broker**'s responsibility to continually retry failed refund processing and escalate issues to the **Customer** accordingly. Note that the RPDE feed is "fire and forget" for the **Booking System**: once an `OrderItem` is updated with a cancellation status in the RPDE feed, the status MUST not be reversed, and is assumed by the **Booking System** to be processed.
+The new `Order` is completed as described in the new booking process, and the existing `Order` is cancelled as described in the cancellation process.
 
-For items found with `OrderItem`s that contain `orderItemStatus` with new `https://openactive.io/CustomerCancelled` or `https://openactive.io/SellerCancelled` values, the new `totalPaymentDue` value of the `Order` must be made to equal the value of the associated **Payment** less any **Refund**s, by creating an additional **Refund**s if necessary. Cancellation fees may be added to the `Order` for each cancellation, so the refund may not be equal to the original amount.
+Note in the simple case where no difference in cancellation fees exists the above does not require any additional implementation work for the Booking System, as both interleaved flows are identical to standard booking and cancellation.
 
-The **Customer** MUST be notified after a refund is successfully processed, using the `orderItemStatus` to indicate the source of the cancellation.
+<div class="note">Do we need to link the old and new bookings together?</div>
 
-If refund processing takes longer than 15 minutes, and a new status of `https://openactive.io/SellerCancelled` was detected by the **Broker**, then the **Customer** must be notified immediately of a cancellation ahead of the notification of the completed refund. This ensures the **Seller** can rely on the **Broker** as a notification channel in the event of cancellation.
 
-Note that the **Customer** MUST be notified in the event of all cancellations, even if no refund is due.
 
+
+## Cancellation fees and other miscellaneous line items from the Booking System
+
+When requesting an `OrderQuote`, the **Booking System** may add booking fees, cancellation fees, or
+other administrative fees to the `OrderQuote`. The `additionalFee` array of the `Order` contains details of these, and their total is included in `totalPaymentDue`. `additionalFee` may OPTIONALLY be stored by the **Broker** and included in the `Order`, however the **Booking System** MUST use the same business logic for `Order` as for `OrderQuote`, so it will ignore any `additionalFee` provided and simply recalculate it. The `Order` MUST always complete successfully when the sum of the `amount` values in the `transaction` array is equal to the `totalPaymentDue`, whether or not the `additionalFee` data has been explicitly included.
+
+`additionalFee` array includes `OrderItem`s which MUST have `name` and `acceptedOffer` specified, and MAY also have unitTaxSpecification specified. They MUST NOT specify `orderedItem`.
+
+```json
+  "additionalFee": [
+    {
+      "type": "OrderItem",
+      "name": "Cancellation charge",
+      "acceptedOffer": {
+        "type": "Offer",
+        "price": 10.00,
+        "priceCurrency": "GBP"
+      },
+      "unitTaxSpecification": [
+        {
+          "type": "TaxChargeSpecification",
+          "typeIdentifier": "VAT-20",
+          "rateIdentifier": "20",
+          "name": "VAT at 20%",
+          "price": 1.00,
+          "priceCurrency": "GBP",
+          "rate": 0.2
+        }
+      ]
+    }
+  ]
+```
+
+
+## Notifications and updates
+
+Regardless of the source of the cancellation, the process for notifying the **Customer** and updating the **Broker**'s records is exactly the same.
+
+An secure RPDE feed of `Order`s MUST be provided by the **Booking System**, with the contents of the feed dependent on the **Broker**'s authentication. This allows the **Broker** to maintain an updated state of all bookings across a number of **Booking System**s, even when changes are made outside of the **Broker**.
+
+This also allows the **Broker** to handle refunds to cancellations, and process notifications to **Customer**s in a consistent way.
+
+### Processing RPDE `Order` items
+
+The **Broker** MUST maintain an up-to-date store of `Order`s received from the **Booking System**. Each `Order`s received is compared to the last `Order` stored, and any differences trigger notifications to the **Customer**, as well as updating the **Broker**'s store.
+
+The **Broker** MUST process refunds for each new cancellation found in the feed, and it is the **Broker**'s responsibility to continually retry failed refund processing and escalate issues to the **Customer** accordingly. Note that the RPDE feed is "fire and forget": once an `Order` or `OrderItem` with a cancellation status are placed on the RPDE feed, they MUST not be reversed, and are assumed by the **Booking System** to be dealt with.
+
+
+### `BrokerRefundRequested` items
+
+Items in the feed with the `orderStatus` of `https://openactive.io/BrokerRefundRequested` require action from the **Broker** over and above a simple notification.
+
+Such `Order` items will include an existing UUID and an amended `orderedItem` array and `totalPaymentDue`. The difference between this and the sum of the `amount` values in the `transaction` array will reflect the refund due.
+
+For such items, as with updating an existing Order, the **Broker** MUST:
+
+1. Submit an `OrderQuote` with the same UUID and `orderedItem` array, and its proposed amendment to the `transaction` array (which will include the additional `Refund`) to balance the `totalPaymentDue`. The **Broker** may alternatively submit an `OrderQuote` with an updated `orderedItem` to balance the total in the `transaction` array, in order to "rebook" the Customer onto another opportunity.
+
+2. _Authorize_ any relevant additional payment, or issue a refund, if appropriate.
+
+4. Submit an `Order` identical to the `OrderQuote` in the previous step (which includes the new `transaction` array). If the `OrderQuote` in step 1 is accepted by the **Booking System**, the **Booking System** MUST accept the subsequent `Order`, update assuming the pricing has not changed in the mean time. Any errors related to Order state MUST be returned by the call to `OrderQuote` as well as call to `Order`.
+
+4. _Capture_ the relevant payment, if appropriate.
+
+
+Following a successful update, the `Order` MUST appear in the RPDE feed with the OrderComplete status.
+
+Note this mechanism MUST only be used to trigger refunds, and MUST NOT be used by the **Booking System** to request additional payment from the **Customer**. A Booking System may add additional entries to the `transaction` array (which would trigger an OrderComplete update), however these MUST be settled directly with the Customer and not via the Broker.
+
+
+
+### `OrderComplete` items
+
+Items in the feed with the `orderStatus` of `https://openactive.io/OrderComplete` require attention from the **Broker**, and SHOULD trigger a notification to the `Customer` based on the delta between the **Broker**'s last recorded state of the `Order` and the `Order` in the feed.
+
+In the case where the `invoiceNumber` is updated it is considered a replacement invoice, and the previous invoice stored by the **Broker** MUST be considered void. The previous invoice MAY be stored by the **Broker** for the **Customer**'s convenience if marked as void explicitly.
+
+Replacement invoices generated by the **Broker** MUST clearly indicate that they replace the previous invoice for the same order.
 
 
 ```json
@@ -912,41 +974,6 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
     ]
   }
 ```
-
-
-## Cancellation fees and other miscellaneous line items from the Booking System
-
-When requesting an `OrderQuote`, the **Booking System** may add booking fees, cancellation fees, or
-other administrative fees to the `OrderQuote`. The `additionalFee` array of the `Order` contains details of these, and their total is included in `totalPaymentDue`. `additionalFee` may OPTIONALLY be stored by the **Broker** and included in the `Order`, however the **Booking System** MUST use the same business logic for `Order` as for `OrderQuote`, so it will ignore any `additionalFee` provided and simply recalculate it. The `Order` MUST always complete successfully when the sum of the `amount` values in the `transaction` array is equal to the `totalPaymentDue`, whether or not the `additionalFee` data has been explicitly included.
-
-`additionalFee` array includes `OrderItem`s which MUST have `name` and `acceptedOffer` specified, and MAY also have unitTaxSpecification specified. They MUST NOT specify `orderedItem`.
-
-```json
-  "additionalFee": [
-    {
-      "type": "OrderItem",
-      "name": "Cancellation charge",
-      "acceptedOffer": {
-        "type": "Offer",
-        "price": 10.00,
-        "priceCurrency": "GBP"
-      },
-      "unitTaxSpecification": [
-        {
-          "type": "TaxChargeSpecification",
-          "typeIdentifier": "VAT-20",
-          "rateIdentifier": "20",
-          "name": "VAT at 20%",
-          "price": 1.00,
-          "priceCurrency": "GBP",
-          "rate": 0.2
-        }
-      ]
-    }
-  ]
-```
-
-
 
 </section>
 

@@ -36,7 +36,7 @@ function notifyEditorsDraft() {
 
   tinylr.changed({
     body: {
-      files: ["EditorsDraft/live.html"]
+      files: ["EditorsDraft/edit.html"]
     }
   });
 }
@@ -60,7 +60,7 @@ gulp.task('editorsdraft', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('EditorsDraft/index.html', ['editorsdraft']);
+  gulp.watch('EditorsDraft/edit.html', ['editorsdraft']);
   //gulp.watch('EditorsDraft/live.html', notifyLiveReload);
 });
 
