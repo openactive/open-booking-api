@@ -677,7 +677,7 @@ The **Broker** has visibility of all components, while for simplicity of impleme
 
 | Component | Description | Owner | Audit |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|-----------|
-| `Order` | A mutable object that encompasses the live state of the bookable `Event`s within the booking system. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the **Seller**. A single POST to **B** MAY create multiple `Order`s, to accommodate the variety of internal **Booking System** models. All fragment `Order`s will share the same `paymentIdentifier` to allow them to be reconciled by the **Broker**. | **Booking System** | Mutable |
+| `Order` | A mutable object that encompasses the live state of the bookable `Event`s within the booking system. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the **Seller**. A single POST to **B** MAY create multiple `Order`s, to accommodate the variety of internal **Booking System** models. All fragment `Order`s will share the same `Payment` `identifier` to allow them to be reconciled by the **Broker**. | **Booking System** | Mutable |
 | **Invoice** | An immutable object that is a legal representation of the purchase, which MUST be rendered to the **Customer** as a legally permissible tax receipt, and exist as a tax point. A new **Invoice** MUST be generated for the `Order` to replace the previous **Invoice** each occasion that an `orderItem` within an `Order` is cancelled. | **Broker** | Immutable |
 | **Payment** | A immutable object that represents the original payment to the **Seller** for the initial `Order`. Although modelling the **Payment** is outside the scope of this specification, it is recommended that one payment exists for each `Order`. | **Payment Provider** | Immutable |
 | **Refund** | An immutable object that represents each refund made against the **Payment**, up to the **Payment**'s total amount | **Payment Provider** | Immutable |
@@ -697,7 +697,7 @@ Note by following specification, for all broker modes where a **Seller** may nee
 
 ## Payments and Refunds
 
-Although the details of **Payment**s and **Refund**s are not in the scope of this specification, a single **Payment** MUST be related to each `Order`, and a unique reference to this Payment MUST be included in the `paymentIdentifier` of the `Order` sent to the **Booking System**. Note that this **Payment** is permitted to represent a virtual **Payment** consolidating a number of actual **Payments** to allow for a wide variety of **Payment** methods used, however it must still be uniquely resolvable.
+Although the details of **Payment**s and **Refund**s are not in the scope of this specification, a single **Payment** MUST be related to each `Order`, and a unique reference to this Payment MUST be included in the `Payment` `identifier` of the `Order` sent to the **Booking System**. Note that this **Payment** is permitted to represent a virtual **Payment** consolidating a number of actual **Payments** to allow for a wide variety of **Payment** methods used, however it must still be uniquely resolvable.
 
 ## Tax calculation
 
@@ -707,16 +707,35 @@ For `AgentBroker` and `NoBroker` modes, where the customer is of type `Person` a
 
 ### B2B tax calculation by Booking System is optional
 
-Tax calculation at the **Booking System** is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a customer of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and both `acceptedOffer` and `unitPriceOverride` must be set to use “net” VAT scheme (i.e. explicitly not including tax calculation). This applies to both `OrderQuote` and to the final `Order`.
+Tax calculation at the **Booking System** is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a customer of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and `acceptedOffer` must be set to use “net” VAT scheme (i.e. explicitly not including tax calculation). This applies to both `OrderQuote` and to the final `Order`.
 
 This allows tax to be calculated by the `ResellerBroker` or business **Customer** and reconciled outside of this specification.
 
 ## Tax mode
 
-The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is specified at the `Order` level, and must be consistent throughout the whole `Order`.
+The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is specified at the **Seller** level, and must be consistent for all `Order`s originating from that **Seller**.
 
 
 
+## Offer overrides
+
+The unit price of an OrderItem may be overridden to allow for business models with dynamic or variable pricing.
+
+An `OfferOverride` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the booking system instead of acceptedOffer to calculate the tax and totals.
+
+The `unitTaxSpecification` is calculated by the booking system exactly as it would be for an standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the **Booking System**.
+
+`OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that booking systems that only offer free opportunities MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
+
+<pre class="example" title="Example of OfferOverride">
+  "acceptedOffer": {
+    "type": "OfferOverride",
+    "description": "Winger space for Speedball.",
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP"
+  }
+</pre>
 
 </section>
 
@@ -743,7 +762,7 @@ The cancellation may be requested by either the **Customer** or the **Seller**, 
 
 To cancel an existing OrderItem, the **Broker** MUST:
 
-1. Use the latest state of the `Order` from the RPDE feed to determine which `OrderItem`s may be cancelled. If `isCancellable` is `true`, a DELETE against the `OrderItem` `id` MUST succeed.
+1. Use the latest state of the `Order` from the RPDE feed to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true`, a DELETE against the `OrderItem` `id` MUST succeed. The value of the refund for each `OrderItem` MUST be equal to the sum of the `price` in the `acceptedOffer` and the price in the `unitTaxSpecification`, which allows the **Customer** to be informed of the expected refund before they commit to cancellation.
 
 2. For each `OrderItem` to be cancelled, a DELETE must be submitted using the URI `id` of the `OrderItem` from the feed. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
 
@@ -765,7 +784,7 @@ For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, 
 
 1. Request an `OrderQuote` for the new `orderItem`s with a new UUID, using **C2**.
 
-2. Check the latest stored state of `Order`s from the RPDE feed to ensure that old `orderItem` `isCancellable`, and retrieve the `paymentIdentifier`.
+2. Check the latest stored state of `Order`s from the RPDE feed to ensure that old `orderItem` `allowSimpleCancellation`.
 
 3. Clearly display messaging to the **Customer** that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be displayed to the **Customer** if any price difference exists between the two Orders, for the **Customer** to confirm.
 
@@ -789,6 +808,7 @@ In order to allow a natural batching of updates in the RPDE feed, where multiple
 
 ```sql
 
+// TODO: Finish example
 WHERE modified <= GETDATE()
 
 ```
@@ -799,11 +819,13 @@ The **Broker** MUST maintain an up-to-date store of `Order`s received from the *
 
 Hence it is important for the **Broker** to consider their store of `Order`s as durable, and not simply a cache, to ensure their customers always get relevant notifications.
 
-A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models, and hence only RPDE feed `Order`s are intended to be stored by the **Broker**. When the **Booking System** chooses to split an `Order` in the feed, all fragment `Order`s will share the same `paymentIdentifier` to allow them to be reconciled by the **Broker**.
+A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models, and hence only RPDE feed `Order`s are intended to be stored by the **Broker**. When the **Booking System** chooses to split an `Order` in the feed, all fragment `Order`s will share the same `Payment` `identifier` to allow them to be reconciled by the **Broker**.
+
 
 ### New `Orders`
 
 New (unrecognised) `Order` items in the RPDE feed may be used to notify the **Customer** with a VAT receipt, but MUST be stored by the **Broker**.
+
 
 ### Cancellation, refund calculation and notification
 
@@ -856,7 +878,7 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
           "orderedItem": [
             {
               "type": "OrderItem",
-              "orderQuantity": 2,
+              "allowSimpleCancellation": true,
               "unitTaxSpecification": [
                 {
                   "type": "TaxChargeSpecification",
@@ -867,16 +889,15 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
                 }
               ],
               "acceptedOffer": {
-                "type": "Offer",
-                "id": "https://example.com/events/452#/offers/878",
-                "validThrough": "2018-10-29T11:00:00Z",
-                "validFrom": "2018-10-01T11:00:00Z",
+                "type": "Offer", //expanded by booking system
+                "id": "https://example.com/events/452#/offers/878", // broker
                 "description": "Winger space for Speedball.",
                 "name": "Speedball winger position",
                 "price": 10.00,
                 "priceCurrency": "GBP",
                 "isCancellable": true,
-                "cancellationValidUntil": "2018-10-28T11:00:00Z"
+                "validFromBeforeStartDate": "P6D",
+                "cancellationBeforeStartDate": "P1D"
               },
               "orderedItem": {
                 "type": "ScheduledSession",
@@ -906,7 +927,27 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
                 }
               }
             }
-          ]
+          ],
+          "totalPaymentDue": {
+            "type": "PriceSpecification",
+            "price": 5.00,
+            "priceCurrency": "GBP",
+            "valueAddedTaxIncluded": true
+          },
+          "totalTaxSpecification": [
+            {
+              "type": "TaxChargeSpecification",
+              "name": "VAT at 0% for EU transactions",
+              "price": 1.00,
+              "priceCurrency": "GBP",
+              "rate": 0.2
+            }
+          ],
+          "payment": { // broker (& booking system for amends)
+            "type": "Payment",
+            "name": "AcmeBroker Points", // optional free text description of payment method for booking system, to help the Seller in discussions with the Customer (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card")
+            "identifier": "1234567890npduy2f"
+          }
         }
       }
     ]
@@ -914,39 +955,20 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
 ```
 
 
-## Cancellation fees and other miscellaneous line items from the Booking System
+## Extension points for including Payments
 
-When requesting an `OrderQuote`, the **Booking System** may add booking fees, cancellation fees, or
-other administrative fees to the `OrderQuote`. The `additionalFee` array of the `Order` contains details of these, and their total is included in `totalPaymentDue`. `additionalFee` may OPTIONALLY be stored by the **Broker** and included in the `Order`, however the **Booking System** MUST use the same business logic for `Order` as for `OrderQuote`, so it will ignore any `additionalFee` provided and simply recalculate it. The `Order` MUST always complete successfully when the sum of the `amount` values in the `transaction` array is equal to the `totalPaymentDue`, whether or not the `additionalFee` data has been explicitly included.
+In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a Booking System, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
 
-`additionalFee` array includes `OrderItem`s which MUST have `name` and `acceptedOffer` specified, and MAY also have unitTaxSpecification specified. They MUST NOT specify `orderedItem`.
+<pre class="example" title="Example of Payment extension point">
+  "payment": {
+    "type": "Payment",
+    "identifier": "12345678ABCD",
+    "paymentMethod": "stripe:StripePayment",
+    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
+  },
+</pre>
 
-```json
-  "additionalFee": [
-    {
-      "type": "OrderItem",
-      "name": "Cancellation charge",
-      "acceptedOffer": {
-        "type": "Offer",
-        "price": 10.00,
-        "priceCurrency": "GBP"
-      },
-      "unitTaxSpecification": [
-        {
-          "type": "TaxChargeSpecification",
-          "typeIdentifier": "VAT-20",
-          "rateIdentifier": "20",
-          "name": "VAT at 20%",
-          "price": 1.00,
-          "priceCurrency": "GBP",
-          "rate": 0.2
-        }
-      ]
-    }
-  ]
-```
-
-
+Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the **Booking System** be optional, and the **Booking System** must always accept a lack of `paymentMethod` as indication of an external **Payment Processor** being used.
 
 </section>
 
@@ -972,7 +994,7 @@ other administrative fees to the `OrderQuote`. The `additionalFee` array of the 
   {
     "@context": "https://openactive.io/",
     "type": "OrderQuote",
-    "orderNumber": "urn:uuid:123e4567-e89b-12d3-a456-426655440000", //broker
+    "orderNumber": "", //booking system generated
     "seller": {
       "type": "Organization",
       "identifier": "CRUOZWJ1",
@@ -1039,14 +1061,6 @@ other administrative fees to the `OrderQuote`. The `additionalFee` array of the 
     "orderedItem": [ //broker
       {
         "type": "OrderItem",
-        "orderQuantity": 2,
-        "unitPriceSpecification": { //broker if priceOverride is true, booking system otherwise
-          "type": "UnitPriceSpecification",
-          "name": "Two for one",
-          "price": 5.00,
-          "priceCurrency": "GBP",
-          "valueAddedTaxIncluded": true
-        },
         "unitTaxSpecification": [ //broker if priceOverride is true, booking system otherwise
           {
             "type": "TaxChargeSpecification",
@@ -1059,14 +1073,13 @@ other administrative fees to the `OrderQuote`. The `additionalFee` array of the 
         "acceptedOffer": {
           "type": "Offer", //expanded by booking system
           "id": "https://example.com/events/452#/offers/878", // broker
-          "validThrough": "2018-10-29T11:00:00Z",
-          "validFrom": "2018-10-01T11:00:00Z",
           "description": "Winger space for Speedball.",
           "name": "Speedball winger position",
           "price": 10.00,
           "priceCurrency": "GBP",
           "isCancellable": true,
-          "cancellationValidUntil": "2018-10-28T11:00:00Z"
+          "validFromBeforeStartDate": "P6D",
+          "cancellationBeforeStartDate": "P1D"
         },
         "orderedItem": {
           "type": "ScheduledSession",
@@ -1097,159 +1110,27 @@ other administrative fees to the `OrderQuote`. The `additionalFee` array of the 
         }
       }
     ],
-    "additionalFee": [  //broker
-      {
-        "type": "OrderItem",
-        "name": "Cancellation charge",
-        "acceptedOffer": {
-          "type": "Offer",
-          "price": 10.00,
-          "priceCurrency": "GBP"
-        },
-        "unitTaxSpecification": [
-          {
-            "type": "TaxChargeSpecification",
-            "typeIdentifier": "VAT-20",
-            "rateIdentifier": "20",
-            "name": "VAT at 20%",
-            "price": 1.00,
-            "priceCurrency": "GBP",
-            "rate": 0.2
-          }
-        ]
-      }
-    ],
     "orderStatus": "https://openactive.io/OrderComplete", //broker
-    "partOfInvoice": [ // booking system
+    "totalPaymentDue": {
+      "type": "PriceSpecification",
+      "price": 5.00,
+      "priceCurrency": "GBP",
+      "valueAddedTaxIncluded": true
+    },
+    "totalTaxSpecification": [
       {
-        "type": "Invoice",
-        "paymentStatus": "https://openactive.io/PaymentQuote",
-        "invoiceNumber": "000001",
-        "identifier": "000001",
-        "customer": {
-          "type": "Person",
-          "email": "geoffcapes@example.com",
-          "telephone": "020 811 8055",
-          "givenName": "Geoff",
-          "familyName": "Capes"
-        },
-        "provider": {
-          "type": "Organization",
-          "identifier": "CRUOZWJ1",
-          "name": "Better",
-          "legalName": "Greenwich Leisure Limited",
-          "description": "A charitable social enterprise for all the community",
-          "url": "https://www.better.org.uk",
-          "logo": {
-            "type": "ImageObject",
-            "url": "http://data.better.org.uk/images/logo.png"
-          },
-          "telephone": "020 3457 8700",
-          "email": "customerservices@gll.org",
-          "vatID": "GB 789 1234 56",
-          "address": {
-            "type": "PostalAddress",
-            "streetAddress": "Alan Peacock Way",
-            "addressLocality": "Village East",
-            "addressRegion": "Middlesbrough",
-            "postalCode": "TS4 3AE",
-            "addressCountry": "GB"
-          }
-        },
-        "totalPaymentDue": {
-          "type": "PriceSpecification",
-          "price": 5.00,
-          "priceCurrency": "GBP",
-          "valueAddedTaxIncluded": true
-        },
-        "totalTaxSpecification": [
-          {
-            "type": "TaxChargeSpecification",
-            "name": "VAT at 0% for EU transactions",
-            "price": 1.00,
-            "priceCurrency": "GBP",
-            "rate": 0.2
-          }
-        ]
+        "type": "TaxChargeSpecification",
+        "name": "VAT at 0% for EU transactions",
+        "price": 1.00,
+        "priceCurrency": "GBP",
+        "rate": 0.2
       }
     ],
-    "transaction": [ // broker (& booking system for amends)
-      {
-        "type": "Payment",
-        "name": "Credit card payment",
-        "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-        "paymentMethodId": "re_1DckvZKarmweGdVCdOt4GBMc",
-        "receiptNumber": "0023400",
-        "transactionStatus": "https://openactive.io/TransactionReconciled", // booking system
-        "last4": "1234",
-        "payee": {
-          "type": "Person",
-          "email": "geoffcapes@example.com",
-          "telephone": "020 811 8055",
-          "givenName": "Geoff",
-          "familyName": "Capes"
-        },
-        "amount": {
-          "type": "MonetaryAmount",
-          "value": 8.00,
-          "currency": "GBP"
-        }
-      },
-      {
-        "type": "Payment",
-        "name": "Amex Fitness Credits",
-        "paymentMethod": "https://openactive.io/PaymentMethodVoucher",
-        "paymentMethodId": "3204",
-        "payee": {
-          "type": "Person",
-          "email": "geoffcapes@example.com",
-          "telephone": "020 811 8055",
-          "givenName": "Geoff",
-          "familyName": "Capes"
-        },
-        "amount": {
-          "type": "MonetaryAmount",
-          "value": 1.00,
-          "currency": "GBP"
-        }
-      },
-      {
-        "type": "Payment",
-        "name": "MyFitnessApp Discount",
-        "paymentMethod": "https://purl.org/goodrelations/v1#ByInvoice",
-        "paymentMethodId": "3204",
-        "payee": {
-          "type": "Organization",
-          "name": "MyFitnessApp",
-          "url": "https://myfitnessapp.example.com"
-        },
-        "amount": {
-          "type": "MonetaryAmount",
-          "value": 1.00,
-          "currency": "GBP"
-        }
-      },
-      {
-        "type": "Refund",
-        "name": "Credit card refund",
-        "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-        "paymentMethodId": "re_1DckvZKarmweGdVCdOt4GBMc",
-        "receiptNumber": "0023400",
-        "last4": "1234",
-        "payee": {
-          "type": "Person",
-          "email": "geoffcapes@example.com",
-          "telephone": "020 811 8055",
-          "givenName": "Geoff",
-          "familyName": "Capes"
-        },
-        "amount": {
-          "type": "MonetaryAmount",
-          "value": -8.00,
-          "currency": "GBP"
-        }
-      }
-    ]
+    "payment": { // broker (& booking system for amends)
+      "type": "Payment",
+      "name": "AcmeBroker Points", // optional free text description of payment method for booking system, to help the Seller in discussions with the Customer (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card")
+      "identifier": "1234567890npduy2f"
+    }
   }
 ```
 
