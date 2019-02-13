@@ -802,7 +802,7 @@ This also allows the **Broker** to handle refunds to cancellations, and process 
 
 ### Booking System: Updating RPDE `Order`s
 
-A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models. The **Booking System** must ensure that the `Order`s in the RPDE feed represent the current state of `OrderItem`s within the system. Note that although multiple `Order`s may be created in the RPDE feed which are different to the `Order` returned by **B**, the individual `OrderItem`s within the `Order`s must be the same in **B** as in the RPDE `Order`s. 
+A single POST to **B** MAY create multiple `Order`s on the RPDE feed, to accommodate the variety of internal **Booking System** models. The **Booking System** must ensure that the `Order`s in the RPDE feed represent the current state of `OrderItem`s within the system. Note that although multiple `Order`s may be created in the RPDE feed which are different to the `Order` returned by **B**, the individual `OrderItem`s within the `Order`s must be the same in **B** as in the RPDE `Order`s.
 
 In order to allow a natural batching of updates in the RPDE feed, where multiple cancellations may be made across multiple `Order`s for the same **Customer**, cancellation updates made to `Order`s in the feed by the **Booking System** MUST be posted with a modified date 30 seconds into the future. The following query will easily exclude such updates while still meeting the RPDE specification:
 
@@ -860,14 +860,14 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
         "data": {
           "@context": "https://openactive.io/",
           "type": "Order",
-          "id": "https://example.com/orders/123e4567-e89b-12d3-a456-426655440000"
-          "orderNumber": "12d3-a456-426655440000",
-          "orderStatus": "https://openactive.io/OrderComplete",
+          "id": "https://example.com/orders/452"
+          "orderNumber": "452",
           "seller": {
             "type": "Organization",
             "identifier": "CRUOZWJ1",
             "name": "Better",
-            "legalName": "Greenwich Leisure Limited"
+            "legalName": "Greenwich Leisure Limited",
+            "taxMode": "https://openactive/TaxNet"
           },
           "brokerRole": "https://openactive.io/BrokerAgent",
           "broker": {
@@ -884,6 +884,7 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
             {
               "type": "OrderItem",
               "id": "https://example.com/orders/452/order-items/132",
+              "orderItemStatus": "https://openactive.io/OrderItemConfirmed", //booking system
               "allowSimpleCancellation": true,
               "unitTaxSpecification": [
                 {
@@ -961,6 +962,7 @@ Note that the **Customer** MUST be notified in the event of all cancellations, e
 ```
 
 
+
 ## Amending the Order after **B**
 
 `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification. A new `Order` must be created, and the old `Order` cancelled.
@@ -1009,12 +1011,12 @@ Note that due to the variety of business models available in the OpenActive ecos
 ### Example
 
 
-```javascript
+<pre class="example" title="Example of Order model">
   {
     "@context": "https://openactive.io/",
     "type": "OrderQuote",
     "orderNumber": "", //booking system generated
-    "seller": {
+    "seller": { //booking system
       "type": "Organization",
       "identifier": "CRUOZWJ1",
       "name": "Better",
@@ -1035,7 +1037,8 @@ Note that due to the variety of business models available in the OpenActive ecos
         "addressRegion": "Middlesbrough",
         "postalCode": "TS4 3AE",
         "addressCountry": "GB"
-      }
+      },
+      "taxMode": "https://openactive/TaxNet"
     },
     "brokerRole": "https://openactive.io/BrokerAgent", //broker
     "broker": { //broker
@@ -1080,7 +1083,8 @@ Note that due to the variety of business models available in the OpenActive ecos
     "orderedItem": [ //broker
       {
         "type": "OrderItem",
-        "unitTaxSpecification": [ //broker if priceOverride is true, booking system otherwise
+        "orderItemStatus": "https://openactive.io/OrderItemConfirmed", //booking system
+        "unitTaxSpecification": [ //booking system otherwise
           {
             "type": "TaxChargeSpecification",
             "name": "VAT at 0% for EU transactions",
@@ -1129,14 +1133,13 @@ Note that due to the variety of business models available in the OpenActive ecos
         }
       }
     ],
-    "orderStatus": "https://openactive.io/OrderComplete", //broker
-    "totalPaymentDue": {
+    "totalPaymentDue": { //booking system
       "type": "PriceSpecification",
       "price": 5.00,
       "priceCurrency": "GBP",
       "valueAddedTaxIncluded": true
     },
-    "totalTaxSpecification": [
+    "totalTaxSpecification": [ //booking system
       {
         "type": "TaxChargeSpecification",
         "name": "VAT at 0% for EU transactions",
@@ -1145,13 +1148,13 @@ Note that due to the variety of business models available in the OpenActive ecos
         "rate": 0.2
       }
     ],
-    "payment": { // broker (& booking system for amends)
+    "payment": { // broker
       "type": "Payment",
       "name": "AcmeBroker Points", // optional free text description of payment method for booking system, to help the Seller in discussions with the Customer (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card")
       "identifier": "1234567890npduy2f"
     }
   }
-```
+</pre>
 
 </section>
 
