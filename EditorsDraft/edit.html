@@ -1169,7 +1169,7 @@ Used for `totalPaymentDue`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `TaxChargeSpecification` |
 | [`schema:price`](http://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The monetary value of the tax charge. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the booking system. Note an array of `PropertyValue` can be used to provide multiple identifiers where avaialble. |
+| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the booking system. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the tax charge, e.g. "VAT at 0% for EU transactions" |
 | [`oa:rate`](https://openactive.io/rate)                            | - | OPTIONAL | [`schema:Float`](https://schema.org/Float) | The rate of VAT. |
 
@@ -1203,7 +1203,7 @@ Used for `termsOfService`.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
-| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Payment` |
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms which must distinguish this from other terms provided, e.g. "Terms and Conditions" or "Privacy Policy" |
 | [`schema:url`](http://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
 
