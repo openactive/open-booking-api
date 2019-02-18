@@ -1,4 +1,4 @@
-<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 24.3.1"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
+<!DOCTYPE html><html xmlns="https://www.w3.org/1999/xhtml" lang="en"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 24.3.2"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style>/* --- EXAMPLES --- */
 span.example-title {
     text-transform: none;
 }
@@ -682,8 +682,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
       "id": "openidconnect"
     }
   },
-  "publishISODate": "2019-02-13T00:00:00.000Z",
-  "generatedSubtitle": "Draft Community Group Report 13 February 2019"
+  "publishISODate": "2019-02-18T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 18 February 2019"
 }</script><meta name="description" content="This document specifies an HTTP API for placing bookings to participate in
 physical activities, either by attending events or through the use of leisure
 or sports facilities."></head>
@@ -694,7 +694,7 @@ or sports facilities."></head>
       
       <h2>
         Draft Community Group Report
-        <time class="dt-published" datetime="2019-02-13">13 February 2019</time>
+        <time class="dt-published" datetime="2019-02-18">18 February 2019</time>
       </h2>
       <dl>
         
@@ -780,7 +780,7 @@ contribute to the development of the specification.</p>
             <a href="mailto:public-openactive@w3.org">public-openactive@w3.org</a>
             (<a href="mailto:public-openactive-request@w3.org?subject=subscribe">subscribe</a>,
             <a href="https://lists.w3.org/Archives/Public/public-openactive/">archives</a>).
-          </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#introduction"><span class="secno">1. </span>Introduction</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#scope-and-requirements"><span class="secno">1.1 </span>Scope and requirements</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#functionality-that-is-out-of-scope"><span class="secno">1.1.1 </span>Functionality that is out of scope</a></li></ol></li><li class="tocline"><a class="tocxref" href="#audience"><span class="secno">1.2 </span>Audience</a></li></ol></li><li class="tocline"><a class="tocxref" href="#conformance"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a class="tocxref" href="#typographical-conventions"><span class="secno">3. </span>Typographical Conventions</a></li><li class="tocline"><a class="tocxref" href="#key-actors"><span class="secno">4. </span>Key Actors</a></li><li class="tocline"><a class="tocxref" href="#booking-flow"><span class="secno">5. </span>Booking Flow</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#user-journey"><span class="secno">5.1 </span>User Journey</a></li><li class="tocline"><a class="tocxref" href="#high-level-summary-of-the-api"><span class="secno">5.2 </span>High-level summary of the API</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#broker-contract-with-booking-system"><span class="secno">5.2.1 </span>Broker contract with Booking System</a></li><li class="tocline"><a class="tocxref" href="#booking-system-contract-with-the-broker"><span class="secno">5.2.2 </span>Booking System contract with the Broker</a></li><li class="tocline"><a class="tocxref" href="#leasing"><span class="secno">5.2.3 </span>Leasing</a></li></ol></li><li class="tocline"><a class="tocxref" href="#step-by-step-process-description"><span class="secno">5.3 </span>Step-by-step process description</a></li></ol></li><li class="tocline"><a class="tocxref" href="#broker-roles"><span class="secno">6. </span>Broker Roles</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#resellerbroker"><span class="secno">6.1 </span><code>ResellerBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition"><span class="secno">6.1.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships"><span class="secno">6.1.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation"><span class="secno">6.1.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification"><span class="secno">6.1.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria"><span class="secno">6.1.5 </span>Conformance criteria</a></li></ol></li><li class="tocline"><a class="tocxref" href="#agentbroker"><span class="secno">6.2 </span><code>AgentBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-0"><span class="secno">6.2.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships-0"><span class="secno">6.2.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation-0"><span class="secno">6.2.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification-0"><span class="secno">6.2.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria-0"><span class="secno">6.2.5 </span>Conformance criteria</a></li></ol></li><li class="tocline"><a class="tocxref" href="#nobroker"><span class="secno">6.3 </span><code>NoBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-1"><span class="secno">6.3.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships-1"><span class="secno">6.3.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation-1"><span class="secno">6.3.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification-1"><span class="secno">6.3.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria-1"><span class="secno">6.3.5 </span>Conformance criteria</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#systems-of-record"><span class="secno">7. </span>Systems of Record</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#roles-and-responsibilities-overview"><span class="secno">7.1 </span>Roles and responsibilities overview</a></li><li class="tocline"><a class="tocxref" href="#invoices-and-tax-receipts"><span class="secno">7.2 </span>Invoices and Tax receipts</a></li><li class="tocline"><a class="tocxref" href="#payments-and-refunds"><span class="secno">7.3 </span>Payments and Refunds</a></li><li class="tocline"><a class="tocxref" href="#tax-calculation"><span class="secno">7.4 </span>Tax calculation</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#b2c-tax-calculation-by-booking-system-is-mandatory"><span class="secno">7.4.1 </span>B2C tax calculation by Booking System is mandatory</a></li><li class="tocline"><a class="tocxref" href="#b2b-tax-calculation-by-booking-system-is-optional"><span class="secno">7.4.2 </span>B2B tax calculation by Booking System is optional</a></li></ol></li><li class="tocline"><a class="tocxref" href="#tax-mode"><span class="secno">7.5 </span>Tax mode</a></li><li class="tocline"><a class="tocxref" href="#offer-overrides"><span class="secno">7.6 </span>Offer overrides</a></li></ol></li><li class="tocline"><a class="tocxref" href="#order-operations"><span class="secno">8. </span>Order Operations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#amending-the-orderquote-before-b"><span class="secno">8.1 </span>Amending the OrderQuote before <strong>B</strong></a></li><li class="tocline"><a class="tocxref" href="#cancellation-after-b"><span class="secno">8.2 </span>Cancellation after <strong>B</strong></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#customer-requested-cancellation"><span class="secno">8.2.1 </span>Customer requested cancellation</a></li><li class="tocline"><a class="tocxref" href="#seller-requested-cancellation"><span class="secno">8.2.2 </span>Seller requested cancellation</a></li></ol></li><li class="tocline"><a class="tocxref" href="#notifications-updates-and-refunds"><span class="secno">8.3 </span>Notifications, updates and refunds</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#booking-system-updating-rpde-orders"><span class="secno">8.3.1 </span>Booking System: Updating RPDE <code>Order</code>s</a></li><li class="tocline"><a class="tocxref" href="#broker-processing-rpde-orders"><span class="secno">8.3.2 </span>Broker: Processing RPDE <code>Order</code>s</a></li><li class="tocline"><a class="tocxref" href="#new-orders"><span class="secno">8.3.3 </span>New <code>Orders</code></a></li><li class="tocline"><a class="tocxref" href="#cancellation-refund-calculation-and-notification"><span class="secno">8.3.4 </span>Cancellation, refund calculation and notification</a></li></ol></li><li class="tocline"><a class="tocxref" href="#amending-the-order-after-b"><span class="secno">8.4 </span>Amending the Order after <strong>B</strong></a></li><li class="tocline"><a class="tocxref" href="#extension-points-for-including-payments"><span class="secno">8.5 </span>Extension points for including Payments</a></li></ol></li><li class="tocline"><a class="tocxref" href="#modelling"><span class="secno">9. </span>Modelling</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#order-and-orderquote"><span class="secno">9.1 </span><code>Order</code> and <code>OrderQuote</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#example"><span class="secno">9.1.1 </span>Example</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#common-requirements"><span class="secno">10. </span>Common Requirements</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#media-types"><span class="secno">10.1 </span>Media types</a></li><li class="tocline"><a class="tocxref" href="#response-formats"><span class="secno">10.2 </span>Response formats</a></li><li class="tocline"><a class="tocxref" href="#url-discovery"><span class="secno">10.3 </span>URL discovery</a></li><li class="tocline"><a class="tocxref" href="#error-handling"><span class="secno">10.4 </span>Error handling</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-customer-details"><span class="secno">10.4.1 </span>Order creation : Incomplete customer details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-broker-details"><span class="secno">10.4.2 </span>Order creation : Incomplete broker details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-offer-details"><span class="secno">10.4.3 </span>Order creation : Incomplete offer details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-opportunity-details"><span class="secno">10.4.4 </span>Order creation : Incomplete opportunity details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-unavailable-offer"><span class="secno">10.4.5 </span>Order creation : Unavailable offer</a></li><li class="tocline"><a class="tocxref" href="#order-creation-unavailable-opportunity"><span class="secno">10.4.6 </span>Order creation : Unavailable opportunity</a></li><li class="tocline"><a class="tocxref" href="#order-creation-opportunity-full"><span class="secno">10.4.7 </span>Order creation : Opportunity full</a></li><li class="tocline"><a class="tocxref" href="#order-completion-incomplete-payment-details"><span class="secno">10.4.8 </span>Order completion : Incomplete payment details</a></li><li class="tocline"><a class="tocxref" href="#order-completion-anonymous-lease-expired"><span class="secno">10.4.9 </span>Order completion : Anonymous lease expired</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-unauthenticated"><span class="secno">10.4.10 </span>API authentication : Unauthenticated</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-no-api-token-provided"><span class="secno">10.4.11 </span>API authentication : No API token provided</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-invalid-api-token-provided"><span class="secno">10.4.12 </span>API authentication : Invalid API token provided</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-invalid-authorization-details-provided"><span class="secno">10.4.13 </span>API authentication : Invalid authorization details provided</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-create-order"><span class="secno">10.4.14 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-create-order-0"><span class="secno">10.4.15 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-delete-order"><span class="secno">10.4.16 </span>Technical errors : Temporarily unable to delete order</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-offer"><span class="secno">10.4.17 </span>Generic errors : Unknown or incorrect offer</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-opportunity"><span class="secno">10.4.18 </span>Generic errors : Unknown or incorrect opportunity</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-order"><span class="secno">10.4.19 </span>Generic errors : Unknown or incorrect order</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-endpoint"><span class="secno">10.4.20 </span>Generic errors : Unknown or incorrect endpoint</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-not-found"><span class="secno">10.4.21 </span>Generic errors : Not found</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-method-not-allowed"><span class="secno">10.4.22 </span>Generic errors : Method not allowed</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-gone"><span class="secno">10.4.23 </span>Generic errors : Gone</a></li></ol></li><li class="tocline"><a class="tocxref" href="#security"><span class="secno">10.5 </span>Security</a></li><li class="tocline"><a class="tocxref" href="#authentication"><span class="secno">10.6 </span>Authentication</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#api-level-authentication"><span class="secno">10.6.1 </span>API level authentication</a></li><li class="tocline"><a class="tocxref" href="#customer-level-authentication"><span class="secno">10.6.2 </span>Customer level authentication</a></li></ol></li><li class="tocline"><a class="tocxref" href="#delivery-of-terms-and-conditions-and-privacy-policy"><span class="secno">10.7 </span>Delivery of Terms and Conditions and Privacy Policy</a></li></ol></li><li class="tocline"><a class="tocxref" href="#operations"><span class="secno">11. </span>Operations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#checking-availability-and-offers"><span class="secno">11.1 </span>Checking availability and offers</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-of-a-bookable-event"><span class="secno">11.1.1 </span>Definition of a 'bookable' Event</a></li><li class="tocline"><a class="tocxref" href="#definition-of-a-bookable-slot-facility-use"><span class="secno">11.1.2 </span>Definition of a 'bookable' slot/facility use</a></li><li class="tocline"><a class="tocxref" href="#checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">11.1.3 </span>Checking availability and offers for an event or facility use slot</a></li><li class="tocline"><a class="tocxref" href="#assembling-a-set-of-offers-and-presenting-them-to-a-customer"><span class="secno">11.1.4 </span>Assembling a set of offers and presenting them to a customer</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#collating-offers-for-an-event"><span class="secno">11.1.4.1 </span>Collating offers for an event</a></li><li class="tocline"><a class="tocxref" href="#collating-offers-for-the-use-of-a-facility"><span class="secno">11.1.4.2 </span>Collating offers for the use of a facility</a></li></ol></li><li class="tocline"><a class="tocxref" href="#obtaining-a-lease-on-a-space-within-an-opportunity"><span class="secno">11.1.5 </span>Obtaining a lease on a space within an opportunity</a></li></ol></li><li class="tocline"><a class="tocxref" href="#creating-and-updating-orders"><span class="secno">11.2 </span>Creating and updating orders</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#discovering-the-order-endpoint"><span class="secno">11.2.1 </span>Discovering the order endpoint</a></li><li class="tocline"><a class="tocxref" href="#pre-conditions-for-creating-an-order"><span class="secno">11.2.2 </span>Pre-conditions for creating an order</a></li><li class="tocline"><a class="tocxref" href="#creating-a-new-order-orders"><span class="secno">11.2.3 </span>Creating a new order (<code>/orders</code>)</a></li><li class="tocline"><a class="tocxref" href="#viewing-an-order-orders-orderid"><span class="secno">11.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a class="tocxref" href="#deleting-an-order-orders-orderid"><span class="secno">11.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a class="tocxref" href="#completing-an-order-orders-orderid"><span class="secno">11.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</a></li></ol></li><li class="tocline"><a class="tocxref" href="#ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">11.3 </span>Ordering a place at a free event/ordering a free slot</a></li><li class="tocline"><a class="tocxref" href="#leases-and-the-orderleaseduration-property"><span class="secno">11.4 </span>Leases and the orderLeaseDuration property</a></li><li class="tocline"><a class="tocxref" href="#the-state-transitions-during-the-order-process"><span class="secno">11.5 </span>The state transitions during the order process</a></li><li class="tocline"><a class="tocxref" href="#actions-which-occur-after-order-completion-confirmations-and-refunds"><span class="secno">11.6 </span>Actions which occur after order completion: confirmations and refunds</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#supplying-a-confirmation-to-the-customer"><span class="secno">11.6.1 </span>Supplying a confirmation to the customer</a></li><li class="tocline"><a class="tocxref" href="#refunding-a-customer-and-cancelling-an-order"><span class="secno">11.6.2 </span>Refunding a customer and cancelling an order</a></li></ol></li><li class="tocline"><a class="tocxref" href="#customers"><span class="secno">11.7 </span>Customers</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#creation-of-customers-on-the-booking-system"><span class="secno">11.7.1 </span>Creation of customers on the booking system</a></li><li class="tocline"><a class="tocxref" href="#viewing-a-customer-s-previously-placed-orders"><span class="secno">11.7.2 </span>Viewing a customer's previously placed orders</a></li><li class="tocline"><a class="tocxref" href="#deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed"><span class="secno">11.7.3 </span>Deletion of personal data of the customer if the order is not completed</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#future-versions-of-this-api"><span class="secno">12. </span>Future versions of this API</a></li><li class="tocline"><a class="tocxref" href="#new-open-active-models-defined-in-the-1-0-booking-api-specification"><span class="secno">13. </span>New Open Active models defined in the 1.0 Booking API specification</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#error"><span class="secno">13.1 </span>Error</a></li><li class="tocline"><a class="tocxref" href="#payment"><span class="secno">13.2 </span>Payment</a></li><li class="tocline"><a class="tocxref" href="#acknowledgements"><span class="secno">13.3 </span>Acknowledgements</a></li></ol></li><li class="tocline"><a class="tocxref" href="#references"><span class="secno">A. </span>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><span class="secno">A.1 </span>Normative references</a></li></ol></li></ol></nav><section class="informative" id="introduction"><!--OddPage--><h2 id="x1-introduction"><span class="secno">1. </span>Introduction<a class="self-link" aria-label="§" href="#introduction"></a></h2><p><em>This section is non-normative.</em></p><p>The document is an output of the
+          </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#introduction"><span class="secno">1. </span>Introduction</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#scope-and-requirements"><span class="secno">1.1 </span>Scope and requirements</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#functionality-that-is-out-of-scope"><span class="secno">1.1.1 </span>Functionality that is out of scope</a></li></ol></li><li class="tocline"><a class="tocxref" href="#audience"><span class="secno">1.2 </span>Audience</a></li></ol></li><li class="tocline"><a class="tocxref" href="#conformance"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a class="tocxref" href="#typographical-conventions"><span class="secno">3. </span>Typographical Conventions</a></li><li class="tocline"><a class="tocxref" href="#key-actors"><span class="secno">4. </span>Key Actors</a></li><li class="tocline"><a class="tocxref" href="#booking-flow"><span class="secno">5. </span>Booking Flow</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#user-journey"><span class="secno">5.1 </span>User Journey</a></li><li class="tocline"><a class="tocxref" href="#high-level-summary-of-the-api"><span class="secno">5.2 </span>High-level summary of the API</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#broker-contract-with-booking-system"><span class="secno">5.2.1 </span>Broker contract with Booking System</a></li><li class="tocline"><a class="tocxref" href="#booking-system-contract-with-the-broker"><span class="secno">5.2.2 </span>Booking System contract with the Broker</a></li><li class="tocline"><a class="tocxref" href="#leasing"><span class="secno">5.2.3 </span>Leasing</a></li></ol></li><li class="tocline"><a class="tocxref" href="#step-by-step-process-description"><span class="secno">5.3 </span>Step-by-step process description</a></li></ol></li><li class="tocline"><a class="tocxref" href="#broker-roles"><span class="secno">6. </span>Broker Roles</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#resellerbroker"><span class="secno">6.1 </span><code>ResellerBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition"><span class="secno">6.1.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships"><span class="secno">6.1.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation"><span class="secno">6.1.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification"><span class="secno">6.1.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria"><span class="secno">6.1.5 </span>Conformance criteria</a></li></ol></li><li class="tocline"><a class="tocxref" href="#agentbroker"><span class="secno">6.2 </span><code>AgentBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-0"><span class="secno">6.2.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships-0"><span class="secno">6.2.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation-0"><span class="secno">6.2.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification-0"><span class="secno">6.2.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria-0"><span class="secno">6.2.5 </span>Conformance criteria</a></li></ol></li><li class="tocline"><a class="tocxref" href="#nobroker"><span class="secno">6.3 </span><code>NoBroker</code></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-1"><span class="secno">6.3.1 </span>Definition</a></li><li class="tocline"><a class="tocxref" href="#contractual-relationships-1"><span class="secno">6.3.2 </span>Contractual Relationships</a></li><li class="tocline"><a class="tocxref" href="#taxation-1"><span class="secno">6.3.3 </span>Taxation</a></li><li class="tocline"><a class="tocxref" href="#scope-of-specification-1"><span class="secno">6.3.4 </span>Scope of Specification</a></li><li class="tocline"><a class="tocxref" href="#conformance-criteria-1"><span class="secno">6.3.5 </span>Conformance criteria</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#systems-of-record"><span class="secno">7. </span>Systems of Record</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#roles-and-responsibilities-overview"><span class="secno">7.1 </span>Roles and responsibilities overview</a></li><li class="tocline"><a class="tocxref" href="#invoices-and-tax-receipts"><span class="secno">7.2 </span>Invoices and Tax receipts</a></li><li class="tocline"><a class="tocxref" href="#payments-and-refunds"><span class="secno">7.3 </span>Payments and Refunds</a></li><li class="tocline"><a class="tocxref" href="#tax-calculation"><span class="secno">7.4 </span>Tax calculation</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#b2c-tax-calculation-by-booking-system-is-mandatory"><span class="secno">7.4.1 </span>B2C tax calculation by Booking System is mandatory</a></li><li class="tocline"><a class="tocxref" href="#b2b-tax-calculation-by-booking-system-is-optional"><span class="secno">7.4.2 </span>B2B tax calculation by Booking System is optional</a></li></ol></li><li class="tocline"><a class="tocxref" href="#tax-mode"><span class="secno">7.5 </span>Tax mode</a></li><li class="tocline"><a class="tocxref" href="#offer-overrides"><span class="secno">7.6 </span>Offer overrides</a></li></ol></li><li class="tocline"><a class="tocxref" href="#order-operations"><span class="secno">8. </span>Order Operations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#amending-the-orderquote-before-b"><span class="secno">8.1 </span>Amending the OrderQuote before <strong>B</strong></a></li><li class="tocline"><a class="tocxref" href="#cancellation-after-b"><span class="secno">8.2 </span>Cancellation after <strong>B</strong></a><ol class="toc"><li class="tocline"><a class="tocxref" href="#customer-requested-cancellation"><span class="secno">8.2.1 </span>Customer requested cancellation</a></li><li class="tocline"><a class="tocxref" href="#seller-requested-cancellation"><span class="secno">8.2.2 </span>Seller requested cancellation</a></li></ol></li><li class="tocline"><a class="tocxref" href="#notifications-updates-and-refunds"><span class="secno">8.3 </span>Notifications, updates and refunds</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#booking-system-updating-rpde-orders"><span class="secno">8.3.1 </span>Booking System: Updating RPDE <code>Order</code>s</a></li><li class="tocline"><a class="tocxref" href="#broker-processing-rpde-orders"><span class="secno">8.3.2 </span>Broker: Processing RPDE <code>Order</code>s</a></li><li class="tocline"><a class="tocxref" href="#new-orders"><span class="secno">8.3.3 </span>New <code>Orders</code></a></li><li class="tocline"><a class="tocxref" href="#cancellation-refund-calculation-and-notification"><span class="secno">8.3.4 </span>Cancellation, refund calculation and notification</a></li></ol></li><li class="tocline"><a class="tocxref" href="#amending-the-order-after-b"><span class="secno">8.4 </span>Amending the Order after <strong>B</strong></a></li><li class="tocline"><a class="tocxref" href="#extension-points-for-including-payments"><span class="secno">8.5 </span>Extension points for including Payments</a></li></ol></li><li class="tocline"><a class="tocxref" href="#model"><span class="secno">9. </span>Model</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#order-and-orderquote"><span class="secno">9.1 </span><code>Order</code> and <code>OrderQuote</code></a></li><li class="tocline"><a class="tocxref" href="#organization-for-seller"><span class="secno">9.2 </span><code>Organization</code> for <code>seller</code></a></li><li class="tocline"><a class="tocxref" href="#organization-for-broker"><span class="secno">9.3 </span><code>Organization</code> for <code>broker</code></a></li><li class="tocline"><a class="tocxref" href="#orderitem"><span class="secno">9.4 </span><code>OrderItem</code></a></li><li class="tocline"><a class="tocxref" href="#offer"><span class="secno">9.5 </span><code>Offer</code></a></li><li class="tocline"><a class="tocxref" href="#person"><span class="secno">9.6 </span><code>Person</code></a></li><li class="tocline"><a class="tocxref" href="#organization-for-customer"><span class="secno">9.7 </span><code>Organization</code> for <code>customer</code></a></li><li class="tocline"><a class="tocxref" href="#postaladdress"><span class="secno">9.8 </span><code>PostalAddress</code></a></li><li class="tocline"><a class="tocxref" href="#lease"><span class="secno">9.9 </span><code>Lease</code></a></li><li class="tocline"><a class="tocxref" href="#pricespecification"><span class="secno">9.10 </span><code>PriceSpecification</code></a></li><li class="tocline"><a class="tocxref" href="#taxchargespecification"><span class="secno">9.11 </span><code>TaxChargeSpecification</code></a></li><li class="tocline"><a class="tocxref" href="#payment"><span class="secno">9.12 </span><code>Payment</code></a></li><li class="tocline"><a class="tocxref" href="#bookingservice"><span class="secno">9.13 </span><code>BookingService</code></a></li><li class="tocline"><a class="tocxref" href="#terms"><span class="secno">9.14 </span><code>Terms</code></a></li><li class="tocline"><a class="tocxref" href="#example"><span class="secno">9.15 </span>Example</a></li></ol></li><li class="tocline"><a class="tocxref" href="#common-requirements"><span class="secno">10. </span>Common Requirements</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#media-types"><span class="secno">10.1 </span>Media types</a></li><li class="tocline"><a class="tocxref" href="#response-formats"><span class="secno">10.2 </span>Response formats</a></li><li class="tocline"><a class="tocxref" href="#url-discovery"><span class="secno">10.3 </span>URL discovery</a></li><li class="tocline"><a class="tocxref" href="#error-handling"><span class="secno">10.4 </span>Error handling</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-customer-details"><span class="secno">10.4.1 </span>Order creation : Incomplete customer details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-broker-details"><span class="secno">10.4.2 </span>Order creation : Incomplete broker details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-offer-details"><span class="secno">10.4.3 </span>Order creation : Incomplete offer details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-incomplete-opportunity-details"><span class="secno">10.4.4 </span>Order creation : Incomplete opportunity details</a></li><li class="tocline"><a class="tocxref" href="#order-creation-unavailable-offer"><span class="secno">10.4.5 </span>Order creation : Unavailable offer</a></li><li class="tocline"><a class="tocxref" href="#order-creation-unavailable-opportunity"><span class="secno">10.4.6 </span>Order creation : Unavailable opportunity</a></li><li class="tocline"><a class="tocxref" href="#order-creation-opportunity-full"><span class="secno">10.4.7 </span>Order creation : Opportunity full</a></li><li class="tocline"><a class="tocxref" href="#order-completion-incomplete-payment-details"><span class="secno">10.4.8 </span>Order completion : Incomplete payment details</a></li><li class="tocline"><a class="tocxref" href="#order-completion-anonymous-lease-expired"><span class="secno">10.4.9 </span>Order completion : Anonymous lease expired</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-unauthenticated"><span class="secno">10.4.10 </span>API authentication : Unauthenticated</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-no-api-token-provided"><span class="secno">10.4.11 </span>API authentication : No API token provided</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-invalid-api-token-provided"><span class="secno">10.4.12 </span>API authentication : Invalid API token provided</a></li><li class="tocline"><a class="tocxref" href="#api-authentication-invalid-authorization-details-provided"><span class="secno">10.4.13 </span>API authentication : Invalid authorization details provided</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-create-order"><span class="secno">10.4.14 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-create-order-0"><span class="secno">10.4.15 </span>Technical errors : Temporarily unable to create order</a></li><li class="tocline"><a class="tocxref" href="#technical-errors-temporarily-unable-to-delete-order"><span class="secno">10.4.16 </span>Technical errors : Temporarily unable to delete order</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-offer"><span class="secno">10.4.17 </span>Generic errors : Unknown or incorrect offer</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-opportunity"><span class="secno">10.4.18 </span>Generic errors : Unknown or incorrect opportunity</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-order"><span class="secno">10.4.19 </span>Generic errors : Unknown or incorrect order</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-unknown-or-incorrect-endpoint"><span class="secno">10.4.20 </span>Generic errors : Unknown or incorrect endpoint</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-not-found"><span class="secno">10.4.21 </span>Generic errors : Not found</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-method-not-allowed"><span class="secno">10.4.22 </span>Generic errors : Method not allowed</a></li><li class="tocline"><a class="tocxref" href="#generic-errors-gone"><span class="secno">10.4.23 </span>Generic errors : Gone</a></li></ol></li><li class="tocline"><a class="tocxref" href="#security"><span class="secno">10.5 </span>Security</a></li><li class="tocline"><a class="tocxref" href="#authentication"><span class="secno">10.6 </span>Authentication</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#api-level-authentication"><span class="secno">10.6.1 </span>API level authentication</a></li><li class="tocline"><a class="tocxref" href="#customer-level-authentication"><span class="secno">10.6.2 </span>Customer level authentication</a></li></ol></li><li class="tocline"><a class="tocxref" href="#delivery-of-terms-and-conditions-and-privacy-policy"><span class="secno">10.7 </span>Delivery of Terms and Conditions and Privacy Policy</a></li></ol></li><li class="tocline"><a class="tocxref" href="#operations"><span class="secno">11. </span>Operations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#checking-availability-and-offers"><span class="secno">11.1 </span>Checking availability and offers</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#definition-of-a-bookable-event"><span class="secno">11.1.1 </span>Definition of a 'bookable' Event</a></li><li class="tocline"><a class="tocxref" href="#definition-of-a-bookable-slot-facility-use"><span class="secno">11.1.2 </span>Definition of a 'bookable' slot/facility use</a></li><li class="tocline"><a class="tocxref" href="#checking-availability-and-offers-for-an-event-or-facility-use-slot"><span class="secno">11.1.3 </span>Checking availability and offers for an event or facility use slot</a></li><li class="tocline"><a class="tocxref" href="#assembling-a-set-of-offers-and-presenting-them-to-a-customer"><span class="secno">11.1.4 </span>Assembling a set of offers and presenting them to a customer</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#collating-offers-for-an-event"><span class="secno">11.1.4.1 </span>Collating offers for an event</a></li><li class="tocline"><a class="tocxref" href="#collating-offers-for-the-use-of-a-facility"><span class="secno">11.1.4.2 </span>Collating offers for the use of a facility</a></li></ol></li><li class="tocline"><a class="tocxref" href="#obtaining-a-lease-on-a-space-within-an-opportunity"><span class="secno">11.1.5 </span>Obtaining a lease on a space within an opportunity</a></li></ol></li><li class="tocline"><a class="tocxref" href="#creating-and-updating-orders"><span class="secno">11.2 </span>Creating and updating orders</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#discovering-the-order-endpoint"><span class="secno">11.2.1 </span>Discovering the order endpoint</a></li><li class="tocline"><a class="tocxref" href="#pre-conditions-for-creating-an-order"><span class="secno">11.2.2 </span>Pre-conditions for creating an order</a></li><li class="tocline"><a class="tocxref" href="#creating-a-new-order-orders"><span class="secno">11.2.3 </span>Creating a new order (<code>/orders</code>)</a></li><li class="tocline"><a class="tocxref" href="#viewing-an-order-orders-orderid"><span class="secno">11.2.4 </span>Viewing an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a class="tocxref" href="#deleting-an-order-orders-orderid"><span class="secno">11.2.5 </span>Deleting an order (<code>/orders/{orderId}</code>)</a></li><li class="tocline"><a class="tocxref" href="#completing-an-order-orders-orderid"><span class="secno">11.2.6 </span>Completing an order (<code>/orders/{orderId}</code>)</a></li></ol></li><li class="tocline"><a class="tocxref" href="#ordering-a-place-at-a-free-event-ordering-a-free-slot"><span class="secno">11.3 </span>Ordering a place at a free event/ordering a free slot</a></li><li class="tocline"><a class="tocxref" href="#leases-and-the-orderleaseduration-property"><span class="secno">11.4 </span>Leases and the orderLeaseDuration property</a></li><li class="tocline"><a class="tocxref" href="#the-state-transitions-during-the-order-process"><span class="secno">11.5 </span>The state transitions during the order process</a></li><li class="tocline"><a class="tocxref" href="#actions-which-occur-after-order-completion-confirmations-and-refunds"><span class="secno">11.6 </span>Actions which occur after order completion: confirmations and refunds</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#supplying-a-confirmation-to-the-customer"><span class="secno">11.6.1 </span>Supplying a confirmation to the customer</a></li><li class="tocline"><a class="tocxref" href="#refunding-a-customer-and-cancelling-an-order"><span class="secno">11.6.2 </span>Refunding a customer and cancelling an order</a></li></ol></li><li class="tocline"><a class="tocxref" href="#customers"><span class="secno">11.7 </span>Customers</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#creation-of-customers-on-the-booking-system"><span class="secno">11.7.1 </span>Creation of customers on the booking system</a></li><li class="tocline"><a class="tocxref" href="#viewing-a-customer-s-previously-placed-orders"><span class="secno">11.7.2 </span>Viewing a customer's previously placed orders</a></li><li class="tocline"><a class="tocxref" href="#deletion-of-personal-data-of-the-customer-if-the-order-is-not-completed"><span class="secno">11.7.3 </span>Deletion of personal data of the customer if the order is not completed</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#future-versions-of-this-api"><span class="secno">12. </span>Future versions of this API</a></li><li class="tocline"><a class="tocxref" href="#new-open-active-models-defined-in-the-1-0-booking-api-specification"><span class="secno">13. </span>New Open Active models defined in the 1.0 Booking API specification</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#error"><span class="secno">13.1 </span>Error</a></li><li class="tocline"><a class="tocxref" href="#payment-0"><span class="secno">13.2 </span>Payment</a></li><li class="tocline"><a class="tocxref" href="#acknowledgements"><span class="secno">13.3 </span>Acknowledgements</a></li></ol></li><li class="tocline"><a class="tocxref" href="#references"><span class="secno">A. </span>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><span class="secno">A.1 </span>Normative references</a></li></ol></li></ol></nav><section class="informative" id="introduction"><!--OddPage--><h2 id="x1-introduction"><span class="secno">1. </span>Introduction<a class="self-link" aria-label="§" href="#introduction"></a></h2><p><em>This section is non-normative.</em></p><p>The document is an output of the
 <a href="https://www.w3.org/community/openactive/">OpenActive Community Group</a>. As part
 of the <a href="https://openactive.io">OpenActive</a> initiative, the community group is
 developing standards that will promote the publication and use of open
@@ -1090,7 +1090,7 @@ ORDER BY modified,
          {
            <span class="hljs-string">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
            <span class="hljs-string">"id"</span>: <span class="hljs-string">"https://example.com/orders/452/order-items/132"</span>,
-           <span class="hljs-string">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/OrderItemConfirmed"</span>, <span class="hljs-comment">//booking system</span>
+           <span class="hljs-string">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/OrderConfirmed"</span>, <span class="hljs-comment">//booking system</span>
            <span class="hljs-string">"allowSimpleCancellation"</span>: <span class="hljs-literal">true</span>,
            <span class="hljs-string">"unitTaxSpecification"</span>: [
              {
@@ -1108,7 +1108,6 @@ ORDER BY modified,
              <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
              <span class="hljs-string">"price"</span>: <span class="hljs-number">10.00</span>,
              <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-             <span class="hljs-string">"isCancellable"</span>: <span class="hljs-literal">true</span>,
              <span class="hljs-string">"validFromBeforeStartDate"</span>: <span class="hljs-string">"P6D"</span>,
              <span class="hljs-string">"cancellationBeforeStartDate"</span>: <span class="hljs-string">"P1D"</span>
            },
@@ -1184,7 +1183,763 @@ ORDER BY modified,
   <span class="hljs-string">"paymentMethod"</span>: <span class="hljs-string">"stripe:StripePayment"</span>,
   <span class="hljs-string">"stripe:token"</span>: <span class="hljs-string">"tok_KPte7942xySKBKyrBu11yEpf"</span>
 },</pre>
-        </div><p>Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <strong>Booking System</strong> be optional, and the <strong>Booking System</strong> must always accept a lack of <code>paymentMethod</code> as indication of an external <strong>Payment Processor</strong> being used. To maximise flexibility of this extension point, <code>identifier</code> and <code>name</code> within <code>Payment</code> are <em class="rfc2119" title="NOT REQUIRED">NOT REQUIRED</em> if <code>paymentMethod</code> is specified.</p></section></section><section class="normative" id="modelling"><!--OddPage--><h2 id="x9-modelling"><span class="secno">9. </span>Modelling<a class="self-link" aria-label="§" href="#modelling"></a></h2><section id="order-and-orderquote"><h3 id="x9-1-order-and-orderquote"><span class="secno">9.1 </span><code>Order</code> and <code>OrderQuote</code><a class="self-link" aria-label="§" href="#order-and-orderquote"></a></h3><p><code>OrderQuote</code> subclasses <code>Order</code>, and they both contain exactly the same properties. These are listed below.</p><section id="example"><h4 id="x9-1-1-example"><span class="secno">9.1.1 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h4><div class="example" id="example-5-example-of-order-model">
+        </div><p>Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <strong>Booking System</strong> be optional, and the <strong>Booking System</strong> must always accept a lack of <code>paymentMethod</code> as indication of an external <strong>Payment Processor</strong> being used. To maximise flexibility of this extension point, <code>identifier</code> and <code>name</code> within <code>Payment</code> are <em class="rfc2119" title="NOT REQUIRED">NOT REQUIRED</em> if <code>paymentMethod</code> is specified.</p></section></section><section class="normative" id="model"><!--OddPage--><h2 id="x9-model"><span class="secno">9. </span>Model<a class="self-link" aria-label="§" href="#model"></a></h2><section id="order-and-orderquote"><h3 id="x9-1-order-and-orderquote"><span class="secno">9.1 </span><code>Order</code> and <code>OrderQuote</code><a class="self-link" aria-label="§" href="#order-and-orderquote"></a></h3><p><code>OrderQuote</code> subclasses <code>Order</code>, and they both contain exactly the same properties. These are listed below.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Order</code> or <code>OrderQuote</code></td>
+</tr>
+<tr>
+<td><code>@id</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>URI</td>
+<td>A URI providing a unique identifier for the resource</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Integer"><code>schema:Integer</code></a>, <a href="https://schema.org/Text"><code>schema:Text</code></a>, <a href="https://schema.org/PropertyValue"><code>schema:PropertyValue</code></a> or an array of <a href="https://schema.org/PropertyValue"><code>schema:PropertyValue</code></a></td>
+<td>A local identifier for the Order, with only system use.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/seller"><code>schema:seller</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Organization"><code>schema:Organization</code></a></td>
+<td>The organisation providing access to events or facilities via a booking system. e.g. a leisure provider running yoga classes.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/taxMode"><code>oa:taxMode</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://openactive.io/TaxMode"><code>oa:TaxMode</code></a></td>
+<td>Either <code>https://openactive/TaxNet</code> or <code>https://openactive/TaxGross</code></td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/broker"><code>oa:broker</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Organization"><code>schema:Organization</code></a></td>
+<td>The organisation or developer providing an application that allows <strong>Customers</strong> to make bookings. Those applications will be clients of the API defined in this specification.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/brokerRole"><code>oa:brokerRole</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://openactive.io/BrokerType"><code>oa:BrokerType</code></a></td>
+<td>Either <code>https://openactive/AgentBroker</code>, <code>https://openactive/ResellerBroker</code> or <code>https://openactive/NoBroker</code>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/orderNumber"><code>schema:orderNumber</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The Customer-facing identifier of the <code>Order</code>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/customer"><code>schema:customer</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Organization"><code>schema:Organization</code></a> or a <a href="https://schema.org/Person"><code>schema:Person</code></a></td>
+<td>The person or organization purchasing the Order. <em class="rfc2119" title="MUST">MUST</em> be either an .</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/bookingService"><code>oa:bookingService</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://openactive.io/BookingService"><code>oa:BookingService</code></a></td>
+<td>Details about the <strong>Booking System</strong></td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/lease"><code>oa:lease</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://openactive.io/Lease"><code>oa:Lease</code></a></td>
+<td>The lease on the OrderItems which lasts for the duration specified by the booking system.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/orderedItem"><code>schema:orderedItem</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>Array of <a href="http://schema.org/OrderItem"><code>schema:OrderItem</code></a></td>
+<td>The items that consistitute the <code>Order</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/totalPaymentDue"><code>schema:totalPaymentDue</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="http://schema.org/PriceSpecification"><code>schema:PriceSpecification</code></a></td>
+<td>The total price of the <code>Order</code>, which includes or excludes tax depending on the <code>taxMode</code>.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/totalTaxSpecification"><code>oa:totalTaxSpecification</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>Array of <a href="https://openactive.io/TaxChargeSpecification"><code>oa:TaxChargeSpecification</code></a></td>
+<td>Breakdown of tax payable for the Order.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/payment"><code>oa:payment</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://openactive.io/Payment"><code>oa:Payment</code></a></td>
+<td>The payment associated with the Order by the Broker</td>
+</tr>
+</tbody></table><p>// Sort out where the tax mode sits</p></section><section id="organization-for-seller"><h3 id="x9-2-organization-for-seller"><span class="secno">9.2 </span><code>Organization</code> for <code>seller</code><a class="self-link" aria-label="§" href="#organization-for-seller"></a></h3><p>The <code>seller</code> <em class="rfc2119" title="MUST">MUST</em> be a <code>schema:Organization</code> with the following properties, in order for tax receipts to be successfully generated.</p><p>The <code>seller</code> is specified with each <code>Order</code> to account for scenarios where multiple <strong>Seller</strong> brands are in use.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Organization</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the <strong>Seller</strong> used by the <strong>Booking System</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Trading name of the <strong>Seller</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/legalName"><code>schema:legalName</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Legal name of the <strong>Seller</strong>, used on tax receipts.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/email"><code>schema:email</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Email address used to contact the <strong>Seller</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/vatID"><code>schema:vatID</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The Value-added Tax ID of the of the <strong>Seller</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/telephone"><code>schema:telephone</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Telephone number of the <strong>Seller</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/url"><code>schema:url</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>The URL of the website of the <strong>Seller</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/logo"><code>schema:logo</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td><a href="https://schema.org/ImageObject"><code>schema:ImageObject</code></a></td>
+<td>Logo of the <strong>Seller</strong>, used on tax receipts.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/address"><code>schema:address</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/PostalAddress"><code>schema:PostalAddress</code></a></td>
+<td>Address of the <strong>Seller</strong>, used on tax receipts.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/termsOfService"><code>schema:termsOfService</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>Array of <a href="https://openactive.io/Terms"><code>oa:Terms</code></a></td>
+<td>The terms of service of the <strong>Seller</strong>.</td>
+</tr>
+</tbody></table></section><section id="organization-for-broker"><h3 id="x9-3-organization-for-broker"><span class="secno">9.3 </span><code>Organization</code> for <code>broker</code><a class="self-link" aria-label="§" href="#organization-for-broker"></a></h3><p>The <code>broker</code> <em class="rfc2119" title="MUST">MUST</em> be a <code>schema:Organization</code> with the following properties, in order for the <strong>Booking System</strong> to represent the third-party booking.</p><p>The <code>broker</code> is specified with each <code>Order</code> to account for scenarios where multiple <strong>Broker</strong> brands are in use.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Organization</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the brand used by the <strong>Broker</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Name of the <strong>Broker</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/email"><code>schema:email</code></a></td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Support email address used to contact the <strong>Broker</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/telephone"><code>schema:telephone</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Support telephone number of the <strong>Broker</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/url"><code>schema:url</code></a></td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>The URL of the website of the <strong>Broker</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/logo"><code>schema:logo</code></a></td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/ImageObject"><code>schema:ImageObject</code></a></td>
+<td>Logo of the <strong>Broker</strong>, used within the <strong>Booking System</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/termsOfService"><code>schema:termsOfService</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td>Array of <a href="https://openactive.io/Terms"><code>oa:Terms</code></a></td>
+<td>The terms of service of the <strong>Broker</strong>.</td>
+</tr>
+</tbody></table></section><section id="orderitem"><h3 id="x9-4-orderitem"><span class="secno">9.4 </span><code>OrderItem</code><a class="self-link" aria-label="§" href="#orderitem"></a></h3><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>OrderItem</code></td>
+</tr>
+<tr>
+<td><code>@id</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>A URI providing a unique identifier for the OrderItem</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/orderItemStatus"><code>schema:orderItemStatus</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/OrderStatus"><code>schema:OrderStatus</code></a></td>
+<td>Either <code>https://openactive.io/SellerCancelled</code>, <code>https://openactive.io/CustomerCancelled</code>, or <code>https://openactive.io/OrderConfirmed</code></td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/allowSimpleCancellation"><code>oa:allowSimpleCancellation</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td><a href="https://schema.org/Boolean"><code>schema:Boolean</code></a></td>
+<td>Whether the event can be cancelled.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/unitTaxSpecification"><code>oa:unitTaxSpecification</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>Array of <a href="https://openactive.io/TaxChargeSpecification"><code>oa:TaxChargeSpecification</code></a></td>
+<td>Breakdown of tax payable for the OrderItem.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/acceptedOffer"><code>schema:acceptedOffer</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Offer"><code>schema:Offer</code></a></td>
+<td>The offer from the associated <code>orderedItem</code> that has been selected by the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/orderedItem"><code>schema:orderedItem</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://openactive.io/ScheduledSession"><code>oa:ScheduledSession</code></a>, <a href="https://openactive.io/Slot"><code>oa:Slot</code></a>, <a href="https://openactive.io/HeadlineEvent"><code>oa:HeadlineEvent</code></a>, <a href="https://schema.org/Event"><code>schema:Event</code></a> or <a href="https://schema.org/CourseInstance"><code>schema:CourseInstance</code></a></td>
+<td>The specific bookable Thing that has been selected by the <strong>Customer</strong>. See the <a href="https://www.openactive.io/modelling-opportunity-data/">Modelling Specification</a> for more information on these types.</td>
+</tr>
+</tbody></table><p>Note that <a href="http://schema.org/orderQuantity"><code>schema:orderQuantity</code></a> is not supported in this version of the specification.</p></section><section id="offer"><h3 id="x9-5-offer"><span class="secno">9.5 </span><code>Offer</code><a class="self-link" aria-label="§" href="#offer"></a></h3><p>Use of properties of <code>Offer</code> defined in the <a href="https://www.openactive.io/modelling-opportunity-data/">Modelling Specification</a> are also encouraged.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Offer</code></td>
+</tr>
+<tr>
+<td><code>@id</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>A URI providing a unique identifier for the Offer</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/price"><code>schema:price</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Float"><code>schema:Float</code></a></td>
+<td>The offer price available to participants.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/priceCurrency"><code>schema:priceCurrency</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The currency of the <code>price</code>. Specified as a 3-letter ISO 4217 value. If a <code>PriceSpecification</code> has a zero <code>price</code>, then this property is not required. Otherwise the <code>priceCurrency</code> <em class="rfc2119" title="MUST">MUST</em> be specified.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The name of the offer suitable for display to participants.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/validFromBeforeStartDate"><code>oa:validFromBeforeStartDate</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Duration"><code>schema:Duration</code></a></td>
+<td>The duration before the <code>startDate</code> for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of <a href="http://schema.org/validFrom"><code>schema:validFrom</code></a>, to allow for Offer inheritance.</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/latestCancellationBeforeStartDate"><code>oa:latestCancellationBeforeStartDate</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Duration"><code>schema:Duration</code></a></td>
+<td>The duration before the <code>startDate</code> during which this Offer may <strong>not</strong> be cancelled, given in [ISO8601] format.</td>
+</tr>
+</tbody></table></section><section id="person"><h3 id="x9-6-person"><span class="secno">9.6 </span><code>Person</code><a class="self-link" aria-label="§" href="#person"></a></h3><p>For business-to-consumer transactions, the <code>customer</code> <em class="rfc2119" title="MUST">MUST</em> be a <code>schema:Person</code>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Person</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the <strong>Customer</strong> used by the <strong>Broker</strong> and/or <strong>Payment Provider</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/email"><code>schema:email</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Email address used to uniquely identify the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/givenName"><code>schema:givenName</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Name of the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/familyName"><code>schema:familyName</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Name of the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/telephone"><code>schema:telephone</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Telephone number of the <strong>Customer</strong>.</td>
+</tr>
+</tbody></table><p>Note that the <code>Person</code> data associated the record must be specific to the <code>Broker</code> to avoid any</p></section><section id="organization-for-customer"><h3 id="x9-7-organization-for-customer"><span class="secno">9.7 </span><code>Organization</code> for <code>customer</code><a class="self-link" aria-label="§" href="#organization-for-customer"></a></h3><p>For business-to-business transactions, the <code>customer</code> <em class="rfc2119" title="MUST">MUST</em> be a <code>schema:Organization</code> with the following properties.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Organization</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the <strong>Customer</strong> used by the <strong>Broker</strong> and/or <strong>Payment Provider</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/email"><code>schema:email</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Email address used to uniquely identify the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Name of the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/telephone"><code>schema:telephone</code></a></td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Telephone number of the <strong>Customer</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/address"><code>schema:address</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/PostalAddress"><code>schema:PostalAddress</code></a></td>
+<td>Address of the business <strong>Customer</strong>.</td>
+</tr>
+</tbody></table></section><section id="postaladdress"><h3 id="x9-8-postaladdress"><span class="secno">9.8 </span><code>PostalAddress</code><a class="self-link" aria-label="§" href="#postaladdress"></a></h3><p>For <code>schema:Organization</code> when used for <code>customer</code> or <code>seller</code>, the following properties are required.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>PostalAddress</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/streetAddress"><code>schema:streetAddress</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Street address</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/addressLocality"><code>schema:addressLocality</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Town or other area</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/addressRegion"><code>schema:addressRegion</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Region</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/postalCode"><code>schema:postalCode</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Postcode</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/addressCountry"><code>schema:addressCountry</code></a></td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>ISO 3166-1 alpha-2 country code.</td>
+</tr>
+</tbody></table></section><section id="lease"><h3 id="x9-9-lease"><span class="secno">9.9 </span><code>Lease</code><a class="self-link" aria-label="§" href="#lease"></a></h3><p>Used for <code>lease</code>. An object is provided for extensibility.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Lease</code></td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/leaseExpires"><code>oa:leaseExpires</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/DateTime"><code>schema:DateTime</code></a></td>
+<td>Expiry DateTime of the lease in [ISO8601] format</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the payment held by the <strong>Broker</strong> and/or <strong>Payment Provider</strong>.</td>
+</tr>
+</tbody></table></section><section id="pricespecification"><h3 id="x9-10-pricespecification"><span class="secno">9.10 </span><code>PriceSpecification</code><a class="self-link" aria-label="§" href="#pricespecification"></a></h3><p>Used for <code>totalPaymentDue</code>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>PriceSpecification</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/price"><code>schema:price</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Float"><code>schema:Float</code></a></td>
+<td>The total amount.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/priceCurrency"><code>schema:priceCurrency</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The currency of the <code>price</code>. Specified as a 3-letter ISO 4217 value. If a <code>PriceSpecification</code> has a zero <code>price</code>, then this property is not required. Otherwise the <code>priceCurrency</code> <em class="rfc2119" title="MUST">MUST</em> be specified.</td>
+</tr>
+</tbody></table></section><section id="taxchargespecification"><h3 id="x9-11-taxchargespecification"><span class="secno">9.11 </span><code>TaxChargeSpecification</code><a class="self-link" aria-label="§" href="#taxchargespecification"></a></h3><p><code>TaxChargeSpecification</code> subclasses <code>PriceSpecification</code>, and so includes the same properties and a few additional ones. These are listed below.</p><p><code>TaxChargeSpecification</code> are intended to be rendered to the <strong>Customer</strong> as-is, and are not designed to be manipulated by the <strong>Broker</strong>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>TaxChargeSpecification</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/price"><code>schema:price</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Float"><code>schema:Float</code></a></td>
+<td>The monetary value of the tax charge.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/priceCurrency"><code>schema:priceCurrency</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero <code>price</code>, then this property is not required. Otherwise the <code>priceCurrency</code> <em class="rfc2119" title="MUST">MUST</em> be specified.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Integer"><code>schema:Integer</code></a>, <a href="https://schema.org/Text"><code>schema:Text</code></a>, <a href="https://schema.org/PropertyValue"><code>schema:PropertyValue</code></a> or an array of <a href="https://schema.org/PropertyValue"><code>schema:PropertyValue</code></a></td>
+<td>A local identifier for the tax charge, used to identify the type of tax within the booking system. Note an array of <code>PropertyValue</code> can be used to provide multiple identifiers where avaialble.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The name of the tax charge, e.g. "VAT at 0% for EU transactions"</td>
+</tr>
+<tr>
+<td><a href="https://openactive.io/rate"><code>oa:rate</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Float"><code>schema:Float</code></a></td>
+<td>The rate of VAT.</td>
+</tr>
+</tbody></table></section><section id="payment"><h3 id="x9-12-payment"><span class="secno">9.12 </span><code>Payment</code><a class="self-link" aria-label="§" href="#payment"></a></h3><p>Used for <code>payment</code>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Payment</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>Optional free text description of the payment method for the <strong>Booking System</strong>, to help the <strong>Seller</strong> in discussions with the <strong>Customer</strong> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card")</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/identifier"><code>schema:identifier</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The identifier of the payment held by the <strong>Broker</strong> and/or <strong>Payment Provider</strong>.</td>
+</tr>
+</tbody></table></section><section id="bookingservice"><h3 id="x9-13-bookingservice"><span class="secno">9.13 </span><code>BookingService</code><a class="self-link" aria-label="§" href="#bookingservice"></a></h3><p><code>BookingService</code> subclasses <code>Service</code>.</p><p>Used for <code>bookingService</code>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>BookingService</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The name of the <strong>Booking System</strong></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/url"><code>schema:url</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>The URL of the website of the <strong>Booking System</strong>.</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/termsOfService"><code>schema:termsOfService</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="OPTIONAL">OPTIONAL</em></td>
+<td>Array of <a href="https://openactive.io/Terms"><code>oa:Terms</code></a></td>
+<td>The terms of service of the <strong>Booking System</strong>.</td>
+</tr>
+</tbody></table></section><section id="terms"><h3 id="x9-14-terms"><span class="secno">9.14 </span><code>Terms</code><a class="self-link" aria-label="§" href="#terms"></a></h3><p>Used for <code>termsOfService</code>.</p><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Broker Request</th>
+<th>Booking System Response</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@type</code></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td><code>Payment</code></td>
+</tr>
+<tr>
+<td><a href="http://schema.org/name"><code>schema:name</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/Text"><code>schema:Text</code></a></td>
+<td>The name of the terms which must distinguish this from other terms provided, e.g. "Terms and Conditions" or "Privacy Policy"</td>
+</tr>
+<tr>
+<td><a href="http://schema.org/url"><code>schema:url</code></a></td>
+<td>-</td>
+<td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
+<td>The URL of the webpage containing the contents of the terms.</td>
+</tr>
+</tbody></table></section><section id="example"><h3 id="x9-15-example"><span class="secno">9.15 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h3><div class="example" id="example-5-example-of-order-model">
           <div class="marker">
       <a class="self-link" href="#example-5-example-of-order-model">Example 5</a><span class="example-title">: Example of Order model</span>
     </div>
@@ -1246,20 +2001,17 @@ ORDER BY modified,
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"BookingService"</span>,
     <span class="hljs-string">"name"</span>: <span class="hljs-string">"Playwaze"</span>,
     <span class="hljs-string">"url"</span>: <span class="hljs-string">"http://www.playwaze.com"</span>,
-    <span class="hljs-string">"termsOfService"</span>: {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"TermsOfService"</span>,
-      <span class="hljs-string">"url"</span>: <span class="hljs-string">"url"</span>
-    }
+    <span class="hljs-string">"termsOfService"</span>: <span class="hljs-string">"url"</span>
   },
-  <span class="hljs-string">"requestLease"</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// broker</span>
   <span class="hljs-string">"lease"</span>: { <span class="hljs-comment">// booking system</span>
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"Lease"</span>,
-    <span class="hljs-string">"leaseExpiry"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>
+    <span class="hljs-string">"leaseExpires"</span>: <span class="hljs-string">"2018-10-01T11:00:00Z"</span>
   },
   <span class="hljs-string">"orderedItem"</span>: [ <span class="hljs-comment">//broker</span>
     {
       <span class="hljs-string">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
-      <span class="hljs-string">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/OrderItemConfirmed"</span>, <span class="hljs-comment">//booking system</span>
+      <span class="hljs-string">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/OrderConfirmed"</span>, <span class="hljs-comment">//booking system</span>
+      <span class="hljs-string">"allowSimpleCancellation"</span>: <span class="hljs-literal">true</span>,
       <span class="hljs-string">"unitTaxSpecification"</span>: [ <span class="hljs-comment">//booking system otherwise</span>
         {
           <span class="hljs-string">"type"</span>: <span class="hljs-string">"TaxChargeSpecification"</span>,
@@ -1276,9 +2028,8 @@ ORDER BY modified,
         <span class="hljs-string">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
         <span class="hljs-string">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-string">"isCancellable"</span>: <span class="hljs-literal">true</span>,
         <span class="hljs-string">"validFromBeforeStartDate"</span>: <span class="hljs-string">"P6D"</span>,
-        <span class="hljs-string">"cancellationBeforeStartDate"</span>: <span class="hljs-string">"P1D"</span>
+        <span class="hljs-string">"latestCancellationBeforeStartDate"</span>: <span class="hljs-string">"P1D"</span>
       },
       <span class="hljs-string">"orderedItem"</span>: {
         <span class="hljs-string">"type"</span>: <span class="hljs-string">"ScheduledSession"</span>,
@@ -1312,8 +2063,7 @@ ORDER BY modified,
   <span class="hljs-string">"totalPaymentDue"</span>: { <span class="hljs-comment">//booking system</span>
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"PriceSpecification"</span>,
     <span class="hljs-string">"price"</span>: <span class="hljs-number">5.00</span>,
-    <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-    <span class="hljs-string">"valueAddedTaxIncluded"</span>: <span class="hljs-literal">true</span>
+    <span class="hljs-string">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
   },
   <span class="hljs-string">"totalTaxSpecification"</span>: [ <span class="hljs-comment">//booking system</span>
     {
@@ -1326,11 +2076,11 @@ ORDER BY modified,
   ],
   <span class="hljs-string">"payment"</span>: { <span class="hljs-comment">// broker</span>
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"Payment"</span>,
-    <span class="hljs-string">"name"</span>: <span class="hljs-string">"AcmeBroker Points"</span>, <span class="hljs-comment">// optional free text description of payment method for booking system, to help the Seller in discussions with the Customer (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card")</span>
+    <span class="hljs-string">"name"</span>: <span class="hljs-string">"AcmeBroker Points"</span>,
     <span class="hljs-string">"identifier"</span>: <span class="hljs-string">"1234567890npduy2f"</span>
   }
 }</pre>
-        </div></section></section></section><section class="normative" id="common-requirements"><!--OddPage--><h2 id="x10-common-requirements"><span class="secno">10. </span>Common Requirements<a class="self-link" aria-label="§" href="#common-requirements"></a></h2><p>This section defines some common functionality that applies to the design of the
+        </div></section></section><section class="normative" id="common-requirements"><!--OddPage--><h2 id="x10-common-requirements"><span class="secno">10. </span>Common Requirements<a class="self-link" aria-label="§" href="#common-requirements"></a></h2><p>This section defines some common functionality that applies to the design of the
 whole API.</p><section id="media-types"><h3 id="x10-1-media-types"><span class="secno">10.1 </span>Media types<a class="self-link" aria-label="§" href="#media-types"></a></h3><p>Custom media types are used in this API to allow clients to choose the format
 of the data they receive.</p><p><strong>Booking platforms</strong> <em class="rfc2119" title="MAY">MAY</em> choose to support additional media types but <em class="rfc2119" title="MUST">MUST</em> support the
 media type(s) defined by this specification.</p><p>Media types will conform to the following pattern:</p><pre aria-busy="false" class="hljs">application/vnd.openactive[.version]+json</pre><p>The current media type is:</p><pre aria-busy="false" class="hljs">application/vnd.openactive.1.0+json</pre><p><strong>Brokers</strong> specifying a media type without a version, such as:</p><pre aria-busy="false" class="hljs">application/vnd.openactive+json</pre><p>will recieve data in in the most current format which is 1.0.</p><p>If you are building an application as a <strong>broker</strong> and care about the stability
@@ -1683,7 +2433,6 @@ opportunity are still available before proceeding with booking.</p><div class="e
         <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Speedball winger position"</span>,
         <span class="hljs-attr">"price"</span>: <span class="hljs-number">10.00</span>,
         <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
-        <span class="hljs-attr">"isCancellable"</span>: <span class="hljs-literal">true</span>,
         <span class="hljs-attr">"cancellationValidUntil"</span>: <span class="hljs-string">"2018-10-28T11:00:00Z"</span>
     }],
     <span class="hljs-attr">"eventStatus"</span>: <span class="hljs-string">"https://schema.org/EventScheduled"</span>,
@@ -2410,7 +3159,7 @@ Active Modelling Specification.</p><section id="error"><h3 id="x13-1-error"><spa
 <td>Used by technical support for diagnostics purposes.</td>
 </tr>
 </tbody>
-</table></section><section id="payment"><h3 id="x13-2-payment"><span class="secno">13.2 </span>Payment<a class="self-link" aria-label="§" href="#payment"></a></h3><table></table><table>
+</table></section><section id="payment-0"><h3 id="x13-2-payment"><span class="secno">13.2 </span>Payment<a class="self-link" aria-label="§" href="#payment-0"></a></h3><table></table><table>
   <thead>
     <tr>
       <th>Property</th>
