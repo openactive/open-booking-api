@@ -48,17 +48,9 @@
             }],
 
             otherLinks: [{
-                key: "Repo",
-                value: "We are on Github",
-                href: "https://github.com/openactive/open-booking-api/",
-                class: "repo"
-            }, {
-                key: "Issues",
-                value: "Report an issue",
-                href: "https://github.com/openactive/open-booking-api/issues/"
-            }, {
                 key: "Version",
-                value: "1.0"
+                value: "1.0",
+                href: "https://github.com/openactive/open-booking-api/issues/"
             }],
 
             logos: [{
@@ -1072,14 +1064,14 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:allowSimpleCancellation`](https://openactive.io/allowSimpleCancellation) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the **Customer**. |
-| [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the **Customer**. See the [Modelling Specification](https://www.openactive.io/modelling-opportunity-data/) for more information on these types. |
+| [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the **Customer**. See the [[!Modelling-Opportunity-Data]] for more information on these types. |
 
 Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is not supported in this version of the specification.
 
 
 ## `Offer`
 
-Use of properties of `Offer` defined in the [Modelling Specification](https://www.openactive.io/modelling-opportunity-data/) are also encouraged.
+Use of properties of `Offer` defined in the [[!Modelling-Opportunity-Data]] are also encouraged.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -1355,77 +1347,28 @@ Used for `termsOfService`.
 </section>
 
 
-    <section class="normative">
-# Common Requirements
+<section class="normative">
+# Endpoints
 
-This section defines some common functionality that applies to the design of the
-whole API.
+This API has been defined around the concept of URL discovery. This
+allows resource URLs which match the naming conventions of each **Booking System**.
 
-## Media types
+# Paths and Verbs
 
+Due to URL discovery, the paths of the endpoints below are illustrative, as the actual paths may vary provided they are consistent within an implementation.
 
-Custom media types are used in this API to allow clients to choose the format
-of the data they receive.
-
-**Booking platforms** MAY choose to support additional media types but MUST support the
-media type(s) defined by this specification.
-
-Media types will conform to the following pattern:
-
-```
-application/vnd.openactive[.version]+json
-```
-
-The current media type is:
-
-```
-application/vnd.openactive.1.0+json
-```
-
-**Brokers** specifying a media type without a version, such as:
-
-```
-application/vnd.openactive+json
-```
-
-will recieve data in in the most current format which is 1.0.
-
-If you are building an application as a **broker** and care about the stability
-of the response, or have a client application which is tied to a specific
-version you should always try to use a media type containing the version number.
-
-**Booking systems** are not obliged to support previous versions of the
-specification, and so may not support a specific version number. We anticipate
-that when the Booking API reaches the stability of a 1.0 version that this
-advice may change.
-
-
-## Response formats
-
-Requests and response documents exchanged via this API will all be valid
-[[!JSON-LD]] documents.
-
-The documents MUST include a [[!JSON-LD]] `context` that refers to the
-[[!OpenActive-Vocabulary]] as follows:
-
-<pre class="example" title="minimal JSON-LD document">
-{
-  "@context": "https://openactive.io/ns/oa.jsonld"
-}
-</pre>
-
-Unless otherwise specified the request and response documents MUST conform to
-the [[!Modelling-Opportunity-Data]] data model.
+| Name                   | Status      | Resource         | HTTP Verb | Example Path                                     |
+|------------------------|-------------|------------------|-----------|--------------------------------------------------|
+| Order Creation         | REQUIRED    | Order collection | POST      | `/orders`                                        |
+| Order Feed             | REQUIRED    | RPDE feed        | GET       | `/orders-rpde`                                   |
+| OrderItem Cancellation | REQUIRED    | OrderItem        | PATCH     | `/orders/{order-id}/order-items/{order-item-id}` |
+| Order Cancellation     | RECOMMENDED | Order            | PATCH     | `/orders/{order-id}`                             |
+| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{order-id}`                             |
 
 ## URL discovery
 
-The Booking API has been defined around the concept of URL discovery. This
-allows **booking systems** to create resource URLs which match their own
-terms for naming specific objects such as **events** and **orders**.
-
-The URL for a specific action, such as for example providing **payment** details,
-may be discovered by parsing the actions defined in the `potentialAction`
-property of an object and constructing the appropriate URL from the
+The URL for the initial Order Creation action may be discovered by parsing the
+actions defined in the `potentialAction` property of an object and constructing the appropriate URL from the
 `urlTemplate` property of the `schema:EntryPoint` object contained within the `target`
 property of the `potentialAction` required.
 
@@ -1441,7 +1384,7 @@ An example is below:
             "type": "EntryPoint",
             "urlTemplate": "https://example.com/orders",
             "encodingType": "application/vnd.openactive.v1.0+json",
-            "httpMethod": "PATCH"
+            "httpMethod": "POST"
           }
         }
       ]
@@ -1460,6 +1403,148 @@ MUST advertise the URL for `Order` creation when a **broker** requests
 a specific **opportunity** resource and SHOULD advertise it in their RDPE feeds
 since both of these points within the booking workflow are places where a \
 **customer** may wish to check availability.
+
+### Dataset site examples
+
+<pre class="example" title="Example of Dataset site embedded JSON-LD">
+
+&#x3C;script type=&#x22;application/ld+json&#x22;&#x3E;
+ {
+  "@context": "https://schema.org",
+  "keywords": [
+    "Sessions",
+    "Facilities",
+    "Activities",
+    "Sports",
+    "Physical Activity",
+    "OpenActive"
+  ],
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "distribution": [
+    {
+      "additionalType": "https://openactive.io/SessionSeries",
+      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
+      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-session-series",
+      "@type": "DataDownload",
+      "name": "SessionSeries"
+    },
+    {
+      "additionalType": "https://openactive.io/ScheduledSession",
+      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
+      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-scheduled-sessions",
+      "@type": "DataDownload",
+      "name": "ScheduledSession"
+    },
+    {
+      "additionalType": "https://openactive.io/FacilityUse",
+      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
+      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-facility-uses",
+      "@type": "DataDownload",
+      "name": "FacilityUse"
+    },
+    {
+      "additionalType": "https://openactive.io/Slot",
+      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
+      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-slots",
+      "@type": "DataDownload",
+      "name": "Slot"
+    }
+  ],
+  "discussionUrl": "https://github.com/fusion-lifestyle/opendata/issues",
+  "documentation": "https://docs.leisurecloud.live/",
+  "inLanguage": "en-GB",
+  "publisher": {
+    "legalName": "Fusion Lifestyle",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://res.cloudinary.com/gladstone/image/upload/fusion-lifestyle-live/wfiqlyqy5sjfpo5b6dsl"
+    },
+    "email": "info@fusion-lifestyle.com",
+    "@type": "Organization",
+    "name": "Fusion Lifestyle",
+    "description": "Fusion Lifestyle was established in April 2000 following a decision by a London Borough Council to outsource the management of the leisure facilities. Fusion now manages a diverse portfolio of facilities using our specialist expertise to provide sustainable solutions for councils and exciting products and programmes for our customers. Fusion is a national operator managing leisure facilities from Wales to London and as far north as Newcastle. \n\nNo two Fusion sites are the same, we retain the heritage of centres when we refurbish and we are experienced at managing centres from ice rinks to outward bound residential centres, town halls and expansive leisure facilities. We put our energies into providing facilities and programmes that are an attractive proposition to the local community. We respect the history of our centres and it is not uncommon for generations of local residents to hold fond memories of learning to swim in our centres, playing football matches over the years and hosting birthday celebrations at our sites.\n\nFusion is a registered charity, there are therefore no shareholders. We are able to continually reinvest in facilities, products and importantly people.\n",
+    "url": "https://www.fusion-lifestyle.com/"
+  },
+  "datePublished": "2019-02-20T13:22:28.7743707Z",
+  "schemaVersion": "https://www.openactive.io/modelling-opportunity-data/2.0/",
+  "softwareVersion": "OWS:2.0.1",
+  "@type": "Dataset",
+  "id": "https://fusionopendata.fusion-lifestyle.com/OpenActive/",
+  "name": "Fusion Lifestyle Sessions and Facilities",
+  "description": "Near real-time availability and rich descriptions relating to the sessions and facilities available from Fusion Lifestyle, published using the OpenActive Modelling Specification 2.0, and covering a rolling lookhead window of the next 14 days.",
+  "url": "https://fusionopendata.fusion-lifestyle.com/OpenActive/"
+}
+&#x3C;/script&#x3E;
+
+</pre>
+
+
+</section>
+
+
+<section class="normative">
+# Common Requirements
+
+This section defines some common functionality that applies to the design of the
+whole API.
+
+## Media types
+
+
+Custom media types are used in this API to allow clients to choose the format
+of the data they receive.
+
+**Booking platforms** MAY choose to support additional media types but MUST support the
+media type(s) defined by this specification.
+
+Media types will conform to the following pattern:
+
+```
+application/vnd.openactive.booking+json; version=[version]
+```
+
+The current media type is:
+
+```
+application/vnd.openactive.booking+json; version=1.0
+```
+
+**Brokers** specifying a media type without a version, such as:
+
+```
+application/vnd.openactive.booking+json
+```
+
+will receive data in in the most current format which is 1.0.
+
+If you are building an application as a **broker** and care about the stability
+of the response, or have a client application which is tied to a specific
+version you should always try to use a media type containing the version number.
+
+**Booking systems** are not obliged to support previous versions of the
+specification, and so may not support a specific version number. We anticipate
+that when the Booking API reaches the stability of a 1.0 version that this
+advice may change.
+
+<div class="issue" data-number="93"></div>
+
+
+## Response formats
+
+Requests and response documents exchanged via this API will all be valid
+[[!JSON-LD]] documents.
+
+The documents MUST include a [[!JSON-LD]] `context` that refers to the
+[[!OpenActive-Vocabulary]] as follows:
+
+<pre class="example" title="minimal JSON-LD document">
+{
+  "@context": "https://openactive.io/"
+}
+</pre>
+
+Unless otherwise specified the request and response documents MUST conform to
+the [[!Modelling-Opportunity-Data]] data model.
 
 
 ## Error handling
