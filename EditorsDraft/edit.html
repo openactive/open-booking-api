@@ -693,7 +693,7 @@ For each successful `Order` operation, the **Broker** MUST generate a new **Invo
 
 The tax receipt sent by the **Broker** MUST comply with any legal requirements of the jurisdiction of operation.
 
-Note by following specification, for all broker modes where a **Seller** may need to issue a tax receipt manually for any reason, the **Seller** will have the details of the **Customer** and the transaction enough to generate the most recent tax receipt.
+Note by following specification, for all broker modes where a **Seller** may need to supply a tax receipt manually for any reason, the **Seller** will have the details of the **Customer** and the transaction enough to generate the most recent tax receipt.
 
 ## Payments and Refunds
 
@@ -828,7 +828,7 @@ New (unrecognised) `Order` items in the RPDE feed may be used to notify the **Cu
 
 Regardless of the source of the cancellation, the process for refunding and notifying the **Customer** and updating the **Broker**'s records is exactly the same.
 
-The **Broker** MUST process refunds for each new cancellation found in the feed, and it is the **Broker**'s responsibility to continually retry failed refund processing and escalate issues to the **Customer** accordingly. Note that the RPDE feed is "fire and forget" for the **Booking System**: once an `OrderItem` is updated with a cancellation status in the RPDE feed, the status MUST not be reversed, and is assumed by the **Booking System** to be processed.
+The **Broker** MUST process refunds for each new cancellation found in the feed, and it is the **Broker**'s responsibility to continually retry failed refund processing and escalate any processing failure to the **Customer** accordingly. Note that the RPDE feed is "fire and forget" for the **Booking System**: once an `OrderItem` is updated with a cancellation status in the RPDE feed, the status MUST not be reversed, and is assumed by the **Booking System** to be processed.
 
 For items found with `OrderItem`s that contain `orderItemStatus` with new `https://openactive.io/CustomerCancelled` or `https://openactive.io/SellerCancelled` values, the new `totalPaymentDue` value of the `Order` must be made to equal the value of the associated **Payment** less any **Refund**s, by creating an additional **Refund**s if necessary. Cancellation fees may be added to the `Order` for each cancellation, so the refund may not be equal to the original amount.
 
@@ -987,11 +987,82 @@ Note that due to the variety of business models available in the OpenActive ecos
 
 </section>
 
+
 <section class="normative">
-# Model
+# Endpoints
+
+This API has been defined around the concept of URL discovery. This
+allows resource URLs which match the naming conventions of each **Booking System**.
+
+# Paths and Verbs
+
+Due to URL discovery, the paths of the endpoints below are illustrative, as the actual paths may vary provided they are consistent within an implementation.
+
+A summary of endpoints defined by this specification is provided below:
+
+| Name                   | Status      | Resource         | HTTP Verb | Example Path                                     |
+|------------------------|-------------|------------------|-----------|--------------------------------------------------|
+| Order Creation         | REQUIRED    | Order collection | POST      | `/orders`                                        |
+| Orders RPDE Feed       | REQUIRED    | RPDE feed        | GET       | `/orders-rpde`                                   |
+| OrderItem Cancellation | REQUIRED    | OrderItem        | PATCH     | `/orders/{order-id}/order-items/{order-item-id}` |
+| Order Cancellation     | RECOMMENDED | Order            | PATCH     | `/orders/{order-id}`                             |
+| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{order-id}`                             |
+
+# URL discovery
+
+The URL for the initial Order Creation action may be discovered by parsing the
+`OpenBookingAction` defined in the `potentialAction` property of the published
+`Dataset` embedded within dataset site.
+
+<pre class="example" title="Example of a potentialAction">
+  "potentialAction": [
+    {
+      "@type": "OpenBookingAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://example.com/api/orders",
+        "encodingType": ["application/vnd.openactive+jsonld; model=2.0, booking=1.0"],
+        "httpMethod": "POST"
+      },
+      "supportingData": {
+        "@type": "DataFeed",
+        "distribution": [
+          {
+              "@type": "DataDownload",
+              "name": "Order",
+              "additionalType": "https://schema.org/Order",
+              "encodingFormat": ["application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0"],
+              "contentUrl": "https://example.com/api/feeds/offers"
+          }
+        ]
+      }
+    }
+  ],
+</pre>
+
+Since discovery of URLs is an implicit part of the specification, **Brokers**
+SHOULD avoid hard-coding URLs for specific actions into their applications and
+client libraries. **Brokers**  SHOULD use most applicable URL discovered at the
+point in the workflow they are currently in - e.g. not use a cached URL that has
+been previously successfully used. They should also not attempt to create URLs
+for a specific action based on patterns within previously used URLs.
+
+It is the responsibility of **Booking Systems** to advertise the URL for
+further activity in the booking workflow at the point of need. For example they
+MUST advertise the URL for the `OrderItem` resource in the Orders RPDE Feed feed
+by including the `id` property.
+
+<div class="issue" data-number="94"></div>
 
 
-## `Order` and `OrderQuote`
+</section>
+
+
+<section class="normative">
+# Order Model
+
+
+## `schema:Order` and `oa:OrderQuote`
 
 `OrderQuote` subclasses `Order`, and they both contain exactly the same properties. These are listed below.
 
@@ -1017,7 +1088,7 @@ Note that due to the variety of business models available in the OpenActive ecos
 // Sort out where the tax mode sits
 
 
-## `Organization` for `seller`
+## `schema:Organization` for `seller`
 
 The `seller` MUST be a `schema:Organization` with the following properties, in order for tax receipts to be successfully generated.
 
@@ -1037,7 +1108,7 @@ The `seller` is specified with each `Order` to account for scenarios where multi
 | [`schema:address`](http://schema.org/address)                      | - | REQUIRED    | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the **Seller**, used on tax receipts. |
 | [`schema:termsOfService`](http://schema.org/termsOfService)        | - | OPTIONAL    | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the **Seller**. |
 
-## `Organization` for `broker`
+## `schema:Organization` for `broker`
 
 The `broker` MUST be a `schema:Organization` with the following properties, in order for the **Booking System** to represent the third-party booking.
 
@@ -1054,7 +1125,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:logo`](http://schema.org/logo)                            | RECOMMENDED | - | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the **Broker**, used within the **Booking System**. |
 | [`schema:termsOfService`](http://schema.org/termsOfService)        | OPTIONAL    | - | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the **Broker**. |
 
-## `OrderItem`
+## `schema:OrderItem`
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -1069,7 +1140,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is not supported in this version of the specification.
 
 
-## `Offer`
+## `schema:Offer`
 
 Use of properties of `Offer` defined in the [[!Modelling-Opportunity-Data]] are also encouraged.
 
@@ -1080,11 +1151,13 @@ Use of properties of `Offer` defined in the [[!Modelling-Opportunity-Data]] are 
 | [`schema:price`](http://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](http://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
+| [`oa:availableChannel`](https://openactive.io/availableChannel)    | REQUIRED | REQUIRED | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
 
+Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
-## `Person`
+## `schema:Person`
 
 For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
 
@@ -1100,7 +1173,7 @@ For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
 Note that the `Person` data associated the record must be specific to the `Broker` to avoid any
 
 
-## `Organization` for `customer`
+## `schema:Organization` for `customer`
 
 For business-to-business transactions, the `customer` MUST be a `schema:Organization` with the following properties.
 
@@ -1114,7 +1187,7 @@ For business-to-business transactions, the `customer` MUST be a `schema:Organiza
 | [`schema:address`](http://schema.org/address)                      | REQUIRED | - | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the business **Customer**. |
 
 
-## `PostalAddress`
+## `schema:PostalAddress`
 
 For `schema:Organization` when used for `customer` or `seller`, the following properties are required.
 
@@ -1128,7 +1201,7 @@ For `schema:Organization` when used for `customer` or `seller`, the following pr
 | [`schema:addressCountry`](http://schema.org/addressCountry)        | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | ISO 3166-1 alpha-2 country code. |
 
 
-## `Lease`
+## `oa:Lease`
 
 Used for `lease`. An object is provided for extensibility.
 
@@ -1139,7 +1212,7 @@ Used for `lease`. An object is provided for extensibility.
 | [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the **Broker** and/or **Payment Provider**. |
 
 
-## `PriceSpecification`
+## `schema:PriceSpecification`
 
 Used for `totalPaymentDue`.
 
@@ -1150,7 +1223,7 @@ Used for `totalPaymentDue`.
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 
 
-## `TaxChargeSpecification`
+## `oa:TaxChargeSpecification`
 
 `TaxChargeSpecification` subclasses `PriceSpecification`, and so includes the same properties and a few additional ones. These are listed below.
 
@@ -1166,7 +1239,7 @@ Used for `totalPaymentDue`.
 | [`oa:rate`](https://openactive.io/rate)                            | - | OPTIONAL | [`schema:Float`](https://schema.org/Float) | The rate of VAT. |
 
 
-## `Payment`
+## `oa:Payment`
 
 Used for `payment`.
 
@@ -1176,9 +1249,9 @@ Used for `payment`.
 | [`schema:name`](http://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the **Booking System**, to help the **Seller** in discussions with the **Customer** (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card") |
 | [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the **Broker** and/or **Payment Provider**. |
 
-## `BookingService`
+## `oa:BookingService`
 
-`BookingService` subclasses `Service`.
+`oa:BookingService` subclasses `schema:Service`.
 
 Used for `bookingService`.
 
@@ -1189,7 +1262,7 @@ Used for `bookingService`.
 | [`schema:url`](http://schema.org/url)                              | - | OPTIONAL | [`schema:URL`](https://schema.org/URL) | The URL of the website of the **Booking System**. |
 | [`schema:termsOfService`](http://schema.org/termsOfService)        | - | OPTIONAL | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the **Booking System**. |
 
-## `Terms`
+## `oa:Terms`
 
 Used for `termsOfService`.
 
@@ -1198,7 +1271,6 @@ Used for `termsOfService`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms which must distinguish this from other terms provided, e.g. "Terms and Conditions" or "Privacy Policy" |
 | [`schema:url`](http://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
-
 
 
 ## Example
@@ -1344,142 +1416,152 @@ Used for `termsOfService`.
   }
 </pre>
 
+
 </section>
 
-
 <section class="normative">
-# Endpoints
+# Discovery Model
 
-This API has been defined around the concept of URL discovery. This
-allows resource URLs which match the naming conventions of each **Booking System**.
+## `oa:OpenBookingAction`
 
-# Paths and Verbs
+`oa:OpenBookingAction` subclasses `schema:OrderAction`.
 
-Due to URL discovery, the paths of the endpoints below are illustrative, as the actual paths may vary provided they are consistent within an implementation.
+Used for `potentialAction`.
 
-| Name                   | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| Order Creation         | REQUIRED    | Order collection | POST      | `/orders`                                        |
-| Order Feed             | REQUIRED    | RPDE feed        | GET       | `/orders-rpde`                                   |
-| OrderItem Cancellation | REQUIRED    | OrderItem        | PATCH     | `/orders/{order-id}/order-items/{order-item-id}` |
-| Order Cancellation     | RECOMMENDED | Order            | PATCH     | `/orders/{order-id}`                             |
-| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{order-id}`                             |
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OpenBookingAction` |
+| [`schema:target`](http://schema.org/target)                        | - | REQUIRED | [`schema:EntryPoint`](https://schema.org/EntryPoint) | The Order Creation endpoint |
+| [`schema:supportingData`](http://schema.org/supportingData)        | - | REQUIRED | [`schema:DataFeed`](https://schema.org/DataFeed) | The Order RPDE feed. |
 
-## URL discovery
+## `schema:EntryPoint`
 
-The URL for the initial Order Creation action may be discovered by parsing the
-actions defined in the `potentialAction` property of an object and constructing the appropriate URL from the
-`urlTemplate` property of the `schema:EntryPoint` object contained within the `target`
-property of the `potentialAction` required.
+Used for `target`.
 
-An example is below:
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `EntryPoint` |
+| [`schema:urlTemplate`](http://schema.org/urlTemplate)              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The Order Creation endpoint URL |
+| [`schema:encodingType`](http://schema.org/encodingType)            | - | REQUIRED | Array of [`schema:Text`](https://schema.org/Text) | The versions of Open Booking supported. |
+| [`schema:httpMethod`](http://schema.org/httpMethod)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | Always `POST` |
 
-<pre class="example" title="Example of a potentialAction">
+## `schema:DataFeed` for `supportingData`
 
-"potentialAction": [
-        {
-          "type": "PayAction",
-          "name": "Payment",
-          "target": {
-            "type": "EntryPoint",
-            "urlTemplate": "https://example.com/orders",
-            "encodingType": "application/vnd.openactive.v1.0+json",
-            "httpMethod": "POST"
-          }
-        }
-      ]
-</pre>
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `DataFeed` |
+| [`schema:distribution`](http://schema.org/distribution)            | - | REQUIRED | Array of [`schema:DataDownload`](https://schema.org/DataDownload) | Versions of the RPDE Order feed available |
 
-Since discovery of URLs is an implicit part of the specification, **brokers**
-SHOULD avoid hard-coding URLs for specific actions into their applications and
-client libraries. **Brokers**  SHOULD use most applicable URL discovered at the
-point in the workflow they are currently in - e.g. not use a cached URL that has
-been previously successfully used. They should also not attempt to create URLs
-for a specific action based on patterns within previously used URLs.
+## `schema:DataDownload`
 
-It is the responsibility of **booking platforms** to advertise the URL for
-further activity in the booking workflow at the point of need. For example they
-MUST advertise the URL for `Order` creation when a **broker** requests
-a specific **opportunity** resource and SHOULD advertise it in their RDPE feeds
-since both of these points within the booking workflow are places where a \
-**customer** may wish to check availability.
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `DataDownload` |
+| [`schema:contentUrl`](http://schema.org/contentUrl)                | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The base URL of the RPDE feed |
+| [`schema:additionalType`](http://schema.org/additionalType)        | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | Always `https://schema.org/Order`. |
+| [`schema:encodingFormat`](http://schema.org/encodingFormat)        | - | REQUIRED | Array of [`schema:Text`](https://schema.org/Text) | The versions of Open Booking supported by this feed. |
 
-### Dataset site examples
+
+## Example
 
 <pre class="example" title="Example of Dataset site embedded JSON-LD">
 
 &#x3C;script type=&#x22;application/ld+json&#x22;&#x3E;
- {
-  "@context": "https://schema.org",
-  "keywords": [
-    "Sessions",
-    "Facilities",
-    "Activities",
-    "Sports",
-    "Physical Activity",
-    "OpenActive"
-  ],
-  "license": "https://creativecommons.org/licenses/by/4.0/",
-  "distribution": [
-    {
-      "additionalType": "https://openactive.io/SessionSeries",
-      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
-      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-session-series",
-      "@type": "DataDownload",
-      "name": "SessionSeries"
+  {
+    "@context": ["https://schema.org", "https://openactive.io/"],
+    "@type": "Dataset",
+    "id": "https://data.example.com/",
+    "url": "https://data.example.com/"
+    "name": "Acme Leisure Sessions and Facilities",
+    "description": "Near real-time availability and rich descriptions relating to the sessions and facilities available from Acme Leisure, published using the OpenActive Modelling Specification 2.0.",
+    "keywords": [
+      "Sessions",
+      "Facilities",
+      "Activities",
+      "Sports",
+      "Physical Activity",
+      "OpenActive"
+    ],
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "distribution": [
+      {
+        "additionalType": "https://openactive.io/SessionSeries",
+        "encodingFormat": "application/vnd.openactive+json; rpde=1.0, model=2.0",
+        "contentUrl": "https://example.com/open-api/feeds/session-series",
+        "@type": "DataDownload",
+        "name": "SessionSeries"
+      },
+      {
+        "additionalType": "https://openactive.io/ScheduledSession",
+        "encodingFormat": "application/vnd.openactive+json; rpde=1.0, model=2.0",
+        "contentUrl": "https://example.com/open-api/feeds/sessions",
+        "@type": "DataDownload",
+        "name": "ScheduledSession"
+      },
+      {
+        "additionalType": "https://openactive.io/FacilityUse",
+        "encodingFormat": "application/vnd.openactive+json; rpde=1.0, model=2.0",
+        "contentUrl": "https://example.com/open-api/feeds/facility-uses",
+        "@type": "DataDownload",
+        "name": "FacilityUse"
+      },
+      {
+        "additionalType": "https://openactive.io/Slot",
+        "encodingFormat": "application/vnd.openactive+json; rpde=1.0, model=2.0",
+        "contentUrl": "https://example.com/open-api/feeds/slots",
+        "@type": "DataDownload",
+        "name": "Slot"
+      }
+    ],
+    "potentialAction": [
+      {
+        "@type": "OpenBookingAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://example.com/api/orders",
+          "encodingType": ["application/vnd.openactive+json; model=2.0, booking=1.0"],
+          "httpMethod": "POST"
+        },
+        "supportingData": {
+          "@type": "DataFeed",
+          "distribution": [
+            {
+                "@type": "DataDownload",
+                "name": "Order",
+                "additionalType": "https://schema.org/Order",
+                "encodingFormat": ["application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0"],
+                "contentUrl": "https://example.com/api/feeds/offers"
+            }
+          ]
+        }
+      }
+    ],
+    "discussionUrl": "https://github.com/example/opendata/issues",
+    "documentation": "https://docs.example.com/",
+    "inLanguage": "en-GB",
+    "publisher": {
+      "legalName": "Acme Leisure Ltd",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://example.com/logo.png"
+      },
+      "email": "info@example.com",
+      "@type": "Organization",
+      "name": "Acme Leisure",
+      "description": "We are able to continually reinvest in facilities, products and importantly people.",
+      "url": "https://example.com/"
     },
-    {
-      "additionalType": "https://openactive.io/ScheduledSession",
-      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
-      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-scheduled-sessions",
-      "@type": "DataDownload",
-      "name": "ScheduledSession"
-    },
-    {
-      "additionalType": "https://openactive.io/FacilityUse",
-      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
-      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-facility-uses",
-      "@type": "DataDownload",
-      "name": "FacilityUse"
-    },
-    {
-      "additionalType": "https://openactive.io/Slot",
-      "encodingFormat": "application/vnd.openactive.rpde+json; version=1.0",
-      "contentUrl": "https://opendata.leisurecloud.live/api/feeds/fusion-lifestyle-live-slots",
-      "@type": "DataDownload",
-      "name": "Slot"
-    }
-  ],
-  "discussionUrl": "https://github.com/fusion-lifestyle/opendata/issues",
-  "documentation": "https://docs.leisurecloud.live/",
-  "inLanguage": "en-GB",
-  "publisher": {
-    "legalName": "Fusion Lifestyle",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://res.cloudinary.com/gladstone/image/upload/fusion-lifestyle-live/wfiqlyqy5sjfpo5b6dsl"
-    },
-    "email": "info@fusion-lifestyle.com",
-    "@type": "Organization",
-    "name": "Fusion Lifestyle",
-    "description": "Fusion Lifestyle was established in April 2000 following a decision by a London Borough Council to outsource the management of the leisure facilities. Fusion now manages a diverse portfolio of facilities using our specialist expertise to provide sustainable solutions for councils and exciting products and programmes for our customers. Fusion is a national operator managing leisure facilities from Wales to London and as far north as Newcastle. \n\nNo two Fusion sites are the same, we retain the heritage of centres when we refurbish and we are experienced at managing centres from ice rinks to outward bound residential centres, town halls and expansive leisure facilities. We put our energies into providing facilities and programmes that are an attractive proposition to the local community. We respect the history of our centres and it is not uncommon for generations of local residents to hold fond memories of learning to swim in our centres, playing football matches over the years and hosting birthday celebrations at our sites.\n\nFusion is a registered charity, there are therefore no shareholders. We are able to continually reinvest in facilities, products and importantly people.\n",
-    "url": "https://www.fusion-lifestyle.com/"
-  },
-  "datePublished": "2019-02-20T13:22:28.7743707Z",
-  "schemaVersion": "https://www.openactive.io/modelling-opportunity-data/2.0/",
-  "softwareVersion": "OWS:2.0.1",
-  "@type": "Dataset",
-  "id": "https://fusionopendata.fusion-lifestyle.com/OpenActive/",
-  "name": "Fusion Lifestyle Sessions and Facilities",
-  "description": "Near real-time availability and rich descriptions relating to the sessions and facilities available from Fusion Lifestyle, published using the OpenActive Modelling Specification 2.0, and covering a rolling lookhead window of the next 14 days.",
-  "url": "https://fusionopendata.fusion-lifestyle.com/OpenActive/"
-}
+    "datePublished": "2019-02-20T13:22:28.7743707Z",
+    "schemaVersion": "https://www.openactive.io/modelling-opportunity-data/2.0/"
+  }
 &#x3C;/script&#x3E;
 
 </pre>
 
 
+
 </section>
+
 
 
 <section class="normative">
@@ -1492,39 +1574,36 @@ whole API.
 
 
 Custom media types are used in this API to allow clients to choose the format
-of the data they receive.
+of the data they receive, and for **Booking Systems** to stipulate which versions
+of the specification they support.
 
-**Booking platforms** MAY choose to support additional media types but MUST support the
+**Booking Systems** MAY choose to support additional media types but MUST support the
 media type(s) defined by this specification.
 
 Media types will conform to the following pattern:
 
 ```
-application/vnd.openactive.booking+json; version=[version]
+application/vnd.openactive+json; model=[m], booking=[b], rpde=[r]
 ```
 
 The current media type is:
 
 ```
-application/vnd.openactive.booking+json; version=1.0
+application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0
 ```
 
 **Brokers** specifying a media type without a version, such as:
 
 ```
-application/vnd.openactive.booking+json
+application/vnd.openactive+json
 ```
 
-will receive data in in the most current format which is 1.0.
+will receive data in in the most current format.
 
-If you are building an application as a **broker** and care about the stability
+If you are building an application as a **Broker** and care about the stability
 of the response, or have a client application which is tied to a specific
 version you should always try to use a media type containing the version number.
 
-**Booking systems** are not obliged to support previous versions of the
-specification, and so may not support a specific version number. We anticipate
-that when the Booking API reaches the stability of a 1.0 version that this
-advice may change.
 
 <div class="issue" data-number="93"></div>
 
@@ -1532,10 +1611,11 @@ advice may change.
 ## Response formats
 
 Requests and response documents exchanged via this API will all be valid
-[[!JSON-LD]] documents.
+[[!JSON-LD]] documents, with the exception of RPDE feeds, where only documents
+included in the `data` property are valid [[!JSON-LD]].
 
-The documents MUST include a [[!JSON-LD]] `context` that refers to the
-[[!OpenActive-Vocabulary]] as follows:
+The [[!JSON-LD]] documents MUST include a [[!JSON-LD]] `context` that refers
+to the [[!OpenActive-Vocabulary]] as follows:
 
 <pre class="example" title="minimal JSON-LD document">
 {
@@ -1553,13 +1633,13 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive.v1.0+json` and include at least one
+content type of `application/vnd.openactive+json` and include at least one
 Error object. The error handling has in the Booking API has been modelled
 closely on [[!RFC7807]].
 
 <pre class="example" title="Error response format">
 {
-  "@context": "https://openactive.io/ns/oa.jsonld",
+  "@context": "https://openactive.io/",
   "type": "Error",
   "errorType": "https://openactive.io/errors/incomplete_customer_details",
   "title": "Incomplete customer details",
@@ -1957,15 +2037,15 @@ properties are present at a lower level.
 <pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
 
   "privacyPolicy": {
-		"type": "Terms",
-		"url": "https://example.com/privacy-policy",
-		"name": "Privacy Policy"
-	},
-	"termsAndConditions": {
-		"type": "Terms",
-		"url": "https://example.com/terms-and-conditions",
-		"name": "Terms and Conditions"
-	}
+    "type": "Terms",
+    "url": "https://example.com/privacy-policy",
+    "name": "Privacy Policy"
+  },
+  "termsAndConditions": {
+    "type": "Terms",
+    "url": "https://example.com/terms-and-conditions",
+    "name": "Terms and Conditions"
+  }
 
 </pre>
 
@@ -2073,7 +2153,7 @@ these conditions before entering the `Order` workflow.
 
 ### Checking availability and offers for an event or facility use slot
 
-To check the availability of an opportunity a **broker** will issue a GET
+To check the availability of an opportunity a **broker** will send a GET
 request to the URI specified in the `id` of the opportunity, having
 discovered it from the RDPE feed.
 
@@ -2096,49 +2176,49 @@ Content-Length: ...
 
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Event",
-	"identifier": 452,
-	"id": "https://example.com/events/452",
-	"name": "Speedball",
-	"offers": [{
-		"type": "Offer",
-		"validThrough": "2018-10-29T11:00:00Z",
-		"validFrom": "2018-10-01T11:00:00Z",
-		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/1234",
-		"name": "Speedball winger position",
-		"price": 10.00,
-		"priceCurrency": "GBP",
-		"cancellationValidUntil": "2018-10-28T11:00:00Z"
-	}],
-	"eventStatus": "https://schema.org/EventScheduled",
-	"maximumAttendeeCapacity": 30,
-	"remainingAttendeeCapacity": 20,
-	"startDate": "2018-10-30T11:00:00Z",
-	"endDate": "2018-10-30T12:00:00Z",
-	"duration": "PT1H",
-	"location": {},
-	"potentialAction": [{
-		"type": "ReserveAction",
-		"name": "Book",
-		"target": {
-			"type": "EntryPoint",
-			"urlTemplate": "https://example.com/orders",
-			"encodingType": "application/vnd.openactive.v1.0+json",
-			"httpMethod": "POST"
-		}
-	}],
-	"privacyPolicy": {
-		"type": "Terms",
-		"url": "https://example.com/privacy-policy",
-		"name": "Privacy Policy"
-	},
-	"termsAndConditions": {
-		"type": "Terms",
-		"url": "https://example.com/terms-and-conditions",
-		"name": "Terms and Conditions"
-	}
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Event",
+  "identifier": 452,
+  "id": "https://example.com/events/452",
+  "name": "Speedball",
+  "offers": [{
+    "type": "Offer",
+    "validThrough": "2018-10-29T11:00:00Z",
+    "validFrom": "2018-10-01T11:00:00Z",
+    "description": "Winger space for Speedball.",
+    "id": "https://example.com/offers/1234",
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP",
+    "cancellationValidUntil": "2018-10-28T11:00:00Z"
+  }],
+  "eventStatus": "https://schema.org/EventScheduled",
+  "maximumAttendeeCapacity": 30,
+  "remainingAttendeeCapacity": 20,
+  "startDate": "2018-10-30T11:00:00Z",
+  "endDate": "2018-10-30T12:00:00Z",
+  "duration": "PT1H",
+  "location": {},
+  "potentialAction": [{
+    "type": "ReserveAction",
+    "name": "Book",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "POST"
+    }
+  }],
+  "privacyPolicy": {
+    "type": "Terms",
+    "url": "https://example.com/privacy-policy",
+    "name": "Privacy Policy"
+  },
+  "termsAndConditions": {
+    "type": "Terms",
+    "url": "https://example.com/terms-and-conditions",
+    "name": "Terms and Conditions"
+  }
 }
 
 </pre>
@@ -2164,21 +2244,21 @@ Content-Length: ...
 
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Slot",
-	"id": "http://www.example.org/slots/324",
-	"identifier": 324,
-	"facilityUse": "http://www.example.org/facility-use/1",
-	"startDate": "2018-10-01T11:00:00Z",
-	"duration": "PT30M",
-	"remainingUses": 3,
-	"maximumUses": 4,
-	"offers": [{
-		"type": "Offer",
-		"name": "30 minute hire",
-		"price": 15.00,
-		"priceCurrency": "GBP"
-	}],
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Slot",
+  "id": "http://www.example.org/slots/324",
+  "identifier": 324,
+  "facilityUse": "http://www.example.org/facility-use/1",
+  "startDate": "2018-10-01T11:00:00Z",
+  "duration": "PT30M",
+  "remainingUses": 3,
+  "maximumUses": 4,
+  "offers": [{
+    "type": "Offer",
+    "name": "30 minute hire",
+    "price": 15.00,
+    "priceCurrency": "GBP"
+  }],
   "potentialAction": [{
     "type": "ReserveAction",
     "name": "Book",
@@ -2212,28 +2292,28 @@ Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-	"@context": "https://www.openactive.io/ns/oa.jsonld",
-	"type": "FacilityUse",
-	"url": "http://www.example.org/facility-use/1",
-	"name": "Example Leisure Centre Table Tennis",
-	"description": "Table tennis tables are available to hire for thirty minute slots",
-	"activity": "Table Tennis",
-	"location": {
-		"type": "Place",
-		"name": "Example Leisure Centre",
-		"address": {
-			"type": "PostalAddress",
-			"streetAddress": "1 High Street",
-			"addressLocality": "Bristol",
-			"postalCode": "BS1 4SD"
-		}
-	},
-	"offers": [{
-		"type": "Offer",
-		"name": "30 minute hire",
-		"price": 10.00,
-		"priceCurrency": "GBP"
-	}],
+  "@context": "https://www.openactive.io/ns/oa.jsonld",
+  "type": "FacilityUse",
+  "url": "http://www.example.org/facility-use/1",
+  "name": "Example Leisure Centre Table Tennis",
+  "description": "Table tennis tables are available to hire for thirty minute slots",
+  "activity": "Table Tennis",
+  "location": {
+    "type": "Place",
+    "name": "Example Leisure Centre",
+    "address": {
+      "type": "PostalAddress",
+      "streetAddress": "1 High Street",
+      "addressLocality": "Bristol",
+      "postalCode": "BS1 4SD"
+    }
+  },
+  "offers": [{
+    "type": "Offer",
+    "name": "30 minute hire",
+    "price": 10.00,
+    "priceCurrency": "GBP"
+  }],
   "potentialAction": [{
     "type": "ReserveAction",
     "name": "Book",
@@ -2244,30 +2324,30 @@ Content-Length: ...
       "httpMethod": "POST"
     }
   }],
-	"event": [{
-			"type": "Slot",
-			"id": "http://www.example.org/slots/123",
-			"facilityUse": "http://www.example.org/facility-use/1",
-			"startDate": "2018-03-01T10:00:00Z",
-			"duration": "PT30M",
-			"remainingUses": 0,
-			"maximumUses": 4
-		},
-		{
-			"type": "Slot",
-			"id": "http://www.example.org/slots/234",
-			"facilityUse": "http://www.example.org/facility-use/1",
-			"startDate": "2018-03-01T11:00:00Z",
-			"duration": "PT30M",
-			"remainingUses": 3,
-			"maximumUses": 4,
-			"offers": [{
-				"name": "30 minute hire",
-				"price": 15.00,
-				"priceCurrency": "GBP"
-			}]
-		}
-	]
+  "event": [{
+      "type": "Slot",
+      "id": "http://www.example.org/slots/123",
+      "facilityUse": "http://www.example.org/facility-use/1",
+      "startDate": "2018-03-01T10:00:00Z",
+      "duration": "PT30M",
+      "remainingUses": 0,
+      "maximumUses": 4
+    },
+    {
+      "type": "Slot",
+      "id": "http://www.example.org/slots/234",
+      "facilityUse": "http://www.example.org/facility-use/1",
+      "startDate": "2018-03-01T11:00:00Z",
+      "duration": "PT30M",
+      "remainingUses": 3,
+      "maximumUses": 4,
+      "offers": [{
+        "name": "30 minute hire",
+        "price": 15.00,
+        "priceCurrency": "GBP"
+      }]
+    }
+  ]
 }
 
 </pre>
@@ -2456,43 +2536,43 @@ Date: Mon, 8 Oct 2018 20:52:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"telephone": "020 811 8055",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
-	"acceptedOffer": [{
-		"type": "Offer",
-		"validThrough": "2018-10-29T11:00:00Z",
-		"validFrom": "2018-10-01T11:00:00Z",
-		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/1234",
-		"itemOffered": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		},
-		"name": "Speedball winger position",
-		"price": 10.00,
-		"priceCurrency": "GBP",
-		"isCancellable": true,
-		"cancellationValidUntil": "2018-10-28T11:00:00Z"
-	}],
-	"orderedItem": [{
-		"orderQuantity": "1",
-		"orderedItem": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		}
-	}]
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
+  "broker": {
+    "type": "Organization",
+    "name": "MyFitnessApp",
+    "url": "https://myfitnessapp.example.com"
+  },
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
+  "acceptedOffer": [{
+    "type": "Offer",
+    "validThrough": "2018-10-29T11:00:00Z",
+    "validFrom": "2018-10-01T11:00:00Z",
+    "description": "Winger space for Speedball.",
+    "id": "https://example.com/offers/1234",
+    "itemOffered": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    },
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP",
+    "isCancellable": true,
+    "cancellationValidUntil": "2018-10-28T11:00:00Z"
+  }],
+  "orderedItem": [{
+    "orderQuantity": "1",
+    "orderedItem": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    }
+  }]
 }
 
 </pre>
@@ -2508,69 +2588,69 @@ Location: /orders/890
 
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
-	"id": "https://example.com/orders/890",
-	"acceptedOffer": [{
-		"type": "Offer",
-		"validThrough": "2018-10-29T11:00:00Z",
-		"validFrom": "2018-10-01T11:00:00Z",
-		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/1234",
-		"itemOffered": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		},
-		"name": "Speedball winger position",
-		"price": 10.00,
-		"priceCurrency": "GBP",
-		"isCancellable": true,
-		"cancellationValidUntil": "2018-10-28T11:00:00Z"
-	}],
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"telephone": "020 811 8055",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
-	"orderDate": "2018-10-08T20:52:36Z",
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"orderItemStatus": "https://schema.org/OrderPaymentDue",
-		"orderedItem": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		}
-	}],
-	"orderLeaseDuration": "PT15M",
-	"orderStatus": "https://schema.org/OrderPaymentDue",
-	"partOfInvoice": {
-		"type": "Invoice",
-		"paymentStatus": "PaymentDue",
-		"totalPaymentDue": {
-			"type": "MonetaryAmount",
-			"value": 10.00,
-			"currency": "GBP"
-		}
-	},
-	"paymentDueDate": "2018-10-08T21:07:36Z",
-	"potentialAction": [{
-		"type": "PayAction",
-		"name": "Pay",
-		"target": {
-			"type": "EntryPoint",
-			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v1.0+json",
-			"httpMethod": "PATCH"
-		}
-	}]
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
+  "id": "https://example.com/orders/890",
+  "acceptedOffer": [{
+    "type": "Offer",
+    "validThrough": "2018-10-29T11:00:00Z",
+    "validFrom": "2018-10-01T11:00:00Z",
+    "description": "Winger space for Speedball.",
+    "id": "https://example.com/offers/1234",
+    "itemOffered": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    },
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP",
+    "isCancellable": true,
+    "cancellationValidUntil": "2018-10-28T11:00:00Z"
+  }],
+  "broker": {
+    "type": "Organization",
+    "name": "MyFitnessApp",
+    "url": "https://myfitnessapp.example.com"
+  },
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
+  "orderDate": "2018-10-08T20:52:36Z",
+  "orderedItem": [{
+    "type": "OrderItem",
+    "orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderPaymentDue",
+    "orderedItem": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    }
+  }],
+  "orderLeaseDuration": "PT15M",
+  "orderStatus": "https://schema.org/OrderPaymentDue",
+  "partOfInvoice": {
+    "type": "Invoice",
+    "paymentStatus": "PaymentDue",
+    "totalPaymentDue": {
+      "type": "MonetaryAmount",
+      "value": 10.00,
+      "currency": "GBP"
+    }
+  },
+  "paymentDueDate": "2018-10-08T21:07:36Z",
+  "potentialAction": [{
+    "type": "PayAction",
+    "name": "Pay",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders/{order_id}",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "PATCH"
+    }
+  }]
 }
 
 </pre>
@@ -2594,70 +2674,70 @@ Content-Type: application/vnd.openactive.v1.0+json
 Content-Length: ...
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
-	"id": "https://example.com/orders/890",
-	"acceptedOffer": [{
-		"type": "Offer",
-		"validThrough": "2018-10-29T11:00:00Z",
-		"validFrom": "2018-10-01T11:00:00Z",
-		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/1234",
-		"itemOffered": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		},
-		"name": "Speedball winger position",
-		"price": 10.00,
-		"priceCurrency": "GBP",
-		"isCancellable": true,
-		"cancellationValidUntil": "2018-10-28T11:00:00Z"
-	}],
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"telephone": "020 811 8055",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
-	"orderDate": "2018-10-08T20:52:36Z",
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"orderItemStatus": "https://schema.org/OrderPaymentDue",
-		"orderedItem": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		}
-	}],
-	"orderLeaseDuration": "PT15M",
-	"orderStatus": "https://schema.org/OrderPaymentDue",
-	"partOfInvoice": {
-		"type": "Invoice",
-		"paymentStatus": "PaymentDue",
-		"totalPaymentDue": {
-			"type": "MonetaryAmount",
-			"value": 10.00,
-			"currency": "GBP"
-		}
-	},
-	"paymentDueDate": "2018-10-08T21:07:36Z",
-	"potentialAction": [{
-			"type": "PayAction",
-			"name": "Pay",
-			"target": {
-				"type": "EntryPoint",
-				"urlTemplate": "https://example.com/orders/{order_id}",
-				"encodingType": "application/vnd.openactive.v1.0+json",
-				"httpMethod": "PATCH"
-			}
-		}
-	]
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
+  "id": "https://example.com/orders/890",
+  "acceptedOffer": [{
+    "type": "Offer",
+    "validThrough": "2018-10-29T11:00:00Z",
+    "validFrom": "2018-10-01T11:00:00Z",
+    "description": "Winger space for Speedball.",
+    "id": "https://example.com/offers/1234",
+    "itemOffered": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    },
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP",
+    "isCancellable": true,
+    "cancellationValidUntil": "2018-10-28T11:00:00Z"
+  }],
+  "broker": {
+    "type": "Organization",
+    "name": "MyFitnessApp",
+    "url": "https://myfitnessapp.example.com"
+  },
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
+  "orderDate": "2018-10-08T20:52:36Z",
+  "orderedItem": [{
+    "type": "OrderItem",
+    "orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderPaymentDue",
+    "orderedItem": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    }
+  }],
+  "orderLeaseDuration": "PT15M",
+  "orderStatus": "https://schema.org/OrderPaymentDue",
+  "partOfInvoice": {
+    "type": "Invoice",
+    "paymentStatus": "PaymentDue",
+    "totalPaymentDue": {
+      "type": "MonetaryAmount",
+      "value": 10.00,
+      "currency": "GBP"
+    }
+  },
+  "paymentDueDate": "2018-10-08T21:07:36Z",
+  "potentialAction": [{
+      "type": "PayAction",
+      "name": "Pay",
+      "target": {
+        "type": "EntryPoint",
+        "urlTemplate": "https://example.com/orders/{order_id}",
+        "encodingType": "application/vnd.openactive.v1.0+json",
+        "httpMethod": "PATCH"
+      }
+    }
+  ]
 }
 
 </pre>
@@ -2698,17 +2778,17 @@ Date: Mon, 8 Oct 2018 20:56:35 GMT
 Accept: application/vnd.openactive.v1.0+json
 
 {
-	"type": "Order",
-	"payments": [{
-		"type": "Payment",
-		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-		"paymentMethodId": "3204",
-		"totalPaidToProvider": {
-			"type": "MonetaryAmount",
-			"value": 10.00,
-			"currency": "GBP"
-		}
-	}]
+  "type": "Order",
+  "payments": [{
+    "type": "Payment",
+    "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+    "paymentMethodId": "3204",
+    "totalPaidToProvider": {
+      "type": "MonetaryAmount",
+      "value": 10.00,
+      "currency": "GBP"
+    }
+  }]
 }
 
 </pre>
@@ -2721,78 +2801,78 @@ Content-Length: ...
 
 
 {
-	"@context": "https://openactive.io/ns/oa.jsonld",
-	"type": "Order",
-	"id": "https://example.com/orders/890",
-	"acceptedOffer": [{
-		"type": "Offer",
-		"validThrough": "2018-10-29T11:00:00Z",
-		"validFrom": "2018-10-01T11:00:00Z",
-		"description": "Winger space for Speedball.",
-		"id": "https://example.com/offers/1234",
-		"itemOffered": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		},
-		"name": "Speedball winger position",
-		"price": 10.00,
-		"priceCurrency": "GBP",
-		"isCancellable": true,
-		"cancellationValidUntil": "2018-10-28T11:00:00Z"
-	}],
-	"broker": {
-		"type": "Organization",
-		"name": "MyFitnessApp",
-		"url": "https://myfitnessapp.example.com"
-	},
-	"customer": {
-		"type": "Person",
-		"email": "geoffcapes@example.com",
-		"telephone": "020 811 8055",
-		"givenName": "Geoff",
-		"familyName": "Capes"
-	},
-	"orderDate": "2018-10-08T20:52:36Z",
-	"orderedItem": [{
-		"type": "OrderItem",
-		"orderQuantity": 1,
-		"orderItemStatus": "https://schema.org/OrderDelivered",
-		"orderedItem": {
-			"type": "Event",
-			"id": "https://example.com/events/123"
-		}
-	}],
-	"orderStatus": "https://schema.org/OrderDelivered",
-	"partOfInvoice": {
-		"type": "Invoice",
-		"paymentStatus": "PaymentComplete",
-		"totalPaymentDue": {
-			"type": "MonetaryAmount",
-			"value": 10.00,
-			"currency": "GBP"
-		}
-	},
-	"payments": [{
-		"type": "Payment",
-		"paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
-		"paymentMethodId": "3204",
-		"totalPaidToProvider": {
-			"type": "MonetaryAmount",
-			"value": 10.00,
-			"currency": "GBP"
-		},
-		"paymentDate": "2018-10-08T20:56:36Z"
-	}],
-	"potentialAction": [{
-		"type": "CancelAction",
-		"name": "Cancel",
-		"target": {
-			"type": "EntryPoint",
-			"urlTemplate": "https://example.com/orders/{order_id}",
-			"encodingType": "application/vnd.openactive.v1.0+json",
-			"httpMethod": "PATCH"
-		}
-	}]
+  "@context": "https://openactive.io/ns/oa.jsonld",
+  "type": "Order",
+  "id": "https://example.com/orders/890",
+  "acceptedOffer": [{
+    "type": "Offer",
+    "validThrough": "2018-10-29T11:00:00Z",
+    "validFrom": "2018-10-01T11:00:00Z",
+    "description": "Winger space for Speedball.",
+    "id": "https://example.com/offers/1234",
+    "itemOffered": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    },
+    "name": "Speedball winger position",
+    "price": 10.00,
+    "priceCurrency": "GBP",
+    "isCancellable": true,
+    "cancellationValidUntil": "2018-10-28T11:00:00Z"
+  }],
+  "broker": {
+    "type": "Organization",
+    "name": "MyFitnessApp",
+    "url": "https://myfitnessapp.example.com"
+  },
+  "customer": {
+    "type": "Person",
+    "email": "geoffcapes@example.com",
+    "telephone": "020 811 8055",
+    "givenName": "Geoff",
+    "familyName": "Capes"
+  },
+  "orderDate": "2018-10-08T20:52:36Z",
+  "orderedItem": [{
+    "type": "OrderItem",
+    "orderQuantity": 1,
+    "orderItemStatus": "https://schema.org/OrderDelivered",
+    "orderedItem": {
+      "type": "Event",
+      "id": "https://example.com/events/123"
+    }
+  }],
+  "orderStatus": "https://schema.org/OrderDelivered",
+  "partOfInvoice": {
+    "type": "Invoice",
+    "paymentStatus": "PaymentComplete",
+    "totalPaymentDue": {
+      "type": "MonetaryAmount",
+      "value": 10.00,
+      "currency": "GBP"
+    }
+  },
+  "payments": [{
+    "type": "Payment",
+    "paymentMethod": "https://purl.org/goodrelations/v1#PaymentMethodCreditCard",
+    "paymentMethodId": "3204",
+    "totalPaidToProvider": {
+      "type": "MonetaryAmount",
+      "value": 10.00,
+      "currency": "GBP"
+    },
+    "paymentDate": "2018-10-08T20:56:36Z"
+  }],
+  "potentialAction": [{
+    "type": "CancelAction",
+    "name": "Cancel",
+    "target": {
+      "type": "EntryPoint",
+      "urlTemplate": "https://example.com/orders/{order_id}",
+      "encodingType": "application/vnd.openactive.v1.0+json",
+      "httpMethod": "PATCH"
+    }
+  }]
 }
 
 </pre>
