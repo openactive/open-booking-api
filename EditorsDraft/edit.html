@@ -737,6 +737,9 @@ The `unitTaxSpecification` is calculated by the booking system exactly as it wou
   }
 </pre>
 
+<div class="issue" data-number="96"></div>
+
+
 </section>
 
 
@@ -984,6 +987,40 @@ In some limited circumstances it might also be desirable for an Open Booking API
 </pre>
 
 Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the **Booking System** be optional, and the **Booking System** must always accept a lack of `paymentMethod` as indication of an external **Payment Processor** being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
+
+
+## Delivery of Terms and Conditions and Privacy Policy
+
+The **Broker** MUST make the **Customer** aware of and assent to any `termsOfService`
+provided within the `seller`, `broker`, and `bookingService` (which may include
+Terms and Conditions and Privacy Policy) before the **Customer** completes **B**.
+
+Since, during booking, the details of the **Customer** are provided to the
+**Booking System** and the **Seller**, the **Broker** SHOULD inform the
+**Customer** of this any implications with respect to GDPR and any other
+data protection legislation.
+
+Note that `termsOfService` may only be specified at the `seller`, `broker` or
+`bookingService` level, and may not be provided for a specific `Offer` or `OrderItem`.
+
+<pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
+  "termsOfService": [
+    {
+      "type": "Terms",
+      "name": "Privacy Policy"
+      "url": "https://example.com/privacy-policy",
+    },
+    {
+      "type": "Terms",
+      "name": "Terms and Conditions"
+      "url": "https://example.com/terms-and-conditions",
+    }
+  ]
+</pre>
+
+The URLs in the example are only illustrative.
+
+<div class="issue" data-number="95"></div>
 
 </section>
 
@@ -1335,7 +1372,12 @@ Used for `termsOfService`.
       "type": "BookingService",
       "name": "Playwaze",
       "url": "http://www.playwaze.com",
-      "termsOfService": "url"
+      "termsOfService": [
+        {
+          "type": "Terms",
+          "url": "https://example.com/terms.html"
+        }
+      ]
     },
     "lease": { // booking system
       "type": "Lease",
@@ -2015,45 +2057,9 @@ subsequent requests to an `Order` should only be initiated by the **customer**
 which created the `Order`.
 
 
-## Delivery of Terms and Conditions and Privacy Policy
+</section>
 
-The **broker** should make the **customer** aware of and assent to any specific
-Terms and Conditions and Privacy Policy for using their service at the point of
-a **customer** signing up to the service and/or providing their contact details.
-
-Since, during **booking**, the details of the **customer** are provided to the
-**booking system** and the **seller**, the **broker** should inform the
-**customer** of this any implications with resepct to GDPR and any other
-data protection legislation.
-
-Specific Terms and Conditions/Privacy Policy for the **booking service**/**seller**
-and/or the **opportynity**/**offer** being taken MUST be made available using the
-`privacyPolicy` and `termsAndConditions` properties described in the example at
-the most appropriate level. If the properties are present at the **opportunity**
-level, they apply to all included **opportunities** and **offers** unless the
-properties are present at a lower level.
-
-
-<pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
-
-  "privacyPolicy": {
-    "type": "Terms",
-    "url": "https://example.com/privacy-policy",
-    "name": "Privacy Policy"
-  },
-  "termsAndConditions": {
-    "type": "Terms",
-    "url": "https://example.com/terms-and-conditions",
-    "name": "Terms and Conditions"
-  }
-
-</pre>
-
-The URLs in the example are only illustrative.
-
-    </section>
-
-    <section class="normative">
+<section class="normative">
 # Operations
 
 ## Checking availability and offers
