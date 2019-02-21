@@ -761,6 +761,8 @@ Either the whole `Order` or individual `OrderItem`s within the `Order` may be ca
 
 The cancellation may be requested by either the **Customer** or the **Seller**, and results in an updated `Order` item on the RPDE feed. Once a cancellation status is placed on an `OrderItem` within an `Order` in the RPDE feed it is assumed by the **Booking System** to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
 
+<div class="issue" data-number="97"></div>
+
 ### Customer requested cancellation
 
 <figure>
@@ -1087,7 +1089,7 @@ for a specific action based on patterns within previously used URLs.
 It is the responsibility of **Booking Systems** to advertise the URL for
 further activity in the booking workflow at the point of need. For example they
 MUST advertise the URL for the `OrderItem` resource in the Orders RPDE Feed feed
-by including the `id` property.
+by including the `id` property within the `OrderItem`.
 
 <div class="issue" data-number="94"></div>
 
