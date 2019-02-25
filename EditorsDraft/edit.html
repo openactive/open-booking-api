@@ -249,13 +249,10 @@ and should be made via
 pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
-        <div class="note">
-This document represents an early Editors Draft of the planned API design. It is
-likely to change between now and its final version. These
-early drafts are intended to help developers provide that feedback by developing
-proof-of-concept implementations. We encourage developers to explore this API and
+    <div class="note">
+This document represents a complete Editors Draft. It is currently in the final stages of community review and we hope that it is nearing stability. The draft is intended to allow developers to provide feedback by developing proof-of-concept implementations. We encourage developers to explore this API and
 contribute to the development of the specification.
-        </div>
+    </div>
 
     </section>
 
@@ -837,7 +834,7 @@ Before entering into the Booking Flow, pairs of appropriate `acceptedOffer` and 
 
 The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the opportunity data are up-to-date, and only include places already booked and *not* places currently reserved by leases.
 
-### Definition of an Open Booking `bookable' opportunity
+### Definition of an Open Booking 'bookable' opportunity
 
 An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` is deemed to be <dfn>bookable</dfn> via the Open Booking API if:
 
@@ -1351,6 +1348,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the OrderItem |
 | [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](https://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, or `https://openactive.io/OrderConfirmed` |
+| [`schema:orderQuanity`](http://schema.org/orderQuanity)            | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | MUST NOT be used for `Order` responses. |
 | [`oa:allowSimpleCancellation`](https://openactive.io/allowSimpleCancellation) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of which includes or excludes tax depending on the `taxMode` of the `Order`. |
@@ -1477,6 +1475,8 @@ Used for `payment`.
 | [`schema:name`](http://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card") |
 | [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
 
+Note that `identifier` and are NOT REQUIRED if `paymentMethod` is specified, to maximise flexibility of the payments extension point.
+
 ### `oa:BookingService`
 
 `oa:BookingService` subclasses `schema:Service`.
@@ -1552,14 +1552,79 @@ Used for `target`.
 | Property                                                           | Status      | Type | Notes |
 |--------------------------------------------------------------------|-------------|-|------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
-| [`oa:errorType`](https://openactive.io/errorType)                  | REQUIRED    | [`schema:URL`](https://schema.org/URL) | A URI providing an enumeration value for the type of error. |
-| [`oa:title`](https://openactive.io/title)                          | REQUIRED    | [`schema:Text`](https://schema.org/Text) | A human readable reason for the error. |
-| [`oa:detail`](https://openactive.io/detail)                        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A human readable description of the error. |
+| [`oa:error`](https://openactive.io/error)                          | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError)  | An array of errors related to the request. |
+
+
+### `oa:OpenBookingError`
+
+| Property                                                           | Status      | Type | Notes |
+|--------------------------------------------------------------------|-------------|-|------|
+| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
+| [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization |
+| [`schema:description`](https://openactive.io/detail)               | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A slightly longer, human-readable summary of the problem type. It largely SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization or to provide specific information about why the error occurred in that particular case. |
 | [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The requested URL. |
 | [`oa:method`](https://openactive.io/method)                        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The method of the request (e.g. GET). |
 | [`oa:status`](https://openactive.io/status)                        | OPTIONAL    | [`schema:Integer`](https://schema.org/Integer) | An integer representing the HTTP status code. |
 | [`oa:invalidParams`](https://openactive.io/invalidParams)          | OPTIONAL    | Array of [`schema:Text`](https://schema.org/Text) | An array of invalid parameters, if appropriate. |
 | [`oa:requestId`](https://openactive.io/requestId)                  | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Used by technical support for diagnostics purposes. |
+
+
+
+### `oa:OpenBookingError` subclasses
+
+A number of `OpenBookingError` subclasses are specified to identify the problem type.
+
+
+#### Order Creation - `OrderQuote` and `Order` error responses
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the customer is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
+| `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
+| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
+
+
+#### Order Creation - `OrderItem` errors
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `IncompleteOrderItemError`                  | 400         | If there is a missing `acceptedOffer` or `orderedItem` property on the `schema:OrderItem`. |
+| `UnacceptableOfferError`                    | 400         | If the `acceptedOffer` is not a URL which corresponds to an <a>Applicable `Offer`</a> for the opportunity. |
+| `UnknownOfferError`                         | 404         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
+| `UnknownOpportunityDetailsError`            | 404         | If the `orderedItem` is not a URL which corresponds to an opportunity on the <a>Booking System</a>. |
+| `UnavailableOpportunityError`               | 400         | If the `Offer` contained in the `acceptedOffer` property is not bookable |
+| `OpportunityIsFullError`                    | 400         | If there are no available spaces for the opportunity contained in the `orderedItem` property |
+| `OpportunityHasInsufficientCapacityError`   | 400         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property to fulfil the number requested by the `orderQuantity` property. |
+
+
+#### API authentication
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `UnauthenticatedError`                      | 403         | If the <a>Broker</a> did not supply any form of authentication. |
+| `NoAPITokenError`                           | 403         | If the <a>Broker</a> did not supply an API key. |
+| `InvalidAPITokenError`                      | 401         | If the <a>Broker</a> supplied an invalid API key, either malformed or expired. |
+| `InvalidAuthorizationDetailsError`          | 401         | If the <a>Broker</a> supplied an invalid set of authorization details, either malformed or expired. |
+
+
+#### Technical errors
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TemporarilyUnableToCreateOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to create an `Order` where the data provided to it is sufficient to allow it to do so. |
+| `TemporarilyUnableToUpdateOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to update an `Order` (which includes attempting to PATCH for cancellation) where the data provided to it is sufficient to allow it to do so. |
+| `TemporarilyUnableToDeleteOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to delete an `Order` where the data provided to it is sufficient to allow it to do so |
+
+
+#### Generic errors
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `UnknownOrderError`                         | 404         | Where a <a>Booking System</a> has no `Order` matching the one requested. |
+| `UnknownOrIncorrectEndpointError`           | 404         | Where a <a>Booking System</a> has no endpoint matching the one requested. |
+| `NotFoundError`                             | 404         | Where a <a>Booking System</a> does not have the generic resource specified. |
+| `MethodNotAllowed`                          | 405         | Where a <a>Booking System</a> does not recognise a specific HTTP method for the endpoint requested with that specific HTTP verb. |
+| `GoneError`                                 | 410         | Where an `Order` has been soft-deleted by an Order Deletion request. |
 
 
 </section>
@@ -1629,360 +1694,31 @@ Unless otherwise specified the request and response documents MUST conform to
 the [[Modelling-Opportunity-Data]] data model.
 
 
-## Error handling
+## Errors
 
 Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
-5XX status code.
+5XX status code specified in the model.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
 content type of `application/vnd.openactive+json` and include at least one
-Error object. The error handling has in the Booking API has been modelled
-closely on [[!RFC7807]].
+`OpenBookingError` object.
 
 <pre class="example" title="Error response format">
 {
   "@context": "https://openactive.io/",
   "type": "Error",
-  "errorType": "https://openactive.io/errors/incomplete_customer_details",
-  "title": "Incomplete customer details",
-  "details": "No customer details supplied",
-  "status": 400,
-  "instance": "/orders",
-  "method": "PUT"
+  "error": [
+    "type": "IncompleteCustomerDetailsError",
+    "description": "No customer details supplied"
+  ]
 }
 </pre>
 
-* `errorType` – a URI reference [[!RFC3986]] that identifies the problem type. This
-specification encourages that, when dereferenced, it provide human-readable
-documentation for the problem type.
-When this member is not present, its value is assumed to be "about:blank".
-* `title` – a short, human-readable summary of the problem type. It
-SHOULD NOT change from occurrence to occurrence of the problem, except for
-purposes of localization.
-* `description` – a slightly longer, human-readable summary of the problem type.
-It largely SHOULD NOT change from occurrence to occurrence of the problem,
-except for purposes of localization or to provide specific information about why
-the error occurred in that particular case.
-* `status`  – the HTTP status code ([[!RFC7231]], Section 6) generated by the
-origin server for this occurrence of the problem.
-* `instance`  – a URI reference that identifies the specific occurrence of
-the problem. It may or may not yield further information if dereferenced.
-* `requestId`  – used by technical support for diagnostics purposes.
 
-
-### Order creation : Incomplete customer details
-
-Use cases:
-
-- if the `email` address of the customer is not supplied within a schema:Person
-object.
-
-- if the `customer` property supplied is not a valid schema:Person object.
-
-errorType URI:
-
-- https://openactive.io/errors/incomplete_customer_details
-
-Status code: 400
-
-### Order creation : Incomplete broker details
-
-Use cases:
-
-- if there is insuffficient detail in the schema:Organisation object describing
-the <a>broker</a>
-
-- if the `broker` property supplied is not a valid schema:Organisation object.
-
-errorType URI:
-
-- https://openactive.io/errors/incomplete_broker_details
-
-Status code: 400
-
-### Order creation : Incomplete offer details
-
-Use cases:
-
-- if there is no `acceptedOffer` property on the schema:OrderItem
-
-- if the `acceptedOffer` is not a URL which corresponds to an **offer** on the
-<a>booking system</a>
-
-errorType URI:
-
-- https://openactive.io/errors/incomplete_offer_details
-
-Status code: 400
-
-### Order creation : Incomplete opportunity details
-
-Use cases:
-
-- if there is no `orderedItem` property on the schema:OrderItem
-
-- if the `orderedItem` is not a URL which corresponds to an **opportunity** on
-the <a>booking system</a>
-
-errorType URIs:
-
-- https://openactive.io/errors/incomplete_event_details
-- https://openactive.io/errors/incomplete_facilityuse_details
-- https://openactive.io/errors/incomplete_slot_details
-- https://openactive.io/errors/incomplete_opportunity_details
-
-Status code: 400
-
-### Order creation : Unavailable offer
-
-Use cases:
-
-- if the **offer** contained in the `acceptedOffer` property is not bookable
-
-errorType URI:
-
-- https://openactive.io/errors/unavailable_offer
-
-Status code: 400
-
-### Order creation : Unavailable opportunity
-
-Use cases:
-
-- if the **opportunity** contained in the `orderedItem` property is not bookable
-
-errorType URIs:
-
-- https://openactive.io/errors/unavailable_event
-- https://openactive.io/errors/unavailable_facilityuse
-- https://openactive.io/errors/unavailable_slot
-- https://openactive.io/errors/unavailable_opportunity
-
-Status code: 400
-
-### Order creation : Opportunity full
-
-Use cases:
-
-- if there are no available spaces for the **opportunity** contained in the
-`orderedItem` property
-
-errorType URIs:
-
-- https://openactive.io/errors/event_is_full
-- https://openactive.io/errors/slot_is_full
-- https://openactive.io/errors/opportunity_is_full
-
-Note that if there are two spaces available, and five `OrderItem`s are included for the same opportunity, only three of the `OrderItem`s should include an this error, not all five.
-
-Status code: 400
-
-### Order completion : Incomplete payment details
-
-Use cases:
-
-- if the `paymentMethod` or `paymentMethodId` properties are missing or
-incorrect
-
-errorType URI:
-
-- https://openactive.io/errors/incomplete_payment_details
-
-Status code: 400
-
-### Order completion : Anonymous lease expired
-
-Use cases:
-
-- if <a>broker</a> did not supply <a>payment</a> details between the creation of the
-`Order` and the expiration of the lease.
-
-errorType URI:
-
-- https://openactive.io/errors/anonymous_lease_expired
-
-Status code: 410
-
-### API authentication : Unauthenticated
-
-Use cases:
-
-- if <a>broker</a> did not supply any form of authentication
-
-errorType URI:
-
-- https://openactive.io/errors/unauthenticated
-
-Status code: 403
-
-### API authentication : No API token provided
-
-Use cases:
-
-- if <a>broker</a> did not supply an API key
-
-errorType URI:
-
-- https://openactive.io/errors/no_api_token_provided
-
-Status code: 403
-
-### API authentication : Invalid API token provided
-
-Use cases:
-
-- if <a>broker</a> supplied an invalid API key, either malformed or expired
-
-errorType URI:
-
-- https://openactive.io/errors/invalid_api_token_provided
-
-Status code: 401
-
-### API authentication : Invalid authorization details provided
-
-Use cases:
-
-- if <a>broker</a> supplied an invalid set of authorization details, either
-malformed or expired
-
-errorType URI:
-
-- https://openactive.io/errors/invalid_authorization_details
-
-Status code: 401
-
-### Technical errors : Temporarily unable to create order
-
-Use cases:
-
-- if **booking platform** is unable for technical reasons to create an `Order`
-where the data provided to it is sufficient to allow it to do so
-
-errorType URI:
-
-- https://openactive.io/errors/temporarily_unable_to_create_order
-
-Status code: 500
-
-### Technical errors : Temporarily unable to update order
-
-Use cases:
-
-- if **booking platform** is unable for technical reasons to update an `Order` (which includes attempting to PATCH for cancellation) where the data provided to it is sufficient to allow it to do so
-
-errorType URI:
-
-- https://openactive.io/errors/temporarily_unable_to_update_order
-
-Status code: 500
-
-### Technical errors : Temporarily unable to delete order
-
-Use cases:
-
-- if **booking platform** is unable for technical reasons to delete an `Order`
-where the data provided to it is sufficient to allow it to do so
-
-errorType URI:
-
-- https://openactive.io/errors/temporarily_unable_to_delete_order
-
-Status code: 500
-
-### Generic errors : Unknown or incorrect offer
-
-Use cases:
-
-- where a **booking platform** has no **offer** matching the one requested
-
-errorType URI:
-
-- https://openactive.io/errors/unknown_or_incorrect_offer
-
-Status code: 404
-
-### Generic errors : Unknown or incorrect opportunity
-
-Use cases:
-
-- where a **booking platform** has no **opportunity** matching the one requested
-
-errorType URI:
-
-- https://openactive.io/errors/unknown_or_incorrect_opportunity
-- https://openactive.io/errors/unknown_or_incorrect_event
-- https://openactive.io/errors/unknown_or_incorrect_facilityuse
-- https://openactive.io/errors/unknown_or_incorrect_slot
-
-Status code: 404
-
-### Generic errors : Unknown or incorrect order
-
-Use cases:
-
-- where a **booking platform** has no `Order` matching the one requested
-
-errorType URI:
-
-- https://openactive.io/errors/unknown_or_incorrect_order
-
-Status code: 404
-
-### Generic errors : Unknown or incorrect endpoint
-
-Use cases:
-
-- where a **booking platform** has no endpoint matching the one requested
-
-errorType URI:
-
-- https://openactive.io/errors/unknown_or_incorrect_endpoint
-
-Status code: 404
-
-### Generic errors : Not found
-
-Use cases:
-
-- where a **booking platform** does not have the generic resource specified
-
-errorType URI:
-
-- https://openactive.io/errors/not_found
-
-Status code: 404
-
-
-
-### Generic errors : Method not allowed
-
-Use cases:
-
-- where a **booking platform** does not a speficic HTTP method for the endpoint
-requested with that specific HTTP verb
-
-errorType URI:
-
-- https://openactive.io/errors/method_not_allowed
-
-Status code: 405
-
-### Generic errors : Gone
-
-Use cases:
-
-- where an `Order` has been cancelled and the underlying resources are marked
-for deletion
-
-errorType URI:
-
-- https://openactive.io/errors/gone
-
-Status code: 410
 ## Security
 
 All HTTP requests and responses SHOULD be secured using SSL.
+
 
 ## Authentication
 
@@ -2009,6 +1745,8 @@ One principle relating to authentication and the Booking API is that `Order`s cr
 
 
 </section>
+
+
 
 
 <section class="normative">

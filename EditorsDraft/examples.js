@@ -45,13 +45,24 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
   });
 }
 
-//TODO: Remove RPDE from the diagrams as no longer part of **B**
+//TODO: Allow multiple errors only for order creation
 
-//TODO: Clarify **B** vs Order Creation
+//TODO: Include identifier in OrderItem and include logic to specify that it is reflected back.
+//TODO: Force OrderQuote to reflect back everything, so that it can be passed back and forth, same for Order, noting that it doesn't actually need to be stored anywhere.
+
+//TODO: Add something about price checking?
+//TODO: - You're supposed to check price is the same, so the completed OrderQuote must be passed into the Order in order to complete the Order - does this get around any reflection issues?
+// All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
+
+// To make errors easier, OrderQuantity is used for OrderQuote and response, and each acceptedOffer/offeredItem combo MUST be unique, hence no IDs are required.
+
+// The Order object will include split OrderItems out into multiple entries to allow for cancellation
+
+//TODO: Clarify **B** vs Order Creation terms throughout
 
 //TODO: Question: should OrderQuote have an id and location, as it doesn't actually conceptually exist?
 //TODO: Should we have ID in the request PUT?
-//TODO: Do we force properties to be (i) reflected back and (ii) stored as part of the Orders feed by the booking system?
+//TODO: Do we force properties to be (i) reflected back and (ii) stored as part of the Orders feed by the booking system? Cons: This would limit any extension mechanism, Pros: The complete item is being passed back and forth
 //TODO: Ensure somewhere it says for the Orders feed items are a "PATCH" of a subset of the properties from the original Order, and that GET is not REQUIRED so that the other properties do not need to be stored.
 //TODO: Create new feed column in Order model
 //TODO: Order response MUST contain all properties that are actively being stored by the Booking System, as well as the REQUIRED properties of the "Order".
@@ -83,6 +94,9 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 
 //TODO: Include Error for `Order` specifying that that a conflict exists with the `orderedItem` requested, and that `OrderQuote` must be retried to get specific errors.
 
+//TODO: Sort through errors
+
+// Make "opportunity" a key word in the spec
 
 function dataExampleOrderCreationRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
@@ -426,6 +440,7 @@ var fullOrderExampleContent = {
 var fullOrderItemExampleContent = { //broker
   "type": "OrderItem",
   "id": "https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234",
+  "identifier": "22"
   "orderItemStatus": { //booking system
     OrderConfirmed: "https://openactive.io/OrderConfirmed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
@@ -563,13 +578,14 @@ var feedOrderItem = {
 var requestOrderItem = {
   "type": "OrderItem",
   "id": fullOrderItemExampleContent.id,
+  "identifier": fullOrderItemExampleContent.identifier,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request
 }
 
 var responseOrderQuoteOrderItem = {
   "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
+  "identifier": fullOrderItemExampleContent.identifier,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowSimpleCancellation": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
@@ -579,17 +595,15 @@ var responseOrderQuoteOrderItem = {
 
 var responseOrderQuoteErrorOrderItem = {
   "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
+  "identifier": fullOrderItemExampleContent.identifier,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowSimpleCancellation": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse,
   "error": [{
-    "type": "Error",
-    "errorType": "https://openactive.io/errors/opportunity_is_full",
-    "title": "Opportunity full",
-    "details": "There are no spaces remaining in this opportunity"
+    "type": "OpportunityIsFullError",
+    "description": "There are no spaces remaining in this opportunity"
   }]
 }
 
