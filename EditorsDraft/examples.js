@@ -47,6 +47,8 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 
 //TODO: Allow multiple errors only for order creation
 
+//TODO: Should we have a separate type for OrderRequest to better define the required params?
+
 //TODO: Include identifier in OrderItem and include logic to specify that it is reflected back.
 //TODO: Force OrderQuote to reflect back everything, so that it can be passed back and forth, same for Order, noting that it doesn't actually need to be stored anywhere.
 
@@ -60,7 +62,6 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 
 //TODO: Clarify **B** vs Order Creation terms throughout
 
-//TODO: Question: should OrderQuote have an id and location, as it doesn't actually conceptually exist?
 //TODO: Should we have ID in the request PUT?
 //TODO: Do we force properties to be (i) reflected back and (ii) stored as part of the Orders feed by the booking system? Cons: This would limit any extension mechanism, Pros: The complete item is being passed back and forth
 //TODO: Ensure somewhere it says for the Orders feed items are a "PATCH" of a subset of the properties from the original Order, and that GET is not REQUIRED so that the other properties do not need to be stored.
@@ -74,11 +75,11 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 
 //TODO: Can we simplify the Orders feed requirement by having the "patch" payload not full sessions, and instead reference the open data.
 
-//TODO: It is the Broker's responsibility to monitor the open feeds to ensure that any updates to the events logistics (e.g. date/time) trigger notifications for the Customer.
+//TODO: Open issue on this: It is the Broker's responsibility to monitor the open feeds to ensure that any updates to the events logistics (e.g. date/time) trigger notifications for the Customer.
 
 //TODO: Errors for specific OrderItems, and how they are returned. Suggest that errors are returned against the OrderQuote items, so they can be displayed to the users, rather than the OrderQuote failing.
 
-//TODO: Include a section on child booking!
+//TODO: Include a section on child booking?
 
 //TODO: Error if customer cancels bofore the cancellation windows
 //TODO: Ensure customer checks for cancellation window before attempting cancellation
@@ -440,12 +441,12 @@ var fullOrderExampleContent = {
 var fullOrderItemExampleContent = { //broker
   "type": "OrderItem",
   "id": "https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234",
-  "identifier": "22"
   "orderItemStatus": { //booking system
     OrderConfirmed: "https://openactive.io/OrderConfirmed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
+  "orderQuantity": 1,
   "allowSimpleCancellation": true,
   "accessToken": [
     {
@@ -577,15 +578,14 @@ var feedOrderItem = {
 
 var requestOrderItem = {
   "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
-  "identifier": fullOrderItemExampleContent.identifier,
+  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request
 }
 
 var responseOrderQuoteOrderItem = {
   "type": "OrderItem",
-  "identifier": fullOrderItemExampleContent.identifier,
+  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowSimpleCancellation": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
@@ -595,7 +595,7 @@ var responseOrderQuoteOrderItem = {
 
 var responseOrderQuoteErrorOrderItem = {
   "type": "OrderItem",
-  "identifier": fullOrderItemExampleContent.identifier,
+  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowSimpleCancellation": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,

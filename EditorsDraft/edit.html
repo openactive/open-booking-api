@@ -411,7 +411,8 @@ by this specification is scoped tightly to only specify interactions between the
         <dl class="typography">
             <dt><dfn>Customer</dfn></dt>
             <dd>The user who places a booking using an application provided by
-            a <a>Broker</a>.</dd>
+            a <a>Broker</a>. The <a>Customers</a> is not necessarily the attendee,
+            so e.g. a parent may book on behalf of their child.</dd>
             <dt><dfn>Broker</dfn></dt>
             <dd>The organisation or developer providing an application that
             allows <a>Customers</a> to make bookings. Those applications will be
@@ -548,11 +549,11 @@ vi) **Authorise Payment** - <a>Broker</a> pre-authorises `totalPaymentDue` from 
 
   - The <a>Broker</a> MUST store the `Order` request with an internal status of `https://openactive/PaymentAuthorized` at this point.
 
-vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object to check viability and with a Payment object for the total amount pre-authed (call is idempotent, can be retried if 500 returned), <a>Booking System</a> responds with an `Order`.
+vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object to check viability, with a Payment object, and `totalPaymentDue` including the total amount pre-authed (call is idempotent, can be retried if 500 returned), <a>Booking System</a> responds with an `Order`.
 
   - The `identifier` of the `Payment` is taken from the payment pre-authorization.
 
-  - If the `totalPaymentDue` in the `Order` object is different to the current `totalPaymentDue` (which might have changed since **C2**, e.g. if the headline price is changed in the booking system between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
+  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since **C2**, e.g. if the headline price is changed in the booking system between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
 
   - If some of the leases have expired, or if leases are not supported, then the booking system attempts to make the booking anyway. If there are no spaces available the booking fails.
 
@@ -781,14 +782,16 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within opportunity data specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
-| `taxMode`                                   | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
-|---------------------------------------------|-----------------------------|-------------------------------|
-| Price displayed                             | Excludes tax                | Includes all applicable taxes assuming a `Person` as a `customer` |
-| Currencies usually associated               | USD                         | EUR, AUD, GBP                 |
-| Example price of opportunity before tax     | 10.00                       | 10.00                         |
-| Example tax rate                            | 0.2                         | 0.2                           |
-| Price displayed to Customer during browsing | 10.00                       | 12.00                         |
-| Total paid by Customer                      | 12.00                       | 12.00                         |
+Note that `taxMode` only effects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalTaxSpecification` include only the taxes themselves so are uneffected.
+
+| `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
+|--------------------------------------------------------|-----------------------------|-------------------------------|
+| Price displayed                                        | Excludes tax                | Includes all applicable taxes assuming a `Person` as a `customer` |
+| Currencies usually associated                          | USD                         | EUR, AUD, GBP                 |
+| Example price of opportunity before tax                | 10.00                       | 10.00                         |
+| Example tax rate                                       | 0.2                         | 0.2                           |
+| Price displayed to Customer during browsing (`Offer`)  | 10.00                       | 12.00                         |
+| Total paid by Customer (`totalPaymentDue`)             | 12.00                       | 12.00                         |
 
 
 ## Free opportunities
@@ -899,11 +902,11 @@ To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
 1. Use the latest state of the `Order` from the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `OrderItem` `id` with a body of `{ "orderItemStatus": "https://openactive.io/CustomerCancelled" }` MUST succeed.
 
-2. The <a>Customer</a> MUST be informed of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` MUST be equal to:
+2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` MUST be equal to:
 - For `taxMode` of `https://openactive/TaxNet`: the sum of the `price` in the `acceptedOffer` and all the prices in `unitTaxSpecification`.
 - For `taxMode` of `https://openactive/TaxGross`: the `price` in the `acceptedOffer`.
 
-3. For each `OrderItem` to be cancelled, a PATCH must be submitted using the URI `id` of the `OrderItem` from the feed with a body of `{ "orderItemStatus": "https://openactive.io/CustomerCancelled" }`. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
+3. Submit a PATCH for each `OrderItem` to be cancelled using the URL `id` of the `OrderItem` from the feed with a body of `{ "orderItemStatus": "https://openactive.io/CustomerCancelled" }`. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
 
 4. Process any refunds based on the resulting updates to the <a>Orders feed</a>. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
@@ -1121,6 +1124,24 @@ Note that the `broker` property in the request body is to help the <a>Booking Sy
 In the situation where a middleware is used for various <a>Brokers</a>, independently of API key provisioning at the <a>Booking System</a> level (which in some systems is a lengthly and time-consuming process), the `broker` property SHOULD contain the details of the end-user <a>Broker</a> rather than the middleware.
 
 
+#### `orderQuantity` expansion
+
+`orderQuantity` within `OrderItem` is only used during Order Creation, and is not persisted, as follows:
+
+- For `OrderQuote` request, `OrderQuote` response, and `Order` request the `OrderItem`s MUST be unique based on the `id` of their `acceptedOffer` and the `id` of their `orderedItem`, and `orderQuantity` MUST be used to specify more than one is desired.
+- For `Order` response, and the <a>Orders feed</a>, the `OrderItems` MUST NOT include `orderQuantity`, and instead `OrderItem`s must be duplicated according to their original `orderQuanity`, with a unique `id` provided for each resulting `OrderItem`.
+
+This allows `OrderItem`s to be cancelled individually once the `Order` has been created, and errors regarding capacity to be attributed appropriately during Order Creation.
+
+| Scenario              | `orderQuantity` status | Unique `OrderItem` key                         |
+|-----------------------|------------------------|------------------------------------------------|
+| `OrderQuote` request  | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
+| `OrderQuote` response | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
+| `Order` request       | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
+| `Order` response      | -                      | `id` of `OrderItem`                            |
+| <a>Orders feed</a>    | -                      | `id` of `OrderItem`                            |
+
+
 #### `OrderQuote`
 
 A PUT request to the Order Creation endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return a `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` identical to if request of type `Order` be made, without any side effects (with the exception of optional leasing).
@@ -1285,7 +1306,7 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`schema:customer`](http://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. MUST be either an . |
 | [`oa:bookingService`](https://openactive.io/bookingService)        | -        | REQUIRED | -        | [`oa:BookingService`](https://openactive.io/BookingService) | Details about the <a>Booking System</a> |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](http://schema.org/OrderItem) | The items that constitute the `Order` |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:totalTaxSpecification`](https://openactive.io/totalTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | REQUIRED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the Broker |
 
@@ -1294,13 +1315,14 @@ The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at 
 
 ### `oa:OrderQuote`
 
-`OrderQuote` subclasses `Order`, and includes of the above properties as specified for `Order` with the addition of `oa:lease` and without `oa:payment`:
+`OrderQuote` subclasses `Order`, and includes of the above properties as specified for `Order` with the addition of `oa:lease`, without `oa:payment`, and with `totalPaymentDue` only required in the response:
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the booking system. |
 | [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | Payment is not expected for `OrderQuote` |
+| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 
 
 ### `schema:Organization` for `seller`
@@ -1357,7 +1379,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:Error`](https://openactive.io/Error) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the Seller in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 
-Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is not supported in this version of the specification.
+Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is only used during the booking flow, and MUST NOT be used within the completed `Order`.
 
 
 ### `schema:Offer`
