@@ -411,7 +411,7 @@ by this specification is scoped tightly to only specify interactions between the
         <dl class="typography">
             <dt><dfn>Customer</dfn></dt>
             <dd>The user who places a booking using an application provided by
-            a <a>Broker</a>. The <a>Customers</a> is not necessarily the attendee,
+            a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee,
             so e.g. a parent may book on behalf of their child.</dd>
             <dt><dfn>Broker</dfn></dt>
             <dd>The organisation or developer providing an application that
@@ -1363,6 +1363,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:logo`](http://schema.org/logo)                            | RECOMMENDED | - | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Broker</a>, used within the <a>Booking System</a>. |
 | [`schema:termsOfService`](http://schema.org/termsOfService)        | OPTIONAL    | - | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Broker</a>. |
 
+
 ### `schema:OrderItem`
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
@@ -1376,7 +1377,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only requires `id` within these objects to be included, all other properties are ignored. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:Barcode`](https://schema.org/Barcode) | `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance, not applicable for an `OrderQuote`. |
-| [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:Error`](https://openactive.io/Error) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
+| [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the Seller in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 
 Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is only used during the booking flow, and MUST NOT be used within the completed `Order`.
