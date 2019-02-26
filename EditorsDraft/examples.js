@@ -31,7 +31,7 @@ function dataExampleOrderQuoteCreationResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
+function dataExampleOrderQuoteCreationOrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
@@ -45,7 +45,7 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationGenericErrorResponse(utils, content) {
+function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "IncompleteCustomerDetailsError",

@@ -1162,13 +1162,14 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 
 If there are any issues with the `orderedItem`s provided in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
 
-<pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationErrorResponse">
+<pre class="example" title="Order Creation: OrderQuote example OrderItem error response" data-transform="dataExampleOrderQuoteCreationOrderItemErrorResponse">
 </pre>
 
 If there are issues with other properties of the `OrderQuote` outside of `orderedItem`, the <a>Booking System</a> MUST respond with a JSON-LD response which includes only the appropriate `OpenBookingError` and the appropriate status code.
 
-<pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationGenericErrorResponse">
+<pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationErrorResponse">
 </pre>
+
 
 
 #### `Order`
@@ -1722,8 +1723,8 @@ Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
 5XX status code specified in the model.
 
 All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive+json` and include at least one
-`OpenBookingError` object.
+content type of `application/vnd.openactive+json`, and optionally any version
+parameters, and include at least one `OpenBookingError` object.
 
 <pre class="example" title="Error response format">
 {
