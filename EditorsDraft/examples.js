@@ -49,10 +49,9 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 
 //TODO: Should we have a separate type for OrderRequest to better define the required params?
 
-//TODO: Include identifier in OrderItem and include logic to specify that it is reflected back.
 //TODO: Force OrderQuote to reflect back everything, so that it can be passed back and forth, same for Order, noting that it doesn't actually need to be stored anywhere.
 
-//TODO: Add something about price checking?
+//TODO: Add something about price checking? [DONE]
 //TODO: - You're supposed to check price is the same, so the completed OrderQuote must be passed into the Order in order to complete the Order - does this get around any reflection issues?
 // All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
 
@@ -98,6 +97,8 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
 //TODO: Sort through errors
 
 // Make "opportunity" a key word in the spec
+
+// How do we know which status code to use when multipe errors have conflicting status codes? Do we have an example with just one error and no array?
 
 function dataExampleOrderCreationRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
