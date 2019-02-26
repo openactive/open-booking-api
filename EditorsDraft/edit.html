@@ -1160,7 +1160,7 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 <pre class="example" title="Order Creation: OrderQuote example success response" data-transform="dataExampleOrderQuoteCreationResponse">
 </pre>
 
-If there are any issues with the `orderedItem`s provided in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
+If there are any issues with the `orderedItem`s provided in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
 
 <pre class="example" title="Order Creation: OrderQuote example OrderItem error response" data-transform="dataExampleOrderQuoteCreationOrderItemErrorResponse">
 </pre>
@@ -1169,7 +1169,6 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 
 <pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationErrorResponse">
 </pre>
-
 
 
 #### `Order`
@@ -1605,9 +1604,12 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the customer is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
 | `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
+| `OrderAlreadyExistsError`                   | 400         | If the UUID used for an `OrderQuote` already represents a completed Order. |
 
 
 #### Order Creation - `OrderItem` errors
+
+Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Conflict` response, as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]] section 10.4.10.
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1634,6 +1636,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TemporarilyUnableToProduceOrderQuoteError` | 500         | If the <a>Booking System</a> is unable for technical reasons to produce an `OrderQuote` where the data provided to it is sufficient to allow it to do so. |
 | `TemporarilyUnableToCreateOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to create an `Order` where the data provided to it is sufficient to allow it to do so. |
 | `TemporarilyUnableToUpdateOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to update an `Order` (which includes attempting to PATCH for cancellation) where the data provided to it is sufficient to allow it to do so. |
 | `TemporarilyUnableToDeleteOrderError`       | 500         | If the <a>Booking System</a> is unable for technical reasons to delete an `Order` where the data provided to it is sufficient to allow it to do so |
@@ -1648,6 +1651,9 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `NotFoundError`                             | 404         | Where a <a>Booking System</a> does not have the generic resource specified. |
 | `MethodNotAllowed`                          | 405         | Where a <a>Booking System</a> does not recognise a specific HTTP method for the endpoint requested with that specific HTTP verb. |
 | `GoneError`                                 | 410         | Where an `Order` has been soft-deleted by an Order Deletion request. |
+| `TooManyRequestsError`                      | 429         | Where the <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
+
+
 
 
 </section>
@@ -1719,19 +1725,23 @@ the [[Modelling-Opportunity-Data]] data model.
 
 ## Errors
 
-Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP
-5XX status code specified in the model.
+Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.
 
-All error responses from this API MUST be returned in a JSON-LD format using a
-content type of `application/vnd.openactive+json`, and optionally any version
-parameters, and include at least one `OpenBookingError` object.
+All error responses from this API MUST be returned in a JSON-LD format subclass of the `OpenBookingError` using a content type of `application/vnd.openactive+json` (optionally including any version parameters).
 
-<pre class="example" title="Error response format">
-{
-  "@context": "https://openactive.io/",
-  "type": "IncompleteCustomerDetailsError",
-  "description": "No customer details supplied"
-}
+<pre class="example" title="Error response example" data-transform="dataExampleErrorResponse">
+</pre>
+
+
+## Rate Limiting
+
+The <a>Booking System</a> MAY choose to apply rate limiting for each unique set of authentication credentials, in which case they MUST adhere to the following.
+
+All rate-limited responses from this API MUST return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive+json` (optionally including any version parameters).
+
+The response MUST also include the `Retry-After` HTTP Header with a value set to the number of seconds after which the <a>Broker</a> SHOULD retry as per [[RFC2616]] section 14.37.
+
+<pre class="example" title="Rate limited response example" data-transform="dataExampleRateLimitResponse">
 </pre>
 
 

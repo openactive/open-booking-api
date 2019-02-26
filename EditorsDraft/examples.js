@@ -46,12 +46,38 @@ function dataExampleOrderQuoteCreationOrderItemErrorResponse(utils, content) {
 }
 
 function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
+  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "TemporarilyUnableToProduceOrderQuoteError",
+    "description": "Temporary error occurred in the database"
+  });
+}
+
+function dataExampleErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "IncompleteCustomerDetailsError",
     "description": "No customer details supplied"
   });
 }
+
+function dataExampleRateLimitResponse(utils, content) {
+  return generateResponseWithHeaders("429 Too Many Requests", null, OPERATIONS_MEDIA_TYPE,
+    "Retry-After: 8", {
+      "@context": CONTEXT,
+      "type": "TooManyRequestsError",
+      "description": "Rate Limit Reached. Retry in 8 seconds."
+    });
+}
+
+//TODO: Include rate limiting scheme!! [DONE]
+
+
+//TODO: A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
+//TODO: Read Iain's slides and stephenage notes from a while back to check we've not missed anything
+
+
+//TODO: Allow for a "lite" signup-only / no cancellation version to exist? No point, it's too simple to need a spec for that...?
 
 //TODO: Allow multiple errors only for order creation
 
@@ -643,6 +669,10 @@ ${jsonStringify(json)}
 
 function generateRequest(verb, path, mediaType, json) {
   return generateRequestHeaders(verb, path, mediaType) + (json ? "\n\n" + jsonStringify(json) : "");
+}
+
+function generateResponseWithHeaders(responseCode, path, mediaType, headers, json) {
+  return generateResponseHeaders(responseCode, path, mediaType) + "\n" + headers + (json ? "\n\n" + jsonStringify(json) : "");
 }
 
 function generateResponse(responseCode, path, mediaType, json) {
