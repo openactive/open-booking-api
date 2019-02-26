@@ -45,6 +45,14 @@ function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
   });
 }
 
+function dataExampleOrderQuoteCreationGenericErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "IncompleteCustomerDetailsError",
+    "description": "No customer details supplied"
+  });
+}
+
 //TODO: Allow multiple errors only for order creation
 
 //TODO: Should we have a separate type for OrderRequest to better define the required params?
@@ -145,6 +153,8 @@ function dataExampleOrderCreationFullResponse(utils, content) {
     "payment": fullOrderExampleContent.payment
   });
 }
+
+
 
 function dataExampleOrderDeletionRequest(utils, content) {
   return generateRequest("DELETE", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE);

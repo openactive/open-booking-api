@@ -512,7 +512,6 @@ When a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
 The `leaseExpires` MAY be used to inform the `Customer` of the time they have remaining.
 
 
-
 ## Step-by-step process description
 
 <figure>
@@ -856,6 +855,8 @@ An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `
 
 - The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` in the past. This allows for a "bookahead" window to be specified.
 
+- The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is specified within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties.
+
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
 The <a>Broker</a> MUST NOT attempt to book an opportunity that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST return an error if an `Order` is submitted that contains activities that are not <a>bookable</a>, and include an `error` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
@@ -1164,8 +1165,10 @@ If there are any issues with the `orderedItem`s provided in the `OrderQuote`, th
 <pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationErrorResponse">
 </pre>
 
-If there are issues with other properties of the `OrderQuote` outside of `orderedItem`, the <a>Booking System</a> MUST respond with a `400 Bad Request` response, which includes only the appropriate `Error`.
+If there are issues with other properties of the `OrderQuote` outside of `orderedItem`, the <a>Booking System</a> MUST respond with a JSON-LD response which includes only the appropriate `OpenBookingError` and the appropriate status code.
 
+<pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationGenericErrorResponse">
+</pre>
 
 
 #### `Order`
@@ -1573,13 +1576,6 @@ Used for `target`.
 
 ## Error Model
 
-### `oa:Error`
-
-| Property                                                           | Status      | Type | Notes |
-|--------------------------------------------------------------------|-------------|-|------|
-| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
-| [`oa:error`](https://openactive.io/error)                          | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError)  | An array of errors related to the request. |
-
 
 ### `oa:OpenBookingError`
 
@@ -1614,13 +1610,13 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `IncompleteOrderItemError`                  | 400         | If there is a missing `acceptedOffer` or `orderedItem` property on the `schema:OrderItem`. |
-| `UnacceptableOfferError`                    | 400         | If the `acceptedOffer` is not a URL which corresponds to an <a>Applicable `Offer`</a> for the opportunity. |
-| `UnknownOfferError`                         | 404         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
-| `UnknownOpportunityDetailsError`            | 404         | If the `orderedItem` is not a URL which corresponds to an opportunity on the <a>Booking System</a>. |
-| `UnavailableOpportunityError`               | 400         | If the `Offer` contained in the `acceptedOffer` property is not bookable |
-| `OpportunityIsFullError`                    | 400         | If there are no available spaces for the opportunity contained in the `orderedItem` property |
-| `OpportunityHasInsufficientCapacityError`   | 400         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property to fulfil the number requested by the `orderQuantity` property. |
+| `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `schema:OrderItem`. |
+| `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an <a>Applicable `Offer`</a> for the opportunity. |
+| `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
+| `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an opportunity on the <a>Booking System</a>. |
+| `UnavailableOpportunityError`               | 409         | If the `Offer` contained in the `acceptedOffer` property is not bookable |
+| `OpportunityIsFullError`                    | 409         | If there are no available spaces for the opportunity contained in the `orderedItem` property |
+| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property to fulfil the number requested by the `orderQuantity` property. |
 
 
 #### API authentication
@@ -1732,11 +1728,8 @@ content type of `application/vnd.openactive+json` and include at least one
 <pre class="example" title="Error response format">
 {
   "@context": "https://openactive.io/",
-  "type": "Error",
-  "error": [
-    "type": "IncompleteCustomerDetailsError",
-    "description": "No customer details supplied"
-  ]
+  "type": "IncompleteCustomerDetailsError",
+  "description": "No customer details supplied"
 }
 </pre>
 
