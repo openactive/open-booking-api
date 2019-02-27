@@ -512,6 +512,7 @@ When a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
 The `leaseExpires` MAY be used to inform the `Customer` of the time they have remaining.
 
 
+
 ## Step-by-step process description
 
 <figure>
@@ -527,8 +528,8 @@ i) "**1. Select**" - User browses broker site anonymously and adds something to 
 
 ii) **C1** - <a>Broker</a> call with `OrderQuote` including UUID without a `customer` object to check availability and that the combination of items requested can be purchased (call is idempotent), <a>Booking System</a> responds with an `OrderQuote`.
 
-  - <a>Booking System</a> creates anonymous lease for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Response 200 indicates quote has been successfully produced (which implies all requested items are available). Response may include a `lease` to indicate a lease has also been created against the UUID.
-  - `OrderQuote` includes total pricing confirmation in response for basket to be updated, as well as enumerated `OrderItem`s with their respective details that can be rendered by the <a>Broker</a> to ensure accuracy (rather than relying on syncing with the open feed).
+  - <a>Booking System</a> creates anonymous lease for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. The `OrderQuote` may include a `lease` to indicate a lease has also been created against the UUID.
+  - `OrderQuote` includes `totalPaymentDue`, which allows the <a>Broker</a> to update any UI with the total, as well as enumerated `OrderItem`s with their respective details that can be rendered by the <a>Broker</a> to ensure accuracy (rather than relying on syncing with the open feed).
   - The <a>Booking System</a> MUST ensure that the data returned to the <a>Broker</a> in the `remainingAttendeeCapacity` and `remainingUses` properties are up-to-date, and only include places already booked and *not* places currently reserved by leases from competing `OrderQuote`s.
 
 iii) "**2. Register / Login**" - User clicks checkout and enters personal details
