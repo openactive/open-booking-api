@@ -70,8 +70,35 @@ function dataExampleRateLimitResponse(utils, content) {
     });
 }
 
+// Create issue around race conditions:
+//There is a race condition between the Orders feed and completion of ** B **
+//  for new Orders.
+
+//If the completion of ** B ** from the Order creation call takes longer than the time
+//for the Orders feed update to be processed an unrecognised Order would be present in the feed.
+
+//This same situation would occur as a result of a fatal error during payment authorization.
+
+// Remove last 4 from diagram!
+
+// Add to spec intro: "The commercial relationship will govern what is possible, the spec does not recommend or include ACLs that specifically disable functionality."
+
+// Make OfferOverride clearer
+
+// Specific error code for "not bookable"
+
+// Offer override to disable/exclude an offer.
+
+// Line at top of Customer cancellation diagram isn't RPDE, as it's now coming from the store based on Order response and not RPDE - it should just be "store"
+
+// Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowSimpleCancellation"
+
+
+// Make issue about minimal personal data capture
 
 // Switch to including only new orders in the feed, not existing Orders - include issue on this.
+
+// Raise issue around minimal contact details captured (is this an issue already?)
 
 
 //TODO: Include rate limiting scheme!! [DONE]
@@ -222,13 +249,23 @@ function dataExampleOrderFeedResponse(utils, content) {
 }
 
 function dataExampleOrderItemCancellationRequest(utils, content) {
-  return generateRequest("PATCH", API_PATH + "/orders/" + UUID + "/order-items/1234", OPERATIONS_MEDIA_TYPE, {
-    "orderItemStatus": "https://openactive.io/CustomerCancelled"
+  return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "Order",
+    "orderedItem": [responseCancelledOrderItem]
   });
 }
 
-function dataExampleOrderItemCancellationResponse(utils, content) {
+function dataExampleOrderItemCancellationSuccessResponse(utils, content) {
   return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+}
+
+function dataExampleOrderItemCancellationErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "CancellationNotPermittedError",
+    "description": "The horse has already been fed, and cannot be put back in the box."
+  });
 }
 
 function dataExampleOrderStatusRequest(utils, content) {
@@ -660,8 +697,11 @@ var responseOrderItem = {
   "accessToken": fullOrderItemExampleContent.accessToken
 }
 
-
-
+var responseCancelledOrderItem = {
+  "type": "OrderItem",
+  "id": fullOrderItemExampleContent.id,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.CustomerCancelled
+}
 
 /***** Helper Functions *****/
 

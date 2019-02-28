@@ -589,7 +589,7 @@ ix) **Invoice Generation** and **Customer Notification** - Upon successfully cap
 
  - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://schema.org/OrderDelivered` after invoices have been created and notifications successfully sent.
 
-x) **Refunds an Cancellation** - The <a>Broker</a> subscribes to updates from the <a>Booking System</a> to process cancellations and refunds.
+x) **Refunds and Cancellation** - The <a>Broker</a> subscribes to updates from the <a>Booking System</a> to process cancellations and refunds.
   - A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authentication credentials. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
   - The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed.
   - The <a>Broker</a> uses these `Order`s to process refunds and send update notifications to the <a>Customer</a>.
@@ -860,7 +860,7 @@ An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `
 
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
-The <a>Broker</a> MUST NOT attempt to book an opportunity that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST return an error if an `Order` is submitted that contains activities that are not <a>bookable</a>, and include an `error` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
+The <a>Broker</a> MUST NOT attempt to book an opportunity that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
 
 Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> opportunity based on the `genderRestriction` or `ageRange`, this specification encourages the <a>Broker</a> NOT to capture gender and age data from the <a>Customer</a> and NOT to enforce validation of these restrictions, but instead to prominently display any restrictions in the booking process to ensure that the <a>Customer</a> is aware of these.
 
@@ -878,6 +878,10 @@ The following recursive algorithm should be applied to calculate applicable offe
 3. Step 2 is repeated for each parent recursively.
 4. The <a>Broker</a> MUST then filter this applicable set to provide a set of `Offers` which are current (based on `validFromBeforeStartDate`) and are available to the <a>Customer</a> through the <a>Broker</a> (based on `availableChannel`).
 5. The <a>Broker</a> MAY additionally filter based on the `Offer`s that apply to the customer, for example based on `ageRange` if specified in the `Offer`. This specification provides no guidance as to how the filtering should be performed, however it recommends against gathering additional personal data about the <a>Customer</a> in order to restrict `Offer`s presented, and instead advocates clear messaging regarding the restrictions of each `Offer` to allow the <a>Customer</a> to make an informed decision.
+
+
+
+<div class="issue" data-number="103"></div>
 
 
 ## Amending the OrderQuote before **B**
@@ -905,21 +909,24 @@ The cancellation may be requested by either the <a>Customer</a> or the <a>Seller
 
 To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
-1. Use the latest state of the `Order` from the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `OrderItem` `id` with a body of `{ "orderItemStatus": "https://openactive.io/CustomerCancelled" }` MUST succeed.
+1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` MUST succeed.
 
 2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` MUST be equal to:
-- For `taxMode` of `https://openactive/TaxNet`: the sum of the `price` in the `acceptedOffer` and all the prices in `unitTaxSpecification`.
-- For `taxMode` of `https://openactive/TaxGross`: the `price` in the `acceptedOffer`.
+  (i) for `taxMode` of `https://openactive/TaxNet`, the sum of the `price` in the `acceptedOffer` and all the prices in `unitTaxSpecification`;
+  (ii) for `taxMode` of `https://openactive/TaxGross`, the `price` in the `acceptedOffer`.
 
-3. Submit a PATCH for each `OrderItem` to be cancelled using the URL `id` of the `OrderItem` from the feed with a body of `{ "orderItemStatus": "https://openactive.io/CustomerCancelled" }`. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
+3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
 
 4. Process any refunds based on the resulting updates to the <a>Orders feed</a>. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
-To cancel an entire `Order`, a PATCH request must be made to each `OrderItem` within it individually. To minimise the number of updates in the <a>Orders feed</a>, it is recommended that multiple DELETEs are sent in quick succession.
+To cancel an entire `Order`, a single PATCH request MUST be made including `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
 
-Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate`, yet they may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant.
+Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.
 
 <div class="issue" data-number="92"></div>
+
+<div class="issue" data-number="102"></div>
+
 
 ### Seller requested cancellation
 
@@ -1097,13 +1104,13 @@ Due to URL discovery, the paths of the endpoints below are illustrative, as the 
 
 A summary of endpoints defined by this specification is provided below:
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| Order Creation         | REQUIRED    | Order            | PUT       | `/orders/{uuid}`                                 |
-| Order Deletion         | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`                                 |
-| Orders RPDE Feed       | REQUIRED    | Orders feed      | GET       | `/orders-rpde`                                   |
-| OrderItem Cancellation | REQUIRED    | OrderItem        | PATCH     | `/orders/{uuid}/order-items/{order-item-id}`     |
-| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{uuid}`                                 |
+| Endpoint Name           | Status      | Resource         | HTTP Verb | Example Path      |
+|-------------------------|-------------|------------------|-----------|-------------------|
+| Order Creation          | REQUIRED    | Order            | PUT       | `/orders/{uuid}`  |
+| Order Deletion          | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`  |
+| OrderItem Cancellation  | REQUIRED    | Order            | PATCH     | `/orders/{uuid}`  |
+| Orders RPDE Feed        | REQUIRED    | Orders feed      | GET       | `/orders-rpde`    |
+| Order Status            | OPTIONAL    | Order            | GET       | `/orders/{uuid}`  |
 
 
 <div class="issue" data-number="98"></div>
@@ -1194,9 +1201,9 @@ If there are issues any properties of the `Order`, including the `orderedItem`, 
 
 ### Order Deletion
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| Order Deletion         | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`                                 |
+| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
+|------------------------|-------------|------------------|-----------|----------------------|
+| Order Deletion         | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`     |
 
 Deleting an `Order` allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.
 
@@ -1214,11 +1221,34 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 </pre>
 
 
+### OrderItem Cancellation
+
+| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
+|------------------------|-------------|------------------|-----------|----------------------|
+| OrderItem Cancellation | REQUIRED    | Order            | PATCH     | `/orders/{uuid}`     |
+
+All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
+
+<pre class="example" title="OrderItem Cancellation: example request" data-transform="dataExampleOrderItemCancellationRequest">
+</pre>
+
+The cancellation request succeeds and fails atomically.
+
+<pre class="example" title="OrderItem Cancellation: example success response" data-transform="dataExampleOrderItemCancellationSuccessResponse">
+</pre>
+
+<!--
+<pre class="example" title="OrderItem Cancellation: example error response" data-transform="dataExampleOrderItemCancellationErrorResponse">
+</pre>
+-->
+
+
+
 ### Orders RPDE Feed
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| Orders RPDE Feed       | REQUIRED    | Orders feed      | GET       | `/orders-rpde`                                   |
+| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
+|------------------------|-------------|------------------|-----------|----------------------|
+| Orders RPDE Feed       | REQUIRED    | Orders feed      | GET       | `/orders-rpde`       |
 
 <pre class="example" title="Order RPDE Feed: example request" data-transform="dataExampleOrderFeedRequest">
 </pre>
@@ -1227,25 +1257,13 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 </pre>
 
 
-### OrderItem Cancellation
-
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| OrderItem Cancellation | REQUIRED    | OrderItem        | PATCH     | `/orders/{uuid}/order-items/{order-item-id}`     |
-
-<pre class="example" title="OrderItem Cancellation: example request" data-transform="dataExampleOrderItemCancellationRequest">
-</pre>
-
-<pre class="example" title="OrderItem Cancellation: example response" data-transform="dataExampleOrderItemCancellationResponse">
-</pre>
-
 ### Order Status
 
 A <a>Booking System</a> MAY provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this OPTIONAL Order Status endpoint.
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path                                     |
-|------------------------|-------------|------------------|-----------|--------------------------------------------------|
-| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{uuid}`                                 |
+| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path          |
+|------------------------|-------------|------------------|-----------|-----------------------|
+| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{uuid}`      |
 
 <pre class="example" title="Order Status: example request" data-transform="dataExampleOrderStatusRequest">
 </pre>
@@ -1608,6 +1626,10 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `OrderAlreadyExistsError`                   | 400         | If the UUID used for an `OrderQuote` already represents a completed Order. |
 
 
+<!--| `CancellationNotPermittedError`             | 400         | If the cancellation is not permitted due to internal rules of the booking system not otherwise exposed to the `Broker`. The `description` property of the object SHOULD include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |-->
+
+
+
 #### Order Creation - `OrderItem` errors
 
 Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Conflict` response, as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]] section 10.4.10.
@@ -1618,7 +1640,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an <a>Applicable `Offer`</a> for the opportunity. |
 | `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
 | `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an opportunity on the <a>Booking System</a>. |
-| `UnavailableOpportunityError`               | 409         | If the `Offer` contained in the `acceptedOffer` property is not bookable |
+| `UnavailableOpportunityError`               | 409         | If the `Offer` contained in the `acceptedOffer` property is not <a>bookable</a>. |
 | `OpportunityIsFullError`                    | 409         | If there are no available spaces for the opportunity contained in the `orderedItem` property |
 | `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property to fulfil the number requested by the `orderQuantity` property. |
 
