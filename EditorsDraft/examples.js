@@ -70,6 +70,10 @@ function dataExampleRateLimitResponse(utils, content) {
     });
 }
 
+// What about payments which don't support 2-phase-commit? Should we add constraints around the booking call so it doesn't trigger notifications immediately due to the order potentially being deleted after this.
+
+
+
 // Create issue around race conditions:
 //There is a race condition between the Orders feed and completion of ** B **
 //  for new Orders.
