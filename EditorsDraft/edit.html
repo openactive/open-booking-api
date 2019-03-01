@@ -948,21 +948,20 @@ To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
 1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` MUST succeed.
 
-2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` MUST be equal to:
-  (i) for `taxMode` of `https://openactive/TaxNet`, the sum of the `price` in the `acceptedOffer` and all the prices in `unitTaxSpecification`;
-  (ii) for `taxMode` of `https://openactive/TaxGross`, the `price` in the `acceptedOffer`.
+2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` can be obtained by submitting a PATCH of type `OrderQuote` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. This will return an updated `OrderQuote` with a `totalPaymentDue`, which can be used by the `Broker` to display the expected refund to the `Customer` and have them confirm they wish to proceed.
 
 3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
 
-4. Process any refunds based on the resulting updates to the <a>Orders feed</a>. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
+4. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
-To cancel an entire `Order`, a single PATCH request MUST be made including `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
+To cancel an entire `Order`, the PATCH request MUST include `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
 
 Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.
 
 <div class="issue" data-number="92"></div>
 
 <div class="issue" data-number="102"></div>
+
 
 
 ### Seller requested cancellation
@@ -1266,7 +1265,14 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 
 All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
 
-<pre class="example" title="OrderItem Cancellation: example request" data-transform="dataExampleOrderItemCancellationRequest">
+A dry-run of the call MAY be used to inform the user of the refund they can expect (note the response represents only a partial `OrderQuote`, which SHOULD be combined with the `Order` stored in the `Broker` to create a full view).
+
+<pre class="example" title="OrderItem Cancellation: example OrderQuote request" data-transform="dataExampleOrderItemCancellationQuoteRequest">
+</pre>
+
+Whether or not the dry-run was completed, the cancellation may be requested:
+
+<pre class="example" title="OrderItem Cancellation: example Order request" data-transform="dataExampleOrderItemCancellationRequest">
 </pre>
 
 The cancellation request succeeds and fails atomically.

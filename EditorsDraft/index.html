@@ -1158,20 +1158,18 @@ The scope of this specification does not include the contractual relationship wi
 ]</pre>
         </div></section></section><section id="amending-the-orderquote-before-b"><h3 id="x8-2-amending-the-orderquote-before-b"><span class="secno">8.2 </span>Amending the OrderQuote before <strong>B</strong><a class="self-link" aria-label="§" href="#amending-the-orderquote-before-b"></a></h3><p>The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MAY">MAY</em> call <strong>C1</strong> and <em class="rfc2119" title="MUST">MUST</em> call <strong>C2</strong> when the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> updates their basket to add and remove items.</p><p>When repeated calls to <strong>C1</strong> or <strong>C2</strong> are made with the same UUID, the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MUST">MUST</em> expire the leases of items that have been removed from the basket.</p><p>All leases may be cancelled by submitting an <code>OrderQuote</code> with the same UUID but without any <code>orderItem</code>s as either <strong>C1</strong> or <strong>C2</strong>. The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> make a reasonable attempt to cancel all leases when it is aware that a <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> has abandoned their journey. For <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking Systems</a> that have not implemented leasing, an <code>OrderQuote</code> without any <code>orderItem</code>s can simply be ignored.</p></section><section id="cancellation-after-b"><h3 id="x8-3-cancellation-after-b"><span class="secno">8.3 </span>Cancellation after <strong>B</strong><a class="self-link" aria-label="§" href="#cancellation-after-b"></a></h3><p>Either the whole <code>Order</code> or individual <code>OrderItem</code>s within the <code>Order</code> may be cancelled after <strong>B</strong>, however <code>OrderItem</code>s cannot be replaced or added to an existing <code>Order</code> within this version of the specification.</p><p>The cancellation may be requested by either the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> or the <a href="#dfn-seller" class="internalDFN" data-link-type="dfn">Seller</a>, and results in an updated <code>Order</code> item on the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>. Once a cancellation status is placed on an <code>OrderItem</code> within an <code>Order</code> in the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a> it is assumed by the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> to have been processed, and it <em class="rfc2119" title="MUST NOT">MUST NOT</em> be reversed. A new <code>Order</code> will need to created to reinstate the booking.</p><div class="issue" id="issue-container-number-97"><div role="heading" class="issue-title marker" id="h-issue-1" aria-level="4"><a href="https://github.com/openactive/open-booking-api/issues/97"><span class="issue-number">Issue 97</span></a><span class="issue-label" aria-label="This issue is labelled as Community Feedback Requested.">: Arbitrary refunds are not in scope <a class="respec-gh-label respec-label-light" href="https://github.com/openactive/open-booking-api/issues/?q=is%3Aissue+is%3Aopen+label%3A%22Community+Feedback+Requested%22" style="background-color: rgb(150, 224, 234);">Community Feedback Requested</a></span></div><p>Refunds are only permitted for entire items, and partial item refunds (including cancellation fees) are not in scope for this version of the specification.</p>
 <p>Although it is understood that some booking systems support partial item refunds, this is a superset of the functionality currently offered within the specification, so should not be an issue for refunds triggered due to cancellations via the <strong>Broker</strong>. As it stands <strong>Seller</strong> requested cancellation will be limited to whole item refunds and no cancellation fees.</p>
-<p>Please comment if partial item refunds or cancellation fees are essential to your usecase.</p></div><section id="customer-requested-cancellation"><h4 id="x8-3-1-customer-requested-cancellation"><span class="secno">8.3.1 </span>Customer requested cancellation<a class="self-link" aria-label="§" href="#customer-requested-cancellation"></a></h4><figure id="fig-customer-requested-cancellation"><img src="customercancelled.png" alt="Customer requested cancellation" height="529" width="765">
+<p>Please comment if partial item refunds or cancellation fees are essential to your usecase.</p></div><section id="customer-requested-cancellation"><h4 id="x8-3-1-customer-requested-cancellation"><span class="secno">8.3.1 </span>Customer requested cancellation<a class="self-link" aria-label="§" href="#customer-requested-cancellation"></a></h4><figure id="fig-customer-requested-cancellation"><img src="customercancelled.png" alt="Customer requested cancellation" height="660" width="766">
 <figcaption>Figure <span class="figno">9</span> <span class="fig-title">Customer requested cancellation</span></figcaption>
 </figure><p>To cancel an existing OrderItem, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST">MUST</em>:</p><ol>
 <li><p>Use the latest state of the <code>Order</code> stored during the booking flow and updated via the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a> to determine which <code>OrderItem</code>s may be cancelled. If <code>allowSimpleCancellation</code> is <code>true</code> and <code>latestCancellationBeforeStartDate</code> subtracted from the opportunity <code>startDate</code> is in the future, a PATCH against the <code>Order</code> including the <code>OrderItem</code> with <code>"orderItemStatus": "https://openactive.io/CustomerCancelled"</code> <em class="rfc2119" title="MUST">MUST</em> succeed.</p>
 </li>
-<li><p>Inform the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each <code>OrderItem</code> <em class="rfc2119" title="MUST">MUST</em> be equal to:
-(i) for <code>taxMode</code> of <code>https://openactive/TaxNet</code>, the sum of the <code>price</code> in the <code>acceptedOffer</code> and all the prices in <code>unitTaxSpecification</code>;
-(ii) for <code>taxMode</code> of <code>https://openactive/TaxGross</code>, the <code>price</code> in the <code>acceptedOffer</code>.</p>
+<li><p>Inform the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each <code>OrderItem</code> can be obtained by submitting a PATCH of type <code>OrderQuote</code> including only the <code>id</code> for each of the <code>OrderItem</code>s to be cancelled, with an <code>"orderItemStatus": "https://openactive.io/CustomerCancelled"</code> set on each. This will return an updated <code>OrderQuote</code> with a <code>totalPaymentDue</code>, which can be used by the <code>Broker</code> to display the expected refund to the <code>Customer</code> and have them confirm they wish to proceed.</p>
 </li>
 <li><p>Submit a PATCH for the <code>Order</code> including only the <code>id</code> for each of the <code>OrderItem</code>s to be cancelled, with an <code>"orderItemStatus": "https://openactive.io/CustomerCancelled"</code> set on each. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.</p>
 </li>
-<li><p>Process any refunds based on the resulting updates to the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>. Successfully cancelled <code>OrderItems</code> will have <code>orderItemStatus</code> set to <code>https://openactive.io/CustomerCancelled</code>. Note refunds <em class="rfc2119" title="MUST NOT">MUST NOT</em> be processed except in response to updates in the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>.</p>
+<li><p>Process any refunds based on the resulting updates to the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>, based on the updated <code>totalPaymentDue</code>. Successfully cancelled <code>OrderItems</code> will have <code>orderItemStatus</code> set to <code>https://openactive.io/CustomerCancelled</code>. Note refunds <em class="rfc2119" title="MUST NOT">MUST NOT</em> be processed except in response to updates in the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>.</p>
 </li>
-</ol><p>To cancel an entire <code>Order</code>, a single PATCH request <em class="rfc2119" title="MUST">MUST</em> be made including <code>"orderItemStatus": "https://openactive.io/CustomerCancelled"</code> for each <code>OrderItem</code> within it.</p><p>Note that there is no provision for a <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> to cancel an <code>Order</code> after the cancellation window specified by `latestCancellationBeforeStartDate. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.</p><div class="issue" id="issue-container-number-92"><div role="heading" class="issue-title marker" id="h-issue-2" aria-level="5"><a href="https://github.com/openactive/open-booking-api/issues/92"><span class="issue-number">Issue 92</span></a><span class="issue-label" aria-label="This issue is labelled as Community Feedback Requested.">: Allow whole Order cancellation? <a class="respec-gh-label respec-label-light" href="https://github.com/openactive/open-booking-api/issues/?q=is%3Aissue+is%3Aopen+label%3A%22Community+Feedback+Requested%22" style="background-color: rgb(150, 224, 234);">Community Feedback Requested</a></span></div><p>Should we allow the cancellation of a whole <code>Order</code>?</p>
+</ol><p>To cancel an entire <code>Order</code>, the PATCH request <em class="rfc2119" title="MUST">MUST</em> include <code>"orderItemStatus": "https://openactive.io/CustomerCancelled"</code> for each <code>OrderItem</code> within it.</p><p>Note that there is no provision for a <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> to cancel an <code>Order</code> after the cancellation window specified by `latestCancellationBeforeStartDate. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.</p><div class="issue" id="issue-container-number-92"><div role="heading" class="issue-title marker" id="h-issue-2" aria-level="5"><a href="https://github.com/openactive/open-booking-api/issues/92"><span class="issue-number">Issue 92</span></a><span class="issue-label" aria-label="This issue is labelled as Community Feedback Requested.">: Allow whole Order cancellation? <a class="respec-gh-label respec-label-light" href="https://github.com/openactive/open-booking-api/issues/?q=is%3Aissue+is%3Aopen+label%3A%22Community+Feedback+Requested%22" style="background-color: rgb(150, 224, 234);">Community Feedback Requested</a></span></div><p>Should we allow the cancellation of a whole <code>Order</code>?</p>
 <p>Pros:</p>
 <ul>
 <li>Easier for broker</li>
@@ -2194,9 +2192,29 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
 <td>PATCH</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><p>All other properties except the <code>id</code> and <code>orderItemStatus</code> inside the <code>OrderItem</code> <em class="rfc2119" title="MUST">MUST</em> be ignored. <code>OrderItem</code>s omitted from the PATCH request <em class="rfc2119" title="MUST">MUST</em> also be ignored.</p><div class="example" id="example-19-orderitem-cancellation-example-request">
+</tbody></table><p>All other properties except the <code>id</code> and <code>orderItemStatus</code> inside the <code>OrderItem</code> <em class="rfc2119" title="MUST">MUST</em> be ignored. <code>OrderItem</code>s omitted from the PATCH request <em class="rfc2119" title="MUST">MUST</em> also be ignored.</p><p>A dry-run of the call <em class="rfc2119" title="MAY">MAY</em> be used to inform the user of the refund they can expect (note the response represents only a partial <code>OrderQuote</code>, which <em class="rfc2119" title="SHOULD">SHOULD</em> be combined with the <code>Order</code> stored in the <code>Broker</code> to create a full view).</p><div class="example" id="example-19-orderitem-cancellation-example-orderquote-request">
           <div class="marker">
-      <a class="self-link" href="#example-19-orderitem-cancellation-example-request">Example 19</a><span class="example-title">: OrderItem Cancellation: example request</span>
+      <a class="self-link" href="#example-19-orderitem-cancellation-example-orderquote-request">Example 19</a><span class="example-title">: OrderItem Cancellation: example OrderQuote request</span>
+    </div>
+          <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: example.com
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
+<span class="hljs-attribute">Accept</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0
+
+<span class="json">{
+  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>,
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderQuote"</span>,
+  <span class="hljs-attr">"orderedItem"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234"</span>,
+      <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/CustomerCancelled"</span>
+    }
+  ]
+}</span></pre>
+        </div><p>Whether or not the dry-run was completed, the cancellation may be requested:</p><div class="example" id="example-20-orderitem-cancellation-example-order-request">
+          <div class="marker">
+      <a class="self-link" href="#example-20-orderitem-cancellation-example-order-request">Example 20</a><span class="example-title">: OrderItem Cancellation: example Order request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
@@ -2214,9 +2232,9 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
     }
   ]
 }</span></pre>
-        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-20-orderitem-cancellation-example-success-response">
+        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-21-orderitem-cancellation-example-success-response">
           <div class="marker">
-      <a class="self-link" href="#example-20-orderitem-cancellation-example-success-response">Example 20</a><span class="example-title">: OrderItem Cancellation: example success response</span>
+      <a class="self-link" href="#example-21-orderitem-cancellation-example-success-response">Example 21</a><span class="example-title">: OrderItem Cancellation: example success response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">204</span> No Content
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2238,17 +2256,17 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
 <td>GET</td>
 <td><code>/orders-rpde</code></td>
 </tr>
-</tbody></table><div class="example" id="example-21-order-rpde-feed-example-request">
+</tbody></table><div class="example" id="example-22-order-rpde-feed-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-21-order-rpde-feed-example-request">Example 21</a><span class="example-title">: Order RPDE Feed: example request</span>
+      <a class="self-link" href="#example-22-order-rpde-feed-example-request">Example 22</a><span class="example-title">: Order RPDE Feed: example request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders-rpde</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0</pre>
-        </div><div class="example" id="example-22-order-rpde-feed-example-response">
+        </div><div class="example" id="example-23-order-rpde-feed-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-22-order-rpde-feed-example-response">Example 22</a><span class="example-title">: Order RPDE Feed: example response</span>
+      <a class="self-link" href="#example-23-order-rpde-feed-example-response">Example 23</a><span class="example-title">: Order RPDE Feed: example response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2333,17 +2351,17 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
 <td>GET</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><div class="example" id="example-23-order-status-example-request">
+</tbody></table><div class="example" id="example-24-order-status-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-23-order-status-example-request">Example 23</a><span class="example-title">: Order Status: example request</span>
+      <a class="self-link" href="#example-24-order-status-example-request">Example 24</a><span class="example-title">: Order Status: example request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0</pre>
-        </div><div class="example" id="example-24-order-status-example-response">
+        </div><div class="example" id="example-25-order-status-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-24-order-status-example-response">Example 24</a><span class="example-title">: Order Status: example response</span>
+      <a class="self-link" href="#example-25-order-status-example-response">Example 25</a><span class="example-title">: Order Status: example response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2521,9 +2539,9 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
         </div></section><section id="url-discovery"><h4 id="x9-2-6-url-discovery"><span class="secno">9.2.6 </span>URL discovery<a class="self-link" aria-label="§" href="#url-discovery"></a></h4><p>The URL for the initial Order Creation action <em class="rfc2119" title="MUST">MUST</em> be discoverable by parsing the
 <code>OpenBookingAction</code> defined in the <code>potentialAction</code> property of the published
 <code>Dataset</code> embedded within dataset site.</p><p>The <code>EntryPoint</code> object <em class="rfc2119" title="MUST">MUST</em> state the <code>url</code> of the Order Creation endpoint, and <em class="rfc2119" title="MUST">MUST</em>
-contain the <code>encodingType</code> and the <code>httpMethod</code> as <code>PUT</code>.</p><div class="example" id="example-25-example-of-a-potentialaction">
+contain the <code>encodingType</code> and the <code>httpMethod</code> as <code>PUT</code>.</p><div class="example" id="example-26-example-of-a-potentialaction">
           <div class="marker">
-      <a class="self-link" href="#example-25-example-of-a-potentialaction">Example 25</a><span class="example-title">: Example of a potentialAction</span>
+      <a class="self-link" href="#example-26-example-of-a-potentialaction">Example 26</a><span class="example-title">: Example of a potentialAction</span>
     </div>
           <pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: {
   <span class="hljs-string">"@type"</span>: <span class="hljs-string">"OpenBookingAction"</span>,
@@ -2559,9 +2577,9 @@ for a specific action based on patterns within previously used URLs.</p><p>It is
 further activity in the booking workflow at the point of need. For example they
 <em class="rfc2119" title="MUST">MUST</em> advertise the URL for the <code>OrderItem</code> resource in the Orders <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>
 by including the <code>id</code> property within the <code>OrderItem</code>.</p><div class="issue" id="issue-container-number-94"><div role="heading" class="issue-title marker" id="h-issue-7" aria-level="5"><a href="https://github.com/openactive/open-booking-api/issues/94"><span class="issue-number">Issue 94</span></a><span class="issue-label" aria-label="This issue is labelled as Community Feedback Requested.">: URL Discovery using the Dataset Site <a class="respec-gh-label respec-label-light" href="https://github.com/openactive/open-booking-api/issues/?q=is%3Aissue+is%3Aopen+label%3A%22Community+Feedback+Requested%22" style="background-color: rgb(150, 224, 234);">Community Feedback Requested</a></span></div><p>The specification proposes to centralise URL discovery in the Dataset site, along with the feeds themselves.</p>
-<p>Feedback on this approach welcome.</p></div><section id="example"><h5 id="x9-2-6-1-example"><span class="secno">9.2.6.1 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h5><div class="example" id="example-26-example-of-dataset-site-embedded-json-ld">
+<p>Feedback on this approach welcome.</p></div><section id="example"><h5 id="x9-2-6-1-example"><span class="secno">9.2.6.1 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h5><div class="example" id="example-27-example-of-dataset-site-embedded-json-ld">
           <div class="marker">
-      <a class="self-link" href="#example-26-example-of-dataset-site-embedded-json-ld">Example 26</a><span class="example-title">: Example of Dataset site embedded JSON-LD</span>
+      <a class="self-link" href="#example-27-example-of-dataset-site-embedded-json-ld">Example 27</a><span class="example-title">: Example of Dataset site embedded JSON-LD</span>
     </div>
           <pre class="hljs xml" aria-busy="false"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"application/ld+json"</span>&gt;</span><span class="javascript">
 {
@@ -4022,17 +4040,17 @@ version you should always try to use a media type containing the version number.
 <p>Please comment on this issue if you can foresee any challenges with this.</p></div></section><section id="response-formats"><h3 id="x11-2-response-formats"><span class="secno">11.2 </span>Response formats<a class="self-link" aria-label="§" href="#response-formats"></a></h3><p>Requests and response documents exchanged via this API will all be valid
 [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents, with the exception of the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>, where only documents
 included in the <code>data</code> property are valid [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>].</p><p>The [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents <em class="rfc2119" title="MUST">MUST</em> include a [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] <code>context</code> that refers
-to the [<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-27-minimal-json-ld-document">
+to the [<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-28-minimal-json-ld-document">
           <div class="marker">
-      <a class="self-link" href="#example-27-minimal-json-ld-document">Example 27</a><span class="example-title">: minimal JSON-LD document</span>
+      <a class="self-link" href="#example-28-minimal-json-ld-document">Example 28</a><span class="example-title">: minimal JSON-LD document</span>
     </div>
           <pre class="hljs json" aria-busy="false">{
   <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>
 }</pre>
         </div><p>Unless otherwise specified the request and response documents <em class="rfc2119" title="MUST">MUST</em> conform to
-the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-3-errors"><span class="secno">11.3 </span>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><div class="example" id="example-28-error-response-example">
+the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-3-errors"><span class="secno">11.3 </span>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><div class="example" id="example-29-error-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-28-error-response-example">Example 28</a><span class="example-title">: Error response example</span>
+      <a class="self-link" href="#example-29-error-response-example">Example 29</a><span class="example-title">: Error response example</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -4043,9 +4061,9 @@ the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Op
   <span class="hljs-attr">"type"</span>: <span class="hljs-string">"IncompleteCustomerDetailsError"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"No customer details supplied"</span>
 }</span></pre>
-        </div></section><section id="rate-limiting"><h3 id="x11-4-rate-limiting"><span class="secno">11.4 </span>Rate Limiting<a class="self-link" aria-label="§" href="#rate-limiting"></a></h3><p>The <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MAY">MAY</em> choose to apply rate limiting for each unique set of authentication credentials, in which case they <em class="rfc2119" title="MUST">MUST</em> adhere to the following.</p><p>All rate-limited responses from this API <em class="rfc2119" title="MUST">MUST</em> return a JSON-LD format <code>TooManyRequestsError</code> object using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><p>The response <em class="rfc2119" title="MUST">MUST</em> also include the <code>Retry-After</code> HTTP Header with a value set to the number of seconds after which the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> retry as per [<cite><a class="bibref" href="#bib-rfc2616">RFC2616</a></cite>] section 14.37.</p><div class="example" id="example-29-rate-limited-response-example">
+        </div></section><section id="rate-limiting"><h3 id="x11-4-rate-limiting"><span class="secno">11.4 </span>Rate Limiting<a class="self-link" aria-label="§" href="#rate-limiting"></a></h3><p>The <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MAY">MAY</em> choose to apply rate limiting for each unique set of authentication credentials, in which case they <em class="rfc2119" title="MUST">MUST</em> adhere to the following.</p><p>All rate-limited responses from this API <em class="rfc2119" title="MUST">MUST</em> return a JSON-LD format <code>TooManyRequestsError</code> object using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><p>The response <em class="rfc2119" title="MUST">MUST</em> also include the <code>Retry-After</code> HTTP Header with a value set to the number of seconds after which the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> retry as per [<cite><a class="bibref" href="#bib-rfc2616">RFC2616</a></cite>] section 14.37.</p><div class="example" id="example-30-rate-limited-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-29-rate-limited-response-example">Example 29</a><span class="example-title">: Rate limited response example</span>
+      <a class="self-link" href="#example-30-rate-limited-response-example">Example 30</a><span class="example-title">: Rate limited response example</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">429</span> Too Many Requests
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT

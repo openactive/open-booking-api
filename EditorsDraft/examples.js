@@ -252,6 +252,26 @@ function dataExampleOrderFeedResponse(utils, content) {
   });
 }
 
+function dataExampleOrderItemCancellationQuoteRequest(utils, content) {
+  return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderQuote",
+    "orderedItem": [responseCancelledOrderItem]
+  });
+}
+
+function dataExampleOrderItemCancellationQuoteResponse(utils, content) {
+  return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderQuote",
+    "id": fullOrderExampleContent.id,
+    "taxMode": fullOrderExampleContent.taxMode,
+    "orderedItem": [responseCancelledOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.zeroItems,
+    "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.zeroItems
+  });
+}
+
 function dataExampleOrderItemCancellationRequest(utils, content) {
   return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
@@ -259,6 +279,7 @@ function dataExampleOrderItemCancellationRequest(utils, content) {
     "orderedItem": [responseCancelledOrderItem]
   });
 }
+
 
 function dataExampleOrderItemCancellationSuccessResponse(utils, content) {
   return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
