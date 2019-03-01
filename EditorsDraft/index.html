@@ -2212,9 +2212,45 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
     }
   ]
 }</span></pre>
-        </div><p>Whether or not the dry-run was completed, the cancellation may be requested:</p><div class="example" id="example-20-orderitem-cancellation-example-order-request">
+        </div><div class="example" id="example-20-orderitem-cancellation-example-orderquote-success-response">
           <div class="marker">
-      <a class="self-link" href="#example-20-orderitem-cancellation-example-order-request">Example 20</a><span class="example-title">: OrderItem Cancellation: example Order request</span>
+      <a class="self-link" href="#example-20-orderitem-cancellation-example-orderquote-success-response">Example 20</a><span class="example-title">: OrderItem Cancellation: example OrderQuote success response</span>
+    </div>
+          <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0
+<span class="hljs-attribute">Location</span>: /api/orders/e11429ea-467f-4270-ab62-e47368996fe8
+
+<span class="json">{
+  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>,
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderQuote"</span>,
+  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/api/orders/e11429ea-467f-4270-ab62-e47368996fe8"</span>,
+  <span class="hljs-attr">"taxMode"</span>: <span class="hljs-string">"https://openactive/TaxGross"</span>,
+  <span class="hljs-attr">"orderedItem"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"OrderItem"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234"</span>,
+      <span class="hljs-attr">"orderItemStatus"</span>: <span class="hljs-string">"https://openactive.io/CustomerCancelled"</span>
+    }
+  ],
+  <span class="hljs-attr">"totalPaymentDue"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PriceSpecification"</span>,
+    <span class="hljs-attr">"price"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>
+  },
+  <span class="hljs-attr">"totalTaxSpecification"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"TaxChargeSpecification"</span>,
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"VAT at 20%"</span>,
+      <span class="hljs-attr">"price"</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">"priceCurrency"</span>: <span class="hljs-string">"GBP"</span>,
+      <span class="hljs-attr">"rate"</span>: <span class="hljs-number">0.2</span>
+    }
+  ]
+}</span></pre>
+        </div><p>Whether or not the dry-run was completed, the cancellation may be requested:</p><div class="example" id="example-21-orderitem-cancellation-example-order-request">
+          <div class="marker">
+      <a class="self-link" href="#example-21-orderitem-cancellation-example-order-request">Example 21</a><span class="example-title">: OrderItem Cancellation: example Order request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
@@ -2232,9 +2268,9 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
     }
   ]
 }</span></pre>
-        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-21-orderitem-cancellation-example-success-response">
+        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-22-orderitem-cancellation-example-order-success-response">
           <div class="marker">
-      <a class="self-link" href="#example-21-orderitem-cancellation-example-success-response">Example 21</a><span class="example-title">: OrderItem Cancellation: example success response</span>
+      <a class="self-link" href="#example-22-orderitem-cancellation-example-order-success-response">Example 22</a><span class="example-title">: OrderItem Cancellation: example Order success response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">204</span> No Content
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2256,17 +2292,17 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
 <td>GET</td>
 <td><code>/orders-rpde</code></td>
 </tr>
-</tbody></table><div class="example" id="example-22-order-rpde-feed-example-request">
+</tbody></table><div class="example" id="example-23-order-rpde-feed-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-22-order-rpde-feed-example-request">Example 22</a><span class="example-title">: Order RPDE Feed: example request</span>
+      <a class="self-link" href="#example-23-order-rpde-feed-example-request">Example 23</a><span class="example-title">: Order RPDE Feed: example request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders-rpde</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0</pre>
-        </div><div class="example" id="example-23-order-rpde-feed-example-response">
+        </div><div class="example" id="example-24-order-rpde-feed-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-23-order-rpde-feed-example-response">Example 23</a><span class="example-title">: Order RPDE Feed: example response</span>
+      <a class="self-link" href="#example-24-order-rpde-feed-example-response">Example 24</a><span class="example-title">: Order RPDE Feed: example response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2351,17 +2387,17 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
 <td>GET</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><div class="example" id="example-24-order-status-example-request">
+</tbody></table><div class="example" id="example-25-order-status-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-24-order-status-example-request">Example 24</a><span class="example-title">: Order Status: example request</span>
+      <a class="self-link" href="#example-25-order-status-example-request">Example 25</a><span class="example-title">: Order Status: example request</span>
     </div>
           <pre class="hljs http" aria-busy="false"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0</pre>
-        </div><div class="example" id="example-25-order-status-example-response">
+        </div><div class="example" id="example-26-order-status-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-25-order-status-example-response">Example 25</a><span class="example-title">: Order Status: example response</span>
+      <a class="self-link" href="#example-26-order-status-example-response">Example 26</a><span class="example-title">: Order Status: example response</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -2539,9 +2575,9 @@ defined elsewhere.</p><p>The corresponding <code>Order</code> <em class="rfc2119
         </div></section><section id="url-discovery"><h4 id="x9-2-6-url-discovery"><span class="secno">9.2.6 </span>URL discovery<a class="self-link" aria-label="§" href="#url-discovery"></a></h4><p>The URL for the initial Order Creation action <em class="rfc2119" title="MUST">MUST</em> be discoverable by parsing the
 <code>OpenBookingAction</code> defined in the <code>potentialAction</code> property of the published
 <code>Dataset</code> embedded within dataset site.</p><p>The <code>EntryPoint</code> object <em class="rfc2119" title="MUST">MUST</em> state the <code>url</code> of the Order Creation endpoint, and <em class="rfc2119" title="MUST">MUST</em>
-contain the <code>encodingType</code> and the <code>httpMethod</code> as <code>PUT</code>.</p><div class="example" id="example-26-example-of-a-potentialaction">
+contain the <code>encodingType</code> and the <code>httpMethod</code> as <code>PUT</code>.</p><div class="example" id="example-27-example-of-a-potentialaction">
           <div class="marker">
-      <a class="self-link" href="#example-26-example-of-a-potentialaction">Example 26</a><span class="example-title">: Example of a potentialAction</span>
+      <a class="self-link" href="#example-27-example-of-a-potentialaction">Example 27</a><span class="example-title">: Example of a potentialAction</span>
     </div>
           <pre class="hljs javascript" aria-busy="false"><span class="hljs-string">"potentialAction"</span>: {
   <span class="hljs-string">"@type"</span>: <span class="hljs-string">"OpenBookingAction"</span>,
@@ -2577,9 +2613,9 @@ for a specific action based on patterns within previously used URLs.</p><p>It is
 further activity in the booking workflow at the point of need. For example they
 <em class="rfc2119" title="MUST">MUST</em> advertise the URL for the <code>OrderItem</code> resource in the Orders <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>
 by including the <code>id</code> property within the <code>OrderItem</code>.</p><div class="issue" id="issue-container-number-94"><div role="heading" class="issue-title marker" id="h-issue-7" aria-level="5"><a href="https://github.com/openactive/open-booking-api/issues/94"><span class="issue-number">Issue 94</span></a><span class="issue-label" aria-label="This issue is labelled as Community Feedback Requested.">: URL Discovery using the Dataset Site <a class="respec-gh-label respec-label-light" href="https://github.com/openactive/open-booking-api/issues/?q=is%3Aissue+is%3Aopen+label%3A%22Community+Feedback+Requested%22" style="background-color: rgb(150, 224, 234);">Community Feedback Requested</a></span></div><p>The specification proposes to centralise URL discovery in the Dataset site, along with the feeds themselves.</p>
-<p>Feedback on this approach welcome.</p></div><section id="example"><h5 id="x9-2-6-1-example"><span class="secno">9.2.6.1 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h5><div class="example" id="example-27-example-of-dataset-site-embedded-json-ld">
+<p>Feedback on this approach welcome.</p></div><section id="example"><h5 id="x9-2-6-1-example"><span class="secno">9.2.6.1 </span>Example<a class="self-link" aria-label="§" href="#example"></a></h5><div class="example" id="example-28-example-of-dataset-site-embedded-json-ld">
           <div class="marker">
-      <a class="self-link" href="#example-27-example-of-dataset-site-embedded-json-ld">Example 27</a><span class="example-title">: Example of Dataset site embedded JSON-LD</span>
+      <a class="self-link" href="#example-28-example-of-dataset-site-embedded-json-ld">Example 28</a><span class="example-title">: Example of Dataset site embedded JSON-LD</span>
     </div>
           <pre class="hljs xml" aria-busy="false"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"application/ld+json"</span>&gt;</span><span class="javascript">
 {
@@ -4040,17 +4076,17 @@ version you should always try to use a media type containing the version number.
 <p>Please comment on this issue if you can foresee any challenges with this.</p></div></section><section id="response-formats"><h3 id="x11-2-response-formats"><span class="secno">11.2 </span>Response formats<a class="self-link" aria-label="§" href="#response-formats"></a></h3><p>Requests and response documents exchanged via this API will all be valid
 [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents, with the exception of the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>, where only documents
 included in the <code>data</code> property are valid [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>].</p><p>The [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] documents <em class="rfc2119" title="MUST">MUST</em> include a [<cite><a class="bibref" href="#bib-json-ld">JSON-LD</a></cite>] <code>context</code> that refers
-to the [<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-28-minimal-json-ld-document">
+to the [<cite><a class="bibref" href="#bib-openactive-vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-29-minimal-json-ld-document">
           <div class="marker">
-      <a class="self-link" href="#example-28-minimal-json-ld-document">Example 28</a><span class="example-title">: minimal JSON-LD document</span>
+      <a class="self-link" href="#example-29-minimal-json-ld-document">Example 29</a><span class="example-title">: minimal JSON-LD document</span>
     </div>
           <pre class="hljs json" aria-busy="false">{
   <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>
 }</pre>
         </div><p>Unless otherwise specified the request and response documents <em class="rfc2119" title="MUST">MUST</em> conform to
-the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-3-errors"><span class="secno">11.3 </span>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><div class="example" id="example-29-error-response-example">
+the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-3-errors"><span class="secno">11.3 </span>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><div class="example" id="example-30-error-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-29-error-response-example">Example 29</a><span class="example-title">: Error response example</span>
+      <a class="self-link" href="#example-30-error-response-example">Example 30</a><span class="example-title">: Error response example</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
@@ -4061,9 +4097,9 @@ the [<cite><a class="bibref" href="#bib-modelling-opportunity-data">Modelling-Op
   <span class="hljs-attr">"type"</span>: <span class="hljs-string">"IncompleteCustomerDetailsError"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"No customer details supplied"</span>
 }</span></pre>
-        </div></section><section id="rate-limiting"><h3 id="x11-4-rate-limiting"><span class="secno">11.4 </span>Rate Limiting<a class="self-link" aria-label="§" href="#rate-limiting"></a></h3><p>The <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MAY">MAY</em> choose to apply rate limiting for each unique set of authentication credentials, in which case they <em class="rfc2119" title="MUST">MUST</em> adhere to the following.</p><p>All rate-limited responses from this API <em class="rfc2119" title="MUST">MUST</em> return a JSON-LD format <code>TooManyRequestsError</code> object using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><p>The response <em class="rfc2119" title="MUST">MUST</em> also include the <code>Retry-After</code> HTTP Header with a value set to the number of seconds after which the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> retry as per [<cite><a class="bibref" href="#bib-rfc2616">RFC2616</a></cite>] section 14.37.</p><div class="example" id="example-30-rate-limited-response-example">
+        </div></section><section id="rate-limiting"><h3 id="x11-4-rate-limiting"><span class="secno">11.4 </span>Rate Limiting<a class="self-link" aria-label="§" href="#rate-limiting"></a></h3><p>The <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MAY">MAY</em> choose to apply rate limiting for each unique set of authentication credentials, in which case they <em class="rfc2119" title="MUST">MUST</em> adhere to the following.</p><p>All rate-limited responses from this API <em class="rfc2119" title="MUST">MUST</em> return a JSON-LD format <code>TooManyRequestsError</code> object using a content type of <code>application/vnd.openactive+json</code> (optionally including any version parameters).</p><p>The response <em class="rfc2119" title="MUST">MUST</em> also include the <code>Retry-After</code> HTTP Header with a value set to the number of seconds after which the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> retry as per [<cite><a class="bibref" href="#bib-rfc2616">RFC2616</a></cite>] section 14.37.</p><div class="example" id="example-31-rate-limited-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-30-rate-limited-response-example">Example 30</a><span class="example-title">: Rate limited response example</span>
+      <a class="self-link" href="#example-31-rate-limited-response-example">Example 31</a><span class="example-title">: Rate limited response example</span>
     </div>
           <pre class="hljs http" aria-busy="false">HTTP/1.1 <span class="hljs-number">429</span> Too Many Requests
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
