@@ -594,9 +594,25 @@ x) **Refunds and Cancellation** - The <a>Broker</a> subscribes to updates from t
   - The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed.
   - The <a>Broker</a> uses these `Order`s to process refunds and send update notifications to the <a>Customer</a>.
 
+
+### Booking flow with approval
+
+If the `Order` is returned at step **vii** above with an `orderStatus` of `OrderAppovalPending`, the user is notified that the `Order` is awaiting approval, and the remaining steps are completed when the item is retrieved from the <a>Orders feed</a> with an `OrderConfirmed` state.
+
+If approval is not given, the <a>Booking System</a> MUST make the `Order` available in a `deleted` state in the <a>Orders feed</a> and the <a>Broker</a> MUST notify the user that their booking was not approved, and any payment authorisation MUST be withdrawn.
+
+A <a>Broker</a> MAY cancel an `Order` before it has been approved by using the Order Deletion endpoint.
+
+
+<figure>
+ <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
+ <figcaption>Sequence diagram showing API interactions, with approval step</figcaption>
+</figure>
+
+
 ### Single state Orders
 
-The `Order` is created in a successful state, although their `OrderItem`s may be cancelled by either the <a>Customer</a> or the <a>Seller</a>, the `Order` itself within the <a>Booking System</a> will not exist in the any other state. The `orderStatus` property of the `Order` MUST NOT be used and is reserved for future evolution of the specification.
+The `Order` is created in an `OrderConfirmed` state (via `OrderAppovalPending` if approval is used), and although their `OrderItem`s may be cancelled by either the <a>Customer</a> or the <a>Seller</a>, the `Order` itself within the <a>Booking System</a> will not exist in the any other state. The `orderStatus` property of the `Order` MUST NOT be used and is reserved for future evolution of the specification.
 
 
 ### Payment Capture Rollback
