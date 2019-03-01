@@ -645,11 +645,11 @@ In the context of OpenActive, a `ResellerBroker` contracts directly with the <a>
 The `ResellerBroker`'s purchase from the <a>Seller</a> is business-to-business, which is subject to the appropriate taxation based on the `ResellerBroker` as the <a>Customer</a>.
 The <a>Customer</a>'s purchase from the `ResellerBroker` is business-to-consumer, which is subject to the appropriate taxation based on the `ResellerBroker` as the <a>Seller</a>.
 
-Hence any tax exception that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is not relevant here, as no direct contractual relationship is formed between <a>Seller</a> and <a>Customer</a>.
+Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is not relevant here, as no direct contractual relationship is formed between <a>Seller</a> and <a>Customer</a>.
 
 ### Scope of Specification
 This specification is designed to govern the interaction between the `ResellerBroker` and <a>Seller</a>. It does include provision for the interaction between the `ResellerBroker` and <a>Customer</a> explicitly, though it may be repurposed by the broker to perform this function by treating the Broker as a Booking system. This specification also does not include provision for the recording of the execution of the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
-When the brokerRole is set to `ResellerBroker`, this indicates that the payee for accounting and tax purposes is the "broker" specified in the Order.
+When the `brokerRole` is set to `ResellerBroker`, this indicates that the payee for accounting and tax purposes is the `broker` specified in the `Order`.
 Note that the `customer` may still optionally be included in the Order, for example to help front-of-house staff identify the <a>Customer</a>.
 
 ### Conformance criteria
@@ -674,7 +674,7 @@ There are three separate types of contractual relationship involved:
 
 ### Taxation
 While facilitated by the `AgentBroker`, the primary purchase is made by the <a>Customer</a> directly from the <a>Seller</a>, as would be the case if the <a>Customer</a> was to purchase from the <a>Seller</a> independently.
-Hence any tax exception that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is relevant here.
+Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is relevant here.
 
 The <a>Customer</a>'s relationship with `AgentBroker` is business-to-consumer. Hence any additional services (e.g. customer-facing booking fees) are subject to the appropriate taxation based on the `AgentBroker` as the `seller`.
 
@@ -683,7 +683,7 @@ The `AgentBroker`'s relationship with the <a>Seller</a> is business-to-business.
 ### Scope of Specification
 This specification is designed to govern the recording of the execution of the contractual relationship between the <a>Customer</a> and <a>Seller</a>.
 The scope of this specification does not include the contractual relationship between the `AgentBroker` and the <a>Seller</a> (e.g. for booking commission), between the `AgentBroker` and the <a>Customer</a> (e.g. for booking fees) or with any payment provider (e.g. for payment processing fees). Such relationships and the reconciliation of associated invoices MUST be handled separately.
-When the brokerRole is set to "AgentBroker", this indicates that the payee for accounting and tax purposes is the `customer` specified in the Order.
+When the `brokerRole` is set to `AgentBroker`, this indicates that the payee for accounting and tax purposes is the `customer` specified in the `Order`.
 
 ### Conformance criteria
 When the <a>Broker</a> generates the <a>Invoice</a>, it must be made payable to `Order.customer`, `Order.broker` MUST be provided and `Order.customer` MUST be provided.
@@ -706,13 +706,13 @@ The contractual relationship is a simple one between the <a>Seller</a> and the <
 
 ### Taxation
 The purchase is made by the <a>Customer</a> directly from the <a>Seller</a>, as would be the case if the <a>Customer</a> was to purchase from the <a>Seller</a> outside of this specification.
-Hence any tax exception that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an VAT exempt eligible body) is relevant here.
+Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an VAT exempt eligible body) is relevant here.
 
 ### Scope of Specification
 This specification is designed to govern the recording of the execution of the contractual relationship between the <a>Customer</a> and <a>Seller</a>.
 The scope of this specification does not include the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
 
-When the brokerRole is set to "NoBroker", this indicates that the payee for accounting and tax purposes is the `customer` specified in the Order.
+When the `brokerRole` is set to `NoBroker`, this indicates that the payee for accounting and tax purposes is the `customer` specified in the `Order`.
 
 ### Conformance criteria
 When an <a>Invoice</a> is generated, it must be made payable to `Order.customer`, `Order.broker` MUST NOT be provided and `Order.customer` MUST be provided.
@@ -806,11 +806,14 @@ For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrenc
 
 ## Offer overrides
 
-The unit price of an OrderItem may be overridden to allow for business models with dynamic or variable pricing.
+The unit price of an OrderItem may be overridden to allow for business models with variable pricing (where price differs from list price) and dynamic pricing (where price is not known at the point of purchase).
 
-An `OfferOverride` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the booking system instead of acceptedOffer to calculate the tax and totals.
+An `OfferOverride` or `DynamicOffer` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` or `DynamicOffer` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the booking system instead of acceptedOffer to calculate the tax and totals.
 
-The `unitTaxSpecification` is calculated by the booking system exactly as it would be for an standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
+<div class="issue" data-number="96"></div>
+
+### `OfferOverride`
+The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as it would be for an standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
 
 `OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that <a>Booking Systems</a> that only offer free opportunities MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
 
@@ -824,7 +827,18 @@ The `unitTaxSpecification` is calculated by the booking system exactly as it wou
   }
 </pre>
 
-<div class="issue" data-number="96"></div>
+### `DynamicOffer`
+The `DynamicOffer` MUST NOT include a `price`, and MUST NOT contribute to the `totalPaymentDue` of the `Order`. `unitTaxSpecification` MUST NOT be calculated by the <a>Booking System</a> for a `DynamicOffer`.
+
+The `identifier` of the `DynamicOffer` MUST be used consistently in order to allow the Seller to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band.
+
+<pre class="example" title="Example of DynamicOffer">
+  "acceptedOffer": {
+    "type": "DynamicOffer",
+    "name": "MoveGB Membership"
+    "identifier": "MOVE"
+  }
+</pre>
 
 
 </section>
@@ -844,7 +858,7 @@ The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `
 
 An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` is deemed to be <dfn>bookable</dfn> via the Open Booking API if:
 
-- `availableChannel` of a valid `Offer` includes `https://openactive.io/OpenBookingPrepayment`.
+- `availableChannel` of a valid `Offer` (that is not an `IndicativeOffer`) includes `https://openactive.io/OpenBookingPrepayment`.
 
 - The `endDate` is not already in the past (note that bookings are still possible after the `startDate`).
 
@@ -879,9 +893,32 @@ The following recursive algorithm should be applied to calculate applicable offe
 4. The <a>Broker</a> MUST then filter this applicable set to provide a set of `Offers` which are current (based on `validFromBeforeStartDate`) and are available to the <a>Customer</a> through the <a>Broker</a> (based on `availableChannel`).
 5. The <a>Broker</a> MAY additionally filter based on the `Offer`s that apply to the customer, for example based on `ageRange` if specified in the `Offer`. This specification provides no guidance as to how the filtering should be performed, however it recommends against gathering additional personal data about the <a>Customer</a> in order to restrict `Offer`s presented, and instead advocates clear messaging regarding the restrictions of each `Offer` to allow the <a>Customer</a> to make an informed decision.
 
+Note that `IndicativeOffer`s are ignored for the algorithm above, and are not considered bookable.
 
 
 <div class="issue" data-number="103"></div>
+
+
+### `IndicativeOffer`
+
+There are cases where `Offer`s are provided at the `SessionSeries` or `FacilityUse` level which are indicative, and are not intended to be inherited and applied to the `ScheduledSession`s or `Slot`s within them. For such cases an `IndicativeOffer` may be used to indicate that the offer must not be considered bookable.
+
+<pre class="example" title="Example of IndicativeOffer">
+  "offers": [
+    {
+      "type": "IndicativeOffer",
+      "name": "Off Peak",
+      "price": 7.00,
+      "priceCurrency": "GBP"
+    },
+    {
+      "type": "IndicativeOffer",
+      "name": "Peak",
+      "price": 10.00,
+      "priceCurrency": "GBP"
+    }
+  ]
+</pre>
 
 
 ## Amending the OrderQuote before **B**
@@ -1425,6 +1462,41 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] are a
 
 Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
+
+### `schema:OfferOverride`
+
+`OfferOverride` subclasses `Offer`.
+
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
+| `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
+| [`schema:price`](http://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `Order`. |
+| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
+| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
+| [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
+| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
+| [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
+
+
+### `schema:DynamicOffer`
+
+`DynamicOffer` subclasses `Offer`.
+
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
+| [`schema:identifier`](http://schema.org/identifier)                | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | Used consistently in order to allow the Seller to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band. |
+| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
+| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
+| [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
+| [`schema:price`](http://schema.org/price)                          | - | - | - | Not included in `DynamicOffer`. |
+| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | - | - | Not included in `DynamicOffer`. |
+| [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
+
+
+
+
 ### `schema:Person`
 
 For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
@@ -1522,6 +1594,9 @@ Used for `payment`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Payment` |
 | [`schema:name`](http://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card") |
 | [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | REQUIRED | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | If using the payment extension point, this references the payment method used. If not present indicates the external payment processor. |
+| [`schema:accountId`](http://schema.org/accountId)                  | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
+
 
 Note that `identifier` and are NOT REQUIRED if `paymentMethod` is specified, to maximise flexibility of the payments extension point.
 
