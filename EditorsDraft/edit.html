@@ -55,7 +55,7 @@
 
             logos: [{
                 src: 'https://www.openactive.io/assets/openactive-logo-large.png',
-                href: "https://openactive.io",
+                href: "https://www.openactive.io",
                 alt: "openactive.io",
                 width: 255, //170
                 height: 43, //22
@@ -91,6 +91,11 @@
                 "Modelling-Opportunity-Data": {
                     "href": "https://openactive.io/modelling-opportunity-data/",
                     "title": "Modelling Opportunity Data",
+                    "publisher": "OpenActive Community Group",
+                },
+                "Dataset-API-Discovery": {
+                    "href": "https://openactive.io/dataset-api-discovery/EditorsDraft/",
+                    "title": "Dataset API Discovery",
                     "publisher": "OpenActive Community Group",
                 },
                 "RPDE": {
@@ -199,7 +204,7 @@
         h1 {
             font-family: 'Open Sans', sans-serif !important;
             font-weight: 300 !important;
-            color: #69b9ff !important;
+            color: #3B3089 !important
             font-size: 220%;
         }
 
@@ -221,42 +226,48 @@
           font-style:         normal;
           color:              #900;
         }
+
+        a.internalDFN[href] {
+          color: #000;
+          font-weight: 500;
+        }
     </style>
 
 </head>
 
 <body>
-    <style>
-        body {
-            background-size: 25px auto !important;
-        }
+<style>
+    body {
+        background-size: 25px auto !important;
+    }
 
-        body.toc-sidebar #toc {
-            background-size: 25px auto !important;
-            background-attachment: fixed !important;
-        }
-    </style>
-    <section id='abstract'>
+    body.toc-sidebar #toc {
+        background-size: 25px auto !important;
+        background-attachment: fixed !important;
+    }
+</style>
+<section id='abstract'>
 This document specifies an HTTP API for placing bookings to participate in
 physical activities, either by attending events or through the use of leisure
 or sports facilities.
-    </section>
+</section>
 
-    <section id='sotd'>
+<section id='sotd'>
 Contributions to this document are not only welcomed but are actively solicited
 and should be made via
 [GitHub Issues](https://github.com/openactive/open-booking-api/issues) and
 pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
-    <div class="note">
+<div class="note">
 This document represents a complete Editors Draft. It is currently in the final stages of community review and we hope that it is nearing stability. The draft is intended to allow developers to provide feedback by developing proof-of-concept implementations. We encourage developers to explore this API and
 contribute to the development of the specification.
-    </div>
+</div>
 
-    </section>
+</section>
 
-    <section class="informative">
+<section class="informative">
+
 # Introduction
 
 The document is an output of the
@@ -273,12 +284,12 @@ harvesting of data in standard formats ([[RPDE]]).
 This existing work helps increase the discovery of opportunities for people to
 be active. This specification builds on that work by defining an HTTP API that
 can be implemented by <a>Booking Systems</a> that are publishing opportunity data. By
-allowing third-party applications to place bookings in their systems, it becomes
+allowing third-party applications ("<a>Brokers</a>"). to place bookings in their systems, it becomes
  possible for more people to participate in events or make use of leisure and
  sporting facilities.
 
 The specification defines the flow of HTTP requests and responses between the
-booking system (server) and the third-party application (client). This includes
+<a>Booking System</a> (server) and the <a>Broker</a> (client). This includes
 definitions of the overall application flow, detailed request and response
 formats and the potential error conditions that applications may encounter.
 
@@ -289,31 +300,40 @@ The current scope of the specification should conform to a set of
 that have previously been identified and discussed with the OpenActive
 community.
 
-The focus of the initial versions of this specification will be on the simplest
-use cases that will support making bookings on behalf of users. This core
-functionality includes:
+The focus of the initial versions of this specification will be on the simplest use cases that will support making bookings on behalf of users. This core functionality includes:
 
-* __Pricing and availability__ – checking the price and current availabilty of
-an event or for the use of a facility
+* __Guest checkout__ – making a booking on behalf of a <a>Customer</a> who is assumed to be unknown to the <a>Booking System</a> and <a>Seller</a>, and who does not expect a persistent account to be created for them with the <a>Seller</a>.
+* __Pricing and availability__ – checking the price and current availabilty of an event or for the use of a facility.
 * __Leasing__ – temporarily reserving spaces for a user to attend an event or
 make use of a facility, whilst placing a booking
 * __Booking__ – placing and viewing bookings, and where necessary, confirming
 receipt of payment from users
+* __Tax__ – tax calculation by the <a>Booking System</a> exposed to the <a>Broker</a>.
 * __Multiple order items__ - handling bookings for multiple events ("shopping carts") and for groups of users
 * __Child booking__ - booking on behalf of a child
+* __Dynamic pricing__ – allowing the <a>Broker</a> to vary pricing, where agreed with the <a>Seller</a>
+* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings
+* __Cancellation__ – <a>Customer</a> and <a>Seller</a> initiated cancellation 
 
-A number of additional requirements that relate to the booking of events and
-facilities are currently out of scope:
+### Out of Scope in this version
 
-* creating and managing accounts for users
+A number of additional requirements that relate to the booking of events and facilities are currently out of scope:
+
+* creating and managing accounts for <a>Customers</a>
 * more complex pricing options, e.g. membership based pricing
 * waiting lists for events
+* collecting marketing preferences from the <a>Customer</a>
+* business-to-business tax calculation
+* cancellation fees
+* "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller's</a> activity, with such participation recorded for later reconciliation
+* back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
 
 It is possible that future versions of this specification may include support
 for these or other features. Revisions will be driven by the needs of the
-community.
+community, please raise feature requests via [GitHub](https://github.com/openactive/open-booking-api).
 
-### Functionality that is out of scope
+
+### Out of Scope by design
 
 By design this specification will not define some types of functionality.
 
@@ -323,132 +343,136 @@ work of the OpenActive Community Group.
 
 The functionality that is currently defined as out of scope includes:
 
-* __API authentication and security__ – while the specification recommends some
-best practices relating to authentication and security it does not mandate a
-specific means of securing an API. Implementers are free to choose the system
-that offers the best security for their platform and users
-* __Payment processing__ – the design assumes that all payment handling will
-be carried out by the third-party application, in a separate payment flow.
-Booking systems and application developers are able to use the payment and
-reconciliation mechanisms that provide the best options for their customers
-* __API business models__ – the design is agnostic to any business models that
-might govern the use of the API, e.g. revenue-sharing or transaction processing
-fees
-* __Discovery__  – finding, filtering and searching for opportunity data. This
-specification assumes that the client and server applications have already
-shared data about the relevant opportunities. Additional functionality in this
-area will be addressed by future specifications from the Community Group
+* __API authentication and security__ – while the specification recommends some best practices relating to authentication and security it does not mandate a specific means of securing an API. Implementers are free to choose the system that offers the best security for their platform and users.
+* __Payment processing__ – the design assumes that all payment handling will be carried out by the third-party application, in a separate payment flow. Booking systems and application developers are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Customers</a>.
+* __API business models__ – the design is agnostic to any business models that might govern the use of the API, e.g. revenue-sharing or transaction processing fees
+* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
+* __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
+
+## Specification dependencies
+
+Version 1.0 of the Open Booking specification depends on the following:
+- [[RPDE]] Version 1.x
+- [[Modelling-Opportunity-Data]] Version 2.x
+
+Note that the versions are constrained only to major version releases (breaking changes), and that the flexibility provided by supporting minor versions enables implementors to take advantage of additional features as the specifications evolve.
+
+<div class="issue" data-number="105"></div>
 
 ## Audience
 
 The document is primarily intended for the following audiences:
 
-* Software developers who want to implement the API, e.g. as part of a booking
-system
-* Software developers building client libraries or applications that will use
-the API
+- Software developers who want to implement the API, e.g. as part of a <a>Booking System</a>
+- Software developers building client libraries or tools
+- Software developers writing applications that will use the API ("<a>Brokers</a>") 
 
 The following sections introduce terminology, concepts and requirements that
 underpin the design of the API. This content might also be useful for a wider
 audience, e.g. business analysts or product managers looking for a high-level
 overview of the API functionality.
 
-    </section>
+</section>
 
-    <section id="conformance">
+<section id="conformance">
+
 This specification makes use of the compact IRI Syntax; please refer to the
 [Compact IRIs](https://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
-    </section>
 
-    <section>
+</section>
+
+<section>
+
 # Typographical Conventions
 
 The following typographic conventions are used in this specification:
 
 
-        <dl class="typography">
-            <dt><code>markup</code></dt>
-            <dd>Markup (elements, attributes, properties), machine processable
-                values (string, characters, media types), property name, or a
-                file name is in a monospace font.</dd>
-            <dt><strong>definition</strong></dt>
-            <dd>A definition of a term, to be used elsewhere in this or other
-                specifications, is in bold and italics.</dd>
-            <dt><a href="">hyperlink</a></dt>
-            <dd>A hyperlink is underlined and in blue.</dd>
-            <dt>&#x5B;<a href="">reference</a>&#x5D;</dt>
-            <dd>A document reference (normative or informative) is enclosed in
-                square brackets and links to the references section.</dd>
-        </dl>
+<dl class="typography">
+    <dt><code>markup</code></dt>
+    <dd>Markup (elements, attributes, properties), machine processable
+        values (string, characters, media types), property name, or a
+        file name is in a monospace font.</dd>
+    <dt><a href="#" class="internalDFN">Definition</a></strong></dt>
+    <dd>A definition of a term, to be used elsewhere in this or other
+        specifications, is underlined and in black.</dd>
+    <dt><a href="">hyperlink</a></dt>
+    <dd>A hyperlink is underlined and in blue.</dd>
+    <dt>&#x5B;<a href="">reference</a>&#x5D;</dt>
+    <dd>A document reference (normative or informative) is enclosed in
+        square brackets and links to the references section.</dd>
+</dl>
 
-        <div class="note">
+<div class="note">
 Notes are in light green boxes with a green left border and with a "Note"
 header in green. Notes are normative or informative depending on the whether
 they are in a normative or informative section, respectively.
 
-        </div>
-        <pre class="example">
+</div>
+<pre class="example">
 Examples are in light khaki boxes, with khaki left border, and with a
 numbered "Example" header in khaki. Examples are always informative.
 The content of the example is in monospace font and may be syntax colored.
 </pre>
 
-    </section>
+</section>
 
-    <section>
+<section>
+
 # Key Actors
 
 Of all the organisations and systems involved in a transaction, the API defined
 by this specification is scoped tightly to only specify interactions between the <a>Broker</a> and
-<a>Booking System</a>, with high level prompts for interactions with a <a>Payment Provider</a>.
+<a>Booking System</a>, with high level prompts for interactions with <a>Customers</a> and <a>Payment Providers</a>.
 
 <figure>
  <img src="actors.png" alt="Actors in scope">
  <figcaption>Illustration of actors and systems involved in a transaction, and the focus
- of this specification being between Broker and Booking System.</figcaption>
+ of this specification being between <a>Broker</a> and <a>Booking System</a>.</figcaption>
 </figure>
 
-        <dl class="typography">
-            <dt><dfn>Customer</dfn></dt>
-            <dd>The user who places a booking using an application provided by
-            a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee,
-            so e.g. a parent may book on behalf of their child.</dd>
-            <dt><dfn>Broker</dfn></dt>
-            <dd>The organisation or developer providing an application that
-            allows <a>Customers</a> to make bookings. Those applications will be
-            clients of the API defined in this specification</dd>
-            <dt><dfn>Booking System</dfn></dt>
-            <dd>The organisation or developer providing an application that
-            maintains bookable inventory on behalf of the <a>Seller</a>.
-            The platform or service that provides a server-side implementation
-            of this API.
-            </dd>
-            <dt><dfn>Seller</dfn></dt>
-            <dd>The organisation providing access to events or facilities
-            via a booking system. e.g. a leisure provider running yoga classes.</dd>
-            <dt><dfn>Payment Provider</dfn></dt>
-            <dd>The organisation providing payment processing between the
-            <a>Customer</a>, <a>Broker</a> and
-            <a>Seller</a>.</dd>
-        </dl>
+    <dl class="typography">
+        <dt><dfn>Customer</dfn></dt>
+        <dd>The user who places a booking using an application provided by
+        a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee,
+        so e.g. a parent may book on behalf of their child.</dd>
+        <dt><dfn>Broker</dfn></dt>
+        <dd>The organisation or developer providing an application that
+        allows <a>Customers</a> to make bookings. Those applications will be
+        clients of the API defined in this specification</dd>
+        <dt><dfn>Booking System</dfn></dt>
+        <dd>The organisation or developer providing an application that
+        maintains bookable inventory on behalf of the <a>Seller</a>.
+        The platform or service that provides a server-side implementation
+        of this API.
+        </dd>
+        <dt><dfn>Seller</dfn></dt>
+        <dd>The organisation providing access to events or facilities
+        via a <a>Booking System</a>. e.g. a leisure provider running yoga classes.</dd>
+        <dt><dfn>Payment Provider</dfn></dt>
+        <dd>The organisation providing payment processing between the
+        <a>Customer</a>, <a>Broker</a> and
+        <a>Seller</a>.</dd>
+    </dl>
 
-    </section>
+</section>
 
-    <section class="normative">
+<section class="normative">
+
 # Booking Flow
 
-## User Journey
-The booking journey of a <a>Customer</a> is generalised into the following key steps:
+## Customer Journey
+The booking journey of a <a>Customer</a> is generalised into the following logical steps:
 
-1. **Select**: Customer selects an item
-2. **Register / Login**: Customer enters personal details
-3. **Book and Pay**: Customer enters payment details
+1. **Select**: <a>Customer</a> selects an `Offer` to participate in an opportunity (e.g. `ScheduledSession` or `Slot`)
+2. **Register / Login**: <a>Customer</a> enters personal details
+3. **Book and Pay**: <a>Customer</a> enters payment details
 
-Note that some or all steps may not actually be visible to the user if details are already known (e.g. known registration or payment details, or booking via voice command).
+Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payments details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
 <figure>
  <img src="userjourney.png" alt="High level user journey">
- <figcaption>Illustration of the expected user journey.</figcaption>
+ <figcaption>Illustration of a typical <a>Customer</a> journey.</figcaption>
 </figure>
 
 
@@ -460,9 +484,9 @@ This specification assumes that the <a>Broker</a> has already obtained opportuni
 
 - After both "**1. Select**" and "**2. Register / Login**", the <a>Broker</a> calls the <a>Booking System</a> to confirm the price and availability of the selected items using an `OrderQuote`, and retrieve a total order price. These calls are illustrated as checkpoints **C1** and **C2** on the diagram below.
 
-- After "**3. Book and Pay**", the <a>Broker</a> first _authorizes_ the payment for the total order price (if required by the payment provider), then confirms the booking with <a>Booking System</a> using an `Order` (**B** on the diagram below), and finally _captures_ the payment.
+- After "**3. Book and Pay**", the <a>Broker</a> first _authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then confirms the booking with <a>Booking System</a> using an `Order` (**B** on the diagram below), and finally _captures_ the payment.
 
-- The <a>Booking System</a> adds an `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, generate Invoices, and deliver a notification to the Customer.
+- The <a>Booking System</a> adds an `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, generate Invoices, and deliver a notification to the <a>Customer</a>.
 
 <figure>
  <img src="bookingflow.png" alt="High level booking flow">
@@ -474,8 +498,8 @@ This specification assumes that the <a>Broker</a> has already obtained opportuni
 
 To complete a successful booking journey:
 
-- The <a>Broker</a> SHOULD call **C1** (without customer details)
-- The <a>Broker</a> MUST call **C2** (with customer details), to retrieve the total order, with the exception of free orders where the order total is not required.
+- The <a>Broker</a> SHOULD call **C1** (without <a>Customer</a> details)
+- The <a>Broker</a> MUST call **C2** (with <a>Customer</a> details), to retrieve the total order, with the exception of free orders where the order total is not required.
 - The <a>Broker</a> MUST call **B** (with payment details), and store the resulting `Order`.
 - The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>
 
@@ -483,8 +507,8 @@ If **B** fails, the <a>Broker</a> MUST cancel the payment without any consequenc
 
 ### Booking System contract with the Broker
 
-- The <a>Booking System</a> MUST respond to **C1** (without customer details) with an `OrderQuote` that includes an indicative total order price, or a relevant error.
-- The <a>Booking System</a> MUST respond to **C2** (with customer details) with an `OrderQuote` that includes an exact total order price, or a relevant error.
+- The <a>Booking System</a> MUST respond to **C1** (without <a>Customer</a> details) with an `OrderQuote` that includes an indicative total order price, or a relevant error.
+- The <a>Booking System</a> MUST respond to **C2** (with <a>Customer</a> details) with an `OrderQuote` that includes an exact total order price, or a relevant error.
 - The <a>Booking System</a> MUST respond to **B** with a completed `Order`, or a relevant error. The whole booking succeeds or fails as one.
 - Upon any cancellations or updates to the `Order` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `Order` in the <a>Orders feed</a>.
 
@@ -494,7 +518,7 @@ With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s shopping basket by another <a>Customer</a>, the use of time-bound leases are RECOMMENDED, however they are not required to ensure a low barrier of entry for implementers of the specification.
 
-Individually at **C1** and **C2**, the <a>Booking System</a> can opt to create (or extend) a lease for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capability to support leases, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. At **C1** the lease is anonymous, at **C2** customer details are provided.
+Individually at **C1** and **C2**, the <a>Booking System</a> can opt to create (or extend) a lease for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capability to support leases, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. At **C1** the lease is anonymous, at **C2** <a>Customer</a> details are provided.
 
 If a lease is created at **C1** and/or **C2** it is used during **B**, if not or if it had expired the booking completes anyway provided sufficient inventory is available.
 
@@ -509,7 +533,7 @@ When a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
   }
 </pre>
 
-The `leaseExpires` MAY be used to inform the `Customer` of the time they have remaining.
+The `leaseExpires` MAY be used to inform the <a>Customer</a> of the time they have remaining.
 
 
 
@@ -520,7 +544,7 @@ The `leaseExpires` MAY be used to inform the `Customer` of the time they have re
  <figcaption>Sequence diagram showing API interactions</figcaption>
 </figure>
 
-i) "**1. Select**" - User browses broker site anonymously and adds something to basket
+i) "**1. Select**" - User browses <a>Broker</a> site anonymously and adds something to basket
 
   - <a>Broker</a> MUST have determined at least one an Open Booking <a>bookable</a> opportunity each with an associated <a>Applicable `offer`</a> from the user's browsing, using the most up-to-date opportunity data.
   - <a>Broker</a> generates session UUID.
@@ -556,13 +580,13 @@ vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object
 
   - The `identifier` of the `Payment` is taken from the payment pre-authorization.
 
-  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since **C2**, e.g. if the headline price is changed in the booking system between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
+  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since **C2**, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
 
-  - If some of the leases have expired, or if leases are not supported, then the booking system attempts to make the booking anyway. If there are no spaces available the booking fails.
+  - If some of the leases have expired, or if leases are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are no spaces available the booking fails.
 
   - If the booking succeeds only for some basket items, the whole transaction is rolled back and the entire booking fails.
 
-  - If there's a network failure, e.g. no response from server, then <a>Broker</a> can resubmit with same UUID. As the call is idempotent, the Booking System will need to track the UUID supplied by <a>Broker</a> against any successful orders, to ensure that it can return the same `Order` for subsiquent requests. <a>Broker</a> MUST NOT reuse UUIDs across multiple `Order`s.
+  - If there's a network failure, e.g. no response from server, then <a>Broker</a> can resubmit with same UUID. As the call is idempotent, the <a>Booking System</a> will need to track the UUID supplied by <a>Broker</a> against any successful orders, to ensure that it can return the same `Order` for subsiquent requests. <a>Broker</a> MUST NOT reuse UUIDs across multiple `Order`s.
 
   - The booking is considered as complete and paid by the <a>Booking System</a> at this point.
 
@@ -572,12 +596,12 @@ vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object
 
   - The <a>Broker</a> MUST store the `Order` response in with an internal status of `https://schema.org/OrderPaymentDue` at this point (or `https://openactive/PaymentCaptured` if no payment is due).
 
-viii) **Capture Payment** - <a>Broker</a> captures `totalPaymentDue` from payment provider
+viii) **Capture Payment** - <a>Broker</a> captures `totalPaymentDue` from <a>Payment Provider</a>
 
   - If an error occurs during capture (very unlikely but possible due to system failure, and detectable using the internal status, and this may only be noticed after the event due to server failure and observation of logs, the <a>Broker</a> MUST either:
     - Initiate manual capture via e.g. the Stripe console. Note the pre-auth will typically last for 7 days, so manual capture is still possible after the event.
     - Capture the payment from the user manually.
-    - Absorb the loss and make a new payment for the same amount with the same UUID in the payment provider (better for UX / customer service, if manual capture not possible).
+    - Absorb the loss and make a new payment for the same amount with the same UUID in the <a>Payment Provider</a> (better for UX / customer service, if manual capture not possible).
     - Perform the rollback procedure detailed in the following section.
   - To ensure payment capture errors are detected and resolved the <a>Broker</a> MUST periodically check for any `Orders` that have not been updated in over a 5 minutes, and are in a state other than `https://schema.org/OrderDelivered`.
 
@@ -635,11 +659,12 @@ An error condition exists where an unrecognised `Order` item is found by the <a>
 
 
 <section class="normative">
+
 # Broker Roles
 
 A <a>Broker</a> is an actor that arranges transactions between a <a>Seller</a> and <a>Customer</a>, either directly or indirectly.
 
-From a contractual and taxation perspective, there are two types of Broker, and agent (`AgentBroker`), and a reseller (`ResellerBroker`), as well direct purchase (`NoBroker`).
+From a contractual and taxation perspective, there are two types of <a>Broker</a>, and agent (`AgentBroker`), and a reseller (`ResellerBroker`), as well direct purchase (`NoBroker`).
 
 Note that this specification does not deal with contractual relationships, and simply provides a mechanism to record bookings.
 
@@ -664,7 +689,7 @@ The <a>Customer</a>'s purchase from the `ResellerBroker` is business-to-consumer
 Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. if the <a>Seller</a> is an [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is not relevant here, as no direct contractual relationship is formed between <a>Seller</a> and <a>Customer</a>.
 
 ### Scope of Specification
-This specification is designed to govern the interaction between the `ResellerBroker` and <a>Seller</a>. It does include provision for the interaction between the `ResellerBroker` and <a>Customer</a> explicitly, though it may be repurposed by the broker to perform this function by treating the Broker as a Booking system. This specification also does not include provision for the recording of the execution of the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
+This specification is designed to govern the interaction between the `ResellerBroker` and <a>Seller</a>. It does include provision for the interaction between the `ResellerBroker` and <a>Customer</a> explicitly, though it may be repurposed by the <a>Broker</a> to perform this function by treating the <a>Broker</a> as a <a>Booking System</a>. This specification also does not include provision for the recording of the execution of the contractual relationship with any <a>Payment Provider</a> (e.g. for payment processing fees). Such relationships MUST be handled separately.
 When the `brokerRole` is set to `ResellerBroker`, this indicates that the payee for accounting and tax purposes is the `broker` specified in the `Order`.
 Note that the `customer` may still optionally be included in the Order, for example to help front-of-house staff identify the <a>Customer</a>.
 
@@ -698,14 +723,14 @@ The `AgentBroker`'s relationship with the <a>Seller</a> is business-to-business.
 
 ### Scope of Specification
 This specification is designed to govern the recording of the execution of the contractual relationship between the <a>Customer</a> and <a>Seller</a>.
-The scope of this specification does not include the contractual relationship between the `AgentBroker` and the <a>Seller</a> (e.g. for booking commission), between the `AgentBroker` and the <a>Customer</a> (e.g. for booking fees) or with any payment provider (e.g. for payment processing fees). Such relationships and the reconciliation of associated invoices MUST be handled separately.
+The scope of this specification does not include the contractual relationship between the `AgentBroker` and the <a>Seller</a> (e.g. for booking commission), between the `AgentBroker` and the <a>Customer</a> (e.g. for booking fees) or with any <a>Payment Provider</a> (e.g. for payment processing fees). Such relationships and the reconciliation of associated invoices MUST be handled separately.
 When the `brokerRole` is set to `AgentBroker`, this indicates that the payee for accounting and tax purposes is the `customer` specified in the `Order`.
 
 ### Conformance criteria
 When the <a>Broker</a> generates the <a>Invoice</a>, it must be made payable to `Order.customer`, `Order.broker` MUST be provided and `Order.customer` MUST be provided.
 
 ### Informed purchase
-When using a `brokerRole` of `AgentBroker`, the <a>Broker</a> MUST make the customer aware that they are purchasing directly from the <a>Seller</a> via the <a>Broker</a>, and not directly from the <a>Broker</a>.
+When using a `brokerRole` of `AgentBroker`, the <a>Broker</a> MUST make the <a>Customer</a> aware that they are purchasing directly from the <a>Seller</a> via the <a>Broker</a>, and not directly from the <a>Broker</a>.
 
 ## `NoBroker`
 
@@ -726,7 +751,7 @@ Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing direc
 
 ### Scope of Specification
 This specification is designed to govern the recording of the execution of the contractual relationship between the <a>Customer</a> and <a>Seller</a>.
-The scope of this specification does not include the contractual relationship with any payment provider (e.g. for payment processing fees). Such relationships MUST be handled separately.
+The scope of this specification does not include the contractual relationship with any <a>Payment Provider</a> (e.g. for payment processing fees). Such relationships MUST be handled separately.
 
 When the `brokerRole` is set to `NoBroker`, this indicates that the payee for accounting and tax purposes is the `customer` specified in the `Order`.
 
@@ -760,7 +785,7 @@ The <a>Broker</a> has visibility of all components, while for simplicity of impl
 
 | Component | Description | Owner | Audit |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|-----------|
-| <dfn>`Order`</dfn> | A mutable object that encompasses the live state of the bookable `Event`s within the booking system. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the <a>Seller</a>. | <a>Booking System</a>. | Mutable |
+| <dfn>`Order`</dfn> | A mutable object that encompasses the live state of the bookable `Event`s within the <a>Booking System</a>. An `Order` has a `orderItem`s, a `totalPaymentDue`, and all tax details, but is not itself a legal representation of a purchase from the <a>Seller</a>. | <a>Booking System</a>. | Mutable |
 | <dfn>Invoice</dfn> | An immutable object that is a legal representation of the purchase, which MUST be rendered to the <a>Customer</a> as a legally permissible tax receipt, and exist as a tax point. A new <a>Invoice</a> MUST be generated for the `Order` to replace the previous <a>Invoice</a> each occasion that an `orderItem` within an `Order` is cancelled. | <a>Broker</a> | Immutable |
 | <dfn>Payment</dfn> | A immutable object that represents the original payment to the <a>Seller</a> for the initial `Order`. Although modelling the <a>Payment</a> is outside the scope of this specification, it is recommended that one payment exists for each `Order`. | <a>Payment Provider</a> | Immutable |
 | <dfn>Refund</dfn> | An immutable object that represents each refund made against the <a>Payment</a>, up to the <a>Payment</a>'s total amount | <a>Payment Provider</a> | Immutable |
@@ -772,11 +797,11 @@ The <a>Broker</a> has visibility of all components, while for simplicity of impl
 
 Due to the variety of business models in use in OpenActive, the <a>Booking System</a> MUST NOT send receipts directly to the <a>Customer</a> for `AgentBroker` and `ResellerBroker` bookings.
 
-For each successful `Order` operation (where **C1**, **C2** and **B** together constitute a successful Order Creation operation), the <a>Broker</a> MUST generate a new <a>Invoice</a> in the form of a tax receipt, on the basis of the <a>Orders feed</a> contents. To ensure that the <a>Customer</a> is provided with the correct tax receipt, if `totalPaymentTaxSpecification` is provided in an `Order` in the <a>Orders feed</a>, the <a>Broker</a> MUST generate a new or updated <a>Invoice</a> and either (a) send a tax receipt representation of the <a>Invoice</a> to the <a>Customer</a> and/or (b) offer a means to allow the <a>Customer</a> to easily retrieve a full tax receipt representation of the specific version of the  <a>Invoice</a> at any future date for any previous booking made. As it is ultimately the <a>Seller</a>'s responsibility to send tax receipts, they need to be confident that the <a>Broker</a> is making tax information available to its customers in an accurate and timely manner.
+For each successful `Order` operation (where **C1**, **C2** and **B** together constitute a successful Order Creation operation), the <a>Broker</a> MUST generate a new <a>Invoice</a> in the form of a tax receipt, on the basis of the <a>Orders feed</a> contents. To ensure that the <a>Customer</a> is provided with the correct tax receipt, if `totalPaymentTaxSpecification` is provided in an `Order` in the <a>Orders feed</a>, the <a>Broker</a> MUST generate a new or updated <a>Invoice</a> and either (a) send a tax receipt representation of the <a>Invoice</a> to the <a>Customer</a> and/or (b) offer a means to allow the <a>Customer</a> to easily retrieve a full tax receipt representation of the specific version of the  <a>Invoice</a> at any future date for any previous booking made. As it is ultimately the <a>Seller</a>'s responsibility to send tax receipts, they need to be confident that the <a>Broker</a> is making tax information available to its <a>Customers</a> in an accurate and timely manner.
 
 The tax receipt sent by the <a>Broker</a> MUST comply with any legal requirements of the jurisdiction of operation.
 
-Note by following specification, for all broker modes where a <a>Seller</a> may need to supply a tax receipt manually for any reason, the <a>Seller</a> will have the details of the <a>Customer</a> and the transaction enough to generate the most recent tax receipt.
+Note by following specification, for all <a>Broker</a> modes where a <a>Seller</a> may need to supply a tax receipt manually for any reason, the <a>Seller</a> will have the details of the <a>Customer</a> and the transaction enough to generate the most recent tax receipt.
 
 
 ## Payments and Refunds
@@ -787,11 +812,11 @@ Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope 
 
 ### Business-to-consumer tax calculation by Booking System is mandatory
 
-For `AgentBroker` and `NoBroker` modes, where the customer is of type `Person` and a tax receipt is usually generated by the <a>Booking System</a>, the tax calculation and associated properties this specification MUST be implemented by the <a>Booking System</a> (even if the resulting tax amount is zero).
+For `AgentBroker` and `NoBroker` modes, where the <a>Customer</a> is of type `Person` and a tax receipt is usually generated by the <a>Booking System</a>, the tax calculation and associated properties this specification MUST be implemented by the <a>Booking System</a> (even if the resulting tax amount is zero).
 
 ### Business-to-business tax calculation by Booking System is optional
 
-Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a customer of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and the `taxMode` `https://openactive/TaxNet` MUST be returned in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
+Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a <a>Customer</a> of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and the `taxMode` `https://openactive/TaxNet` MUST be returned in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
 
 This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
 
@@ -809,22 +834,22 @@ Note that `taxMode` only effects the interpretation of the `price` of the `Offer
 | Currencies usually associated                          | USD                         | EUR, AUD, GBP                 |
 | Example price of opportunity before tax                | 10.00                       | 10.00                         |
 | Example tax rate                                       | 0.2                         | 0.2                           |
-| Price displayed to Customer during browsing (`Offer`)  | 10.00                       | 12.00                         |
-| Total paid by Customer (`totalPaymentDue`)             | 12.00                       | 12.00                         |
+| Price displayed to <a>Customer</a> during browsing (`Offer`)  | 10.00                       | 12.00                         |
+| Total paid by <a>Customer</a> (`totalPaymentDue`)             | 12.00                       | 12.00                         |
 
 
 ## Free opportunities
 
 Free opportunities, defined by those with at least one `Offer` with a `price` of `0`, MUST follow the same workflow as paid opportunities, except with no interaction with a <a>Payment Provider</a>, and no `payment` included in the Order Creation request.
 
-For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrency` is not available then brokers SHOULD display "Free" or equivalent when displaying a zero price.
+For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrency` is not available then <a>Brokers</a> SHOULD display "Free" or equivalent when displaying a zero price.
 
 
 ## Offer overrides
 
 The unit price of an OrderItem may be overridden to allow for business models with variable pricing (where price differs from list price) and dynamic pricing (where price is not known at the point of purchase).
 
-An `OfferOverride` or `DynamicOffer` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` or `DynamicOffer` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the booking system instead of acceptedOffer to calculate the tax and totals.
+An `OfferOverride` or `DynamicOffer` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` or `DynamicOffer` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the <a>Booking System</a> instead of acceptedOffer to calculate the tax and totals.
 
 <div class="issue" data-number="96"></div>
 
@@ -846,7 +871,7 @@ The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as
 ### `DynamicOffer`
 The `DynamicOffer` MUST NOT include a `price`, and MUST NOT contribute to the `totalPaymentDue` of the `Order`. `unitTaxSpecification` MUST NOT be calculated by the <a>Booking System</a> for a `DynamicOffer`.
 
-The `identifier` of the `DynamicOffer` MUST be used consistently in order to allow the Seller to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band.
+The `identifier` of the `DynamicOffer` MUST be used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band.
 
 <pre class="example" title="Example of DynamicOffer">
   "acceptedOffer": {
@@ -862,6 +887,7 @@ The `identifier` of the `DynamicOffer` MUST be used consistently in order to all
 
 
 <section class="normative">
+
 # Order Operations
 
 ## Opportunity Selection
@@ -907,7 +933,7 @@ The following recursive algorithm should be applied to calculate applicable offe
 2. If a parent is available for a <a>bookable</a> opportunity, the applicable set of offers MUST also include all `Offer`s specified in the `offers` property of the parent, where the `identifier` of that `Offer` does not match an existing applicable offer. This allows `Offer`s to be overridden in the child using the `identifier` attribute.
 3. Step 2 is repeated for each parent recursively.
 4. The <a>Broker</a> MUST then filter this applicable set to provide a set of `Offers` which are current (based on `validFromBeforeStartDate`) and are available to the <a>Customer</a> through the <a>Broker</a> (based on `availableChannel`).
-5. The <a>Broker</a> MAY additionally filter based on the `Offer`s that apply to the customer, for example based on `ageRange` if specified in the `Offer`. This specification provides no guidance as to how the filtering should be performed, however it recommends against gathering additional personal data about the <a>Customer</a> in order to restrict `Offer`s presented, and instead advocates clear messaging regarding the restrictions of each `Offer` to allow the <a>Customer</a> to make an informed decision.
+5. The <a>Broker</a> MAY additionally filter based on the `Offer`s that apply to the <a>Customer</a>, for example based on `ageRange` if specified in the `Offer`. This specification provides no guidance as to how the filtering should be performed, however it recommends against gathering additional personal data about the <a>Customer</a> in order to restrict `Offer`s presented, and instead advocates clear messaging regarding the restrictions of each `Offer` to allow the <a>Customer</a> to make an informed decision.
 
 Note that `IndicativeOffer`s are ignored for the algorithm above, and are not considered bookable.
 
@@ -964,7 +990,7 @@ To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
 1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` MUST succeed.
 
-2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` can be obtained by submitting a PATCH of type `OrderQuote` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. This will return an updated `OrderQuote` with a `totalPaymentDue`, which can be used by the `Broker` to display the expected refund to the `Customer` and have them confirm they wish to proceed.
+2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` can be obtained by submitting a PATCH of type `OrderQuote` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. This will return an updated `OrderQuote` with a `totalPaymentDue`, which can be used by the  <a>Broker</a> to display the expected refund to the <a>Customer</a> and have them confirm they wish to proceed.
 
 3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
 
@@ -972,7 +998,7 @@ To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
 To cancel an entire `Order`, the PATCH request MUST include `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
 
-Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.
+Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate`. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.
 
 <div class="issue" data-number="92"></div>
 
@@ -987,7 +1013,7 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
  <figcaption>Seller requested cancellation</figcaption>
 </figure>
 
-`OrderItems` cancelled by the Seller will have `orderItemStatus` set to `https://openactive.io/SellerCancelled` in the <a>Orders feed</a>, and will optionally include a `cancellationMessage`. Refunds MUST be processed in response to the resulting updates in the <a>Orders feed</a>, and the <a>Customer</a> MUST be notified with the `cancellationMessage` if provided.
+`OrderItems` cancelled by the <a>Seller</a> will have `orderItemStatus` set to `https://openactive.io/SellerCancelled` in the <a>Orders feed</a>, and will optionally include a `cancellationMessage`. Refunds MUST be processed in response to the resulting updates in the <a>Orders feed</a>, and the <a>Customer</a> MUST be notified with the `cancellationMessage` if provided.
 
 
 
@@ -1021,7 +1047,7 @@ Note that this delay of cancellation requests being processed by the <a>Broker</
 
 The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from the <a>Booking System</a>. Each `Order` received is compared to the last `Order` stored, and any differences between the old and new content trigger notifications and refunds to the <a>Customer</a>, as well as updating the <a>Broker</a>'s store.
 
-Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their customers always get relevant notifications.
+Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
 Note that the properties included in the <a>Orders feed</a> and the `Order` response from the Order Creation call MAY be a subset of the `Order` request to **B** (effectively making the Orders feed a series of PATCH requests for the <a>Broker</a>), and hence any additional properties required (including properties that are OPTIONAL in the `Order` response but that were used to create the `Order`) SHOULD be stored alongside the `Order` by the <a>Broker</a> during **B**.
 
@@ -1110,7 +1136,7 @@ The URLs in the example are only illustrative.
 
 ## Extension point for including payments
 
-In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a Booking System, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
+In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
 
 <pre class="example" title="Example of Payment extension point">
   "payment": {
@@ -1145,6 +1171,7 @@ Due to the variety of Barcode and QR code formats available, the specification e
 
 
 <section class="normative">
+
 # Endpoints
 
 This API has been defined around the concept of URL discovery. This
@@ -1185,7 +1212,7 @@ It is not possible for opportunities from different <a>Sellers</a> or with diffe
 
 Note that the `broker` property in the request body is to help the <a>Booking System</a> to clarify who is making request and to help them in situations such as queries to allow reconciliation of payments. It is not designed as any part of an authentication which MUST be performed outside of the JSON body of the request. Authentication tokens MUST NOT be present within the `broker` property of the submitted JSON.
 
-In the situation where a middleware is used for various <a>Brokers</a>, independently of API key provisioning at the <a>Booking System</a> level (which in some systems is a lengthly and time-consuming process), the `broker` property SHOULD contain the details of the end-user <a>Broker</a> rather than the middleware.
+In the situation where a middleware is used for various <a>Brokers</a>, independently of API key provisioning at the <a>Booking System</a> level, the `broker` property SHOULD contain the details of the end-user <a>Broker</a> rather than the middleware.
 
 
 #### `orderQuantity` expansion
@@ -1281,7 +1308,7 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 
 All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
 
-A dry-run of the call MAY be used to inform the user of the refund they can expect (note the response represents only a partial `OrderQuote`, which SHOULD be combined with the `Order` stored in the `Broker` to create a full view).
+A dry-run of the call MAY be used to inform the user of the refund they can expect (note the response represents only a partial `OrderQuote`, which SHOULD be combined with the `Order` stored in the <a>Broker</a> to create a full view).
 
 <pre class="example" title="OrderItem Cancellation: example OrderQuote request" data-transform="dataExampleOrderItemCancellationQuoteRequest">
 </pre>
@@ -1372,6 +1399,7 @@ by including the `id` property within the `OrderItem`.
 
 
 <section class="normative">
+
 # Model
 
 These models are designed compatible with [[Modelling-Opportunity-Data]], and includes conformance criteria that are both stricter and more relaxed when existing models are used in the context of this specification.
@@ -1384,10 +1412,10 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 |--------------------------------------------------------------------|----------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID |
-| [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the booking system. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. -
-| [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a booking system. e.g. a leisure provider running yoga classes. |
+| [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. -
+| [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | -        | REQUIRED | REQUIRED | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
-| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | OPTIONAL | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows **Customers** to make bookings. Those applications will be clients of the API defined in this specification. |
+| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | OPTIONAL | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | OPTIONAL | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive/AgentBroker`, `https://openactive/ResellerBroker` or `https://openactive/NoBroker`. |
 | [`schema:orderNumber`](http://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
 | [`schema:customer`](http://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. MUST be either an . |
@@ -1395,7 +1423,7 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](http://schema.org/OrderItem) | The items that constitute the `Order` |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:totalTaxSpecification`](https://openactive.io/totalTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
-| [`oa:payment`](https://openactive.io/payment)                      | REQUIRED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the Broker |
+| [`oa:payment`](https://openactive.io/payment)                      | REQUIRED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a> |
 
 The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at **B** back to the <a>Broker</a>, so the <a>Broker</a> must store any details sent alongside the `Order` response.
 
@@ -1407,7 +1435,7 @@ The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
-| [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the booking system. |
+| [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
 | [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | Payment is not expected for `OrderQuote` |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 
@@ -1465,7 +1493,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only requires `id` within these objects to be included, all other properties are ignored. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:Barcode`](https://schema.org/Barcode) | `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance, not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
-| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the Seller in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
+| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 
 Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is only used during the booking flow, and MUST NOT be used within the completed `Order`.
 
@@ -1511,7 +1539,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
-| [`schema:identifier`](http://schema.org/identifier)                | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | Used consistently in order to allow the Seller to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band. |
+| [`schema:identifier`](http://schema.org/identifier)                | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | Used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band. |
 | [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
@@ -1535,7 +1563,7 @@ For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
 | [`schema:familyName`](http://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
 | [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
 
-Note that the `Person` is not sent to the <a>Broker</a>, only received by the <a>Booking System</a>, to avoid any inadvertent data sharing between **Brokers** when the properties of the `Person` are updated. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
+Note that the `Person` is not sent to the <a>Broker</a>, only received by the <a>Booking System</a>, to avoid any inadvertent data sharing between  <a>Brokers</a> when the properties of the `Person` are updated. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
 
 In this current iteration of the Booking API specification, the programmatic creation of <a>Customer</a> records on the <a>Booking System</a> by the <a>Broker</a> is considered to be out of scope.
 
@@ -1605,7 +1633,7 @@ Used for `totalPaymentDue`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `TaxChargeSpecification` |
 | [`schema:price`](http://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The monetary value of the tax charge. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the booking system. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
+| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the tax charge, e.g. "VAT at 0% for EU transactions" |
 | [`oa:rate`](https://openactive.io/rate)                            | - | OPTIONAL | [`schema:Float`](https://schema.org/Float) | The rate of VAT. |
 
@@ -1720,13 +1748,13 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the customer is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
+| `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
 | `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
 | `OrderAlreadyExistsError`                   | 400         | If the UUID used for an `OrderQuote` already represents a completed Order. |
 
 
-<!--| `CancellationNotPermittedError`             | 400         | If the cancellation is not permitted due to internal rules of the booking system not otherwise exposed to the `Broker`. The `description` property of the object SHOULD include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |-->
+<!--| `CancellationNotPermittedError`             | 400         | If the cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the `Broker`. The `description` property of the object SHOULD include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |-->
 
 
 
@@ -1784,6 +1812,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 
 <section class="normative">
+
 # Common Requirements
 
 This section defines some common functionality that applies to the design of the
@@ -1811,7 +1840,7 @@ The current media type is:
 application/vnd.openactive+json; model=2.0, booking=1.0, rpde=1.0
 ```
 
-**Brokers** specifying a media type without a version, such as:
+ <a>Brokers</a> specifying a media type without a version, such as:
 
 ```
 application/vnd.openactive+json
@@ -1890,9 +1919,9 @@ This specification does not mandate a particular authentication method, but its 
 Other server-to-server authentication mechanisms such as basic authentication, API key or bearer token based mechanisms are also appropriate.
 
 
-### Customer level authentication
+### <a>Customer</a> level authentication
 
-OpenID Connect ([[OpenIdConnect]]) is recommended as standard way of verifying the identity of customer. It is a thin layer that sits atop OAuth2.
+OpenID Connect ([[OpenIdConnect]]) is recommended as standard way of verifying the identity of <a>Customer</a>. It is a thin layer that sits atop OAuth2.
 
 One principle relating to authentication and the Booking API is that `Order`s created by a specific <a>Customer</a> SHOULD NOT be able to be changed by any other <a>Customer</a>. It is the responsibility of the <a>Broker</a> to ensure that subsequent requests to an `Order` should only be initiated by the <a>Customer</a> which created the `Order`.
 
