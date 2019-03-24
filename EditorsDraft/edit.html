@@ -314,6 +314,7 @@ receipt of payment from users
 * __Dynamic pricing__ – allowing the <a>Broker</a> to vary pricing, where agreed with the <a>Seller</a>
 * __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings
 * __Cancellation__ – <a>Customer</a> and <a>Seller</a> initiated cancellation 
+* __Access control__ - text, images and barcodes that can be used by the <a>Customer</a> to access the activity
 
 ### Out of Scope in this version
 
@@ -326,6 +327,7 @@ A number of additional requirements that relate to the booking of events and fac
 * business-to-business tax calculation
 * cancellation fees
 * "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller's</a> activity, with such participation recorded for later reconciliation
+* refunds/cancellations after the opportunity has occurred 
 * back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
 
 It is possible that future versions of this specification may include support
@@ -344,8 +346,8 @@ work of the OpenActive Community Group.
 The functionality that is currently defined as out of scope includes:
 
 * __API authentication and security__ – while the specification recommends some best practices relating to authentication and security it does not mandate a specific means of securing an API. Implementers are free to choose the system that offers the best security for their platform and users.
-* __Payment processing__ – the design assumes that all payment handling will be carried out by the third-party application, in a separate payment flow. Booking systems and application developers are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Customers</a>.
-* __API business models__ – the design is agnostic to any business models that might govern the use of the API, e.g. revenue-sharing or transaction processing fees
+* __Payment processing__ – the design assumes that all payment handling will be coordinated by the <a>Broker</a>, in a separate payment flow. <a>Brokers</a> are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Sellers</a> and <a>Customers</a>.
+* __API business models__ – the design is agnostic to any business models that might govern the use or provision of the API, e.g. revenue-sharing or transaction processing fees.
 * __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
 * __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
 
@@ -433,26 +435,16 @@ by this specification is scoped tightly to only specify interactions between the
 
     <dl class="typography">
         <dt><dfn>Customer</dfn></dt>
-        <dd>The user who places a booking using an application provided by
-        a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee,
-        so e.g. a parent may book on behalf of their child.</dd>
+        <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, so e.g. a parent may book on behalf of their child.</dd>
         <dt><dfn>Broker</dfn></dt>
-        <dd>The organisation or developer providing an application that
-        allows <a>Customers</a> to make bookings. Those applications will be
-        clients of the API defined in this specification</dd>
+        <dd>The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification</dd>
         <dt><dfn>Booking System</dfn></dt>
-        <dd>The organisation or developer providing an application that
-        maintains bookable inventory on behalf of the <a>Seller</a>.
-        The platform or service that provides a server-side implementation
-        of this API.
+        <dd>The organisation or developer providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.
         </dd>
         <dt><dfn>Seller</dfn></dt>
-        <dd>The organisation providing access to events or facilities
-        via a <a>Booking System</a>. e.g. a leisure provider running yoga classes.</dd>
+        <dd>The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes.</dd>
         <dt><dfn>Payment Provider</dfn></dt>
-        <dd>The organisation providing payment processing between the
-        <a>Customer</a>, <a>Broker</a> and
-        <a>Seller</a>.</dd>
+        <dd>The notional service providing payment processing between the <a>Customer</a>, <a>Broker</a> and <a>Seller</a>. Although this specification refers to the <a>Payment Provider</a> as a single notional service, it may in reality be composed of multiple connected services providing the same functionality to allow for the widest variety of business models.</dd>
     </dl>
 
 </section>
@@ -979,6 +971,12 @@ The cancellation may be requested by either the <a>Customer</a> or the <a>Seller
 
 <div class="issue" data-number="97"></div>
 
+### Refund after the opportunity has occurred 
+
+Although a cancellation may be requested before the opportunity has occurred in order to trigger a refund, cancellation and refund after an opportunity has occurred is currently outside the scope of this specification.
+
+Full and partial refunds after an opportunity has occurred MUST be handled out-of-band directly between the <a>Broker</a> and the <a>Seller</a>.
+
 ### Customer requested cancellation
 
 <figure>
@@ -1147,14 +1145,59 @@ In some limited circumstances it might also be desirable for an Open Booking API
   },
 </pre>
 
-Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external **Payment Processor** being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
+Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Processor</a> being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
 
 
-## Extension point for access control
+## Access control
 
-For opportunities based at locations that have access control, it is RECOMMENDED that `OrderItem` include unique access control data within `accessToken`.
+For opportunities based at locations that have access control, it is RECOMMENDED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
 
-<pre class="example" title="Example of accessToken">
+### Text-based access control
+
+PIN codes, Order identifiers, or simply the e-mail address of the <a>Customer</a> are all permissible for the purposes of access control.
+
+In keeping with the Schema.org definition of `PropertyValue`, the `name` property SHOULD be used for the name of the property, and the `description` property SHOULD be used for any human-readable access control code(s). 
+
+<pre class="example" title="Example of accessCode used for a PIN Code">
+  "accessCode": [
+    {
+      "type": "PropertyValue",
+      "name": "PIN Code",
+      "description": "1234"
+    }
+  ],
+</pre>
+
+<pre class="example" title="Example of accessCode used for a booking reference">
+  "accessCode": [
+    {
+      "type": "PropertyValue",
+      "name": "Booking Reference",
+      "description": "123456789"
+    }
+  ],
+</pre>
+
+### Image-based access control
+
+Images to be displayed to provide access, for example access tickets rendered by the booking system, MAY be included as an `ImageObject` within the `accessToken` array.
+
+<pre class="example" title="Example of ImageObject in accessToken">
+  "accessToken": [
+    {
+      "type": "ImageObject",
+      "url": "https://access.example.com/476ac24c694da79c5e33731ebbb5f1"
+    }
+  ],
+</pre>
+
+### Extension point for barcode-based access control
+
+Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcode` within the `accessToken` array. Note that `Barcode` subclasses `ImageObject`, allowing it to contain a rendered barcode image URL in addition to the raw barcode details.
+
+Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace, enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
+
+<pre class="example" title="Example of Barcode in accessToken">
   "accessToken": [
     {
       "type": "Barcode",
@@ -1163,9 +1206,6 @@ For opportunities based at locations that have access control, it is RECOMMENDED
     }
   ],
 </pre>
-
-Due to the variety of Barcode and QR code formats available, the specification expects the `Barcode` to include additional properties using a custom namespace, enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
-
 
 </section>
 
@@ -1491,7 +1531,8 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only requires `id` within these objects to be included, all other properties are ignored. |
-| [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:Barcode`](https://schema.org/Barcode) | `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance, not applicable for an `OrderQuote`. |
+| [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
+| [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 
