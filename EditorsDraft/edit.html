@@ -566,7 +566,7 @@ vi) **Authorise Payment** - <a>Broker</a> pre-authorises `totalPaymentDue` from 
 
   - `Order` `id` (which includes the UUID) SHOULD be used as a reference in the <a>Payment Provider</a>, if possible.
 
-  - The <a>Broker</a> MUST store the `Order` request with an internal status of `https://openactive/PaymentAuthorized` at this point.
+  - The <a>Broker</a> MUST store the `Order` request with an internal status of `https://openactive.io/PaymentAuthorized` at this point.
 
 vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object to check viability, with a Payment object, and `totalPaymentDue` including the total amount pre-authed (call is idempotent, can be retried if 500 returned), <a>Booking System</a> responds with an `Order`.
 
@@ -586,7 +586,7 @@ vii) **B** - <a>Broker</a> call with `Order` including UUID with a Person object
 
   - If the <a>Broker</a> requires any `Order` properties included in the request but OPTIONAL in the `Order` response, including the `customer`, it must store them alongside the `Order` as part of this call, as they may not be included in the `Order` response or the <a>Orders feed</a>.
 
-  - The <a>Broker</a> MUST store the `Order` response in with an internal status of `https://schema.org/OrderPaymentDue` at this point (or `https://openactive/PaymentCaptured` if no payment is due).
+  - The <a>Broker</a> MUST store the `Order` response in with an internal status of `https://schema.org/OrderPaymentDue` at this point (or `https://openactive.io/PaymentCaptured` if no payment is due).
 
 viii) **Capture Payment** - <a>Broker</a> captures `totalPaymentDue` from <a>Payment Provider</a>
 
@@ -599,11 +599,11 @@ viii) **Capture Payment** - <a>Broker</a> captures `totalPaymentDue` from <a>Pay
 
  - It is the <a>Broker</a>'s responsibility to ensure that payment has been captured.
 
- - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://openactive/PaymentCaptured` after payment is successfully captured.
+ - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://openactive.io/PaymentCaptured` after payment is successfully captured.
 
 ix) **Invoice Generation** and **Customer Notification** - Upon successfully capturing payment, the <a>Broker</a> generates invoices, sends <a>Customer</a> notifications, and stores the `Order` in a success state based on the response from **B**.
 
- - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://schema.org/OrderDelivered` after invoices have been created and notifications successfully sent.
+ - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://openactive.io/OrderDelivered` after invoices have been created and notifications successfully sent.
 
 x) **Refunds and Cancellation** - The <a>Broker</a> subscribes to updates from the <a>Booking System</a> to process cancellations and refunds.
   - A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authentication credentials. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
@@ -613,12 +613,18 @@ x) **Refunds and Cancellation** - The <a>Broker</a> subscribes to updates from t
 
 ### Booking flow with approval
 
-If the `Order` is returned at step **vii** above with an `orderStatus` of `OrderAppovalPending`, the user is notified that the `Order` is awaiting approval, and the remaining steps are completed when the item is retrieved from the <a>Orders feed</a> with an `OrderConfirmed` state.
+For the case where any `OrderItem`s in an `Order` require approval (`orderItemStatus` of `https://openactive.io/OrderApprovalPending`), the whole `Order` MUST be held in a pending state by the <a>Booking System</a>, with the <a>Broker</a> storing the `Order` with an internal status of `https://openactive.io/OrderApprovalPending`.
 
-If approval is not given, the <a>Booking System</a> MUST make the `Order` available in a `deleted` state in the <a>Orders feed</a> and the <a>Broker</a> MUST notify the user that their booking was not approved, and any payment authorisation MUST be withdrawn.
+An `Order` pending approval MUST be approved or rejected atomically; partial approval is not supported in this version of the specification.
+
+For an `Order` that requires approval, the flow differs from the above as follows:
+
+- `OrderQuote` is returned at **C1** and **C2** with any `OrderItem`s that require approval having with `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. The <a>Customer</a> MAY then be prompted to supply an `orderApprovalRequestNote` to display to the seller, which can be included with the `Order` at **B**.
+- `Order` is returned at **B** with any `OrderItem`s that require approval having an `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. If this is the case, the <a>Customer</a> MUST be notified that the `Order` is awaiting approval.
+- If approval is given, the <a>Booking System</a> updates the `Order` in the <a>Orders feed</a> setting all `OrderItem`s to an `https://openactive.io/OrderConfirmed` state. The <a>Broker</a> receives this update from the <a>Orders feed</a> and completes the remaining steps of **Capture Payment**, **Invoice Generation** and **Customer Notification** as in the original flow above.
+- If approval is not given, the <a>Booking System</a> MUST make the `Order` available in an RPDE `deleted` state in the <a>Orders feed</a> and the <a>Broker</a> MUST notify the <a>Customer</a> that their booking was not approved, and any payment authorisation MUST be withdrawn.
 
 A <a>Broker</a> MAY cancel an `Order` before it has been approved by using the Order Deletion endpoint.
-
 
 <figure>
  <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
@@ -1464,6 +1470,9 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:totalTaxSpecification`](https://openactive.io/totalTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | REQUIRED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a> |
+| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | RECOMMENDED | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> in the case where the `Order` requires approval. |
+
+
 
 The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at **B** back to the <a>Broker</a>, so the <a>Broker</a> must store any details sent alongside the `Order` response.
 
@@ -1476,8 +1485,9 @@ The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at 
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
-| [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | Payment is not expected for `OrderQuote` |
+| [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | `payment` is not expected for `OrderQuote`. |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | - | - | [`schema:Text`](https://schema.org/Text) | `orderApprovalRequestNote` is not expected for `OrderQuote`. |
 
 
 ### `schema:Organization` for `seller`
