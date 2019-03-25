@@ -811,6 +811,28 @@ Note by following specification, for all <a>Broker</a> modes where a <a>Seller</
 
 Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single <a>Payment</a> MUST be related to each `Order`, and a unique reference to this <a>Payment</a> MUST be included in the `Payment` `identifier` of the `Order` sent to the <a>Booking System</a>. Note that this <a>Payment</a> is permitted to represent a virtual <a>Payment</a> consolidating a number of actual **Payments** to allow for a wide variety of <a>Payment</a> methods. In the case where the <a>Seller</a> is paid monthly, the <a>Payment</a> may also represent a reference to a future invoice against which the eventual <a>Payment</a> will be paid. In all cases the `Payment` `identifier` MUST be uniquely resolvable for audit purposes.
 
+### Payment reconciliation
+
+Although automated payment reconciliation is outside the current scope of this specification, a <a>Booking System</a> MAY include identifiers suitable for payment reconciliation to be handled out-of-band with each `OrderItem` using the `additionalProperty` property.
+
+In keeping with the Schema.org definition of `PropertyValue`, the `name` and `value` properties MUST be provided within any given `PropertyValue`, and the <a>Broker</a> SHOULD include these in any reconciliation process with the <a>Seller</a>.
+
+<pre class="example" title="Example of additionalProperty for OrderItem">
+  "additionalProperty": [
+    {
+      "type": "PropertyValue",
+      "name": "SiteID",
+      "value": "ABC1234"
+    },
+    {
+      "type": "PropertyValue",
+      "name": "DeptID",
+      "value": "D89"
+    }
+  ],
+</pre>
+
+
 ## Tax calculation
 
 ### Business-to-consumer tax calculation by Booking System is mandatory
@@ -1547,6 +1569,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only requires `id` within these objects to be included, all other properties are ignored. |
+| [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
