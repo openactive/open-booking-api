@@ -300,21 +300,26 @@ The current scope of the specification should conform to a set of
 that have previously been identified and discussed with the OpenActive
 community.
 
-The focus of the initial versions of this specification will be on the simplest use cases that will support making bookings on behalf of users. This core functionality includes:
+The focus of the initial versions of this specification will be on the simplest use cases that will support making bookings on behalf of users.
+
+The core functionality includes:
 
 * __Guest checkout__ – making a booking on behalf of a <a>Customer</a> who is assumed to be unknown to the <a>Booking System</a> and <a>Seller</a>, and who does not expect a persistent account to be created for them with the <a>Seller</a>.
 * __Pricing and availability__ – checking the price and current availabilty of an event or for the use of a facility.
-* __Leasing__ – temporarily reserving spaces for a user to attend an event or
-make use of a facility, whilst placing a booking
-* __Booking__ – placing and viewing bookings, and where necessary, confirming
-receipt of payment from users
+* __Booking__ – recording bookings in the <a>Booking System</a>.
 * __Tax__ – tax calculation by the <a>Booking System</a> exposed to the <a>Broker</a>.
-* __Multiple order items__ - handling bookings for multiple events ("shopping carts") and for groups of users
-* __Child booking__ - booking on behalf of a child
-* __Dynamic pricing__ – allowing the <a>Broker</a> to vary pricing, where agreed with the <a>Seller</a>
-* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings
-* __Cancellation__ – <a>Customer</a> and <a>Seller</a> initiated cancellation 
-* __Access control__ - text, images and barcodes that can be used by the <a>Customer</a> to access the activity
+* __Multiple order items__ - handling bookings for multiple events ("shopping carts") and for groups of users.
+* __Child booking__ - booking on behalf of a child.
+* __Dynamic pricing__ – allowing the <a>Broker</a> to vary pricing, where agreed with the <a>Seller</a>.
+* __Cancellation__ – <a>Customer</a> and <a>Seller</a> initiated cancellation .
+* __Access control__ - text, images and barcodes that can be used by the <a>Customer</a> to access the activity.
+
+Additional optional functionality includes:
+
+* __Leasing__ – temporarily reserving spaces for a user to attend an event or
+make use of a facility, whilst placing a booking.
+* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings.
+
 
 ### Out of Scope in this version
 
@@ -1138,25 +1143,10 @@ The URLs in the example are only illustrative.
 
 <div class="issue" data-number="95"></div>
 
-## Extension point for including payments
-
-In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
-
-<pre class="example" title="Example of Payment extension point">
-  "payment": {
-    "type": "Payment",
-    "identifier": "12345678ABCD",
-    "paymentMethod": "stripe:StripePayment",
-    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
-  },
-</pre>
-
-Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Processor</a> being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
-
 
 ## Access control
 
-For opportunities based at locations that have access control, it is RECOMMENDED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
+For opportunities based at locations that have access control, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
 
 ### Text-based access control
 
@@ -1212,6 +1202,22 @@ Due to the variety of barcode formats available, the specification expects the `
     }
   ],
 </pre>
+
+
+## Extension point for including payments
+
+In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
+
+<pre class="example" title="Example of Payment extension point">
+  "payment": {
+    "type": "Payment",
+    "identifier": "12345678ABCD",
+    "paymentMethod": "stripe:StripePayment",
+    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
+  },
+</pre>
+
+Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Processor</a> being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
 
 </section>
 
