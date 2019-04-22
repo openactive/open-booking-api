@@ -177,6 +177,7 @@ function dataExampleOrderCreationRequest(utils, content) {
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": [requestOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
     "payment": fullOrderExampleContent.payment
   });
 }
