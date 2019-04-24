@@ -490,7 +490,7 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
 2. **Identify**: <a>Customer</a> enters personal details and other requested details
 3. **Book and Pay**: <a>Customer</a> enters payment details
 
-Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payments details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
+Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
 ### High-level API flow
 
@@ -747,6 +747,8 @@ With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 ## Booking Flow with Approval
 
+The <a>Booking System</a> MAY optionally support approval. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported, otherwise this section can be completely ignored.
+
 ### Customer Journey
 The booking journey of a <a>Customer</a> is generalised into the following logical steps:
 
@@ -763,7 +765,7 @@ The steps exactly mirror the Simple Booking Flow, with two additions:
    2. **Approve**: <a>Seller</a> approves the booking, after a period of time
 3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
 
-Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payments details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
+Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
 ### High-level API flow
 
@@ -824,6 +826,8 @@ To reach the criteria to proceed to **B**, `OrderProposal` MUST be transitioned 
 
 In the minimal implementation the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
 
+If an `Offer` requires this minimal implementation, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
+
 ##### Proposal Approval
 
 - If <a>Seller</a> approval is given, the <a>Booking System</a> sets `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, and the <a>Broker</a> MAY proceed to **B**.
@@ -835,7 +839,14 @@ In the minimal implementation the `OrderProposal` can either be accepted or reje
 
 Following any type of, the <a>Broker</a> MUST immediately withdraw any payment authorisation.
 
-#### Proposal Amendment
+#### Proposal Amendment and Message Exchange
+
+If an `Offer` requires either proposal amendment or message exchange, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingNegotiation` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such negotiation to easily filter out such offers from their experience.
+
+<a>Brokers</a> SHOULD implement both Proposal Amendment and Message Exchange together as they are both related.
+
+
+##### Proposal Amendment
 
 The <a>Booking System</a> MAY optionally support Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
 
@@ -848,7 +859,7 @@ It is possible that the <a>Seller</a> may suggest amendments to the `OrderPropos
 
 Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal must be done via Message Exchange.
 
-#### Message Exchange
+##### Message Exchange
 
 The <a>Booking System</a> MAY optionally support Message Exchange during the proposal negotiation, which uses the same mechanism as Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
 
@@ -868,7 +879,7 @@ It is possible that the <a>Seller</a> may send a simple free-text advisory note 
 
 <figure>
  <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
- <figcaption>Sequence diagram showing API interactions with approval/figcaption>
+ <figcaption>Sequence diagram showing API interactions with approval</figcaption>
 </figure>
 
 For an `Order` that requires approval, the flow differs from the above as follows:
@@ -937,6 +948,8 @@ The <a>Broker</a> MAY remember the attendee data previously entered by the <a>Cu
 ### Additional Details
 
 This version of the specification does not provide details to construct a complex additional details capture form, however it does facilitate simple text fields to capture additional details.
+
+If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support additional details capture to easily filter out such offers from their experience.
 
 <pre class="example" title="Example of orderItemIntakeForm provided by Booking System at C1">
   {
@@ -1892,6 +1905,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] are a
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | REQUIRED | REQUIRED | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
+| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | REQUIRED | REQUIRED | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation` |
 
 Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
