@@ -743,8 +743,6 @@ Calls to **C1**, **C2**, and **B** MUST be idempotent, based on the UUID.
 With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 
-
-
 ## Booking Flow with Approval
 
 The <a>Booking System</a> MAY optionally support approval. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported, otherwise this section can be completely ignored.
@@ -782,7 +780,7 @@ The flow exactly mirrors the Simple Booking Flow, with two additions:
 
 - After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint **C2** on the diagram above.
 
-- After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (**P** on the diagram above), and sends the <a>Customer</a> a notification that the booking is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
+- After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (**P** on the diagram above), and sends the <a>Customer</a> a notification that the proposal is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
 
 - After "**2.2. Approve**" the <a>Seller</a> approves the `OrderProposal` and the <a>Broker</a> is notified of this by the <a>Booking System</a> (**A** on the diagram above). The <a>Broker</a> can seek <a>Customer</a> permission to proceed, or simply complete the booking automatically, depending on the desired user experience.
 
@@ -797,13 +795,13 @@ Leasing works as specified in the Simple Booking Flow, however the lease SHOULD 
 ### High-level type flow
 
 <figure>
- <img src="typeflowwithapproval.png" alt="High level type flow">
- <figcaption>Illustration of types used during the API flow.</figcaption>
+ <img src="typeflowwithapproval.png" alt="High level type flow with approval">
+ <figcaption>Illustration of types used during the API flow, with approval.</figcaption>
 </figure>
 
 As specified in the Simple Booking Flow, with one addition:
 
-- **P/A** - `OrderProposal` exists in a number of states, as described elsewhere in this specification, and contains enough detail to successfully create an `Order`.
+- **P/A** - `OrderProposal` exists in a number of states, as described in the next section, and contains enough detail to successfully create an `Order`.
 
 ### OrderProposal statuses
 
@@ -812,67 +810,61 @@ As specified in the Simple Booking Flow, with one addition:
  <figcaption>State transition diagram showing OrderProposal states</figcaption>
 </figure>
 
-`OrderProposal` has a `orderProposalStatus` which is initially set by the <a>Booking System</a> to `https://openactive.io/AwaitingSellerConfirmation`.
+`OrderProposal` has an `orderProposalStatus` which is initially set by the <a>Booking System</a> to `https://openactive.io/AwaitingSellerConfirmation`.
 
-The <a>Broker</a> MUST only proceed to **B** when either:
-- `orderProposalStatus` is set to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a> (the 'Simple Path' in the diagram above)
-- `orderProposalStatus` is set to  `https://openactive.io/AwaitingCustomerConfirmation` in the <a>Orders feed</a> and the <a>Customer</a> has been presented the new `OrderProposal` and given their consent to continue ('Proposal Amendment').
+The <a>Broker</a> MUST only proceed to **B** when `orderProposalStatus` is set to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>.
 
-To reach the criteria to proceed to **B**, `OrderProposal` MUST be transitioned through states as follows:
+An `OrderProposal` MUST be approved or rejected atomically; partial approval is not supported in this version of the specification (though **Proposal Amendment** is supported).
+
+To reach the criteria to proceed to **B**, or rejection, `OrderProposal` MUST be transitioned through states as follows:
 - The <a>Booking System</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by updating the <a>Orders feed</a>.
 - The <a>Broker</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by submitting a PATCH to the `OrderProposal` using the OrderProposal Update endpoint.
 
 #### Minimal Implementation
 
-In the minimal implementation the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
+In the **Minimal Implementation** the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
 
-If an `Offer` requires this minimal implementation, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
+If an `Offer` requires this **Minimal Implementation**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
 
 ##### Proposal Approval
 
-- If <a>Seller</a> approval is given, the <a>Booking System</a> sets `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, and the <a>Broker</a> MAY proceed to **B**.
+- If <a>Seller</a> approval is given, the <a>Booking System</a> MUST set `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, which will give the <a>Broker</a> permission to proceed to **B**.
+- For the **Minimal Implementation**, the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at **P**. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with **B** automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the **Proposal Amendment** process.
 
 ##### Proposal Rejection
 
-- If the <a>Seller</a> rejects the proposal, the <a>Booking System</a> sets `orderProposalStatus` to `https://openactive.io/SellerRejected` in the <a>Orders feed</a>, optionally including an `orderApprovalSellerNote` containing any reason for rejection.
-- If the <a>Customer</a> aborts the proposal, the <a>Broker</a> MUST PATCH the `OrderProposal` to set the `orderProposalStatus` to `https://openactive.io/CustomerRejected`, which the <a>Booking System</a> will then update in the <a>Orders feed</a>, optionally including an `orderApprovalCustomerNote` containing any reason.
+- If the <a>Seller</a> rejects the proposal, the <a>Booking System</a> MUST set `orderProposalStatus` to `https://openactive.io/SellerRejected` in the <a>Orders feed</a>, optionally including an `orderSellerNote` containing any reason for rejection.
+- If the <a>Customer</a> aborts the proposal, the <a>Broker</a> MUST PATCH the `OrderProposal` to set the `orderProposalStatus` to `https://openactive.io/CustomerRejected`, optionally including an `orderCustomerNote` containing any associated reason. The <a>Booking System</a> will then update this in the <a>Orders feed</a>,
 
-Following any type of, the <a>Broker</a> MUST immediately withdraw any payment authorisation.
+Following any type of rejection, the <a>Broker</a> MUST immediately withdraw any payment authorisation.
 
-#### Proposal Amendment and Message Exchange
+#### Proposal Amendment
 
-If an `Offer` requires either proposal amendment or message exchange, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingNegotiation` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such negotiation to easily filter out such offers from their experience.
+The <a>Booking System</a> MAY optionally support **Proposal Amendment**. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the **Minimal Implementation** may be used without needing to consider this (as the amendments are initiated by the <a>Booking System</a>).
 
-<a>Brokers</a> SHOULD implement both Proposal Amendment and Message Exchange together as they are both related.
+If an `Offer` may require **Proposal Amendment**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingNegotiation` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such negotiation to easily filter out such offers from their experience.
+
+**Proposal Amendment** allows the <a>Seller</a> to suggest amendments to the `OrderProposal` (which need to be accepted by the <a>Customer</a>) as follows:
+
+- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/SellerAccepted`, `orderProposalVersion` set to a new generated value, and optionally including an `orderSellerNote` containing reasons for any amendments.
+- If the `orderProposalVersion` in the <a>Orders feed</a> has changed compared with the `orderProposalVersion` in the `OrderProposal` stored by the <a>Broker</a>, the <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed. The <a>Broker</a> MUST detect and highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
+- When the <a>Customer</a> confirms, the <a>Broker</a> MUST re-authorise the `totalPaymentDue`, if it has increased, with the <a>Payment Provider</a>, then proceed to **B** using the `orderProposalVersion` the <a>Customer</a> has agreed to.
+- The <a>Customer</a> or <a>Seller</a> MAY also choose to abort at any point as per **Minimal Implementation**.
+
+Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal may be done via messages communicated via **Message Exchange**.
 
 
-##### Proposal Amendment
+#### Message Exchange
 
-The <a>Booking System</a> MAY optionally support Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
+The <a>Booking System</a> and <a>Broker</a> MUST support a basic level of **Message Exchange** while the `OrderProposal` is in-flight. 
 
-It is possible that the <a>Seller</a> may suggest amendments to the `OrderProposal`, which need to be accepted by the <a>Customer</a>.
+**Message Exchange** is achieved using the two properties `orderSellerNote` and `orderCustomerNote`, and does not have any impact on the `orderProposalVersion`.
 
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` optionally including an `orderApprovalSellerNote` containing reasons for any amendments.
-- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation). The <a>Broker</a> SHOULD highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
-- When the <a>Customer</a> confirms, the <a>Broker</a> MUST make a PATCH call to the OrderProposal Update endpoint (e.g. `/order-proposal/{UUID}`) with `{"orderProposalStatus": "CustomerConfirmed"}`.
-- The <a>Customer</a> MAY also choose to abort at any point as per Minimal Implementation.
+The <a>Seller</a> MAY send a message to the <a>Customer</a> by setting `orderSellerNote` in the `OrderProposal`, and updating the `OrderProposal` in the <a>Orders feed</a>. Any change detected in the `orderSellerNote` in the <a>Orders feed</a> MUST promptly trigger a notification from the <a>Broker</a> to the <a>Customer</a>, so that the value of `orderSellerNote` can be safely overwritten with another message. To ensure that messages are not lost in the RPDE feed, the <a>Seller</a> MAY send no more than one message every 5 minutes per `OrderProposal`.
 
-Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal must be done via Message Exchange.
+The <a>Customer</a> MAY send a message to the <a>Seller</a> by the <a>Broker</a> making a PATCH call to the OrderProposal Update endpoint to set `orderCustomerNote` in the `OrderProposal` e.g. `{"orderCustomerNote": "If you let me attend for free this time, you're on!" }`. Any such `orderCustomerNote` updates via PATCH calls MUST either trigger a notification from the <a>Booking System</a> to the <a>Seller</a>, or be stored in the <a>Booking System</a> for later reference by the <a>Seller</a>, so that the value of `orderCustomerNote` can be safely overwritten with another message.
 
-##### Message Exchange
-
-The <a>Booking System</a> MAY optionally support Message Exchange during the proposal negotiation, which uses the same mechanism as Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
-
-It is possible that the <a>Seller</a> may send a simple free-text advisory note which will need to be confirmed by the <a>Customer</a> before the proposal is approved.
-
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` including the `orderApprovalSellerNote` containing a message.
-- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation), and include the `orderApprovalSellerNote`.
-- Based on the <a>Customer</a>'s will, the <a>Broker</a> MUST either:
-  - Send a reply message by making a PATCH call to the OrderProposal Update endpoint with e.g. `{"orderProposalStatus": "https://openactive.io/AwaitingSellerConfirmation", "orderApprovalCustomerNote": "If you let me attend for free this time, you're on!" }`. The <a>Booking System</a> MUST deliver a notification of this message to the <a>Seller</a> who MUST either move forward with **Proposal Approval**, **Proposal Rejection**, **Proposal Amendment**, or another **Message Exchange**.
-  - Abort the `OrderProposal` as per Minimal Implementation (using `https://openactive.io/CustomerRejected`).
-  - Proceed to **B**.
-
-- The <a>Seller</a> MAY also choose to abort at any point as per Minimal Implementation (using `https://openactive.io/SellerRejected`).
+Note that the `orderCustomerNote` property MUST NOT be available in the <a>Orders feed</a>, to remove unnecessary RPDE updates.
 
 
 ### Step-by-step process description
@@ -886,10 +878,11 @@ For an `Order` that requires approval, the flow differs from the above as follow
 
 - `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true`.
 - `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
+- The `OrderProposal` MAY include an `orderCustomerNote` in order to "Ask a question about this opportunity?".
 - Additional data is supplied at **C1** and **C2** as in the Simple Booking Flow to satisfy the `orderItemIntakeForm` for all `OrderItems`.
-- An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic.
-- Once approved the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with a unique `orderProposalVersion`.
-- The <a>Broker</a> supplies a minimal `Order` to **B** that just contains the `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
+- An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`).
+- Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see **Minimal Implementation**) or a new `orderProposalVersion` (see **Proposal Amendment**).
+- The <a>Broker</a> supplies a minimal `Order` to **B** that just contains this `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
 
 
 ### Broker contract
@@ -905,7 +898,7 @@ A summary of the key conformance criteria is included here. These apply for the 
 #### Booking System contract with the Broker
 
 - The <a>Booking System</a> MUST respond to **P** with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
-- Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `Order` in the <a>Orders feed</a>, including **A**.
+- Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `OrderProposal` in the <a>Orders feed</a>, including **A**.
 - The <a>Booking System</a> MAY negotiate on the `OrderProposal` using the <a>Orders feed</a>.
 
 Calls to **P** MUST be idempotent, based on the UUID.
@@ -1420,6 +1413,7 @@ Hence it is important for the <a>Broker</a> to consider their store of `Order`s 
 
 Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from **B** (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>), it is the responsibility of the <a>Broker</a> to maintain a complete view of the `Order` state.
 
+<a>Brokers</a> MUST harvest the <a>Orders feed</a> with a frequency of at least once every 60 seconds to ensure expediency of updates and notifications to <a>Customers</a>.
 
 ### New `Order`s and `OrderProposal`s
 
@@ -1803,6 +1797,7 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`oa:totalPaymentTaxSpecification`](https://openactive.io/totalPaymentTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | RECOMMENDED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
 | [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus)  | -    | -        | -        | Array of [`oa:OrderCreationStatusType`](https://openactive.io/OrderCreationStatusType) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
+| [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. |
 
 
 
@@ -1828,7 +1823,9 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
 | [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | `payment` is not expected for `OrderQuote`. |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
-| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | RECOMMENDED | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> in the case where the `Order` requires approval. |
+| [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatusType`](https://openactive.io/OrderProposalStatusType) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
+| [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> from the <a>Seller</a> along with the `OrderProposal`. |
+| [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> from the <a>Customer</a> along with the `OrderProposal`. |
 
 
 ### `schema:Organization` for `seller`
@@ -1905,7 +1902,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] are a
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | REQUIRED | REQUIRED | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
-| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | REQUIRED | REQUIRED | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation` |
+| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | OPTIONAL | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation` |
 
 Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
