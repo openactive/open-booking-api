@@ -745,7 +745,7 @@ With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 ## Booking Flow with Approval
 
-The <a>Booking System</a> MAY optionally support approval. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported, otherwise this section can be completely ignored.
+The <a>Booking System</a> MAY optionally support approval of bookings by the <a>Seller</a>. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported, otherwise this section can be completely ignored.
 
 ### Customer Journey
 The booking journey of a <a>Customer</a> is generalised into the following logical steps:
@@ -788,9 +788,18 @@ The flow exactly mirrors the Simple Booking Flow, with two additions:
 
 - The <a>Booking System</a> adds the `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, including those updates resulting from cancellations.
 
+Note that the `OrderProposal` at stages 2.1 and 2.2 does not constitute a booking. The whole flow MUST be completed before the <a>Customer</a> is considered "booked" onto an <a>Opportunity</a>.
+
 ### Leasing
 
-Leasing works as specified in the Simple Booking Flow, however the lease SHOULD be carried over to the `OrderProposal` and the lease extended for a duration sufficient to cover the lifetime of the `OrderProposal`.
+Leasing works as specified in the Simple Booking Flow, and if a lease was acquired at **C1** or **C2** it SHOULD be carried over to the `OrderProposal` and the lease extended for a duration sufficient to cover the lifetime of the `OrderProposal`.
+
+A lease is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
+
+If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the lease has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+
+If the lease expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the lease, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
+
 
 ### High-level type flow
 
@@ -825,6 +834,9 @@ To reach the criteria to proceed to **B**, or rejection, `OrderProposal` MUST be
 In the **Minimal Implementation** the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
 
 If an `Offer` requires this **Minimal Implementation**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
+
+Note that when `Offer`s that require approval are mixed with `Offer`s that do not require approval in a single `OrderQuote`, the whole `OrderQuote` MUST always require approval. It is at the discretion of the <a>Broker</a> whether to issue two separate `OrderQuote`s (and hence complete two separate booking flows) that batch those `OrderItem`s that require approval separately to those that do not, or whether to instead combine them together into a single `OrderQuote` and hence complete a single booking flow with approval.
+
 
 ##### Proposal Approval
 
@@ -876,12 +888,14 @@ Note that the `orderCustomerNote` property MUST NOT be available in the <a>Order
 
 For an `Order` that requires approval, the flow differs from the above as follows:
 
-- `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true`.
+- `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true` if any `OrderItem`s require approval.
 - `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
 - The `OrderProposal` MAY include an `orderCustomerNote` in order to "Ask a question about this opportunity?".
 - Additional data is supplied at **C1** and **C2** as in the Simple Booking Flow to satisfy the `orderItemIntakeForm` for all `OrderItems`.
+- The `totalPaymentDue` from **C2** is used for Payment Authorisation as with the Simple Booking Flow.
 - An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`).
 - Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see **Minimal Implementation**) or a new `orderProposalVersion` (see **Proposal Amendment**).
+- If required due to expiration of the existing Payment Authorisation or a change in the `totalPaymentDue`, the payment can be re-authorised before **B**. 
 - The <a>Broker</a> supplies a minimal `Order` to **B** that just contains this `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
 
 
@@ -940,7 +954,7 @@ The <a>Broker</a> MAY remember the attendee data previously entered by the <a>Cu
 
 ### Additional Details
 
-This version of the specification does not provide details to construct a complex additional details capture form, however it does facilitate simple text fields to capture additional details.
+This version of the specification does not provide details to construct a complex additional details capture form, however it does facilitate simple text fields to capture additional details. These can be used for both the Simple Booking Flow and the Booking Flow with Approval.
 
 If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support additional details capture to easily filter out such offers from their experience.
 
@@ -1800,7 +1814,6 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. |
 
 
-
 ### `oa:OrderQuote`
 
 `OrderQuote` subclasses `Order`, and includes of the above properties as specified for `Order` with the addition of `oa:lease`, without `oa:payment`, and with `totalPaymentDue` only required in the response.
@@ -1811,6 +1824,7 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
 | [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | `payment` is not expected for `OrderQuote`. |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`oa:orderRequiresApproval`](https://openactive.io/orderRequiresApproval) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the Booking Flow with Approval MUST be used to book the set of `OrderItem`s included. MUST be `true` if any of the `OrderItem`s require approval. |
 
 
 ### `oa:OrderProposal`
