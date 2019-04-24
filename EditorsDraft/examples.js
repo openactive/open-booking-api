@@ -95,7 +95,7 @@ function dataExampleRateLimitResponse(utils, content) {
 
 // Line at top of Customer cancellation diagram isn't RPDE, as it's now coming from the store based on Order response and not RPDE - it should just be "store"
 
-// Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowSimpleCancellation"
+// Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
 
 
 // Make issue about minimal personal data capture
@@ -253,27 +253,9 @@ function dataExampleOrderFeedResponse(utils, content) {
   });
 }
 
-function dataExampleOrderItemCancellationQuoteRequest(utils, content) {
-  return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
-    "@context": CONTEXT,
-    "type": "OrderQuote",
-    "orderedItem": [responseCancelledOrderItem]
-  });
-}
 
-function dataExampleOrderItemCancellationQuoteResponse(utils, content) {
-  return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
-    "@context": CONTEXT,
-    "type": "OrderQuote",
-    "id": fullOrderExampleContent.id,
-    "taxMode": fullOrderExampleContent.taxMode,
-    "orderedItem": [responseCancelledOrderItem],
-    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.zeroItems,
-    "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.zeroItems
-  });
-}
 
-function dataExampleOrderItemCancellationRequest(utils, content) {
+function dataExampleOrderCancellationRequest(utils, content) {
   return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "Order",
@@ -282,11 +264,11 @@ function dataExampleOrderItemCancellationRequest(utils, content) {
 }
 
 
-function dataExampleOrderItemCancellationSuccessResponse(utils, content) {
+function dataExampleOrderCancellationSuccessResponse(utils, content) {
   return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
 }
 
-function dataExampleOrderItemCancellationErrorResponse(utils, content) {
+function dataExampleOrderCancellationErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "CancellationNotPermittedError",
@@ -551,7 +533,7 @@ var fullOrderItemExampleContent = { //broker
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
   "orderQuantity": 1,
-  "allowSimpleCancellation": true,
+  "allowCustomerCancellationFullRefund": true,
   "accessToken": [
     {
       "type": "Barcode",
@@ -674,7 +656,7 @@ var feedOrderItem = {
   "type": "OrderItem",
   "id": fullOrderItemExampleContent.id,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
-  "allowSimpleCancellation": true,
+  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request
@@ -691,7 +673,7 @@ var responseOrderQuoteOrderItem = {
   "type": "OrderItem",
   "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
-  "allowSimpleCancellation": true,
+  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse
@@ -701,7 +683,7 @@ var responseOrderQuoteErrorOrderItem = {
   "type": "OrderItem",
   "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
-  "allowSimpleCancellation": true,
+  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse,
@@ -716,7 +698,7 @@ var responseOrderItem = {
   "type": "OrderItem",
   "id": fullOrderItemExampleContent.id,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
-  "allowSimpleCancellation": true,
+  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,

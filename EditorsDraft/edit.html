@@ -465,13 +465,14 @@ by this specification is scoped tightly to only specify interactions between the
 
 In order to enter either of the booking flows described in this specification, the following pre-conditions must be met:
 
-- The <a>Broker</a> MUST obtain opportunity data that includes descriptions of <a>Opportunities</a>, by frequently harvesting data via an opportunity data [[RPDE]] open feed provided by the <a>Booking System</a>.
+- The <a>Broker</a> MUST obtain opportunity data that includes descriptions of <a>Opportunities</a>, by frequently harvesting data via opportunity data [[RPDE]] open feeds provided by the <a>Booking System</a>.
 
 - The <a>Broker</a> MUST present an up-to-date view of availability data for the <a>Customer</a> to select items to book, as this data may change over time.
 
 - The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the opportunity data are up-to-date.
 
-- The <a>Customer</a> MUST have selected both an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") and an `Offer` ("Junior (8-18) £9").
+- The <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `acceptedOffer` and `orderedItem` properties within the submitted `OrderItem`s.
+
 
 ## Simple Booking Flow
 
@@ -483,7 +484,7 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
  <figcaption>Illustration of a typical <a>Customer</a> journey.</figcaption>
 </figure>
 
-1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and a related `Offer` ("Junior (8-18) £9")
+1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
 2. **Identify**: <a>Customer</a> enters personal details and other requested details
 3. **Book and Pay**: <a>Customer</a> enters payment details
 
@@ -502,68 +503,43 @@ Note that some or all steps may be skipped, or may not be presented to the user,
 
 - After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint **C2** on the diagram above.
 
-- After "**3. Book and Pay**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then confirms the booking with <a>Booking System</a> using an `Order` (**B** on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends <a>Customer</a> notifications.
+- After "**3. Book and Pay**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then confirms the booking with the <a>Booking System</a> using an `Order` (**B** on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends <a>Customer</a> notifications.
+
+- The <a>Booking System</a> adds the `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, including those updates resulting from cancellations.
 
 
 ### Broker contract with Booking System
-
-//TODO: Complete this section and the next at the end? Is it best to try to enumerate the whole contract here, or just express the MUST of the calls on each side? In which case this could be done as part of Endpoints section?
 
 To complete a successful booking journey:
 
 - The <a>Broker</a> MUST call **C1** (without <a>Customer</a> details)
 - The <a>Broker</a> MUST call **C2** (with <a>Customer</a> details), to retrieve the total order, providing all required details and resulting in no errors before calling **B**.
-- The <a>Broker</a> MUST call **B** (with payment details), and store the resulting `Order`.
-- The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>.
-
-
-- The <a>Broker</a> MUST generate a UUID.
+- The <a>Broker</a> MUST call **B** (with payment identifier if relevant), and MUST store the resulting `Order`.
+- If **B** fails, the <a>Broker</a> MUST cancel the payment authorisation without any consequence to the <a>Customer</a> or <a>Seller</a>.
+- The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>, specifically monitoring the <a>Orders Feed</a> for cancellations.
+- The <a>Broker</a> MUST generate a UUID, and use it consistently during the booking flow.
 - The <a>Broker</a> MUST NOT reuse UUID across complete or incomplete `Order`s.
 - The <a>Broker</a> MUST make the <a>Customer</a> aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before they commit to the booking.
 - If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
-- The <a>Broker</a> MUST store completed `Order`s.
-- The <a>Broker</a> MUST monitor <a>Order Feed</a> for cancellations, etc.
-- If **B** fails, the <a>Broker</a> MUST cancel the payment without any consequence to the <a>Customer</a> or <a>Seller</a>.
-- The <a>Broker</a> MUST 
-
-Guidance for responsibilities:
-Discovery and presentation of opportunities
-How and when to authenticate Customer
-Displaying privacy policies, terms of purchase, etc
-Generating and using UUID across requests
-Handling payments
-Complying with transaction flow
-Tracking purchases against local Customer accounts
-Monitoring your RPDE feed for cancellations
-
+- The <a>Broker</a> MUST handle payments and reconciliation with the <a>Seller</a> and the <a>Payment Provider</a>.
 
 
 ### Booking System contract with the Broker
 
 - The <a>Booking System</a> MUST respond to **C1** (without <a>Customer</a> details) with an `OrderQuote` that includes an indicative total order price, or a relevant error. It must also include the specification of any additional details to captured from the <a>Customer</a> to be provided to **C2**.
 - The <a>Booking System</a> MUST respond to **C2** (with <a>Customer</a> details) with an `OrderQuote` that includes an exact total order price, or a relevant error. It must also produce a relevant error if the additional details specified are not sufficient.
-- The <a>Booking System</a> MUST respond to **B** with a completed `Order`, or a relevant error. The whole MUST booking succeed or fails as one.
+- The <a>Booking System</a> MUST respond to **B** with a completed `Order`, or a relevant error. The whole booking MUST succeed or fails as one.
 - Upon any cancellations or updates to the `Order` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `Order` in the <a>Orders feed</a>.
-
-
-- The <a>Booking System</a> MUST store UUID as part of the `Order`
-- The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used UUID
-- The <a>Booking System</a> MUST check availability during C1, C2, B to ensure Customer order can complete
-- The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker
+- The <a>Booking System</a> MUST store UUID as part of the `Order` (and `OrderQuote` if leasing is enabled).
+- The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used UUID.
+- The <a>Booking System</a> MUST check availability and confirm pricing during **C1**, **C2**, and **B** to ensure booking can complete.
+- The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker.
+Include sufficient pricing & avail data in opportunity feeds.
+- The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunities</a>.
 
 Calls to **C1**, **C2**, and **B** MUST be idempotent, based on the UUID.
 
 With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
-
-Guidance for responsibilities:
-Advertise payment URLs in data
-Include sufficient pricing & avail data in opportunity feeds
-Preserve UUIDs in API calls & transaction records
-Check and update pricing & availability during transactions
-Implement idempotency for key API calls
-Publisher per Broker RPDE feed with orders
-Optionally, handle leasing
-
 
 ### Leasing
 
@@ -590,6 +566,40 @@ By design, the use of leases is largely transparent to the <a>Broker</a>, howeve
 
 The `leaseExpires` MAY be used to inform the <a>Customer</a> of the time they have remaining.
 
+### High-level type flow
+
+<figure>
+ <img src="typeflow.png" alt="High level type flow">
+ <figcaption>Illustration of types used during the API flow.</figcaption>
+</figure>
+
+The `OrderQuote` is an ephemeral draft of the `Order` while it is being constructed by the <a>Customer</a>.
+
+- **C1** - `OrderQuote` without enough personal details or additional details to be accepted as an `Order`.
+- **C2** - `OrderQuote` with complete and validated detail, enough to be created successfully as an `Order`.
+- **B** - `Order` exists in an instantly successful state in the <a>Booking System</a>, though it transitions through `orderCreationStatus` states in the <a>Broker</a>.
+
+### Order statuses
+
+To simplify the implementation for the <a>Booking System</a>, Order Creation is considered atomic to the <a>Booking System</a> (it succeeds or fails at once in **B**), and by contrast is considered to consist of steps to the <a>Broker</a>. 
+
+#### Order statuses in the Booking System
+
+In this version of the specification the `Order` within the <a>Booking System</a> MUST NOT have a status, it exists atomically in a successfully created state. Although `OrderItem`s may be cancelled by either the <a>Customer</a> or the <a>Seller</a>, the `Order` itself within the <a>Booking System</a> is simply a container. The `orderStatus` property of the `Order` MUST NOT be used and is reserved for future evolution of the specification.
+
+The `orderCreationStatus` is maintained by the <a>Broker</a> only during this flow, and MUST NOT be sent to the <a>Booking System</a>.
+
+#### Order statuses in the Broker
+
+Throughout "Book and Pay" section of this flow the <a>Broker</a> maintains the `orderCreationStatus` property in its copy of the `Order`, which is not sent to the <a>Booking System</a>. This allows the <a>Broker</a> to consistently rollback in the case of failure.
+
+The `orderCreationStatus` statuses are defined as follows:
+1. https://openactive.io/OrderCreationPaymentAuthorized - after successful **Payment Authorisation**
+2. https://openactive.io/OrderCreationPaymentDue - after successful **Order Creation / B**
+3. https://openactive.io/OrderCreationPaymentCaptured - after successful **Payment Capture**
+4. https://openactive.io/OrderCreationComplete - after successful **Invoice Generation** and **Customer Notification**
+
+An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
 
 
 ### Step-by-step process description
@@ -599,13 +609,14 @@ The `leaseExpires` MAY be used to inform the <a>Customer</a> of the time they ha
  <figcaption>Sequence diagram showing API interactions</figcaption>
 </figure>
 
+
 i) "**1. Select**" - User browses <a>Broker</a> site anonymously and adds something to basket
 
-  - <a>Broker</a> MUST have determined at least one Open Booking <a>bookable</a> opportunity each with an associated <a>Applicable `offer`</a> from the user's browsing, using the most up-to-date opportunity data.
+  - <a>Broker</a> MUST have determined at least one Open Booking <a>bookable</a> opportunity each with an associated Applicable `offer` from the user's browsing, using the most up-to-date opportunity data.
   - <a>Broker</a> generates a UUID to use for the `Order`.
   - If any catastrophic failure occurs during the booking flow (any error with status code 500, or when the request consistently returns status code 503 after a number of retries) the UUID MUST be regenerated to allow for a clean retry of the booking. UUID MUST NOT be regenerated for expected errors (status code 4xx).
 
-ii) **C1** - <a>Broker</a> call with `OrderQuote` including UUID without a `customer` object to check availability and that the combination of items requested can be purchased, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
+ii) **OrderQuote Creation / C1** - <a>Broker</a> call with `OrderQuote` including UUID without a `customer` object to check availability and that the combination of items requested can be purchased, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
   - <a>Booking System</a> creates anonymous lease for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. If a lease has been created, then the `OrderQuote` in the response MUST include a `lease` property containing a valid `Lease` object.
   - `OrderQuote` MUST include `totalPaymentDue`, which allows the <a>Broker</a> to update any UI with the total.
@@ -613,7 +624,7 @@ ii) **C1** - <a>Broker</a> call with `OrderQuote` including UUID without a `cust
   - The <a>Booking System</a> MUST ensure that the data returned to the <a>Broker</a> in the `remainingAttendeeCapacity` and `remainingUses` properties are up-to-date, including places already booked and those currently reserved by any leases from competing `OrderQuote`s.
   - `OrderQuote` MUST specify any additional details required to complete the booking for the selected `OrderItem`s via a `orderItemIntakeForm`.
   - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. 
-  - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker's</a> request in its response, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
+  - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in its response, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
 
 iii) "**2. Identify**" - User enters personal details and any other additional details requested
 
@@ -621,7 +632,7 @@ iii) "**2. Identify**" - User enters personal details and any other additional d
   - The <a>Customer</a> MUST have been made aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before submitting their personal details.
   - If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
 
-iv) **C2** - <a>Broker</a> call with `OrderQuote` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
+iv) **OrderQuote Creation / C2** - <a>Broker</a> call with `OrderQuote` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
   - <a>Booking System</a> creates named lease for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Works exactly as **C1**, except validates `customer` details and the `orderItemIntakeFormResponse`.
   - <a>Broker</a> presents the contents of the `OrderQuote` to the `Customer` to ensure they have the most up-to-date price and availability before proceeding with the purchase.
@@ -633,43 +644,44 @@ v) "**3. Book and Pay**" - User enters payment details and clicks Book
 
   - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
-  - If `prepayment` of the selected `Offer` is `https://openactive.io/Optional` the <a>Customer</a> MAY be given the option to prepay or simply reserve a space without payment. Providing optionality of payment to the <a>Customer</a> is at the <a>Broker's</a> discretion.
+  - If `prepayment` of the selected `Offer` is `https://openactive.io/Optional` the <a>Customer</a> MAY be given the option to prepay or simply reserve a space without payment. Providing optionality of payment to the <a>Customer</a> is at the <a>Broker</a>'s discretion.
 
   - If `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, `prepayment` of the selected `Offer` is `https://openactive.io/Unavailable`, or `prepayment` is `https://openactive.io/Optional` and the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
 
 
-vi) **Authorise Payment** - <a>Broker</a> pre-authorises `totalPaymentDue` from <a>Payment Provider</a>
+vi) **Payment Authorisation** - <a>Broker</a> pre-authorises `totalPaymentDue` from <a>Payment Provider</a>
 
   - `Order` `id` (which includes the UUID) SHOULD be used as a reference in the <a>Payment Provider</a>, if possible.
 
-  - The <a>Broker</a> MUST store the `Order` request with an internal status of `https://openactive.io/PaymentAuthorized` at this point.
-
   - If payment details were not captured due to the `prepayment` value of the selected `Offer` or `totalPaymentDue` equalling `0`, pre-authorisation MUST NOT be taken.
 
+  - The <a>Broker</a> MUST store the `Order` request with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentAuthorized` at this point, even if pre-authorisation is not taken, in order to ensure that the UUID in the <a>Order's feed</a> is recognised without a race condition.
 
-vii) **B** - <a>Broker</a> call with `Order` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed, <a>Booking System</a> responds with an `Order`.
+  - The creation of the initial `Order` in the <a>Broker</a>'s store at this stage MUST be completed before the next step begins to prevent the unlikely race condition of an `Order` that is created at **B** and then immediately cancelled by the <a>Booking System</a>, which could result in the <a>Broker</a> receiving an unrecognised `Order` in the <a>Orders feed</a> if it was retrieved before the call to **B** returned.
+
+vii) **Order Creation / B**  - <a>Broker</a> call with `Order` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed, <a>Booking System</a> responds with an `Order`.
 
   - If payment details were not captured due to the `prepayment` value of the selected `Offer`, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included in the `Order` request or response. If `payment` is are omitted where `totalPaymentDue` is not `0`, and `prepayment` in the `Offer` is `https://openactive.io/Required` or unspecified, then a `IncompletePaymentDetailsError` MUST be returned.
 
-  - The `identifier` of the `Payment` is taken from the payment pre-authorization.
+  - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be reconciled with the 
 
   - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since **C2**, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
 
-  - If the lease has expired, or if leases are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are no spaces available the booking fails.
+  - If the lease has expired, or if leases are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the booking fails.
 
-  - If the booking succeeds only for some basket items, the whole transaction is rolled back and the entire booking fails.
+  - If the booking succeeds only for some `OrderItem`s, the whole transaction is rolled back and the entire booking fails.
 
   - If there's a network failure, e.g. no response from server, then <a>Broker</a> can resubmit with same UUID. As the call is idempotent, the <a>Booking System</a> will need to track the UUID supplied by <a>Broker</a> against any successful orders, to ensure that it can return the same `Order` for subsequent requests. <a>Broker</a> MUST NOT reuse UUIDs across multiple `Order`s.
 
   - If the call is successful (returns a 200 response), the booking is considered as complete and paid by the <a>Booking System</a> at this point.
 
-  - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker's</a> request in the `Order` returned from this call, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
+  - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in the `Order` returned from this call, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
 
   - The `Order` returned from this call MUST be stored by the <a>Broker</a>, to be subsequently updated by the <a>Orders feed</a>. The <a>Orders feed</a> contains only partial-updates of the `Order` stored by the <a>Broker</a>, and the <a>Broker</a> is the only actor guaranteed to maintain a complete view of the `Order`. The <a>Booking System</a> MAY store the full `Order` if desired.
 
-  - It is the responsibility of the <a>Broker</a> to store any additional state it requires that is not included in the `Order` returned from this call, and RECOMMENDED that such state is stored alongside the <a>Broker's</a> persisted `Order`.
+  - It is the responsibility of the <a>Broker</a> to store any additional state it requires that is not included in the `Order` returned from this call, and RECOMMENDED that such state is stored alongside the <a>Broker</a>'s persisted `Order`.
 
-  - The <a>Broker</a> MUST store the `Order` response in with an internal status of `https://schema.org/OrderPaymentDue` at this point (or `https://openactive.io/PaymentCaptured` if no payment is due).
+  - The <a>Broker</a> MUST store the `Order` response in with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentDue` at this point (or `https://openactive.io/OrderCreationPaymentCaptured` if no payment is due).
 
   - This call is idempotent, and hence if the UUID used for an `Order` already represents a completed Order with the same set of `OrderItem`s for the same `customer` as those specified, the success response is returned as normal. If any differences exist in the `Order`s, a UUID clash is assumed, a 500 response of with `OrderAlreadyExistsError` is returned by the <a>Booking System</a>, and a new UUID must be generated by the <a>Broker</a> to retry the call.
 
@@ -677,51 +689,209 @@ vii) **B** - <a>Broker</a> call with `Order` including UUID with a `customer` ob
 
   - When the request still returns status code 503 after a number of retries the UUID MUST be regenerated to allow for a clean retry of the booking. UUID MUST NOT be regenerated for expected errors (status code 4xx).
 
-viii) **Capture Payment** - <a>Broker</a> captures `totalPaymentDue` from <a>Payment Provider</a>
+viii) **Payment Capture** - <a>Broker</a> captures `totalPaymentDue` from <a>Payment Provider</a>
 
-  - If an error occurs during capture (very unlikely but possible due to system failure, and detectable using the internal status, and this may only be noticed after the event due to server failure and observation of logs, the <a>Broker</a> MUST either:
-    - Initiate manual capture via e.g. the Stripe console. Note the pre-auth will typically last for 7 days, so manual capture is still possible after the event.
-    - Capture the payment from the user manually.
-    - Absorb the loss and make a new payment for the same amount with the same UUID in the <a>Payment Provider</a> (better for UX / customer service, if manual capture not possible).
-    - Perform the rollback procedure detailed in the following section.
-  - To ensure payment capture errors are detected and resolved the <a>Broker</a> MUST periodically check for any `Orders` that have not been updated in over a 5 minutes, and are in a state other than `https://schema.org/OrderDelivered`.
+  - It is the <a>Broker</a>'s responsibility to ensure that payment has been captured.
 
- - It is the <a>Broker</a>'s responsibility to ensure that payment has been captured.
+  - The <a>Broker</a> MUST update its stored `Order` with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentCaptured` after payment is successfully captured.
 
- - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://openactive.io/PaymentCaptured` after payment is successfully captured.
+ -  If payment details were not captured due to the `prepayment` value of the selected `Offer` or `totalPaymentDue` equalling `0`, payment MUST NOT be captured.
 
- - If payment details were not captured due to the `prepayment` value of the selected `Offer` or `totalPaymentDue` equalling `0`, payment MUST NOT be captured.
+ix) **Invoice Generation** and **Customer Notification** - Upon successful **Payment Capture** (or completing **B** in the case of payment capture not being required), the <a>Broker</a> generates invoices, sends <a>Customer</a> notifications, and stores the `Order` in a success state based on the response from **B**.
 
-ix) **Invoice Generation** and **Customer Notification** - Upon successfully capturing payment, the <a>Broker</a> generates invoices, sends <a>Customer</a> notifications, and stores the `Order` in a success state based on the response from **B**.
-
- - The <a>Broker</a> MUST update the `Order` in with an internal status of `https://openactive.io/OrderDelivered` after invoices have been created and notifications successfully sent.
+ - The <a>Broker</a> MUST update its stored `Order` in with an `orderCreationStatus` of `https://openactive.io/OrderDelivered` after invoices have been created and notifications successfully sent.
 
 x) **Refunds and Cancellation** - The <a>Broker</a> subscribes to updates from the <a>Booking System</a> to process cancellations and refunds.
-  - A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authentication credentials. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
-  - The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed.
-  - The <a>Broker</a> uses these `Order`s to process refunds and send update notifications to the <a>Customer</a>.
+  - A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authentication credentials. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds for cancellations, and process notifications to <a>Customers</a> in a consistent way.
+  - The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed. The <a>Broker</a> MUST use these `Order`s to process refunds and send update notifications to the <a>Customer</a>.
 
 
-## Single state Orders
+### Booking Flow Rollback
 
-The `Order` is created in an `OrderConfirmed` state (via `OrderAppovalPending` if approval is used), and although their `OrderItem`s may be cancelled by either the <a>Customer</a> or the <a>Seller</a>, the `Order` itself within the <a>Booking System</a> will not exist in the any other state. The `orderStatus` property of the `Order` MUST NOT be used and is reserved for future evolution of the specification.
+To ensure catastrophic errors are detected and resolved the <a>Broker</a> MUST periodically check its own store for any `Orders` that have not been updated in over a 2 minutes, and have an `orderCreationStatus` other than `https://openactive.io/OrderCreationComplete`.
+
+Note that due to the ordering of the Booking Flow, no notifications will have been sent to the <a>Customer</a>, so no notifications regarding the rollback are required assuming it is performed promptly.
+
+#### Booking halted at OrderCreationPaymentCaptured
+
+If the `orderCreationStatus` is `https://openactive.io/OrderCreationPaymentCaptured`, **Invoice Generation** and **Customer Notification** should simply be retried, and the `orderCreationStatus` set to `https://openactive.io/OrderCreationComplete` on success with no further rollback steps taken.
+
+#### Booking halted at OrderCreationPaymentDue
+
+If an error occurs during **Payment Capture**, which is very unlikely but possible due to system failure, and detectable where the `orderCreationStatus` is `https://openactive.io/OrderCreationPaymentDue`, the <a>Broker</a> MUST either:
+  - Initiate manual capture via e.g. the <a>Payment Provider's</a> admin console. Note the pre-auth will typically last for 7 days, so manual capture is still possible after the event.
+  - Capture the payment from the user manually.
+  - Absorb the loss and make a new payment for the same amount with the same UUID in the <a>Payment Provider</a> (better for UX / customer service, if manual capture not possible).
+  - Acknowledge that payment cannot be successfully captured.
+
+After payment has been successfully captured via one of the above methods, the `orderCreationStatus` MUST be set to `https://openactive.io/OrderCreationPaymentCaptured`, which will cause **Invoice Generation** and **Customer Notification** to be retried as per the previous section.
+
+If the payment cannot be captured successfully:
+- The <a>Broker</a> MUST issue a Order Deletion (DELETE) request for the `Order` to remove it from the <a>Booking System</a>.
+- The `orderCreationStatus` MUST be set to `https://openactive.io/OrderCreationPaymentAuthorized`, to trigger the rollback step in the next section. 
+
+#### Booking halted at OrderCreationPaymentAuthorized
+
+If the `orderCreationStatus` is `https://openactive.io/OrderCreationPaymentAuthorized`, the <a>Broker</a> MUST:
+- Cancel the associated Payment Authorisation from the <a>Payment Provider</a>.
+- Soft delete the contents of the `Order` from the <a>Broker</a> (deleting any personal data, while retaining data required for audit), retaining the UUID.
+
+Note that the UUID is retained so that any related entries in the <a>Orders Feed</a> can be appropriately assigned and ignored.
 
 
-## Payment Capture Rollback
+## Booking Flow with Approval
 
-The following actions MUST be performed to rollback the `Order` following an error during Capture Payment, starting at the internal status of the `Order` and continuing through the list from that point unless otherwise specified:
+### Customer Journey
+The booking journey of a <a>Customer</a> is generalised into the following logical steps:
 
-1. https://openactive/PaymentCaptured - Invoice generation and notification should simply be retried, with no further rollback steps taken - a rollback SHOULD NOT be performed from this status.
-2. https://schema.org/OrderPaymentDue - Issue a DELETE request for the `Order` to remove it from the <a>Booking System</a>.
-3. https://openactive/PaymentAuthorized - Cancel the associated Payment Authorisation from the <a>Payment Provider</a>.
-4. Soft delete the contents of the `Order` from the <a>Broker</a> (including any personal data), retaining the UUID.
+<figure>
+ <img src="userjourneywithapproval.png" alt="High level user journey with approval">
+ <figcaption>Illustration of a typical <a>Customer</a> journey, with an approval step.</figcaption>
+</figure>
 
-Note that due to the ordering of the Booking Flow, no notifications will have been sent to the <a>Customer</a> and no money taken, so no notifications regarding the rollback are required assuming it is performed promptly.
+The steps exactly mirror the Simple Booking Flow, with two additions:
+
+1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
+2. **Identify**: <a>Customer</a> enters personal details and other requested details
+2.1. **Propose**: <a>Customer</a> enters payment details, and submits a proposed booking
+2.2. **Approve**: <a>Seller</a> approves the booking, after a period of time
+3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
+
+Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payments details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
+
+### High-level API flow
+
+<figure>
+ <img src="bookingflowwithapproval.png" alt="High level booking flow with approval">
+ <figcaption>Illustration of high level booking flow, including approval.</figcaption>
+</figure>
+
+The flow exactly mirrors the Simple Booking Flow, with two additions:
+
+- The <a>Broker</a> generates a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which is used to uniquely identify the `Order` throughout the process.
+
+- After "**1. Select**" the <a>Broker</a> calls the <a>Booking System</a> to confirm an indicative price and availability of the selected items using an `OrderQuote`, and retrieve a total order price. Any details that the <a>Customer</a> needs to supply to complete the booking are also specified. This is checkpoint **C1** on the diagram above.
+
+- After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint **C2** on the diagram above.
+
+- After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (**P** on the diagram above), and sends the <a>Customer</a> a notification that the booking is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
+
+- After "**2.2. Approve**" the <a>Seller</a> approves the `OrderProposal` and the <a>Broker</a> is notified of this by the <a>Booking System</a> (**A** on the diagram above). The <a>Broker</a> can seek <a>Customer</a> permission to proceed, or simply complete the booking automatically, depending on the desired user experience.
+
+- After "**3. Book and Pay**", if necessary the <a>Broker</a> _re-authorizes_ the payment for the total order price (if it has changed, and if required by the <a>Payment Provider</a>), then confirms the booking with <a>Booking System</a> using an `Order` (**B** on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends <a>Customer</a> notifications.
+
+- The <a>Booking System</a> adds the `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, including those updates resulting from cancellations.
 
 
-## Order Feed Inconsistencies
+### Broker contract with Booking System
 
-An error condition exists where an unrecognised `Order` item is found by the <a>Broker</a> on the feed. Due to internal status of `Order`s being monitored as described previously, there should always be a matching `Order` to any UUID on the <a>Orders feed</a> even if it has been soft-deleted. This would make an unrecognised `Order` an impossible scenario, and hence an unrecognised `Order` should be logged as a serious error within the <a>Broker</a> and promptly investigated.
+To complete a successful booking journey with approval, in addition to the contract specified in the Simple Booking Flow:
+
+- The <a>Broker</a> MUST call **P** with <a>Customer</a> details as they would for **B** in the Simple Booking Flow, and MUST store the resulting `OrderProposal`.
+- The <a>Broker</a> MUST process updates to the `OrderProposal` from the <a>Orders feed</a>, including **A**.
+- The <a>Broker</a> MAY negotiate on the `OrderProposal` using a OrderProposal Update call.
+
+### Booking System contract with the Broker
+
+To complete a successful booking journey with approval, in addition to the contract specified in the Simple Booking Flow:
+
+- The <a>Booking System</a> MUST respond to **P** with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
+- Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `Order` in the <a>Orders feed</a>, including **A**.
+- The <a>Booking System</a> MAY negotiate on the `OrderProposal` using the <a>Orders feed</a>.
+
+Calls to **P** MUST be idempotent, based on the UUID.
+
+### Leasing
+
+Leasing works as specified in the Simple Booking Flow, however the lease SHOULD be carried over to the `OrderProposal` and the lease extended for a duration sufficient to cover the lifetime of the `OrderProposal`.
+
+### High-level type flow
+
+<figure>
+ <img src="typeflow.png" alt="High level type flow">
+ <figcaption>Illustration of types used during the API flow.</figcaption>
+</figure>
+
+As specified in the Simple Booking Flow, with one addition:
+
+- **P/A** - `OrderProposal` exists in a number of states, as described elsewhere in this specification, and contains enough detail to successfully create an `Order`.
+
+### OrderProposal statuses
+
+<figure>
+ <img src="order-proposal-states.png" alt="OrderProposal states">
+ <figcaption>State transition diagram showing OrderProposal states</figcaption>
+</figure>
+
+`OrderProposal` has a `orderProposalStatus` which is initially set by the <a>Booking System</a> to `https://openactive.io/AwaitingSellerConfirmation`.
+
+The <a>Broker</a> MUST only proceed to **B** when either:
+- `orderProposalStatus` is set to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a> (the 'Simple Path' in the diagram above)
+- `orderProposalStatus` is set to  `https://openactive.io/AwaitingCustomerConfirmation` in the <a>Orders feed</a> and the <a>Customer</a> has been presented the new `OrderProposal` and given their consent to continue ('Proposal Amendment').
+
+To reach the criteria to proceed to **B**, `OrderProposal` MUST be transitioned through states as follows:
+- The <a>Booking System</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by updating the <a>Orders feed</a>.
+- The <a>Broker</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by submitting a PATCH to the `OrderProposal` using the OrderProposal Update endpoint.
+
+#### Minimal Implementation
+
+In the minimal implementation the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
+
+##### Proposal Approval
+
+- If <a>Seller</a> approval is given, the <a>Booking System</a> sets `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, and the <a>Broker</a> MAY proceed to **B**.
+
+##### Proposal Rejection
+
+- If the <a>Seller</a> rejects the proposal, the <a>Booking System</a> sets `orderProposalStatus` to `https://openactive.io/SellerRejected` in the <a>Orders feed</a>, optionally including an `orderApprovalSellerNote` containing any reason for rejection.
+- If the <a>Customer</a> aborts the proposal, the <a>Broker</a> MUST PATCH the `OrderProposal` to set the `orderProposalStatus` to `https://openactive.io/CustomerRejected`, which the <a>Booking System</a> will then update in the <a>Orders feed</a>, optionally including an `orderApprovalCustomerNote` containing any reason.
+
+Following any type of, the <a>Broker</a> MUST immediately withdraw any payment authorisation.
+
+#### Proposal Amendment
+
+The <a>Booking System</a> MAY optionally support Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
+
+It is possible that the <a>Seller</a> may suggest amendments to the `OrderProposal`, which need to be accepted by the <a>Customer</a>.
+
+- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` optionally including an `orderApprovalSellerNote` containing reasons for any amendments.
+- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation). The <a>Broker</a> SHOULD highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
+- When the <a>Customer</a> confirms, the <a>Broker</a> MUST make a PATCH call to the OrderProposal Update endpoint (e.g. `/order-proposal/{UUID}`) with `{"orderProposalStatus": "CustomerConfirmed"}`.
+- The <a>Customer</a> MAY also choose to abort at any point as per Minimal Implementation.
+
+Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal must be done via Message Exchange.
+
+#### Message Exchange
+
+The <a>Booking System</a> MAY optionally support Message Exchange during the proposal negotiation, which uses the same mechanism as Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the Minimal Implementation may be used without needing to consider this (as this processes is initiated by the <a>Booking System</a>).
+
+It is possible that the <a>Seller</a> may send a simple free-text advisory note which will need to be confirmed by the <a>Customer</a> before the proposal is approved.
+
+- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` including the `orderApprovalSellerNote` containing a message.
+- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation), and include the `orderApprovalSellerNote`.
+- Based on the <a>Customer's</a> will, the <a>Broker</a> MUST either:
+  - Send a reply message by making a PATCH call to the OrderProposal Update endpoint with e.g. `{"orderProposalStatus": "https://openactive.io/AwaitingSellerConfirmation", "orderApprovalCustomerNote": "If you let me attend for free this time, you're on!" }`. The <a>Booking System</a> MUST deliver a notification of this message to the <a>Seller</a> who MUST either move forward with **Proposal Approval**, **Proposal Rejection**, **Proposal Amendment**, or another **Message Exchange**.
+  - Abort the `OrderProposal` as per Minimal Implementation (using `https://openactive.io/CustomerRejected`).
+  - Proceed to **B**.
+
+- The <a>Seller</a> MAY also choose to abort at any point as per Minimal Implementation (using `https://openactive.io/SellerRejected`).
+
+
+### Step-by-step process description
+
+<figure>
+ <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
+ <figcaption>Sequence diagram showing API interactions with approval/figcaption>
+</figure>
+
+For an `Order` that requires approval, the flow differs from the above as follows:
+
+- `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true`.
+- `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
+- Additional data is supplied at **C1** and **C2** as in the Simple Booking Flow to satisfy the `orderItemIntakeForm` for all `OrderItems`.
+- An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic.
+- Once approved the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with a unique `orderProposalVersion`.
+- The <a>Broker</a> supplies a minimal `Order` to **B** that just contains the `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
 
 
 ## Customer Details and Additional Details capture
@@ -795,115 +965,6 @@ This version of the specification does not provide details to construct a comple
 The <a>Broker</a> MAY remember the values previously entered by the <a>Customer</a> based on the `id` of the `PropertyValueSpecification`, if consent is provided.
 
 It is expected that future versions of the specification will support more complex field types.
-
-
-# Booking flow with approval (OLD)
-
-
-Note that `OrderProposal` has a `proposalStatus`, but the `Order` itself does not have its own status.
-
-For an `Order` that requires approval, the flow differs from the above as follows:
-
-- `OrderQuote` is returned at **C1** and **C2** with an `order` of type `OrderProposal`.
-- `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
-- Additional data is supplied at **C1** and **C2** as above to satisfy the `orderItemIntakeForm` for all `OrderItems`
-- An additional step **A** is required where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>. The call is atomic, similar to **B**, and returns an `OrderProposal` which the <a>Broker</a> MUST store, with `proposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`.
-
-## Proposal Amendment
-
-The <a>Booking System</a> MAY optionally support Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow may be used without needing to consider this (as the processes is initiated by the <a>Booking System</a>).
-
-It is possible that the <a>Seller</a> may suggest amendments to the `OrderProposal`, which need to be accepted by the <a>Customer</a>.
-
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `proposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` optionally including an `orderApprovalSellerNote` containing reasons for any amendments.
-- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation). The <a>Broker</a> SHOULD highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
-- The <a>Broker</a> MUST make a PATCH call to `/order-proposal/{UUID}` with `{"proposalStatus": "CustomerConfirmed"}`.
-
-Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal must be done via Message Exchange.
-
-
-## Message Exchange
-
-The <a>Booking System</a> MAY optionally support Message Exchange during the proposal negotiation, which uses the same mechanism as Proposal Amendment. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow may be used without needing to consider this (as the processes is initiated by the <a>Booking System</a>).
-
-It is possible that the <a>Seller</a> may send a simple free-text advisory note which will need to be confirmed by the <a>Customer</a> before the proposal is approved.
-
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `proposalStatus` set to `https://openactive.io/AwaitingCustomerConfirmation` including the `orderApprovalSellerNote` containing a message.
-- The <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed (which may require alterations to the payment authorisation), and include the `orderApprovalSellerNote`.
-- The <a>Broker</a> MUST either:
-  - Make a PATCH call to `/order-proposal/{UUID}` with `{"proposalStatus": "CustomerConfirmed"}`, after which the <a>Booking System</a> MUST move the `OrderProposal` into an approved state by converting it to an `Order`, according to Proposal Approval below.
-  - Make a PATCH call to `/order-proposal/{UUID}` with `{"proposalStatus": "CustomerRejected", "orderApprovalCustomerNote": "Sorry, note this time" }`. The <a>Booking System</a> MUST act according to Proposal Rejection below.
-  - Make a PATCH call to `/order-proposal/{UUID}` with `{"proposalStatus": "AwaitingSellerConfirmation", "orderApprovalCustomerNote": "If you let me attend for free this time, you're on!" }`. The <a>Booking System</a> MUST deliver a notification of this message to the <a>Seller</a> who MUST either move forward with <a>Proposal Approval</a>, <a>Proposal Rejection</a>, <a>Proposal Amendment</a>, or another <a>Message Exchange</a>.
-
-## Proposal Approval
-
-It is the responsibility of the <a>Booking System</a> to move the `OrderProposal` into an approved state by converting it to an `Order`.
-
-- The Booking System converts the `OrderProposal` into an `Order` which appears in the <a>Orders feed</a>.
-- If approval is given, the <a>Booking System</a> converts the `OrderProposal` into an `Order` in the <a>Orders feed</a> setting all `OrderItem`s to an `https://openactive.io/OrderConfirmed` state. 
-- The <a>Broker</a> receives this update from the <a>Orders feed</a>, and MUST update its internal status of the order to `https://schema.org/OrderPaymentDue` at this point (or `https://openactive.io/PaymentCaptured` if no payment is due).
-- The <a>Broker</a> then completes the remaining steps of **Capture Payment**, **Invoice Generation** and **Customer Notification** as in the original flow above.
-
-## Proposal Rejection
-
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `proposalStatus` set to `https://openactive.io/SellerRejected` (or `https://openactive.io/CustomerRejected` if as a result of Message Exchange), optionally including an `orderApprovalSellerNote` containing any reason for rejection.
-- Any payment authorisation MUST be withdrawn.
-
-
- The <a>Customer</a> MAY then be prompted to supply an `orderApprovalRequestNote` to display to the seller, which can be included with the `Order` at **B**.
-- `Order` is returned at **B** with any `OrderItem`s that require approval having an `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. If this is the case, the <a>Customer</a> MUST be notified that the `Order` is awaiting approval.
-- .
-- If approval is not given,
-
-
-
-## Selection-based approval
-
-The `OrderQuote` will return `approvalNote` within each `OrderItem` that requires approval which contains  `name` and `description` properties.
-
-<pre class="example" title="Example of OfferOverride">
-    "orderItemIntakeForm": [
-      [
-        {
-          "type": "PropertyValueSpecification",
-          "id": "https://example.com/height",
-          "name": "More information about you",
-          "description": "Have you played before? Are you a complete beginner or seasoned pro?",
-          "valueRequired": false
-        }
-      ]
-    ],
-  "approvalNote": {
-    "type": "PropertyValue",
-    "name": "More information about you",
-    "description": "Have you played before? Are you a complete beginner or seasoned pro?",
-  }
-</pre>
-
-## First-come-first-served approval
-
-For the case where any `OrderItem`s in an `Order` require approval (`orderItemStatus` of `https://openactive.io/OrderApprovalPending`), the whole `Order` MUST be held in a pending state by the <a>Booking System</a>, with the <a>Broker</a> storing the `Order` with an internal status of `https://openactive.io/OrderApprovalPending`.
-
-An `Order` pending approval MUST be approved or rejected atomically; partial approval is not supported in this version of the specification.
-
-While the `Order` is in `orderItemStatus` of `https://openactive.io/OrderApprovalPending`:
-- The `Order` MUST not be cancelled, and MAY only be deleted.
-- All `OrderItem` MUST be leased, to ensure that they are not 
-
-For an `Order` that requires approval, the flow differs from the above as follows:
-
-- `OrderQuote` is returned at **C1** and **C2** with any `OrderItem`s that require approval having with `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. The <a>Customer</a> MAY then be prompted to supply an `orderApprovalRequestNote` to display to the seller, which can be included with the `Order` at **B**.
-- `Order` is returned at **B** with any `OrderItem`s that require approval having an `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. If this is the case, the <a>Customer</a> MUST be notified that the `Order` is awaiting approval.
-- If approval is given, the <a>Booking System</a> updates the `Order` in the <a>Orders feed</a> setting all `OrderItem`s to an `https://openactive.io/OrderConfirmed` state. The <a>Broker</a> receives this update from the <a>Orders feed</a> and completes the remaining steps of **Capture Payment**, **Invoice Generation** and **Customer Notification** as in the original flow above.
-- If approval is not given, the <a>Booking System</a> MUST make the `Order` available in an RPDE `deleted` state in the <a>Orders feed</a> and the <a>Broker</a> MUST notify the <a>Customer</a> that their booking was not approved, and any payment authorisation MUST be withdrawn.
-
-A <a>Broker</a> MAY cancel an `Order` before it has been approved by using the Order Deletion endpoint.
-
-<figure>
- <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
- <figcaption>Sequence diagram showing API interactions, with approval step</figcaption>
-</figure>
-
 
 </section>
 
@@ -1041,8 +1102,6 @@ The <a>Broker</a> has visibility of all components, while for simplicity of impl
 | <dfn>Refund</dfn> | An immutable object that represents each refund made against the <a>Payment</a>, up to the <a>Payment</a>'s total amount | <a>Payment Provider</a> | Immutable |
 
 
-
-
 ## Invoices and Tax receipts
 
 Due to the variety of business models in use in OpenActive, the <a>Booking System</a> MUST NOT send receipts directly to the <a>Customer</a> for `AgentBroker` and `ResellerBroker` bookings.
@@ -1056,7 +1115,64 @@ Note by following specification, for all <a>Broker</a> modes where a <a>Seller</
 
 ## Payments and Refunds
 
-Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single <a>Payment</a> MUST be related to each `Order`, and a unique reference to this <a>Payment</a> MUST be included in the `Payment` `identifier` of the `Order` sent to the <a>Booking System</a>. Note that this <a>Payment</a> is permitted to represent a virtual <a>Payment</a> consolidating a number of actual **Payments** to allow for a wide variety of <a>Payment</a> methods. In the case where the <a>Seller</a> is paid monthly, the <a>Payment</a> may also represent a reference to a future invoice against which the eventual <a>Payment</a> will be paid. In all cases the `Payment` `identifier` MUST be uniquely resolvable for audit purposes.
+Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single `Payment` object is included in the `Order` in the `payment` property to ensure payments are fully traceable in case of audit.
+
+If payment details were not captured due to the `prepayment` value of the selected `Offer`, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included. In all other cases `payment` property MUST be included in the `Offer` at **B**.
+
+### Virtual payments
+
+Note that this `Payment` is permitted to represent a virtual <a>Payment</a> consolidating a number of actual **Payments** to allow for a wide variety of payment methods. In the case where the <a>Seller</a> is paid monthly, the <a>Payment</a> may also represent a reference to a future invoice against which the eventual <a>Payment</a> will be paid. 
+
+### Basic `Payment`
+
+A unique reference to this <a>Payment</a> MUST be included in the `Payment` `identifier` of the `Order` sent to the <a>Booking System</a>. This `Payment` `identifier` MUST be uniquely resolvable for audit purposes.
+
+The `accountId` of the `Payment` SHOULD be provided to reference the specific account within the <a>Payment Provider</a> that is used for reconciliation purposes.
+
+The `paymentProviderId` of the `Payment` SHOULD be provided to reference the specific <a>Payment Provider</a> that is used.
+
+The `name` of the `Payment` SHOULD be used to provide information about the source of the payment that can be stored in the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card").
+
+<pre class="example" title="Example of Payment">
+  "payment": {
+    "type": "Payment",
+    "identifier": "12345678ABCD",
+    "name": "Big Media Services",
+    "accountId": "SN1593",
+    "paymentProviderId": "STRIPE"
+  },
+</pre>
+
+
+### `DynamicPayment`
+
+For fully dynamic pricing, where price is not known at the point of purchase, a `DynamicPayment` MUST be used. Example use cases include volume-based pricing, where the price of items are calculated at the end of the month depending on the total volume booked during that period.
+
+To use the `DynamicPayment` the following preconditions must be met:
+- The <a>Broker</a> and the <a>Seller</a> MUST have agreed an arrangement for dynamic pricing out-of-band, including which <a>Opportunities</a> and <a>Offers</a> it applies to.
+- Dynamic pricing cannot be mixed with standard pricing behaviour within the same `Order`, so all `OrderItem`s selected MUST be applicable for dynamic pricing based on such agreements.
+- The <a>Opportunity</a> and <a>Offer</a> pairs that are selected for booking MUST be <a>bookable</a> as in the standard flow.
+- If no appropriate `Offer` exists for a <a>bookable</a> <a>Opportunity</a>, an `OfferOverride` with price `0` MAY be used for **C1** and **C2**.
+
+To use `DynamicPayment` the booking flow MUST be completed as normal with the following additional requirements:
+- The booking flow MUST be completed as if `prepayment` was set to `https://openactive.io/Unavailable` for all `Offer`s.
+- Behavior at **C1** and **C2** remains the same, to allow the <a>Broker</a> to record the original prices and tax implications if required.
+- The `Order` submitted to **B** MUST have a `payment` property that contains a `DynamicPayment`.
+- The `Order` submitted to **B**, returned from **B** and in the subsequent <a>Orders feed</a> MUST NOT include `totalPaymentDue` or `totalPaymentTaxSpecification`, and `OrderItem`s MUST NOT include `acceptedOffer` or `unitTaxSpecification`.
+- The <a>Booking System</a> MUST NOT record any price against the `Order` or `OrderItem`s for reconciliation, as such reconciliation MUST occur completely out-of-band.
+
+The `accountId` of the `DynamicPayment` MUST be used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular account.
+
+The `name` of the `DynamicPayment` SHOULD be used to provide information about the source of the payment that can be stored in the <a>Booking System</a>,  to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker Membership").
+
+<pre class="example" title="Example of DynamicPayment">
+  "payment": {
+    "type": "DynamicPayment",
+    "identifier": "12345678ABCD",
+    "name": "MoveGB Membership",
+    "accountId": "MOVE"
+  },
+</pre>
 
 ### Payment reconciliation
 
@@ -1080,6 +1196,22 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` and `va
 </pre>
 
 
+### Integrated Payments
+
+In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in **B** in a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), to facilitate a full payment.
+
+<pre class="example" title="Example of Payment extension point">
+  "payment": {
+    "type": "Payment",
+    "identifier": "12345678ABCD",
+    "paymentMethod": "stripe:StripePayment",
+    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
+  },
+</pre>
+
+Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Processor</a> being used. To maximise flexibility of this extension point, the `identifier` property within `Payment` is NOT REQUIRED if `paymentMethod` is specified.
+
+
 ## Tax calculation
 
 ### Business-to-consumer tax calculation by Booking System is mandatory
@@ -1098,7 +1230,7 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within opportunity data specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
-Note that `taxMode` only effects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalTaxSpecification` include only the taxes themselves so are uneffected.
+Note that `taxMode` only effects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are uneffected.
 
 | `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
 |--------------------------------------------------------|-----------------------------|-------------------------------|
@@ -1119,14 +1251,13 @@ For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrenc
 
 ## Offer overrides
 
-The unit price of an OrderItem may be overridden to allow for business models with variable pricing (where price differs from list price) and dynamic pricing (where price is not known at the point of purchase).
+The unit price of an `OrderItem` MAY be overridden to allow for business models with variable pricing (where price differs from list price).
 
-An `OfferOverride` or `DynamicOffer` type may be supplied to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` or `DynamicOffer` is used, it must be used consistently between **C2** and **B** to OrderQuote, it must be used by the <a>Booking System</a> instead of acceptedOffer to calculate the tax and totals.
+The <a>Broker</a> and the <a>Seller</a> MUST have agreed an arrangement for offer overrides out-of-band, including which <a>Opportunities</a> and <a>Offers</a> they may be applied to.
 
-<div class="issue" data-number="96"></div>
+An `OfferOverride` type may be supplied by the <a>Broker</a> to the `acceptedOffer` property at **C1**, **C2** and **B**. When an `OfferOverride` is used, it MUST be used consistently between **C1**, **C2** and **B**, it MUST be used by the <a>Booking System</a> instead of `acceptedOffer` to calculate the tax and totals. It MAY be used for any `brokerRole`.
 
-### `OfferOverride`
-The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as it would be for an standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
+The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as it would be for a standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
 
 `OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that <a>Booking Systems</a> that only offer free opportunities MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
 
@@ -1140,20 +1271,6 @@ The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as
   }
 </pre>
 
-### `DynamicOffer`
-The `DynamicOffer` MUST NOT include a `price`, and MUST NOT contribute to the `totalPaymentDue` of the `Order`. `unitTaxSpecification` MUST NOT be calculated by the <a>Booking System</a> for a `DynamicOffer`.
-
-The `identifier` of the `DynamicOffer` MUST be used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band.
-
-<pre class="example" title="Example of DynamicOffer">
-  "acceptedOffer": {
-    "type": "DynamicOffer",
-    "name": "MoveGB Membership"
-    "identifier": "MOVE"
-  }
-</pre>
-
-
 </section>
 
 
@@ -1162,19 +1279,21 @@ The `identifier` of the `DynamicOffer` MUST be used consistently in order to all
 
 # Order Operations
 
-## Opportunity Selection
+## Definition of an Open Booking 'bookable' Opportunity and Offer pair
 
-Before entering into the Booking Flow, pairs of appropriate `acceptedOffer` and `orderedItem` must be selected by the <a>Customer</a>.
+Before entering into the Booking Flow, the <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `acceptedOffer` and `orderedItem` properties within the `OrderItem`s.
 
-The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the opportunity data are up-to-date, and only include places already booked and *not* places currently reserved by leases.
+The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` with an `Offer` is deemed to be <dfn>bookable</dfn> via the Open Booking API if the `Offer` is applicable to the <a>Opportunity</a> following the principles of `Offer` inheritance contained in [[Modelling-Opportunity-Data]], and if both the <a>Opportunity</a> and `Offer` meet the criteria specified below.
 
-### Definition of an Open Booking 'bookable' opportunity
+Bookable `Offer`s:
 
-An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` is deemed to be <dfn>bookable</dfn> via the Open Booking API if:
+- `availableChannel` of the `Offer` includes `https://openactive.io/OpenBookingPrepayment`.
 
-- `availableChannel` of a valid `Offer` includes `https://openactive.io/OpenBookingPrepayment`.
+- `advanceBooking` of the `Offer` is not equal to `https://openactive.io/Unavailable`.
 
-- `advanceBooking` of a valid `Offer` is not equal to `https://openactive.io/Unavailable`.
+- The `Offer` is current based on `validFromBeforeStartDate`.
+
+Bookable <a>Opportunities</a>:
 
 - The `endDate` is not already in the past (note that bookings are still possible after the `startDate`).
 
@@ -1192,43 +1311,30 @@ An opportunity of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `
 
 The <a>Broker</a> MUST NOT attempt to book an opportunity that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
 
-Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> opportunity based on the `genderRestriction` or `ageRange`, this specification encourages the <a>Broker</a> NOT to capture gender and age data from the <a>Customer</a> and NOT to enforce validation of these restrictions, but instead to prominently display any restrictions in the booking process to ensure that the <a>Customer</a> is aware of these.
+### Booking restrictions
 
-There may be more restrictions placed by a <a>Seller</a> on a booking. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as `oa:attendeeInstructions` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST display these instructions clearly during the booking process.
+Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> <a>Opportunity</a> via an associated <a>bookable</a> `Offer` based on the `genderRestriction` or `ageRange`, this specification encourages the <a>Broker</a> NOT to capture additional personal data about the <a>Customer</a> (e.g. gender and date of birth) and NOT to enforce validation of these restrictions using such data, but instead to prominently display clear messaging regarding such restrictions throughout the booking process to ensure that the <a>Customer</a> is aware of these and able to make an informed decision.
 
+There may be additional restrictions placed on an <a>Opportunity</a> by the <a>Seller</a>. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as `attendeeInstructions` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST display these instructions clearly during the booking process.
 
-### Applicable `Offer`s
-
-<dfn>Applicable `Offer`s</dfn> are a complete set of `Offers` for an opportunity, deduced from inheritance following the parent/child relationship defined by the `superEvent`/`subEvent` properties for all types that subclass `schema:Event`, and defined by the `facilityUse`/`event` properties for `oa:FacilityUse` and `oa:Slot`.
-
-The following recursive algorithm should be applied to calculate applicable offers:
-
-1. The applicable set of offers is initialised with the `offers` property of the <a>bookable</a> opportunity.
-2. If a parent is available for a <a>bookable</a> opportunity, the applicable set of offers MUST also include all `Offer`s specified in the `offers` property of the parent, where the `identifier` of that `Offer` does not match an existing applicable offer. This allows `Offer`s to be overridden in the child using the `identifier` attribute.
-3. Step 2 is repeated for each parent recursively.
-4. The <a>Broker</a> MUST then filter this applicable set to provide a set of `Offers` which are current (based on `validFromBeforeStartDate`) and are available to the <a>Customer</a> through the <a>Broker</a> (based on `availableChannel`).
-5. The <a>Broker</a> MAY additionally filter based on the `Offer`s that apply to the <a>Customer</a>, for example based on `ageRange` if specified in the `Offer`. This specification provides no guidance as to how the filtering should be performed, however it recommends against gathering additional personal data about the <a>Customer</a> in order to restrict `Offer`s presented, and instead advocates clear messaging regarding the restrictions of each `Offer` to allow the <a>Customer</a> to make an informed decision.
-
-
-<div class="issue" data-number="103"></div>
-
+The <a>Broker</a> MAY filter the `Offer`s it displays, for example based on `ageRange` of the `Offer`, to increase the relevance of the `Offer`s displayed to the <a>Broker</a>'s audience.
 
 
 ## Amending the OrderQuote before **B**
 
 The <a>Broker</a> MAY call **C1** and MUST call **C2** when the <a>Customer</a> updates their basket to add and remove items.
 
-When repeated calls to **C1** or **C2** are made with the same UUID, the <a>Booking System</a> MUST expire the leases of items that have been removed from the basket.
+When repeated calls to **C1** or **C2** are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s - be removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
 
-All leases may be cancelled by submitting an `OrderQuote` with the same UUID but without any `orderItem`s as either **C1** or **C2**. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all leases when it is aware that a <a>Customer</a> has abandoned their journey. For <a>Booking Systems</a> that have not implemented leasing, an `OrderQuote` without any `orderItem`s can simply be ignored.
+Leases may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all leases when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
+
+For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
 
 ## Cancellation after **B**
 
 Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after **B**, however `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification.
 
 The cancellation may be requested by either the <a>Customer</a> or the <a>Seller</a>, and results in an updated `Order` item on the <a>Orders feed</a>. Once a cancellation status is placed on an `OrderItem` within an `Order` in the <a>Orders feed</a> it is assumed by the <a>Booking System</a> to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
-
-<div class="issue" data-number="97"></div>
 
 ### Refund after the opportunity has occurred 
 
@@ -1245,22 +1351,17 @@ Full and partial refunds after an opportunity has occurred MUST be handled out-o
 
 To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
-1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled. If `allowSimpleCancellation` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` MUST succeed.
+1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
-2. Inform the <a>Customer</a> of the expected refund before they commit to cancellation, where the value of the refund for each `OrderItem` can be obtained by submitting a PATCH of type `OrderQuote` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. This will return an updated `OrderQuote` with a `totalPaymentDue`, which can be used by the  <a>Broker</a> to display the expected refund to the <a>Customer</a> and have them confirm they wish to proceed.
+2. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
 
-3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a 204 response will be received, without any body. On failure a 5xx response will be received with an error message.
+3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be displayed to the <a>Customer</a>. 
 
 4. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
 To cancel an entire `Order`, the PATCH request MUST include `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
 
 Note that there is no provision for a <a>Customer</a> to cancel an `Order` after the cancellation window specified by `latestCancellationBeforeStartDate`. They may wish to do this out of politeness even though no refund is possible, with the benefit that their place may be taken by another participant, which can be included in future versions of this specification.
-
-<div class="issue" data-number="92"></div>
-
-<div class="issue" data-number="102"></div>
-
 
 
 ### Seller requested cancellation
@@ -1274,31 +1375,23 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 
 
-## Notifications, updates and refunds
+## Orders feed: Notifications, updates and refunds
 
 An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
 This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
+## Order Feed Inconsistencies
+
+An error condition exists where an unrecognised `Order` item is found by the <a>Broker</a> on the feed. Due to the `Order` being stored during the **Payment Authorisation** stage, there should always be a matching `Order` to any UUID on the <a>Orders feed</a> even if it has been soft-deleted. This would make an unrecognised `Order` an impossible scenario, and hence an unrecognised `Order` should be logged as a serious error within the <a>Broker</a> and promptly investigated.
+
+## Order stores with eventual consistency
+
+It is important that the storage used by the <a>Broker</a> for `Order`s provides a [linearizability](https://aphyr.com/posts/313-strong-consistency-models) guarantee when `Order`s are retrieved by ID, due to the partial updates that are applied to it from the <a>Order's feed</a> and the creation of the initial `Order` being synchronous.
+
 ### Booking System: Updating the Orders feed
 
 The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed. Hence any change to any property within an `Order` in the feed must result in a change to the `modified` property associated with that `Order`.
-
-In order to allow a natural batching of updates in the <a>Orders feed</a>, where multiple cancellations may be made across multiple `Order`s for the same <a>Customer</a>, cancellation updates made to `Order`s in the feed by the <a>Booking System</a> MUST be posted with a modified date 30 seconds into the future. The following query will easily exclude such updates while still meeting the [[RPDE]] specification:
-
-<pre class="example sql" title="Example of RPDE query with natural batching">
-  --include first part of WHERE clause only if @afterTimestamp and @afterId provided
-     WHERE (
-          (modified = @afterTimestamp
-                AND id > @afterId)
-          OR (modified > @afterTimestamp)
-        )
-        AND modified <= GETDATE()
-  ORDER BY modified,
-           id
-</pre>
-
-Note that this delay of cancellation requests being processed by the <a>Broker</a> also mitigates the unlikely race condition of an `Order` that is created and then immediately cancelled by the <a>Booking System</a>, which would result in the <a>Broker</a> receiving an unrecognised `Order` in the <a>Orders feed</a>.
 
 ### Broker: Processing the Orders feed
 
@@ -1306,16 +1399,16 @@ The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from th
 
 Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
-Note that the properties included in the <a>Orders feed</a> and the `Order` response from the Order Creation call MAY be a subset of the `Order` request to **B** (effectively making the Orders feed a series of PATCH requests for the <a>Broker</a>), and hence any additional properties required (including properties that are OPTIONAL in the `Order` response but that were used to create the `Order`) SHOULD be stored alongside the `Order` by the <a>Broker</a> during **B**.
+Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from **B** (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>), it is the responsibility of the <a>Broker</a> to maintain a complete view of the `Order` state.
 
 
 ### New `Order`s and `OrderProposal`s
 
-New `Order`s MUST be stored by the <a>Broker</a> based on the response to the Order Creation call, but only stored with a success state on successful completion of the Booking Flow
+A new `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
 
 New `OrderProposal`s MUST be stored by the <a>Broker</a> based on a successful response to the Order Proposal call.
 
-New `Order`s and `OrderProposal`s are not included in the feed until they have been updated at least once. This minimises the volume of `Order`s in the <a>Orders feed</a>, and allows the polling frequency of the feed to be greatly reduced, which reduces the overall load on the <a>Booking System</a>. It also removes any race conditions between **B** completing and Order Creation updates from the <a>Orders feed</a> being received.
+New `Order`s and `OrderProposal`s are not included in the feed until they have been updated at least once. This minimises the volume of `Order`s in the <a>Orders feed</a>, and allows the polling frequency of the feed to be greatly reduced, which reduces the overall load on the <a>Booking System</a>.
 
 Hence all `Order`s and `OrderProposal`s in the <a>Orders feed</a> will always be recognised by the <a>Broker</a> as updates to an existing stored `Order` or `OrderProposal`, and the <a>Broker</a> should treat any unrecognised `Order`s or `OrderProposal`s in the feed as a serious implementation error.
 
@@ -1326,13 +1419,19 @@ Regardless of the source of the cancellation, the process for refunding and noti
 
 The <a>Broker</a> MUST process refunds for each new cancellation found in the feed, and it is the <a>Broker</a>'s responsibility to continually retry failed refund processing and escalate any processing failure to the <a>Customer</a> accordingly. Note that the <a>Orders feed</a> is "fire and forget" for the <a>Booking System</a>: once an `OrderItem` is updated with a cancellation status in the <a>Orders feed</a>, the status MUST not be reversed, and is assumed by the <a>Booking System</a> to be processed.
 
-For `Order`s found with `OrderItem`s that contain `orderItemStatus` with new `https://openactive.io/CustomerCancelled` or `https://openactive.io/SellerCancelled` values, the new `totalPaymentDue` value of the `Order` must be made to equal the value of the associated <a>Payment</a> less any <a>Refunds</a>, by creating an additional <a>Refunds</a> if necessary.
+For `Order`s found with `OrderItem`s that contain `orderItemStatus` with new `https://openactive.io/CustomerCancelled` or `https://openactive.io/SellerCancelled` values and a new corresponding `totalPaymentDue` value, the <a>Broker</a> MUST instruct the <a>Payment Provider</a> to issue a new <a>Refund</a> such that the new `totalPaymentDue` value of the `Order` is equal to the value of the associated <a>Payment</a> less all <a>Refunds</a> including the new one.
 
 The <a>Customer</a> MUST be notified after a refund is successfully processed, using the `orderItemStatus` to indicate the source of the cancellation.
 
-If refund processing takes longer than 15 minutes, and a new status of `https://openactive.io/SellerCancelled` was detected by the <a>Broker</a>, then the <a>Customer</a> must be notified immediately of a cancellation ahead of the notification of the completed refund. This ensures the <a>Seller</a> can rely on the <a>Broker</a> as a notification channel in the event of cancellation. The <a>Customer</a> MUST be notified with the `cancellationMessage` for the `OrderItem` if provided.
+If refund processing takes longer than 1 minute, and a new status of `https://openactive.io/SellerCancelled` was detected by the <a>Broker</a>, then the <a>Customer</a> must be notified immediately of a cancellation ahead of the notification of the completed refund. This ensures the <a>Seller</a> can rely on the <a>Broker</a> as a notification channel in the event of cancellation. The <a>Customer</a> MUST be notified with the `cancellationMessage` for the `OrderItem` if provided.
 
 Note that the <a>Customer</a> MUST be notified in the event of all cancellations, even if no refund is due for free opportunities.
+
+### Partial Refunds and out-of-band arrangements
+
+This version of the specification does not allow a refund to be processed (in full or in part) by the <a>Booking System</a> without going via the <a>Broker</a> for any `Order` that has been placed via the <a>Broker</a>. <a>Booking Systems</a> MUST disable their own refund functionality for `Order`s placed via a <a>Broker</a> - only allowing Seller requested cancellations which trigger the <a>Broker</a> to provide full item refunds - to ensure that the book keeping and invoices of the <a>Broker</a> are not invalidated.
+
+Partial refunds MAY be handled by out-of-band arrangements between the <a>Broker</a> and the <a>Seller</a> provided they do not have any affect on the Open Booking API interface. For example, the <a>Broker</a> could issue a partial refund and then reassign the remaining funds as a cancellation penalty via a new invoice handled and reconciled directly with the <a>Seller</a> outside the scope of the <a>Booking System</a> and this specification.
 
 
 ### Change of logistics notifications
@@ -1341,40 +1440,33 @@ The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `
 
 This specification does not require the <a>Orders feed</a> to include the full contents of the opportunities within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the opportunity data feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the opportunity (e.g. changes to `startDate`).
 
-<div class="issue" data-number="100"></div>
 
 ## Amending the Order after **B**
 
 `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification. A new `Order` must be created, and the old `Order` cancelled.
 
-For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, the following steps are recommended for the <a>Broker</a>:
+For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, the following steps are RECOMMENDED for the <a>Broker</a>:
 
 1. Request an `OrderQuote` for the new `orderItem`s with a new UUID, using **C2**.
 
-2. Check the latest stored state of `Order`s from the <a>Orders feed</a> to ensure that old `orderItem` `allowSimpleCancellation`.
+2. Check the latest stored state of `Order`s from the <a>Orders feed</a> to ensure that old `OrderItem` allows `allowCustomerCancellationFullRefund`.
 
-3. Clearly display messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be displayed to the <a>Customer</a> if any price difference exists between the two Orders, for the <a>Customer</a> to confirm.
+3. Clearly display messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be displayed to the <a>Customer</a> if any price difference exists between the two `Order`s, for the <a>Customer</a> to confirm.
 
-4. Request new payment details from the <a>Customer</a> and Authorise the amount specified by **C2**, then DELETE the old `orderItem`, and if successful, complete **B** as normal.
+4. Request new payment details from the <a>Customer</a> and Authorise the amount specified by **C2**, then PATCH the old `Order` via the Order Cancellation endpoint, and if successful, complete **B** as normal.
 
-The new `Order` is completed as described in the new booking process, and the existing `Order` is cancelled with the refund processed as described in the next section.
+The new `Order` is completed as described in the Simple Booking Flow, and the existing `OrderItem` is cancelled with the refund processed as described elsewhere.
 
 
 ## Delivery of Terms and Conditions and Privacy Policy
 
-The <a>Broker</a> MUST make the <a>Customer</a> aware of any `termsOfService`
-provided within the `seller`, `broker`, and `bookingService` (which may include
-Terms and Conditions and Privacy Policy) before the <a>Customer</a> completes **B**.
+The <a>Broker</a> MUST make the <a>Customer</a> aware of any `termsOfService` provided within the `seller`, `broker`, and `bookingService` (which may include Terms and Conditions and Privacy Policy) before the <a>Customer</a> confirms their purchase.
 
 If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST have explicitly acted to assent to such terms before the <a>Customer</a> completes **B**.
 
-Since, during booking, the details of the <a>Customer</a> are provided to the
-<a>Booking System</a> and the <a>Seller</a>, the <a>Broker</a> SHOULD inform the
-<a>Customer</a> of this any implications with respect to GDPR and any other
-data protection legislation.
+Since, during booking, the details of the <a>Customer</a> are provided to the <a>Booking System</a> and the <a>Seller</a>, the <a>Broker</a> MUST inform the <a>Customer</a> of this any implications with respect to GDPR and any other data protection legislation.
 
-Note that `termsOfService` may only be specified at the `seller`, `broker` or
-`bookingService` level, and may not be provided for a specific `Offer` or `OrderItem`.
+Note that `termsOfService` may only be specified at the `seller`, `broker` or `bookingService` level within the `Order`, and may not be provided for a specific `Offer` or `OrderItem`.
 
 <pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
   "termsOfService": [
@@ -1395,12 +1487,14 @@ Note that `termsOfService` may only be specified at the `seller`, `broker` or
 
 The URLs in the example are only illustrative.
 
-<div class="issue" data-number="95"></div>
-
 
 ## Access control
 
-For opportunities based at locations that have access control, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
+For opportunities that require entry into a restricted building or area to participate, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
+
+Each `accessCode` and `accessToken` MUST represent unique methods of entry, and MUST NOT be duplicated in different formats. For example, multiple formats (e.g. PNG, JPEG) of the same `accessToken` MUST NOT be supplied.
+
+A <a>Broker</a> MUST make all supplied `accessToken`s and `accessCode`s available to the <a>Customer</a>, with the exception of `Barcode`s that do not have fallback image `url`. `Barcode`s without a `url` MAY be ignored if the <a>Broker</a> is unable to process them. 
 
 ### Text-based access control
 
@@ -1432,6 +1526,8 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` propert
 
 Images to be displayed to provide access, for example access tickets rendered by the booking system, MAY be included as an `ImageObject` within the `accessToken` array.
 
+`ImageObject` MUST NOT be used for fallback images of a `Barcode`; the `url` property of the `Barcode` MUST be used for this purpose.
+
 <pre class="example" title="Example of ImageObject in accessToken">
   "accessToken": [
     {
@@ -1443,14 +1539,15 @@ Images to be displayed to provide access, for example access tickets rendered by
 
 ### Extension point for barcode-based access control
 
-Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcode` within the `accessToken` array. Note that `Barcode` subclasses `ImageObject`, allowing it to contain a rendered barcode image URL in addition to the raw barcode details.
+Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcode` within the `accessToken` array. Note that `Barcode` subclasses `ImageObject`, allowing it to contain a fallback rendered barcode image `url` in addition to the raw barcode details. `Barcode`s SHOULD include a fallback image `url`.
 
-Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace, enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
+Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
 
 <pre class="example" title="Example of Barcode in accessToken">
   "accessToken": [
     {
       "type": "Barcode",
+      "url": "https://fallback.image.example.com/476ac24c694da79c5e33731ebbb5f1",
       "text": "0123456789",
       "bookwhen:codeType": "code128"
     }
@@ -1458,20 +1555,12 @@ Due to the variety of barcode formats available, the specification expects the `
 </pre>
 
 
-## Extension point for including payments
 
-In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, Payment Processor, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in `B` in a custom namespace, to facilitate a full payment.
+## General extension mechanism
 
-<pre class="example" title="Example of Payment extension point">
-  "payment": {
-    "type": "Payment",
-    "identifier": "12345678ABCD",
-    "paymentMethod": "stripe:StripePayment",
-    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
-  },
-</pre>
+Additional OPTIONAL extension properties MAY be included in any request and response defined within this specification using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), and the values of such extension properties MAY alter the behaviour of the API. However such extension properties MUST NOT be required and the API MUST function exactly according to this specification when these extension properties are completely omitted or ignored, in order to ensure full compatibility with this specification is retained.
 
-Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Processor</a> being used. To maximise flexibility of this extension point, `identifier` and `name` within `Payment` are NOT REQUIRED if `paymentMethod` is specified.
+Any extension properties defined for an API implementation MUST be fully documented, in order to ensure that the <a>Seller</a> has a complete view of the functionality it is exposing to the <a>Broker</a>.
 
 </section>
 
@@ -1488,18 +1577,18 @@ Due to URL discovery, the paths of the endpoints below are illustrative, as the 
 
 A summary of endpoints defined by this specification is provided below:
 
-| Endpoint Name                | Status      | Resource         | HTTP Verb | Example Path                   |
-|------------------------------|-------------|------------------|-----------|--------------------------------|
-| OrderQuote Creation **C1**   | REQUIRED    | OrderQuote       | PUT       | `/order-quote-templates/{uuid}`|
-| OrderQuote Creation **C2**   | REQUIRED    | OrderQuote       | PUT       | `/order-quotes/{uuid}`         |
-| OrderProposal Creation **P** | OPTIONAL    | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
-| OrderProposal Update         | OPTIONAL    | OrderProposal    | PATCH     | `/order-proposals/{uuid}`      |
-| Order Creation **B**         | REQUIRED    | Order            | PUT       | `/orders/{uuid}`               |
-| Order Deletion               | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`               |
-| OrderQuote Cancellation      | REQUIRED    | OrderQuote       | PATCH     | `/order-cancellation-quotes/{uuid}` |
-| Order Cancellation           | REQUIRED    | Order            | PATCH     | `/orders/{uuid}`               |
-| Orders RPDE Feed             | REQUIRED    | Orders feed      | GET       | `/orders-rpde`                 |
-| Order Status                 | OPTIONAL    | Order            | GET       | `/orders/{uuid}`               |
+| Endpoint Name                | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| OrderQuote Creation **C1**   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quote-templates/{uuid}`|
+| OrderQuote Creation **C2**   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quotes/{uuid}`         |
+| OrderQuote Deletion          | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
+| OrderProposal Creation **P** | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
+| OrderProposal Update         | OPTIONAL    |      | OrderProposal    | PATCH     | `/order-proposals/{uuid}`      |
+| Order Creation **B**         | REQUIRED    | Yes  | Order            | PUT       | `/orders/{uuid}`               |
+| Order Deletion               | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
+| Order Cancellation           | REQUIRED    |      | Order            | PATCH     | `/orders/{uuid}`               |
+| Orders RPDE Feed             | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
+| Order Status                 | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
 Note that in simple implementations, OrderQuote Creation C1 and OrderQuote Creation C2 can be considered as exactly the same endpoint.
 
@@ -1507,17 +1596,14 @@ Note that in simple implementations, OrderQuote Creation C1 and OrderQuote Creat
 
 Note that practically all `Order` endpoints above (those that relate to `Order` or its subclasses `OrderQuote` and `OrderProposal`) all share the same UUID namespace, and can be successfully implemented with a single underlying `Order` record behind them all. The split of these endpoints exists purely to reduce the logic required in each and to increase testability and maintainability.
 
-An `Order` with a particular UUID MUST only exist as either an `Order`, `OrderQuote` or `OrderProposal` at a single point in time. The exception to this is the OrderQuote Cancellation PATCH call, which uses the existing `Order` of the specified UUID to construct an ephemeral `OrderQuote` that is returned.
+An `Order` with a particular UUID MUST only exist as either an `Order`, `OrderQuote` or `OrderProposal` at a single point in time.
 
 Hence the Order Status endpoint SHOULD return any stored `Order`, `OrderQuote` or `OrderProposal` with that UUID, and the <a>Orders Feed</a> MUST return both `Order` and `OrderProposal` items (noting that `OrderQuote` are not included in the <a>Orders Feed</a>).
 
-To aid the reader in their semantic reasoning, from a REST perspective, there are five resources:
+To aid the reader in their semantic reasoning, from a REST perspective, there are four resources:
 - `/order-quote-templates/` and `/order-quotes/` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the lease expires or an `OrderProposal` or `Order` is created.
 - `/order-proposals/` - a collection resource of `OrderProposal`s, which are deleted when a corresponding `Order` is created.
 - `/orders/` - a collection resource of `Order`s which includes its subclasses `OrderQuote`s and `OrderProposal`s
-- `/order-cancellation-quotes/` - a collection resource of `OrderQuote`s, which shadows the main `Order`s collection with equivalent `OrderQuotes` which may be updated via a PATCH for the duration of the request, after which they are reverted to match the `Orders` collection.
-
-<div class="issue" data-number="98"></div>
 
 
 
@@ -1540,24 +1626,6 @@ Note that the `broker` property in the request body is to help the <a>Booking Sy
 In the situation where a middleware is used for various <a>Brokers</a>, independently of API key provisioning at the <a>Booking System</a> level, the `broker` property SHOULD contain the details of the end-user <a>Broker</a> rather than the middleware.
 
 
-#### `orderQuantity` expansion
-
-`orderQuantity` within `OrderItem` is only used during Order Creation, and is not persisted, as follows:
-
-- For `OrderQuote` request, `OrderQuote` response, and `Order` request the `OrderItem`s MUST be unique based on the `id` of their `acceptedOffer` and the `id` of their `orderedItem`, and `orderQuantity` MUST be used to specify more than one is desired.
-- For `Order` response, and the <a>Orders feed</a>, the `OrderItems` MUST NOT include `orderQuantity`, and instead `OrderItem`s must be duplicated according to their original `orderQuanity`, with a unique `id` provided for each resulting `OrderItem`.
-
-This allows `OrderItem`s to be cancelled individually once the `Order` has been created, and errors regarding capacity to be attributed appropriately during Order Creation.
-
-| Scenario              | `orderQuantity` status | Unique `OrderItem` key                         |
-|-----------------------|------------------------|------------------------------------------------|
-| `OrderQuote` request  | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
-| `OrderQuote` response | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
-| `Order` request       | REQUIRED               | Composite of `acceptedOffer` and `orderedItem` |
-| `Order` response      | -                      | `id` of `OrderItem`                            |
-| <a>Orders feed</a>    | -                      | `id` of `OrderItem`                            |
-
-
 #### `OrderQuote`
 
 A PUT request to the Order Creation endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return a `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` identical to if request of type `Order` be made, without any side effects (with the exception of optional leasing).
@@ -1572,7 +1640,7 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 <pre class="example" title="Order Creation: OrderQuote example success response" data-transform="dataExampleOrderQuoteCreationResponse">
 </pre>
 
-If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
 
 <pre class="example" title="Order Creation: OrderQuote example OrderItem error response" data-transform="dataExampleOrderQuoteCreationOrderItemErrorResponse">
 </pre>
@@ -1590,7 +1658,9 @@ A PUT request to the Order Creation endpoint of the <a>Booking System</a> with a
 <pre class="example" title="Order Creation: Order example request" data-transform="dataExampleOrderCreationRequest">
 </pre>
 
-If successful the server will respond with the location of a newly created `Order` resource:
+If successful the server will respond with the location of a newly created `Order` resource.
+
+For the `Order` response and the <a>Orders feed</a>, the `OrderItems` MUST include a unique `id`. This allows `OrderItem`s to be cancelled individually once the `Order` has been created.
 
 <pre class="example" title="Order Creation: Order example minimal response" data-transform="dataExampleOrderCreationResponse">
 </pre>
@@ -1611,10 +1681,9 @@ If there are issues any properties of the `Order`, including the `orderedItem`, 
 
 Deleting an `Order` allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.
 
-When an `Order` is deleted the <a>Booking System</a> must soft delete it as if it was not created, rolling back the Booking Flow.
+When an `Order` is deleted the <a>Booking System</a> SHOULD hard delete it as if it was not created, but MAY soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a>Broker</a> in all cases.
 
-The <a>Broker</a> MUST NOT use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is
-defined elsewhere.
+The <a>Broker</a> MUST NOT use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is defined elsewhere.
 
 The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 
@@ -1633,28 +1702,19 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 
 All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
 
-A dry-run of the call MAY be used to inform the user of the refund they can expect (note the response represents only a partial `OrderQuote`, which SHOULD be combined with the `Order` stored in the <a>Broker</a> to create a full view).
+The cancellation may be requested:
 
-<pre class="example" title="OrderItem Cancellation: example OrderQuote request" data-transform="dataExampleOrderItemCancellationQuoteRequest">
-</pre>
-
-<pre class="example" title="OrderItem Cancellation: example OrderQuote success response" data-transform="dataExampleOrderItemCancellationQuoteResponse">
-</pre>
-
-Whether or not the dry-run was completed, the cancellation may be requested:
-
-<pre class="example" title="OrderItem Cancellation: example Order request" data-transform="dataExampleOrderItemCancellationRequest">
+<pre class="example" title="Order Cancellation: example Order request" data-transform="dataExampleOrderCancellationRequest">
 </pre>
 
 The cancellation request succeeds and fails atomically.
 
-<pre class="example" title="OrderItem Cancellation: example Order success response" data-transform="dataExampleOrderItemCancellationSuccessResponse">
+<pre class="example" title="Order Cancellation: example success response" data-transform="dataExampleOrderCancellationSuccessResponse">
 </pre>
 
-<!--
-<pre class="example" title="OrderItem Cancellation: example error response" data-transform="dataExampleOrderItemCancellationErrorResponse">
+<pre class="example" title="Order Cancellation: example error response" data-transform="dataExampleOrderCancellationErrorResponse">
 </pre>
--->
+
 
 
 
@@ -1673,11 +1733,11 @@ The cancellation request succeeds and fails atomically.
 
 ### Order Status
 
-A <a>Booking System</a> MAY provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this OPTIONAL Order Status endpoint.
+A <a>Booking System</a> SHOULD provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this RECOMMENDED Order Status endpoint.
 
 | Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path          |
 |------------------------|-------------|------------------|-----------|-----------------------|
-| Order Status           | OPTIONAL    | Order            | GET       | `/orders/{uuid}`      |
+| Order Status           | RECOMMENDED | Order            | GET       | `/orders/{uuid}`      |
 
 <pre class="example" title="Order Status: example request" data-transform="dataExampleOrderStatusRequest">
 </pre>
@@ -1711,23 +1771,20 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 |--------------------------------------------------------------------|----------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID |
-| [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. -
+| [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
 | [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | -        | REQUIRED | REQUIRED | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
-| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | OPTIONAL | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. |
-| [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | OPTIONAL | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive/AgentBroker`, `https://openactive/ResellerBroker` or `https://openactive/NoBroker`. |
+| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. |
+| [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | REQUIRED | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive/AgentBroker`, `https://openactive/ResellerBroker` or `https://openactive/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
 | [`schema:orderNumber`](http://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
 | [`schema:customer`](http://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
 | [`oa:bookingService`](https://openactive.io/bookingService)        | -        | REQUIRED | -        | [`oa:BookingService`](https://openactive.io/BookingService) | Details about the <a>Booking System</a> |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](http://schema.org/OrderItem) | The items that constitute the `Order` |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
-| [`oa:totalTaxSpecification`](https://openactive.io/totalTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
+| [`oa:totalPaymentTaxSpecification`](https://openactive.io/totalPaymentTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | RECOMMENDED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
-| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | RECOMMENDED | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> in the case where the `Order` requires approval. |
+| [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus)  | -    | -        | -        | Array of [`oa:OrderCreationStatusType`](https://openactive.io/OrderCreationStatusType) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
 
-
-
-The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at **B** back to the <a>Broker</a>, so the <a>Broker</a> must store any details sent alongside the `Order` response.
 
 
 ### `oa:OrderQuote`
@@ -1740,7 +1797,19 @@ The <a>Booking System</a> is NOT REQUIRED to reflect the properties provided at 
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
 | [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | `payment` is not expected for `OrderQuote`. |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
-| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | - | - | [`schema:Text`](https://schema.org/Text) | `orderApprovalRequestNote` is not expected for `OrderQuote`. |
+
+
+### `oa:OrderProposal`
+
+`OrderProposal` subclasses `OrderQuote`, and includes of the above properties as specified for `OrderQuote` with the addition of `oa:orderApprovalRequestNote` `oa:orderProposalStatus`, without `oa:payment`, and with `totalPaymentDue` only required in the response and <a>Orders feed</a>:
+
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
+| [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
+| [`oa:payment`](https://openactive.io/payment)                      | -        | -        | [`oa:Payment`](https://openactive.io/Payment) | `payment` is not expected for `OrderQuote`. |
+| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`oa:orderApprovalRequestNote`](https://openactive.io/orderApprovalRequestNote) | RECOMMENDED | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> in the case where the `Order` requires approval. |
 
 
 ### `schema:Organization` for `seller`
@@ -1789,8 +1858,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the OrderItem |
 | [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](https://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, or `https://openactive.io/OrderConfirmed` |
-| [`schema:orderQuanity`](http://schema.org/orderQuanity)            | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | MUST NOT be used for `Order` responses. |
-| [`oa:allowSimpleCancellation`](https://openactive.io/allowSimpleCancellation) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
+| [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only requires `id` within these objects to be included, all other properties are ignored. |
@@ -1799,12 +1867,9 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
-| [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | -        | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
+| [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
-| [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | -        | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
-
-
-Note that [`schema:orderQuantity`](http://schema.org/orderQuantity) is only used during the booking flow, and MUST NOT be used within the completed `Order`.
+| [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | OPTIONAL | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
 
 
 ### `schema:Offer`
@@ -1841,24 +1906,6 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
 
 
-### `schema:DynamicOffer`
-
-`DynamicOffer` subclasses `Offer`.
-
-| Property                                                           | Broker Request | Booking System Response | Type | Notes |
-|--------------------------------------------------------------------|----------|----------|-|------|
-| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
-| [`schema:identifier`](http://schema.org/identifier)                | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | Used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular type of `DynamicOffer` out-of-band. |
-| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
-| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
-| [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
-| [`schema:price`](http://schema.org/price)                          | - | - | - | Not included in `DynamicOffer`. |
-| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | - | - | Not included in `DynamicOffer`. |
-| [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
-
-
-
-
 ### `schema:Person`
 
 For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
@@ -1872,9 +1919,9 @@ For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
 | [`schema:familyName`](http://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
 | [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
 
-Note that the `Person` is not sent to the <a>Broker</a>, only received by the <a>Booking System</a>, to avoid any inadvertent data sharing between  <a>Brokers</a> when the properties of the `Person` are updated. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
+Note that in all cases any `Person` received from the <a>Booking System</a> when it is reflected back in the response MUST only contain exactly the data that was provided by the <a>Broker</a> and MUST NOT contain any additional data that may be known about the `Person` by the <a>Booking System</a>. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
 
-In this current iteration of the Booking API specification, the programmatic creation of <a>Customer</a> records on the <a>Booking System</a> by the <a>Broker</a> is considered to be out of scope.
+In this current iteration of the Booking API specification, the programmatic matching of `Person` records provided by the <a>Broker</a> to existing records within the <a>Booking System</a> is considered to be out of scope, and is NOT RECOMMENDED.
 
 For conformance with this specification the <a>Booking System</a> MUST NOT require more data about the <a>Customer</a> than is specified as REQUIRED properties above.
 
@@ -1893,6 +1940,8 @@ For business-to-business transactions, the `customer` MUST be a `schema:Organiza
 | [`schema:name`](http://schema.org/name)                            | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
 | [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
 | [`schema:address`](http://schema.org/address)                      | REQUIRED | - | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the business <a>Customer</a>. |
+
+Note that any `Organization` received from the <a>Booking System</a> when it is reflected back in the response MUST only contain exactly the data that was provided by the <a>Broker</a> and MUST NOT contain any additional data that may be known about the `Organization` by the <a>Booking System</a>.
 
 
 ### `schema:PostalAddress`
@@ -1917,7 +1966,7 @@ Used for `lease`. An object is provided for extensibility.
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Lease` |
 | [`oa:leaseExpires`](https://openactive.io/leaseExpires)            | - | REQUIRED | [`schema:DateTime`](https://schema.org/DateTime) | Expiry DateTime of the lease in [ISO8601] format |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional identifier of the lease if useful for audit or debugging purposes. |
 
 
 ### `schema:PriceSpecification`
@@ -1935,14 +1984,14 @@ Used for `totalPaymentDue`.
 
 `TaxChargeSpecification` subclasses `PriceSpecification`, and so includes the same properties and a few additional ones. These are listed below.
 
-`TaxChargeSpecification` are intended to be rendered to the <a>Customer</a> as-is, and are not designed to be manipulated by the <a>Broker</a>.
+`TaxChargeSpecification` properties are intended to be rendered to the <a>Customer</a> as-is, and are not designed to be manipulated by the <a>Broker</a>.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `TaxChargeSpecification` |
 | [`schema:price`](http://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The monetary value of the tax charge. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge, used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
+| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge e.g. "VAT-20", used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the tax charge, e.g. "VAT at 0% for EU transactions" |
 | [`oa:rate`](https://openactive.io/rate)                            | - | OPTIONAL | [`schema:Float`](https://schema.org/Float) | The rate of VAT. |
 
@@ -1954,13 +2003,24 @@ Used for `payment`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Payment` |
-| [`schema:name`](http://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card") |
+| [`schema:name`](http://schema.org/name)                            | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card"). |
 | [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | REQUIRED | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | If using the payment extension point, this references the payment method used. If not present indicates the external payment processor. |
-| [`schema:accountId`](http://schema.org/accountId)                  | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
-
+| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | OPTIONAL | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | If using the payment extension point, this references the payment method used. If not present indicates <a>Payment</a> uses the external <a>Payment Provider</a>. |
+| [`schema:accountId`](http://schema.org/accountId)                  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
+| [`oa:paymentProviderId`](https://openactive.io/paymentProviderId)  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference to the specific <a>Payment Provider</a> that is used. |
 
 Note that `identifier` and are NOT REQUIRED if `paymentMethod` is specified, to maximise flexibility of the payments extension point.
+
+### `oa:DynamicPayment`
+
+`oa:DynamicPayment` subclasses `oa:Payment`, and includes all of the above properties as specified for `Payment`, but with `accountId` being REQUIRED.
+
+Used for fully dynamic pricing, where price is not known at the point of purchase
+
+| Property                                                           | Broker Request | Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|----------|----------|-|------|
+| [`schema:accountId`](http://schema.org/accountId)                  | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions related, which is used to aid reconciliation. |
+
 
 ### `oa:BookingService`
 
@@ -1979,6 +2039,8 @@ Used for `bookingService`.
 
 Used for `termsOfService`.
 
+`oa:Terms` subclasses `schema:DigitalDocument`.
+
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
@@ -1986,6 +2048,21 @@ Used for `termsOfService`.
 | [`schema:url`](http://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
 | [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
 
+### `oa:PrivacyPolicy`
+
+Used for `termsOfService`.
+
+`oa:PrivacyPolicy` subclasses `oa:Terms`.
+
+A specific subclass for Privacy Policies, to help the <a>Broker</a> distinguish these types of `Terms` in their user experience.
+
+### `oa:TermsOfUse`
+
+Used for `termsOfService`.
+
+`oa:TermsOfUse` subclasses `oa:Terms`.
+
+A specific subclass for Terms of Use, to help the <a>Broker</a> distinguish these types of `Terms` in their user experience.
 
 
 
@@ -2022,7 +2099,11 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `OrderAlreadyExistsError`                   | 500         | If the UUID used for an `OrderQuote` already represents a completed Order with a different set of `OrderItem`s to those specified (note call to **B** is idempotent for the case where `OrderItem`s match). This happens in the rare event of a UUID clash. |
 
 
-<!--| `CancellationNotPermittedError`             | 400         | If the cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the `Broker`. The `description` property of the object SHOULD include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |-->
+#### Order Cancellation - `OrderQuote` and `Order` error responses
+
+| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `CancellationNotPermittedError`             | 400         | The cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the `Broker`. The `description` property of the object MUST include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |
 
 
 
@@ -2040,7 +2121,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnavailableOpportunityError`               | 409         | If the `Offer` contained in the `acceptedOffer` property is not <a>bookable</a>. |
 | `OpportunityIsInConflictError`              | 409         | If the specific `orderedItem`s against which this error is emitted are not able to be booked together. |
 | `OpportunityIsFullError`                    | 409         | If there are no available spaces for the opportunity contained in the `orderedItem` property. |
-| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property to fulfil the number requested by the `orderQuantity` property. If the `orderedItem` is repeated (for multiple attendees) this error must only be displayed against the `orderedItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `orderedItem`s related to it, this error would only be emitted against 3 of the `orderedItem`s. |
+| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error must only be displayed against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
 
 
 #### API authentication
@@ -2157,11 +2238,13 @@ All error responses from this API MUST be returned in a JSON-LD format subclass 
 
 ## Rate Limiting
 
-The <a>Booking System</a> MAY choose to apply rate limiting for each unique set of authentication credentials, in which case they MUST adhere to the following.
+The <a>Booking System</a> MAY choose to apply rate limiting for each unique set of authentication credentials. In such circumstances where a request is rate limited, the <a>Booking System</a> MUST return a response with status code 429.
 
-All rate-limited responses from this API MUST return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive+json` (optionally including any version parameters).
+To allow for a broad range of API management solutions to be used, the <a>Broker</a> MUST rely only on the status code 429 when detecting and retrying a rate-limited request, as specified elsewhere in this specification. The following guidance is included to encourage convergence in implementations where possible. 
 
-The response MUST also include the `Retry-After` HTTP Header with a value set to the number of seconds after which the <a>Broker</a> SHOULD retry as per [[RFC2616]] section 14.37.
+All rate-limited responses from this API SHOULD return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive+json` (optionally including any version parameters) with status code 429.
+
+The response SHOULD also include the `Retry-After` HTTP Header with a value set to the number of seconds after which the <a>Broker</a> SHOULD retry as per [[RFC2616]] section 14.37. 
 
 <pre class="example" title="Rate limited response example" data-transform="dataExampleRateLimitResponse">
 </pre>
@@ -2169,7 +2252,7 @@ The response MUST also include the `Retry-After` HTTP Header with a value set to
 
 ## Security
 
-All HTTP requests and responses SHOULD be secured using SSL.
+Although this specification does not mandate a specific means of securing an API, it does mandate that at a minimum all HTTP requests and responses MUST be secured using SSL.
 
 
 ## Authentication
