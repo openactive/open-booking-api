@@ -621,7 +621,7 @@ v) "**3. Book and Pay**" - User submits payment details and clicks Book
 
   - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
-  - If `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable`, or is `https://openactive.io/Optional` and the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
+  - If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable` or `https://openactive.io/Optional`, or the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
 
 
 vi) **Payment Authorisation** - <a>Broker</a> pre-authorises `totalPaymentDue` from <a>Payment Provider</a>
