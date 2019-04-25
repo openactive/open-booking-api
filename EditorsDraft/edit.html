@@ -282,7 +282,7 @@ data models ([[Modelling-Opportunity-Data]]) and support the publication and
 harvesting of data in standard formats ([[RPDE]]). This existing work helps increase the discovery of opportunities for people to
 be active.
 
-<dfn>Opportunities</dfn> to be active (e.g. "Yoga Tuesday 14th 7pm"), which include `SessionSeries`, `FacilityUse` and`Slot` and their associated `Offer`s (e.g. "Junior (8-18) £9"), are both defined by this existing work.
+<dfn>Opportunities</dfn> to be active (e.g. "Yoga Tuesday 14th 7pm"), which include `SessionSeries`, `FacilityUse` and `Slot` and their associated `Offer`s (e.g. "Junior (8-18) £9"), are both defined by this existing work.
 
 This specification builds on that work by defining an HTTP API that
 can be implemented by <a>Booking Systems</a> that are publishing opportunity data. By
@@ -328,7 +328,7 @@ make use of a facility, whilst placing a booking.
 A number of additional requirements that relate to the booking of events and facilities are currently out of scope:
 
 * creating and managing accounts for <a>Customers</a>
-* more complex pricing options, e.g. membership based pricing
+* more complex pricing options, e.g. membership-based pricing
 * waiting lists for events
 * collecting marketing preferences from the <a>Customer</a>
 * business-to-business tax calculation
@@ -336,7 +336,7 @@ A number of additional requirements that relate to the booking of events and fac
 * "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
 * refunds/cancellations after the opportunity has occurred 
 * back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
-* fine-grain control of opportunity bookability in the <a>Booking System</a>
+* fine-grained control of opportunity bookability in the <a>Booking System</a>
 
 It is possible that future versions of this specification may include support
 for these or other features. Revisions will be driven by the needs of the
@@ -356,7 +356,7 @@ The functionality that is currently defined as out of scope includes:
 * __API authentication and security__ – while the specification recommends some best practices relating to authentication and security it does not mandate a specific means of securing an API. Implementers are free to choose the system that offers the best security for their platform and users.
 * __Payment processing__ – the design assumes that all payment handling will be coordinated by the <a>Broker</a>, in a separate payment flow. <a>Brokers</a> are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Sellers</a> and <a>Customers</a>.
 * __API business models__ – the design is agnostic to any business models that might govern the use or provision of the API, e.g. revenue-sharing or transaction processing fees.
-* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
+* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via an [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
 * __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
 
 ## Specification dependencies
@@ -387,7 +387,7 @@ overview of the API functionality.
 <section id="conformance">
 
 This specification makes use of the compact IRI Syntax; please refer to the
-[Compact IRIs](https://www.w3.org/TR/json-ld/#compact-iris) from [[JSON-LD]].
+[Compact IRIs](https://www.w3.org/TR/json-ld/#compact-iris) section from [[JSON-LD]].
 
 </section>
 
@@ -473,7 +473,7 @@ In order to enter either of the booking flows described in this specification, t
 
 - The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the opportunity data are up-to-date.
 
-- The <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `acceptedOffer` and `orderedItem` properties within the submitted `OrderItem`s.
+- The <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `orderedItem` and `acceptedOffer` properties within the submitted `OrderItem`s, respectively.
 
 
 ## Simple Booking Flow
@@ -501,24 +501,24 @@ Note that some or all steps may be skipped, or may not be presented to the user,
 
 - The <a>Broker</a> generates a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which is used to uniquely identify the `Order` throughout the process.
 
-- After "**1. Select**" the <a>Broker</a> calls the <a>Booking System</a> to confirm an indicative price and availability of the selected items using an `OrderQuote`, and retrieve a total order price. Any details that the <a>Customer</a> needs to supply to complete the booking are also specified. This is checkpoint **C1** on the diagram above.
+- After "**1. Select**" the <a>Broker</a> calls the <a>Booking System</a> to confirm an indicative price and the availability of the selected items using an `OrderQuote`, and retrieve a total order price. Any details that the <a>Customer</a> needs to supply to complete the booking are also specified. This is checkpoint **C1** on the diagram above.
 
-- After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint **C2** on the diagram above.
+- After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all personal details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint **C2** on the diagram above.
 
-- After "**3. Book and Pay**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then confirms the booking with the <a>Booking System</a> using an `Order` (**B** on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends <a>Customer</a> notifications.
+- After "**3. Book and Pay**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then confirms the booking with the <a>Booking System</a> using an `Order` (**B** on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends the <a>Customer</a> notifications.
 
 - The <a>Booking System</a> adds the `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, including those updates resulting from cancellations.
 
 
 ### Leasing
 
-Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contending with one another for a limited number of opportunities. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, which improves user experience, some <a>Booking Systems</a> use the concept of a <dfn>lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey.
+Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contend with one another for a limited number of opportunities. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, some <a>Booking Systems</a> use the concept of a <dfn>lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey and improves the user experience overall.
 
-The design of this API supports the use of time-bound leases. Using leases is RECOMMENDED, however they are not required to ensure a low barrier of entry for implementers of the specification.
+The design of this API supports the use of time-bound leases. Using leases is RECOMMENDED, however they are not required, in order to ensure a low barrier of entry for implementers of the specification.
 
-Individually at **C1** and **C2**, the <a>Booking System</a> can opt to create (or extend) a lease for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capability to support leases, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. At **C1** the lease is anonymous, at **C2** <a>Customer</a> details and other additional details are provided.
+Individually at **C1** and **C2**, the <a>Booking System</a> can opt to create (or extend) a lease for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capacity to support leases, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. At **C1** the lease is anonymous, while at **C2** <a>Customer</a> details and any other additional details are provided.
 
-If a lease is created at **C1** and/or **C2** it is used during **B**, if not or if it had expired the booking completes anyway provided sufficient inventory is available.
+If a lease is created at **C1** and/or **C2** it is used during **B**. However, if no lease is created, or if it had expires prior to the transaction being completed, the booking completes anyway provided sufficient inventory is available.
 
 It is RECOMMENDED that if the <a>Booking System</a> supports leasing, it also guarantees the price of each leased item for the duration of the lease, so that the <a>Customer</a> is guaranteed to pay the price they have seen during **C2**.
 
