@@ -630,9 +630,7 @@ vi) **Payment Authorisation** - <a>Broker</a> pre-authorises `totalPaymentDue` f
 
   - If payment details were not captured due to the `prepayment` value of the selected `Offer`s or `totalPaymentDue` equalling `0`, pre-authorisation MUST NOT be taken.
 
-  - The <a>Broker</a> MUST store the `Order` request with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentAuthorized` at this point, even if pre-authorisation is not taken, in order to ensure that the UUID in the <a>Orders feed</a> is recognised without a race condition.
-
-  - The creation of the initial `Order` in the <a>Broker</a>'s store at this stage MUST be completed before the next step begins to prevent the unlikely race condition of an `Order` that is created at **B** and then immediately cancelled by the <a>Booking System</a>, which could result in the <a>Broker</a> receiving an unrecognised `Order` in the <a>Orders feed</a> if it was retrieved before the call to **B** returned.
+  - The <a>Broker</a> MUST store the `Order` request with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentAuthorized` at this point, even if pre-authorisation is not taken, in order to ensure that the UUID in the <a>Orders feed</a> is recognised without a race condition. Such a condition might arise in the (admittedly unlikely) event of, e.g., an `Order` that is created at **B** and then immediately cancelled by the <a>Booking System</a>, which could result in the <a>Broker</a> receiving an unrecognised `Order` in the <a>Orders feed</a> if it was retrieved before the call to **B** returned.
 
 vii) **Order Creation / B**  - <a>Broker</a> call with `Order` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed, <a>Booking System</a> responds with an `Order`.
 
