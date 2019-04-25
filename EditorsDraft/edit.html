@@ -904,7 +904,7 @@ For an `Order` that requires approval, the flow differs from the Simple Booking 
 
 ### Broker contract
 
-A summary of the key conformance criteria is included here. These apply for the Booking Flow with Approval in addition to the contract specified in the Simple Booking Flow.
+A summary of the key conformance criteria is included here. These apply for the Booking Flow with Approval _in addition to_ the contract specified in the Simple Booking Flow.
 
 #### Broker contract with Booking System
 
@@ -1050,7 +1050,7 @@ It is expected that future versions of the specification will support more compl
 
 A <a>Broker</a> is an actor that arranges transactions between a <a>Seller</a> and <a>Customer</a>, either directly or indirectly.
 
-From a contractual and taxation perspective, there are two types of <a>Broker</a>, and agent (`AgentBroker`), and a reseller (`ResellerBroker`), as well direct purchase (`NoBroker`).
+From a contractual and taxation perspective, there are two types of <a>Broker</a>: agents (`AgentBroker`), and resellers (`ResellerBroker`). In addition, situations in which the <a>customer</a> contracts directly with the <a>seller</a> without a third party are represented by the `brokerRole` value of `NoBroker`.
 
 Note that this specification does not deal with contractual relationships, and simply provides a mechanism to record bookings.
 
