@@ -644,7 +644,7 @@ vii) **Order Creation / B**  - <a>Broker</a> call with `Order` including UUID wi
 
   - If the booking succeeds only for some `OrderItem`s, the whole transaction is rolled back and the entire booking fails.
 
-  - If there's a network failure, e.g. no response from server, then <a>Broker</a> can resubmit with same UUID. As the call is idempotent, the <a>Booking System</a> will need to track the UUID supplied by <a>Broker</a> against any successful orders, to ensure that it can return the same `Order` for subsequent requests. <a>Broker</a> MUST NOT reuse UUIDs across multiple `Order`s.
+  - If there's a network failure, e.g. no response from server, then the <a>Broker</a> can resubmit with same UUID. As the call is idempotent, the <a>Booking System</a> will need to track the UUID supplied by <a>Broker</a> against any successful orders, to ensure that it can return the same `Order` for subsequent requests. The <a>Broker</a> MUST NOT reuse UUIDs across multiple `Order`s.
 
   - If the call is successful (returns a 200 response), the booking is considered as complete and paid by the <a>Booking System</a> at this point.
 
@@ -660,17 +660,17 @@ vii) **Order Creation / B**  - <a>Broker</a> call with `Order` including UUID wi
 
   - As this call is idempotent, it can be safely retried in the case of an temporary unexpected error (any error that returns status code 503) or rate limiting (any error that returns status code 429).
 
-  - When the request still returns status code 503 after a number of retries the UUID MUST be regenerated to allow for a clean retry of the booking. UUID MUST NOT be regenerated for expected errors (status code 4xx).
+  - When the request still returns status code 503 after a number of retries the UUID MUST be regenerated to allow for a clean retry of the booking. The UUID MUST NOT be regenerated for expected errors (status code 4xx).
 
 viii) **Payment Capture** - <a>Broker</a> captures `totalPaymentDue` from <a>Payment Provider</a>
 
-  - It is the <a>Broker</a>'s responsibility to ensure that payment has been captured.
+  - It is the <a>Broker</a>'s responsibility to ensure that payment has been captured if required.
 
-  - The <a>Broker</a> MUST update its stored `Order` with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentCaptured` after payment is successfully captured.
+  - If payment is required, the <a>Broker</a> MUST update its stored `Order` with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentCaptured` after payment is successfully captured.
 
  -  If payment details were not captured due to the `prepayment` value of the selected `Offer`s or `totalPaymentDue` equalling `0`, payment MUST NOT be captured.
 
-ix) **Invoice Generation** and **Customer Notification** - Upon successful **Payment Capture** (or completing **B** in the case of payment capture not being required), the <a>Broker</a> generates invoices, sends <a>Customer</a> notifications, and stores the `Order` in a success state based on the response from **B**.
+ix) **Invoice Generation** and **Customer Notification** - Upon successful **Payment Capture** (or completing **B** in the case of payment capture not being required), the <a>Broker</a> generates invoices, sends the <a>Customer</a> notifications, and stores the `Order` in a success state based on the response from **B**.
 
  - The <a>Broker</a> MUST update its stored `Order` in with an `orderCreationStatus` of `https://openactive.io/OrderDelivered` after invoices have been created and notifications successfully sent.
 
