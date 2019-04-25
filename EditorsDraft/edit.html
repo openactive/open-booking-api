@@ -889,7 +889,7 @@ Note that the `orderCustomerNote` property MUST NOT be available in the <a>Order
  <figcaption>Sequence diagram showing API interactions with approval</figcaption>
 </figure>
 
-For an `Order` that requires approval, the flow differs from the Simple Booking Flos as follows:
+For an `Order` that requires approval, the flow differs from the Simple Booking Flow as follows:
 
 - `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true` if any `OrderItem`s require approval.
 - `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
