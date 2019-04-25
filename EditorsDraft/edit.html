@@ -369,6 +369,7 @@ Note that the versions are constrained only to major version releases (breaking 
 
 <div class="issue" data-number="105"></div>
 
+
 ## Audience
 
 The document is primarily intended for the following audiences:
@@ -595,7 +596,7 @@ ii) **OrderQuote Creation / C1** - <a>Broker</a> call with `OrderQuote` includin
   - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. 
   - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in its response, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
 
-iii) "**2. Identify**" - User enters personal details and any other additional details requested
+iii) "**2. Identify**" - User submits personal details and any other additional details requested
 
   - The <a>Customer</a> MUST have been informed that their personal information is being submitted to the <a>Seller</a>.
   - The <a>Customer</a> MUST have been made aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before submitting their personal details.
@@ -609,7 +610,7 @@ iv) **OrderQuote Creation / C2** - <a>Broker</a> call with `OrderQuote` includin
   - Any `error`s must be resolved by the <a>Customer</a> or <a>Broker</a> before proceeding, by amending the `OrderItem`s included in the `OrderQuote` and resubmitting until an `OrderQuote` is returned without `error`s.
 
 
-v) "**3. Book and Pay**" - User enters payment details and clicks Book
+v) "**3. Book and Pay**" - User submits payment details and clicks Book
 
   - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
