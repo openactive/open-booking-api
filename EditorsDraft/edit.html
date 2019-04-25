@@ -738,7 +738,7 @@ A summary of the key conformance criteria is included here.
 - The <a>Booking System</a> MUST store UUID as part of the `Order` (and `OrderQuote` if leasing is enabled).
 - The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used UUID.
 - The <a>Booking System</a> MUST check availability and confirm pricing during **C1**, **C2**, and **B** to ensure booking can complete.
-- The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker.
+- The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
 Include sufficient pricing & avail data in opportunity feeds.
 - The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunities</a>.
 
