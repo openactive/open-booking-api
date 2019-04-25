@@ -89,22 +89,22 @@
 
                 },
                 "Modelling-Opportunity-Data": {
-                    "href": "https://openactive.io/modelling-opportunity-data/",
+                    "href": "https://www.openactive.io/modelling-opportunity-data/",
                     "title": "Modelling Opportunity Data",
                     "publisher": "OpenActive Community Group",
                 },
                 "Dataset-API-Discovery": {
-                    "href": "https://openactive.io/dataset-api-discovery/EditorsDraft/",
+                    "href": "https://www.openactive.io/dataset-api-discovery/EditorsDraft/",
                     "title": "Dataset API Discovery",
                     "publisher": "OpenActive Community Group",
                 },
                 "RPDE": {
-                    "href": "https://openactive.io/realtime-paged-data-exchange/",
+                    "href": "https://www.openactive.io/realtime-paged-data-exchange/",
                     "title": "Realtime Paged Data Exchange",
                     "publisher": "OpenActive Community Group",
                 },
                 "OpenActive-Vocabulary": {
-                    "href": "https://openactive.io/ns/",
+                    "href": "https://www.openactive.io/ns/",
                     "title": "OpenActive Vocabulary",
                     "publisher": "OpenActive Community Group",
                 },
@@ -487,8 +487,8 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
 </figure>
 
 1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
-2. **Identify**: <a>Customer</a> enters personal details and other requested details
-3. **Book and Pay**: <a>Customer</a> enters payment details
+2. **Identify**: <a>Customer</a> submits personal details and other requested details
+3. **Book and Pay**: <a>Customer</a> submits payment details
 
 Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
@@ -605,7 +605,7 @@ iv) **OrderQuote Creation / C2** - <a>Broker</a> call with `OrderQuote` includin
 
   - <a>Booking System</a> creates named lease for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Works exactly as **C1**, except validates `customer` details and the `orderItemIntakeFormResponse`.
   - <a>Broker</a> presents the contents of the `OrderQuote` to the `Customer` to ensure they have the most up-to-date price and availability before proceeding with the purchase.
-  - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem` - including if an `OrderItem` is no longer available, or cannot be purchased in combination with another `OrderItem`.
+  - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem` - including if an `OrderItem` is no longer available, cannot be purchased in combination with another `OrderItem`, or does not contain a sufficient `orderItemIntakeFormResponse`.
   - Any `error`s must be resolved by the <a>Customer</a> or <a>Broker</a> before proceeding, by amending the `OrderItem`s included in the `OrderQuote` and resubmitting until an `OrderQuote` is returned without `error`s.
 
 
@@ -758,8 +758,8 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
 The steps exactly mirror the Simple Booking Flow, with two additions:
 
 1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
-2. **Identify**: <a>Customer</a> enters personal details and other requested details
-   1. **Propose**: <a>Customer</a> enters payment details, and submits a proposed booking
+2. **Identify**: <a>Customer</a> submits personal details and other requested details
+   1. **Propose**: <a>Customer</a> submits payment details, and submits a proposed booking
    2. **Approve**: <a>Seller</a> approves the booking, after a period of time
 3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
 
@@ -893,7 +893,7 @@ For an `Order` that requires approval, the flow differs from the above as follow
 - The `OrderProposal` MAY include an `orderCustomerNote` in order to "Ask a question about this opportunity?".
 - Additional data is supplied at **C1** and **C2** as in the Simple Booking Flow to satisfy the `orderItemIntakeForm` for all `OrderItems`.
 - The `totalPaymentDue` from **C2** is used for Payment Authorisation as with the Simple Booking Flow.
-- An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`).
+- An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`). Note that as with **B**, the `OrderProposal` from **P** will not be present in the <a>Orders feed</a> until it is updated at least once.
 - Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see **Minimal Implementation**) or a new `orderProposalVersion` (see **Proposal Amendment**).
 - If required due to expiration of the existing Payment Authorisation or a change in the `totalPaymentDue`, the payment can be re-authorised before **B**. 
 - The <a>Broker</a> supplies a minimal `Order` to **B** that just contains this `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
@@ -932,9 +932,22 @@ Note that these are _not_ the details of attendees, and that the <a>Customer</a>
 
 ### Attendee Details
 
-Although this specification does not provide a mechanism to negotiate on the required fields of attendee details, it provides a means of consistently supplying attendee details against each `OrderItem`, using the `attendee` property.
+If attendee details in scope of the `Person` type are captured, they MUST be captured via the `attendee` property of the `OrderItem` (and not using the `orderItemIntakeForm`). This allows attendee details to be stored and reused by the <a>Broker</a>.
 
-Note that conformance with this specification requires that the <a>Booking System</a> MUST NOT _require_ attendee data to be entered, and that the agreement to supply such data must be handled out-of-band between the <a>Broker</a> and the <a>Seller</a>.
+Note that conformance with this specification requires that the <a>Booking System</a> MUST NOT _require_ attendee data to be submitted in all cases, and that configuration of which attendee details are required (if any) MUST be available to the <a>Seller</a>.
+
+If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingAttendeeDetails` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support attendee details capture to easily filter out such offers from their experience.
+
+<pre class="example" title="Example of attendeeDetailsRequired provided by Booking System at C1">
+  {
+    "type": "OrderItem",
+    ...
+    "attendeeDetailsRequired": [
+      "https://schema.org/givenName",
+      "https://schema.org/familyName"
+    ],
+  }
+</pre>
 
 <pre class="example" title="Example of attendee details provided with each OrderItem at C2">
   {
@@ -950,7 +963,24 @@ Note that conformance with this specification requires that the <a>Booking Syste
   }
 </pre>
 
-The <a>Broker</a> MAY remember the attendee data previously entered by the <a>Customer</a>, if consent is provided.
+If a required property within `Person` is not supplied by the <a>Broker</a> the <a>Booking System</a> MUST include an `IncompleteAttendeeDetailsError` against the offending `OrderItem` at **C2** which includes an `instance` that references the `id` of the missing or invalid `Property`.
+
+<pre class="example" title="Example of an error for missing attendee property data">
+  {
+    "type": "OrderItem",
+    ...
+    "error": [
+      {
+        "type": "IncompleteAttendeeDetailsError",
+        "instance": "https://schema.org/givenName",
+        "description": "Missing attendee first name"
+      }
+    ]
+  }
+</pre>
+
+The <a>Broker</a> MAY remember the attendee data previously submitted by the <a>Customer</a>, if consent is provided.
+
 
 ### Additional Details
 
@@ -968,7 +998,7 @@ If an `Offer` requires additional details capture, the <a>Booking System</a> MUS
         "id": "https://example.com/experience",
         "name": "More information about you",
         "description": "Have you played before? Are you a complete beginner or seasoned pro?",
-        "valueRequired": false
+        "valueRequired": true
       }
     ]
   }
@@ -988,7 +1018,23 @@ If an `Offer` requires additional details capture, the <a>Booking System</a> MUS
   }
 </pre>
 
-The <a>Broker</a> MAY remember the values previously entered by the <a>Customer</a> based on the `id` of the `PropertyValueSpecification`, if consent is provided.
+If a field with `valueRequired` is not supplied by the <a>Broker</a> the <a>Booking System</a> MUST include an `IncompleteIntakeFormError` against the offending `OrderItem` at **C2** which includes an `instance` that references the `id` of the `PropertyValueSpecification`.
+
+<pre class="example" title="Example of an error for missing additional details field data">
+  {
+    "type": "OrderItem",
+    ...
+    "error": [
+      {
+        "type": "IncompleteIntakeFormError",
+        "instance": "https://example.com/experience",
+        "description": "Incomplete additional details supplied"
+      }
+    ]
+  }
+</pre>
+
+The <a>Broker</a> MAY remember the values previously submitted by the <a>Customer</a> based on the `id` of the `PropertyValueSpecification`, if consent is provided.
 
 It is expected that future versions of the specification will support more complex field types.
 
@@ -1617,20 +1663,20 @@ A summary of endpoints defined by this specification is provided below:
 | Orders RPDE Feed             | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
 | Order Status                 | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
-Note that in simple implementations, OrderQuote Creation C1 and OrderQuote Creation C2 can be considered as exactly the same endpoint.
+Note that for simple implementation, OrderQuote Creation C1 and OrderQuote Creation C2 can be exactly the same endpoint.
 
-### Order Semantics
+### Order Endpoint RESTful Semantics
 
-Note that practically all `Order` endpoints above (those that relate to `Order` or its subclasses `OrderQuote` and `OrderProposal`) all share the same UUID namespace, and can be successfully implemented with a single underlying `Order` record behind them all. The split of these endpoints exists purely to reduce the logic required in each and to increase testability and maintainability.
+Note that practically all `Order` endpoints above (those that relate to `Order` or its subclasses `OrderQuote` and `OrderProposal`) share the same UUID namespace, and can be successfully implemented with a single underlying `Order` record behind them all. These endpoints are distinct purely to reduce the logic required in each and to increase testability and maintainability.
 
 An `Order` with a particular UUID MUST only exist as either an `Order`, `OrderQuote` or `OrderProposal` at a single point in time.
 
 Hence the Order Status endpoint SHOULD return any stored `Order`, `OrderQuote` or `OrderProposal` with that UUID, and the <a>Orders Feed</a> MUST return both `Order` and `OrderProposal` items (noting that `OrderQuote` are not included in the <a>Orders Feed</a>).
 
 To aid the reader in their semantic reasoning, from a REST perspective, there are four resources:
-- `/order-quote-templates/` and `/order-quotes/` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the lease expires or an `OrderProposal` or `Order` is created.
-- `/order-proposals/` - a collection resource of `OrderProposal`s, which are deleted when a corresponding `Order` is created.
-- `/orders/` - a collection resource of `Order`s which includes its subclasses `OrderQuote`s and `OrderProposal`s
+- `/order-quote-templates` and `/order-quotes` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the lease expires or an `OrderProposal` or `Order` is created.
+- `/order-proposals` - a collection resource of `OrderProposal`s, which are deleted when a corresponding `Order` is created.
+- `/orders` - a collection resource of `Order`s which includes its subclasses `OrderQuote`s and `OrderProposal`s
 
 
 
@@ -1698,6 +1744,9 @@ Both `OrderQuote` and `Order` responses can optionally reflect back properties p
 </pre>
 
 If there are issues any properties of the `Order`, including the `orderedItem`, the <a>Booking System</a> MUST respond with a `400 Bad Request` response which includes only the appropriate `Error`. The <a>Broker</a> is expected to retry the `OrderQuote` to get specific `orderedItem` level errors.
+
+### Order Proposal
+
 
 
 ### Order Deletion
@@ -1898,6 +1947,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
+| [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
 | [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | OPTIONAL | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
 
@@ -1916,7 +1966,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] are a
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | REQUIRED | REQUIRED | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO8601] format. This is a relative equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO8601] format. |
-| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | OPTIONAL | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation` |
+| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | OPTIONAL | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation` |
 
 Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
@@ -1940,6 +1990,8 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 ### `schema:Person`
 
 For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
+
+The required fields below relate to a `schema:Person` when used in the `customer` property.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -2105,7 +2157,7 @@ A specific subclass for Terms of Use, to help the <a>Broker</a> distinguish thes
 |--------------------------------------------------------------------|-------------|-|------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
 | [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization |
-| [`schema:description`](https://openactive.io/detail)               | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A slightly longer, human-readable summary of the problem type. It largely SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization or to provide specific information about why the error occurred in that particular case. |
+| [`schema:description`](https://schema.org/description)               | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A slightly longer, human-readable summary of the problem type. It largely SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization or to provide specific information about why the error occurred in that particular case. |
 | [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The requested URL. |
 | [`oa:method`](https://openactive.io/method)                        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The method of the request (e.g. GET). |
 | [`oa:status`](https://openactive.io/status)                        | OPTIONAL    | [`schema:Integer`](https://schema.org/Integer) | An integer representing the HTTP status code. |
@@ -2124,9 +2176,12 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
+| `IncompleteAttendeeDetailsError`            | 400         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
+| `IncompleteIntakeFormError`                 | 400         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
 | `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
 | `OrderAlreadyExistsError`                   | 500         | If the UUID used for an `OrderQuote` already represents a completed Order with a different set of `OrderItem`s to those specified (note call to **B** is idempotent for the case where `OrderItem`s match). This happens in the rare event of a UUID clash. |
+
 
 
 #### Order Cancellation - `OrderQuote` and `Order` error responses
