@@ -724,7 +724,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - If **B** fails, the <a>Broker</a> MUST cancel the payment authorisation without any consequence to the <a>Customer</a> or <a>Seller</a>.
 - The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>, specifically monitoring the <a>Orders Feed</a> for cancellations.
 - The <a>Broker</a> MUST generate a UUID, and use it consistently during the booking flow.
-- The <a>Broker</a> MUST NOT reuse UUID across complete or incomplete `Order`s.
+- The <a>Broker</a> MUST NOT reuse UUIDs across complete or incomplete `Order`s.
 - The <a>Broker</a> MUST make the <a>Customer</a> aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before they commit to the booking.
 - If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
 - The <a>Broker</a> MUST handle payments and reconciliation with the <a>Seller</a> and the <a>Payment Provider</a>.
@@ -735,7 +735,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Booking System</a> MUST respond to **C2** (with <a>Customer</a> details) with an `OrderQuote` that includes an exact total order price, or a relevant error. It must also produce a relevant error if the additional details specified are not sufficient.
 - The <a>Booking System</a> MUST respond to **B** with a completed `Order`, or a relevant error. The whole booking MUST succeed or fails as one.
 - Upon any cancellations or updates to the `Order` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `Order` in the <a>Orders feed</a>.
-- The <a>Booking System</a> MUST store UUID as part of the `Order` (and `OrderQuote` if leasing is enabled).
+- The <a>Booking System</a> MUST store the UUID as part of the `Order` (and `OrderQuote` if leasing is enabled).
 - The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used UUID.
 - The <a>Booking System</a> MUST check availability and confirm pricing during **C1**, **C2**, and **B** to ensure booking can complete.
 - The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
@@ -749,7 +749,7 @@ With the exception of leasing, **C1** and **C2** MUST NOT have any side effects.
 
 ## Booking Flow with Approval
 
-The <a>Booking System</a> MAY optionally support approval of bookings by the <a>Seller</a>. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported, otherwise this section can be completely ignored.
+The <a>Booking System</a> MAY optionally support review and approval of bookings by the <a>Seller</a>. As the approval processes is initiated by the <a>Booking System</a>, implementation of this section by the <a>Booking System</a> is only required if this flow is supported. Otherwise this section can be ignored.
 
 ### Customer Journey
 The booking journey of a <a>Customer</a> is generalised into the following logical steps:
@@ -759,12 +759,12 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
  <figcaption>Illustration of a typical <a>Customer</a> journey, with an approval step.</figcaption>
 </figure>
 
-The steps exactly mirror the Simple Booking Flow, with two additions:
+The steps exactly mirror the Simple Booking Flow, with two additions in the 'Identify' step:
 
 1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
 2. **Identify**: <a>Customer</a> submits personal details and other requested details
-   1. **Propose**: <a>Customer</a> submits payment details, and submits a proposed booking
-   2. **Approve**: <a>Seller</a> approves the booking, after a period of time
+   a. **Propose**: <a>Customer</a> submits payment details, and submits a proposed booking
+   b. **Approve**: <a>Seller</a> approves the booking, after a period of time
 3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
 
 Note that some or all steps may be skipped, or may not be presented to the user, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
@@ -800,7 +800,7 @@ Leasing works as specified in the Simple Booking Flow, and if a lease was acquir
 
 A lease is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the lease has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the lease has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
 
 If the lease expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the lease, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
@@ -862,7 +862,6 @@ If an `Offer` may require **Proposal Amendment**, the <a>Booking System</a> MUST
 
 **Proposal Amendment** allows the <a>Seller</a> to suggest amendments to the `OrderProposal` (which need to be accepted by the <a>Customer</a>) as follows:
 
-- The <a>Booking System</a> MUST make the `OrderProposal` available in the <a>Orders feed</a>, with `orderProposalStatus` set to `https://openactive.io/SellerAccepted`, `orderProposalVersion` set to a new generated value, and optionally including an `orderSellerNote` containing reasons for any amendments.
 - If the `orderProposalVersion` in the <a>Orders feed</a> has changed compared with the `orderProposalVersion` in the `OrderProposal` stored by the <a>Broker</a>, the <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed. The <a>Broker</a> MUST detect and highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
 - When the <a>Customer</a> confirms, the <a>Broker</a> MUST re-authorise the `totalPaymentDue`, if it has increased, with the <a>Payment Provider</a>, then proceed to **B** using the `orderProposalVersion` the <a>Customer</a> has agreed to.
 - The <a>Customer</a> or <a>Seller</a> MAY also choose to abort at any point as per **Minimal Implementation**.
@@ -890,7 +889,7 @@ Note that the `orderCustomerNote` property MUST NOT be available in the <a>Order
  <figcaption>Sequence diagram showing API interactions with approval</figcaption>
 </figure>
 
-For an `Order` that requires approval, the flow differs from the above as follows:
+For an `Order` that requires approval, the flow differs from the Simple Booking Flos as follows:
 
 - `OrderQuote` is returned at **C1** and **C2** with `orderRequiresApproval` set to `true` if any `OrderItem`s require approval.
 - `OrderItem`s that require approval within an `OrderProposal` have `orderItemStatus` of either `https://openactive.io/OrderApprovalPending` or `https://openactive.io/OrderApprovalAutomatic`, to indicate which specific items are contingent on approval and which could be purchased separately.
@@ -900,7 +899,7 @@ For an `Order` that requires approval, the flow differs from the above as follow
 - An additional step **P** is required after **C2** where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`). Note that as with **B**, the `OrderProposal` from **P** will not be present in the <a>Orders feed</a> until it is updated at least once.
 - Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see **Minimal Implementation**) or a new `orderProposalVersion` (see **Proposal Amendment**).
 - If required due to expiration of the existing Payment Authorisation or a change in the `totalPaymentDue`, the payment can be re-authorised before **B**. 
-- The <a>Broker</a> supplies a minimal `Order` to **B** that just contains this `orderProposalVersion`, and continues the flow as per the Simple Booking Flow.
+- The <a>Broker</a> supplies a minimal `Order` to **B** that just contains this `orderProposalVersion`, and continues the flow with Invoice Generation, Customer Notification, etc. as per the Simple Booking Flow.
 
 
 ### Broker contract
