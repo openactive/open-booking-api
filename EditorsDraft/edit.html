@@ -525,9 +525,9 @@ If a lease is created at **C1** and/or **C2** it is used during **B**. However, 
 
 It is RECOMMENDED that if the <a>Booking System</a> supports leasing, it also guarantees the price of each leased item for the duration of the lease, so that the <a>Customer</a> is guaranteed to pay the price they have seen during **C2**.
 
-The specification is designed to allow for leasing to be implemented at a later stage by a <a>Booking System</a> without affecting the <a>Broker</a>'s implementation.
+The specification is designed to allow <a>Broker</a>s to be agnostic to leases: should a <a>Booking System</a> be upgraded to support these, it can do so without affecting the <a>Broker</a>'s implementation.
 
-By design, the use of leases is largely transparent to the <a>Broker</a>, however the <a>Booking System</a> MUST provide information on the lease to help improve the user experience of the customer journey as follows: when a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
+By design, then, the use of leases is largely transparent to the <a>Broker</a>. However, the <a>Booking System</a> MUST provide information on the lease to help improve the user experience of the customer journey as follows: when a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
 
 <pre class="example" title="Example of lease">
   "lease": {
