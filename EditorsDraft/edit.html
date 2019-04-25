@@ -328,7 +328,7 @@ make use of a facility, whilst placing a booking.
 A number of additional requirements that relate to the booking of events and facilities are currently out of scope:
 
 * creating and managing accounts for <a>Customers</a>
-* more complex pricing options, e.g. membership based pricing
+* more complex pricing options, e.g. membership-based pricing
 * waiting lists for events
 * collecting marketing preferences from the <a>Customer</a>
 * business-to-business tax calculation
@@ -336,7 +336,7 @@ A number of additional requirements that relate to the booking of events and fac
 * "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
 * refunds/cancellations after the opportunity has occurred 
 * back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
-* fine-grain control of opportunity bookability in the <a>Booking System</a>
+* fine-grained control of opportunity bookability in the <a>Booking System</a>
 
 It is possible that future versions of this specification may include support
 for these or other features. Revisions will be driven by the needs of the
@@ -356,7 +356,7 @@ The functionality that is currently defined as out of scope includes:
 * __API authentication and security__ – while the specification recommends some best practices relating to authentication and security it does not mandate a specific means of securing an API. Implementers are free to choose the system that offers the best security for their platform and users.
 * __Payment processing__ – the design assumes that all payment handling will be coordinated by the <a>Broker</a>, in a separate payment flow. <a>Brokers</a> are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Sellers</a> and <a>Customers</a>.
 * __API business models__ – the design is agnostic to any business models that might govern the use or provision of the API, e.g. revenue-sharing or transaction processing fees.
-* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
+* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via an [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
 * __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
 
 ## Specification dependencies
