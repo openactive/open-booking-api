@@ -1074,7 +1074,7 @@ At <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> a <d
 </ul><p>vii) <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> - <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> call with <code>Order</code> including UUID with a <code>customer</code> object and any <code>orderItemIntakeFormResponse</code> required, and <code>totalPaymentDue</code> including the total amount pre-authed, <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> responds with an <code>Order</code>.</p><ul>
 <li><p>If payment details were not captured due to the <code>prepayment</code> value of the selected <code>Offer</code>s, or if <code>totalPaymentDue</code> is <code>0</code> due to all <code>OrderItem</code>s being free of charge,  the <code>payment</code> property <em class="rfc2119" title="MUST NOT">MUST NOT</em> be included in the <code>Order</code> request or response. If the <code>payment</code> property is omitted where <code>totalPaymentDue</code> is not <code>0</code>, and the <code>prepayment</code> value of any <code>Offer</code> is <code>https://openactive.io/Required</code> or unspecified, then an <code>IncompletePaymentDetailsError</code> <em class="rfc2119" title="MUST">MUST</em> be returned. If the <code>payment</code> details supplied (e.g. <code>accountId</code>) are not considered valid for reconciliation by the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> then an <code>InvalidPaymentDetailsError</code> <em class="rfc2119" title="MUST">MUST</em> be returned.</p>
 </li>
-<li><p>The <code>identifier</code> of the <code>Payment</code> is taken from the payment pre-authorization, which must be reconciled with the </p>
+<li><p>The <code>identifier</code> of the <code>Payment</code> is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a href="#dfn-payment-provider" class="internalDFN" data-link-type="dfn">Payment Provider</a> for the purposes of audit and/or reconciliation.</p>
 </li>
 <li><p>If the <code>totalPaymentDue</code> included in the <code>Order</code> object is different to the current <code>totalPaymentDue</code> (which might have changed since <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a>, e.g. if the headline price is changed in the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.</p>
 </li>
@@ -3619,9 +3619,9 @@ The scope of this specification does not include the contractual relationship wi
 <td><a href="https://openactive.io/orderProposalVersion"><code>oa:orderProposalVersion</code></a></td>
 <td>-</td>
 <td><em class="rfc2119" title="REQUIRED">REQUIRED</em></td>
+<td>-</td>
 <td><a href="https://schema.org/URL"><code>schema:URL</code></a></td>
 <td>The unique URL representing this version of the <code>OrderProposal</code>, or the version of the <code>OrderProposal</code> to which this <code>Order</code> is related.</td>
-<td></td>
 </tr>
 </tbody></table></section><section id="oa-orderquote"><h4 id="x10-1-2-oa-orderquote"><span class="secno">10.1.2 </span><code>oa:OrderQuote</code><a class="self-link" aria-label="§" href="#oa-orderquote"></a></h4><p><code>OrderQuote</code> subclasses <code>Order</code>, and includes of the above properties as specified for <code>Order</code> with the addition of <code>oa:lease</code>, without <code>oa:payment</code>, and with <code>totalPaymentDue</code> only required in the response.</p><table>
 <thead>

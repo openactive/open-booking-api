@@ -638,7 +638,7 @@ vii) <a><b>B</b></a> - <a>Broker</a> call with `Order` including UUID with a `cu
 
 - If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included in the `Order` request or response. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then an `InvalidPaymentDetailsError` MUST be returned.
 
-- The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be reconciled with the 
+- The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
 
 - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), the booking fails but the lease is sustained so that the user can be prompted whether they want to continue with the new amount.
 
@@ -1970,7 +1970,7 @@ These models are designed compatible with [[Modelling-Opportunity-Data]], and in
 | [`oa:totalPaymentTaxSpecification`](https://openactive.io/totalPaymentTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | RECOMMENDED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
 | [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus)  | -    | -        | -        | Array of [`oa:OrderCreationStatusType`](https://openactive.io/OrderCreationStatusType) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
-| [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. |
+| [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | - | REQUIRED | - |[`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. |
 
 
 ### `oa:OrderQuote`
