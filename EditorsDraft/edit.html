@@ -574,7 +574,7 @@ The `orderCreationStatus` statuses are defined as follows:
 3. https://openactive.io/OrderCreationPaymentCaptured - after successful <a>Payment Capture</a>
 4. https://openactive.io/OrderCreationComplete - after successful <a>Invoice Generation</a> and <a>Customer Notification</a>
 
-An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
+An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be ignored.
 
 
 ### Step-by-step process description
@@ -1458,7 +1458,7 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 ## Orders feed: Notifications, updates and refunds
 
-An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
+An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">Section 8.6.3</a>,this list must include all, and only, <a>Order</a>s that have been updated by the <a>Booking Systen</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
 This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
