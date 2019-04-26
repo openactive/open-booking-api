@@ -6,18 +6,19 @@ var BASE_URL = "https://example.com";
 var API_PATH = "/api";
 
 
-function dataExampleOrderQuoteCreationRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+// C1
+
+function dataExampleOrderQuoteCreationC1Request(utils, content) {
+  return generateRequest("PUT", API_PATH + "/order-quote-templates/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
-    "customer": fullOrderExampleContent.customer.person,
     "orderedItem": [requestOrderItem]
   });
 }
 
-function dataExampleOrderQuoteCreationResponse(utils, content) {
+function dataExampleOrderQuoteCreationC1Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
@@ -31,7 +32,7 @@ function dataExampleOrderQuoteCreationResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationOrderItemErrorResponse(utils, content) {
+function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
@@ -45,13 +46,68 @@ function dataExampleOrderQuoteCreationOrderItemErrorResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationErrorResponse(utils, content) {
+function dataExampleOrderQuoteCreationC1ErrorResponse(utils, content) {
   return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "TemporarilyUnableToProduceOrderQuoteError",
     "description": "Temporary error occurred in the database"
   });
 }
+
+
+// C2
+
+function dataExampleOrderQuoteCreationC2Request(utils, content) {
+  return generateRequest("PUT", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderQuote",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
+    "customer": fullOrderExampleContent.customer.person,
+    "orderedItem": [requestOrderItem]
+  });
+}
+
+function dataExampleOrderQuoteCreationC2Response(utils, content) {
+  return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderQuote",
+    "taxMode": fullOrderExampleContent.taxMode,
+    "seller": fullOrderExampleContent.seller,
+    "customer": fullOrderExampleContent.customer.person,
+    "bookingService": fullOrderExampleContent.bookingService,
+    "lease": fullOrderExampleContent.lease,
+    "orderedItem": [responseOrderQuoteOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
+    "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.oneItem
+  });
+}
+
+function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
+  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderQuote",
+    "taxMode": fullOrderExampleContent.taxMode,
+    "seller": fullOrderExampleContent.seller,
+    "customer": fullOrderExampleContent.customer.person,
+    "bookingService": fullOrderExampleContent.bookingService,
+    "lease": fullOrderExampleContent.lease,
+    "orderedItem": [responseOrderQuoteErrorOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.zeroItems,
+    "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.zeroItems
+  });
+}
+
+function dataExampleOrderQuoteCreationC2ErrorResponse(utils, content) {
+  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "TemporarilyUnableToProduceOrderQuoteError",
+    "description": "Temporary error occurred in the database"
+  });
+}
+
+
+
 
 function dataExampleErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
@@ -217,6 +273,14 @@ function dataExampleOrderCreationFullResponse(utils, content) {
 }
 
 
+function dataExampleOrderQuoteDeletionRequest(utils, content) {
+  return generateRequest("DELETE", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE);
+}
+
+function dataExampleOrderQuoteDeletionResponse(utils, content) {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+}
+
 
 function dataExampleOrderDeletionRequest(utils, content) {
   return generateRequest("DELETE", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE);
@@ -225,6 +289,88 @@ function dataExampleOrderDeletionRequest(utils, content) {
 function dataExampleOrderDeletionResponse(utils, content) {
   return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
 }
+
+
+
+function dataExampleOrderProposalCreationRequest(utils, content) {
+  return generateRequest("PUT", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderProposal",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
+    "customer": fullOrderExampleContent.customer.person,
+    "orderedItem": [requestOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
+    "payment": fullOrderExampleContent.payment
+  });
+}
+
+function dataExampleOrderProposalCreationResponse(utils, content) {
+  return generateResponse("201 Created", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderProposal",
+    "id": fullOrderExampleContent.id,
+    "orderNumber": "AB000001",
+    "taxMode": fullOrderExampleContent.taxMode,
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
+    "customer": fullOrderExampleContent.customer.person,
+    "seller": fullOrderExampleContent.seller,
+    "bookingService": fullOrderExampleContent.bookingService,
+    "orderedItem": [responseOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
+    "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.oneItem,
+    "payment": fullOrderExampleContent.payment,
+    "lease": fullOrderExampleContent.lease
+  });
+}
+
+function dataExampleOrderProposalCreationErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "IncompleteBrokerDetailsError",
+    "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
+  });
+}
+
+
+
+function dataExampleOrderProposalUpdateRequest(utils, content) {
+  return generateRequest("PATCH", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "OrderProposal",
+    "orderProposalStatus": "https://openactive.io/CustomerRejected",
+    "orderCustomerNote": "Sorry I've actually made other plans, hope you find someone!"
+  });
+}
+
+function dataExampleOrderProposalUpdateResponse(utils, content) {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+}
+
+function dataExampleOrderProposalUpdateErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "PatchNotAllowedOnProperty",
+    "instance": "https://openactive.io/orderProposalStatus",
+    "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
+  });
+}
+
+function dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "PatchContainsExcessiveProperties",
+    "description": "PATCH includes unexpected properties that are not permitted."
+  });
+}
+
+
+
+
+
+
+
 
 function dataExampleOrderFeedRequest(utils, content) {
   return generateRequest("GET", API_PATH + "/orders-rpde", FEED_MEDIA_TYPE);

@@ -789,7 +789,7 @@ The flow exactly mirrors the Simple Booking Flow, with two additions:
 
 - After "**2. Identify**" the <a>Broker</a> calls the <a>Booking System</a> to reconfirm the price and availability of the selected items using an `OrderQuote`, using all details required, and retrieve a total order price. Explicit consent for any terms and conditions is also captured at this stage if required. This is checkpoint <a><b>C2</b></a> on the diagram above.
 
-- After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (**P** on the diagram above), and sends the <a>Customer</a> a notification that the proposal is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
+- After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (<a><b>P</b></a> on the diagram above), and sends the <a>Customer</a> a notification that the proposal is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
 
 - After "**2.2. Approve**" the <a>Seller</a> approves the `OrderProposal` and the <a>Broker</a> is notified of this by the <a>Booking System</a> (**A** on the diagram above). The <a>Broker</a> can seek <a>Customer</a> permission to proceed, or simply complete the booking automatically, depending on the desired user experience.
 
@@ -850,7 +850,7 @@ Note that when `Offer`s that require approval are mixed with `Offer`s that do no
 ##### Proposal Approval
 
 - If <a>Seller</a> approval is given, the <a>Booking System</a> MUST set `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, which will give the <a>Broker</a> permission to proceed to <a><b>B</b></a>.
-- For the [Minimal Implementation](#minimal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at **P**. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
+- For the [Minimal Implementation](#minimal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at <a><b>P</b></a>. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
 
 ##### Proposal Rejection
 
@@ -901,7 +901,7 @@ For an `Order` that requires approval, the flow differs from the Simple Booking 
 - The `OrderProposal` MAY include an `orderCustomerNote` in order to "Ask a question about this opportunity?".
 - Additional data is supplied at <a><b>C1</b></a> and <a><b>C2</b></a> as in the Simple Booking Flow to satisfy the `orderItemIntakeForm` for all `OrderItems`.
 - The `totalPaymentDue` from <a><b>C2</b></a> is used for Payment Authorisation as with the Simple Booking Flow.
-- An additional step **P** is required after <a><b>C2</b></a> where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`). Note that as with <a><b>B</b></a>, the `OrderProposal` from **P** will not be present in the <a>Orders feed</a> until it is updated at least once.
+- An additional step <a><b>P</b></a> is required after <a><b>C2</b></a> where the <a>Broker</a> submits the completed `OrderProposal` to the <a>Booking System</a>, which returns an `OrderProposal` that the <a>Broker</a> MUST store, with `orderProposalStatus` set to `https://openactive.io/AwaitingSellerConfirmation`. The call is atomic. The returned `OrderProposal` also contains an `orderProposalVersion` (constructed from the `id` of the `OrderProposal` combined an additional version UUID, e.g. `https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd`). Note that as with <a><b>B</b></a>, the `OrderProposal` from <a><b>P</b></a> will not be present in the <a>Orders feed</a> until it is updated at least once.
 - Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see [Minimal Implementation](#minimal-implementation)) or a new `orderProposalVersion` (see [Proposal Amendment](#proposal-amendment)).
 - If required due to expiration of the existing Payment Authorisation or a change in the `totalPaymentDue`, the payment can be re-authorised before <a><b>B</b></a>. 
 - The <a>Broker</a> supplies a minimal `Order` to <a><b>B</b></a> that just contains this `orderProposalVersion`, and continues the flow with <a>Payment Capture</a>, <a>Invoice Generation</a>, and <a>Customer Notification</a> as per the Simple Booking Flow.
@@ -913,17 +913,17 @@ A summary of the key conformance criteria is included here. These apply for the 
 
 #### Broker contract with Booking System
 
-- The <a>Broker</a> MUST call **P** with <a>Customer</a> details as they would for <a><b>B</b></a> in the Simple Booking Flow, and MUST store the resulting `OrderProposal`.
+- The <a>Broker</a> MUST call <a><b>P</b></a> with <a>Customer</a> details as they would for <a><b>B</b></a> in the Simple Booking Flow, and MUST store the resulting `OrderProposal`.
 - The <a>Broker</a> MUST process updates to the `OrderProposal` from the <a>Orders feed</a>, including **A**.
 - The <a>Broker</a> MAY negotiate on the `OrderProposal` using a OrderProposal Update call.
 
 #### Booking System contract with the Broker
 
-- The <a>Booking System</a> MUST respond to **P** with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
+- The <a>Booking System</a> MUST respond to <a><b>P</b></a> with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
 - Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `OrderProposal` in the <a>Orders feed</a>, including **A**.
 - The <a>Booking System</a> MAY negotiate on the `OrderProposal` using the <a>Orders feed</a>.
 
-Calls to **P** MUST be idempotent, based on the UUID.
+Calls to <a><b>P</b></a> MUST be idempotent, based on the UUID.
 
 
 ## Customer Details and Additional Details capture
@@ -1080,7 +1080,7 @@ The <a>Customer</a>'s purchase from the `ResellerBroker` is business-to-consumer
 Hence any tax exemption that the <a>Customer</a> may enjoy when purchasing directly from the <a>Seller</a> (e.g. in UK law, if the <a>Seller</a> is a [VAT exempt eligible body](https://www.gov.uk/guidance/sport-supplies-that-are-vat-exempt-notice-70145)) is not relevant here, as no direct contractual relationship is formed between <a>Seller</a> and <a>Customer</a>.
 
 ### Scope of Specification
-This specification is designed to govern the interaction between the `ResellerBroker` and <a>Seller</a>. It does include provision for the interaction between the `ResellerBroker` and <a>Customer</a> explicitly, though it may be repurposed by the <a>Broker</a> to perform this function by treating the <a>Broker</a> as a <a>Booking System</a>. This specification also does not include provision for the recording of the execution of the contractual relationship with any <a>Payment Provider</a> (e.g. for payment processing fees). Such relationships MUST be handled separately.
+This specification is designed to govern the interaction between the `ResellerBroker` and <a>Seller</a>. It does not include provision for the interaction between the `ResellerBroker` and <a>Customer</a> explicitly, though it may be repurposed by the <a>Broker</a> to perform this function by treating the <a>Broker</a> as a <a>Booking System</a>. This specification also does not include provision for the recording of the execution of the contractual relationship with any <a>Payment Provider</a> (e.g. for payment processing fees). Such relationships MUST be handled separately.
 When the `brokerRole` is set to `ResellerBroker`, this indicates that the payee for accounting and tax purposes is the `broker` specified in the `Order`.
 Note that the `customer` may still optionally be included in the Order, for example to help front-of-house staff identify the <a>Customer</a>.
 
@@ -1236,7 +1236,7 @@ To use the `DynamicPayment` the following preconditions must be met:
 To use `DynamicPayment` the booking flow MUST be completed as normal with the following additional requirements:
 - The `OrderQuote`, `OrderProposal` and `Order` in request, response, and in the subsequent <a>Orders feed</a> MUST NOT include `totalPaymentDue` or `totalPaymentTaxSpecification`, and `OrderItem`s MUST NOT include `acceptedOffer` or `unitTaxSpecification`.
 - The booking flow MUST be completed _as if_ `prepayment` was set to `https://openactive.io/Unavailable` for the `acceptedOffer` for all `OrderItem`s.
-- The `OrderQuote` / `OrderProposal` / `Order` submitted to <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a> (and **P** if using approval) MUST have a `payment` property that contains a `DynamicPayment`, which is consistent throughout the calls.
+- The `OrderQuote` / `OrderProposal` / `Order` submitted to <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a> (and <a><b>P</b></a> if using approval) MUST have a `payment` property that contains a `DynamicPayment`, which is consistent throughout the calls.
 - If the `DynamicPayment` details supplied (e.g. `accountId`) are not considered either sufficient or valid for reconciliation by the <a>Booking System</a> then an `IncompletePaymentDetailsError` or `InvalidPaymentDetailsError` MUST be returned by all calls, respectively.
 - The <a>Booking System</a> MUST NOT record any price against the `Order` or `OrderItem`s for reconciliation, as such reconciliation MUST occur completely out-of-band.
 
@@ -1325,7 +1325,7 @@ Note that `taxMode` only effects the interpretation of the `price` of the `Offer
 
 ## Free opportunities
 
-Free opportunities, defined by those with at least one `Offer` with a `price` of `0`, MUST follow the same workflow as paid opportunities, except with no interaction with a <a>Payment Provider</a>, and no `payment` included in <a><b>C1</b></a>, <a><b>C2</b></a>, **P** or <a><b>B</b></a> requests.
+Free opportunities, defined by those with at least one `Offer` with a `price` of `0`, MUST follow the same workflow as paid opportunities, except with no interaction with a <a>Payment Provider</a>, and no `payment` included in <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> or <a><b>B</b></a> requests.
      
 For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrency` is not available then <a>Brokers</a> SHOULD display "Free" or equivalent when displaying a zero price.
 
@@ -1664,7 +1664,7 @@ A summary of endpoints defined by this specification is provided below:
 | OrderQuote Creation <a><b>C1</b></a>   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quote-templates/{uuid}`|
 | OrderQuote Creation <a><b>C2</b></a>   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quotes/{uuid}`         |
 | <a>OrderQuote Deletion</a>        | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
-| OrderProposal Creation **P** | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
+| OrderProposal Creation <a><b>P</b></a> | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
 | <a>OrderProposal Update</a>       | OPTIONAL    |      | OrderProposal    | PATCH     | `/order-proposals/{uuid}`      |
 | Order Creation <a><b>B</b></a>              | REQUIRED    | Yes  | Order            | PUT       | `/orders/{uuid}`               |
 | <a>Order Deletion</a>             | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
@@ -1703,7 +1703,26 @@ The <a><b>C1</b></a> is an endpoint that accepts an `OrderQuote` without a `cust
 
 A PUT request to this endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return an `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` nearly identical to the result of <a><b>B</b></a> (except it excludes `customer`, `attendee`, `orderItemIntakeFormResponse` and the `payment` `identifier`), without any side effects (with the exception of optional leasing).
 
-Note that in a simple implementation that does not manage lease state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> MAY be exactly the same endpoint that simply validates the `email` of the `customer` only if a `customer` value is supplied.
+Note that in a simple implementation that does not manage lease state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> MAY be exactly the same endpoint that simply validates the `email` of the `customer` only if a `customer` value is supplied. Even for complex implementations, given the similarities between <a><b>C1</b></a> and <a><b>C2</b></a>, a single endpoint can used to cover both.
+
+<pre class="example" title="OrderQuote Creation C1: example request" data-transform="dataExampleOrderQuoteCreationC1Request">
+</pre>
+
+If successful the <a>Booking System</a> will respond with an OrderQuote:
+
+<pre class="example" title="OrderQuote Creation C1: example success response" data-transform="dataExampleOrderQuoteCreationC1Response">
+</pre>
+
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
+
+<pre class="example" title="OrderQuote Creation C1: example OrderItem error response" data-transform="dataExampleOrderQuoteCreationC1OrderItemErrorResponse">
+</pre>
+
+If there are issues with other properties of the `OrderQuote` outside of `orderedItem`, the <a>Booking System</a> MUST respond with a JSON-LD response which includes only the appropriate `OpenBookingError` and the appropriate status code.
+
+<pre class="example" title="OrderQuote Creation C1: example failure response" data-transform="dataExampleOrderQuoteCreationC1ErrorResponse">
+</pre>
+
 
 ### OrderQuote Creation C2
 
@@ -1717,30 +1736,87 @@ A PUT request to this endpoint of the <a>Booking System</a> with an object of ty
 
 Note that the <a>Booking System</a> MUST NOT store any personal information of the `customer` provided for the `OrderQuote` past the expiry of any associated lease created.
 
-<pre class="example" title="Order Creation: OrderQuote example request" data-transform="dataExampleOrderQuoteCreationRequest">
+<pre class="example" title="OrderQuote Creation C2: example request" data-transform="dataExampleOrderQuoteCreationC2Request">
 </pre>
 
 If successful the <a>Booking System</a> will respond with an OrderQuote:
 
-<pre class="example" title="Order Creation: OrderQuote example success response" data-transform="dataExampleOrderQuoteCreationResponse">
+<pre class="example" title="OrderQuote Creation C2: example success response" data-transform="dataExampleOrderQuoteCreationC2Response">
 </pre>
 
-If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated excluding any `OrderItem`s that include `error`s.
+Note if the response includes `orderRequiresApproval` with a value of `true` the <a>Broker</a> MUST make it clear to the <a>Customer</a> of the additional process they are about to enter into, and once they are aware, move forward according to the [Booking Flow with Approval](#booking-flow-with-approval) rather than the [Simple Booking Flow](#simple-booking-flow).
 
-<pre class="example" title="Order Creation: OrderQuote example OrderItem error response" data-transform="dataExampleOrderQuoteCreationOrderItemErrorResponse">
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
+
+<pre class="example" title="OrderQuote Creation C2: example OrderItem error response" data-transform="dataExampleOrderQuoteCreationC2OrderItemErrorResponse">
 </pre>
 
 If there are issues with other properties of the `OrderQuote` outside of `orderedItem`, the <a>Booking System</a> MUST respond with a JSON-LD response which includes only the appropriate `OpenBookingError` and the appropriate status code.
 
-<pre class="example" title="Order Creation: OrderQuote example failure response" data-transform="dataExampleOrderQuoteCreationErrorResponse">
+<pre class="example" title="OrderQuote Creation C2: example failure response" data-transform="dataExampleOrderQuoteCreationC2ErrorResponse">
 </pre>
 
+### OrderQuote Deletion
 
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| <a>OrderQuote Deletion</a>        | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
 
+Deleting an `OrderQuote` releases any lease associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
 
+<pre class="example" title="Order Deletion: example request" data-transform="dataExampleOrderDeletionRequest">
+</pre>
 
+<pre class="example" title="Order Deletion: example response" data-transform="dataExampleOrderDeletionResponse">
+</pre>
 
-#### `Order`
+### OrderProposal Creation P
+
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| OrderProposal Creation <dfn><b>P</b></dfn> | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
+
+<a><b>P</b></a> is a PUT endpoint that creates and returns the submitted `OrderProposal` with an `orderProposalStatus` of `https://openactive.io/AwaitingSellerConfirmation`. The details submitted are identical to those required for <a><b>B</b></a> with the addition of an optional `lease`.
+
+<pre class="example" title="OrderProposal Creation: example request" data-transform="dataExampleOrderProposalCreationRequest">
+</pre>
+
+If successful the <a>Booking System</a> will respond with an `OrderProposal`:
+
+<pre class="example" title="OrderProposal Creation: example success response" data-transform="dataExampleOrderProposalCreationResponse">
+</pre>
+
+If there are issues with any properties of the `OrderProposal`, including the `orderedItem`, the <a>Booking System</a> MUST respond with an error response which includes only the appropriate `OpenBookingError` and the appropriate status code. The <a>Broker</a> is expected to retry the `OrderQuote` to get specific `orderedItem` level errors.
+
+<pre class="example" title="OrderProposal Creation: example failure response" data-transform="dataExampleOrderProposalCreationErrorResponse">
+</pre>
+
+Note that any validation errors raised at <a><b>P</b></a> regarding any property values MUST also be raised at <a><b>C2</b></a> (and ideally also <a><b>C1</b></a> if relevant), so it should be very unusual to receive an error at <a><b>P</b></a>.
+
+### OrderProposal Update
+
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| <dfn>OrderProposal Update</dfn>       | OPTIONAL    |      | OrderProposal    | PATCH     | `/order-proposals/{uuid}`      |
+
+The endpoint accepts a simple PATCH containing either or both of `orderProposalStatus` and `orderCustomerNote`.
+
+<pre class="example" title="OrderProposal Update: example request" data-transform="dataExampleOrderProposalUpdateRequest">
+</pre>
+
+<pre class="example" title="Order Deletion: example response" data-transform="dataExampleOrderProposalUpdateResponse">
+</pre>
+
+A request to PATCH `orderProposalStatus` MUST be to `https://openactive.io/CustomerRejected` in this version of the specification. If another value for `orderProposalStatus` is specified the endpoint MUST return an `PatchNotAllowedOnProperty` error with its status code.
+
+<pre class="example" title="OrderProposal Update: example property error response" data-transform="dataExampleOrderProposalUpdateErrorResponse">
+</pre>
+
+If the PATCH request includes any properties other than `type`, `@context`, `orderProposalStatus` and `orderCustomerNote` (excluding any properties with a custom namespace), the endpoint MUST return a `PatchContainsExcessiveProperties` error with its status code.
+
+<pre class="example" title="OrderProposal Update: example property error response for excessive properties" data-transform="dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse">
+</pre>
+
+### Order Creation B
 
 | Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
@@ -1749,28 +1825,22 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 
 A PUT request to the Order Creation endpoint of the <a>Booking System</a> with an object of type `Order` will create the `Order` and complete the booking from the point of the view of the <a>Booking System</a>.
 
-<pre class="example" title="Order Creation: Order example request" data-transform="dataExampleOrderCreationRequest">
+<pre class="example" title="Order example request" data-transform="dataExampleOrderCreationRequest">
 </pre>
 
 If successful the server will respond with the location of a newly created `Order` resource.
 
 For the `Order` response and the <a>Orders feed</a>, the `OrderItems` MUST include a unique `id`. This allows `OrderItem`s to be cancelled individually once the `Order` has been created.
 
-<pre class="example" title="Order Creation: Order example minimal response" data-transform="dataExampleOrderCreationResponse">
+<pre class="example" title="Order example minimal response" data-transform="dataExampleOrderCreationResponse">
 </pre>
 
 Both `OrderQuote` and `Order` responses can optionally reflect back properties provided by the <a>Booking System</a> for completeness, for example:
 
-<pre class="example" title="Order Creation: Order example full response" data-transform="dataExampleOrderCreationFullResponse">
+<pre class="example" title="Order example full response" data-transform="dataExampleOrderCreationFullResponse">
 </pre>
 
-If there are issues any properties of the `Order`, including the `orderedItem`, the <a>Booking System</a> MUST respond with a `400 Bad Request` response which includes only the appropriate `Error`. The <a>Broker</a> is expected to retry the `OrderQuote` to get specific `orderedItem` level errors.
-
-### Order Proposal
-
-| Endpoint Name                       | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
-|-------------------------------------|-------------|------|------------------|-----------|--------------------------------|
-| OrderProposal Creation <dfn>P</dfn> | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
+If there are issues any properties of the `Order`, including the `orderedItem`, the <a>Booking System</a> MUST respond with a `400 Bad Request` response which includes only the appropriate `OpenBookingError`. The <a>Broker</a> is expected to retry the `OrderQuote` to get specific `orderedItem` level errors.
 
 
 ### Order Deletion
@@ -2262,6 +2332,8 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnknownOrIncorrectEndpointError`           | 404         | Where a <a>Booking System</a> has no endpoint matching the one requested. |
 | `NotFoundError`                             | 404         | Where a <a>Booking System</a> does not have the generic resource specified. |
 | `MethodNotAllowed`                          | 405         | Where a <a>Booking System</a> does not recognise a specific HTTP method for the endpoint requested with that specific HTTP verb. |
+| `PatchContainsExcessiveProperties`          | 400         | Where a <a>Booking System</a> recognises a PATCH request but the request object contains properties that the <a>Broker</a> is not permitted to update. Custom namespace properties are always excluded from consideration. |
+| `PatchNotAllowedOnProperty`                 | 400         | Where a <a>Booking System</a> recognises a PATCH request but the request object contains one or many properties that the <a>Broker</a> is not permitted to update to the requested value. |
 | `GoneError`                                 | 410         | Where an `Order` has been soft-deleted by an Order Deletion request. |
 | `TooManyRequestsError`                      | 429         | Where the <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
