@@ -1413,7 +1413,7 @@ For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Dele
 
 ## Cancellation after <a><b>B</b></a>
 
-Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after <a><b>B</b></a>, however `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification.
+Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after <a><b>B</b></a>, however `OrderItem`s cannot be replaced or added to an existing `Order` past this point within this version of the specification.
 
 The cancellation may be requested by either the <a>Customer</a> or the <a>Seller</a>, and results in an updated `Order` item on the <a>Orders feed</a>. Once a cancellation status is placed on an `OrderItem` within an `Order` in the <a>Orders feed</a> it is assumed by the <a>Booking System</a> to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
 
