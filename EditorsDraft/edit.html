@@ -1311,7 +1311,7 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within opportunity data specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
-Note that `taxMode` only effects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are uneffected.
+Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are unaffected.
 
 | `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
 |--------------------------------------------------------|-----------------------------|-------------------------------|
