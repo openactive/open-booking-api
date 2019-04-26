@@ -434,6 +434,23 @@ function dataExampleOrderCancellationErrorResponse(utils, content) {
   });
 }
 
+function dataExampleOrderCancellationPatchPropertyErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "PatchNotAllowedOnProperty",
+    "instance": "https://openactive.io/orderItemStatus",
+    "description": "Only 'https://openactive.io/CustomerCancelled' is permitted for this property."
+  });
+}
+
+function dataExampleOrderCancellationExcessivePropertiesErrorResponse(utils, content) {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "PatchContainsExcessiveProperties",
+    "description": "PATCH includes unexpected properties that are not permitted."
+  });
+}
+
 function dataExampleOrderStatusRequest(utils, content) {
   return generateRequest("GET", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE);
 }

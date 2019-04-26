@@ -1875,9 +1875,7 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>Order Cancellation</dfn>         | REQUIRED    |      | Order            | PATCH     | `/orders/{uuid}`               |
 
-All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
-
-The cancellation may be requested:
+The cancellation may be requested by the <a>Customer</a>. `OrderItem`s omitted from the PATCH request MUST be ignored.
 
 <pre class="example" title="Order Cancellation: example Order request" data-transform="dataExampleOrderCancellationRequest">
 </pre>
@@ -1890,7 +1888,15 @@ The cancellation request succeeds and fails atomically.
 <pre class="example" title="Order Cancellation: example error response" data-transform="dataExampleOrderCancellationErrorResponse">
 </pre>
 
+A PATCH to update `orderItemStatus` MUST have the value `https://openactive.io/CustomerCancelled`, as that is the only permissible value based on the logic defined in this version of the specification. If another value for `orderItemStatus` is specified the endpoint MUST return an `PatchNotAllowedOnProperty` error with its status code.
 
+<pre class="example" title="Order Cancellation: example property error response" data-transform="dataExampleOrderCancellationPatchPropertyErrorResponse">
+</pre>
+
+If the PATCH request includes any properties other than `type`, `@context`, `id`, `orderedItem` and `orderItemStatus` (excluding any properties with a custom namespace), the endpoint MUST return a `PatchContainsExcessiveProperties` error with its status code.
+
+<pre class="example" title="Order Cancellation: example property error response for excessive properties" data-transform="dataExampleOrderCancellationExcessivePropertiesErrorResponse">
+</pre>
 
 
 ### Orders RPDE feed
