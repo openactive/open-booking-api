@@ -1852,11 +1852,11 @@ For the [Booking Flow with Approval](#booking-flow-with-approval) specifically, 
 
 | Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
-| <dfn>Order Deletion</dfn>             | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
+| <dfn>Order Deletion</dfn>         | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
 
 Deleting an `Order` allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.
 
-When an `Order` is deleted the <a>Booking System</a> SHOULD hard delete it as if it was not created, but MAY soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a>Broker</a> in all cases.
+When an `Order` is deleted the <a>Booking System</a> SHOULD hard delete it as though it had not been created in the first place, but MAY soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a>Broker</a> in all cases.
 
 The <a>Broker</a> MUST NOT use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is defined elsewhere.
 
