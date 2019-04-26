@@ -1480,7 +1480,7 @@ The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from th
 
 Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
-Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>), it is the responsibility of the <a>Broker</a> to maintain a complete view of the `Order` state.
+Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Order feed</a> in a manner that maintains a complete view of the `Order` state.
 
 <a>Brokers</a> MUST harvest the <a>Orders feed</a> with a frequency of at least once every 60 seconds to ensure expediency of updates and notifications to <a>Customers</a>.
 
