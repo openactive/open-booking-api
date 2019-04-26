@@ -1975,7 +1975,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 
 ### `oa:OrderQuote`
 
-`OrderQuote` subclasses `Order`, and includes of the above properties as specified for `Order` with the addition of `oa:lease`, without `oa:payment`, and with `totalPaymentDue` only required in the response.
+`OrderQuote` subclasses `Order`, and includes all of the above properties as specified for `Order` with the addition of `oa:lease`, without `oa:payment`, and with `totalPaymentDue` only required in the response.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -1988,7 +1988,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 
 ### `oa:OrderProposal`
 
-`OrderProposal` subclasses `OrderQuote`, and includes of the above properties as specified for `OrderQuote` with the addition of `oa:orderApprovalRequestNote` `oa:orderProposalStatus`, without `oa:payment`, and with `totalPaymentDue` only required in the response and <a>Orders feed</a>.
+`OrderProposal` subclasses `OrderQuote`, and includes all of the above properties as specified for `OrderQuote`, with the further addition of `oa:orderApprovalRequestNote`, `oa:orderProposalStatus`, and with `totalPaymentDue` only required in the response and <a>Orders feed</a>.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
