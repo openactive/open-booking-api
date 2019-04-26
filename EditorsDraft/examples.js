@@ -238,6 +238,7 @@ function dataExampleOrderCreationRequest(utils, content) {
   });
 }
 
+/*
 function dataExampleOrderCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
@@ -252,8 +253,9 @@ function dataExampleOrderCreationResponse(utils, content) {
     "payment": fullOrderExampleContent.payment
   });
 }
+*/
 
-function dataExampleOrderCreationFullResponse(utils, content) {
+function dataExampleOrderCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "Order",
@@ -268,6 +270,15 @@ function dataExampleOrderCreationFullResponse(utils, content) {
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
     "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.oneItem,
+    "payment": fullOrderExampleContent.payment
+  });
+}
+
+function dataExampleOrderCreationFromProposalRequest(utils, content) {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "Order",
+    "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
     "payment": fullOrderExampleContent.payment
   });
 }
@@ -311,6 +322,7 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
     "type": "OrderProposal",
     "id": fullOrderExampleContent.id,
     "orderNumber": "AB000001",
+    "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
     "taxMode": fullOrderExampleContent.taxMode,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
@@ -546,6 +558,7 @@ var fullOrderExampleContent = {
   "type": "OrderQuote",
   "id": BASE_URL + API_PATH + "/orders/" + UUID,
   "orderNumber": "", //booking system generated
+  "orderProposalVersion": "https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "taxMode": "https://openactive/TaxGross", //booking system
   "seller": { //booking system
     "type": "Organization",
