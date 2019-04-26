@@ -1458,15 +1458,15 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 ## Orders feed: Notifications, updates and refunds
 
-An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">Section 8.6.3</a>,this list must include all, and only, <a>Order</a>s that have been updated by the <a>Booking Systen</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
+An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">New Orders and OrderProposals</a>, this list must include all, and only, <a>Order</a>s that have been updated by the <a>Booking System</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
 This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
-## Order Feed Inconsistencies
+### Orders Feed Inconsistencies
 
 An error condition exists where an unrecognised `Order` item is found by the <a>Broker</a> on the feed. Due to the `Order` being stored during the <a>Payment Authorisation</a> stage, there should always be a matching `Order` to any UUID on the <a>Orders feed</a> even if it has been soft-deleted. This would make an unrecognised `Order` an impossible scenario, and hence an unrecognised `Order` should be logged as a serious error within the <a>Broker</a> and promptly investigated.
 
-## Order stores with eventual consistency
+### Order stores with eventual consistency
 
 It is important that the storage used by the <a>Broker</a> for `Order`s provides a [linearizability](https://aphyr.com/posts/313-strong-consistency-models) guarantee when `Order`s are retrieved by ID, due to the partial updates that are applied to it from the <a>Orders feed</a> and the creation of the initial `Order` being synchronous.
 
@@ -1480,7 +1480,7 @@ The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from th
 
 Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
-Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Order feed</a> in a manner that maintains a complete view of the `Order` state.
+Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Orders feed</a> in a manner that maintains a complete view of the `Order` state.
 
 <a>Brokers</a> MUST harvest the <a>Orders feed</a> with a frequency of at least once every 60 seconds to ensure expediency of updates and notifications to <a>Customers</a>.
 
@@ -1669,7 +1669,7 @@ A summary of endpoints defined by this specification is provided below:
 | Order Creation <a><b>B</b></a>              | REQUIRED    | Yes  | Order            | PUT       | `/orders/{uuid}`               |
 | <a>Order Deletion</a>             | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
 | <a>Order Cancellation</a>         | REQUIRED    |      | Order            | PATCH     | `/orders/{uuid}`               |
-| <a>Orders RPDE Feed</a>           | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
+| [Orders RPDE Feed](#orders-rpde-feed) | REQUIRED | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
 | <a>Order Status</a>               | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
 Note that for simple implementation, <a><b>C1</b></a> and <a><b>C2</b></a> can be exactly the same endpoint.
@@ -1847,9 +1847,9 @@ If there are issues any properties of the `Order`, including the `orderedItem`, 
 
 ### Order Deletion
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
-|------------------------|-------------|------------------|-----------|----------------------|
-| Order Deletion         | REQUIRED    | Order            | DELETE    | `/orders/{uuid}`     |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| <dfn>Order Deletion</dfn>             | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
 
 Deleting an `Order` allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.
 
@@ -1868,9 +1868,9 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 
 ### Order Cancellation
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
-|------------------------|-------------|------------------|-----------|----------------------|
-| Order Cancellation     | REQUIRED    | Order            | PATCH     | `/orders/{uuid}`     |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| <dfn>Order Cancellation</dfn>         | REQUIRED    |      | Order            | PATCH     | `/orders/{uuid}`               |
 
 All other properties except the `id` and `orderItemStatus` inside the `OrderItem` MUST be ignored. `OrderItem`s omitted from the PATCH request MUST also be ignored.
 
@@ -1890,11 +1890,15 @@ The cancellation request succeeds and fails atomically.
 
 
 
-### Orders RPDE Feed
+### Orders RPDE feed
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path         |
-|------------------------|-------------|------------------|-----------|----------------------|
-| Orders RPDE Feed       | REQUIRED    | Orders feed      | GET       | `/orders-rpde`       |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| <a>Orders feed</a>           | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
+
+This feed is described at length in the [Orders feed](#orders-feed-notifications-updates-and-refunds) section.
+
+An illustrative request and response is provided here.
 
 <pre class="example" title="Order RPDE Feed: example request" data-transform="dataExampleOrderFeedRequest">
 </pre>
@@ -1905,11 +1909,12 @@ The cancellation request succeeds and fails atomically.
 
 ### Order Status
 
-A <a>Booking System</a> SHOULD provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this RECOMMENDED Order Status endpoint.
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+|-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
+| <dfn>Order Status</dfn>               | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
-| Endpoint Name          | Status      | Resource         | HTTP Verb | Example Path          |
-|------------------------|-------------|------------------|-----------|-----------------------|
-| Order Status           | RECOMMENDED | Order            | GET       | `/orders/{uuid}`      |
+
+A <a>Booking System</a> SHOULD provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this RECOMMENDED Order Status endpoint.
 
 <pre class="example" title="Order Status: example request" data-transform="dataExampleOrderStatusRequest">
 </pre>
