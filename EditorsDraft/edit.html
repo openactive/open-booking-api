@@ -2235,7 +2235,7 @@ Used for `termsOfService`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
-| [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms which must distinguish this from other terms provided, e.g. "Terms and Conditions" or "Privacy Policy" |
+| [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms. The name must distinguish this from other terms fields provided, e.g. "Terms and Conditions" or "Privacy Policy" |
 | [`schema:url`](http://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
 | [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
 
@@ -2459,8 +2459,8 @@ Although this specification does not mandate a specific means of securing an API
 All of the API transactions described in this document MUST require authentication.
 
 The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the authentication credentials, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only authentication credentials that created an `Order` can amend and cancel the `Order`.
-
-Note that a client using the same authentication credentials may represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of credentials. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of credentials MUST not be able to access `Order`'s created by one set of credentials when using the other.
+/
+Note that a client using the same authentication credentials may represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of credentials. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of credentials MUST not be able to access `Order`s created by one set of credentials when using the other.
 
 In terms of implementation, all data partitioning and security MUST be based on the authentication credentials; the `broker` property within the `Order` is for information only.
 
