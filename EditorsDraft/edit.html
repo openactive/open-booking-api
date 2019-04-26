@@ -1405,7 +1405,7 @@ The <a>Broker</a> MAY filter the `Offer`s it displays, for example based on `age
 
 The <a>Broker</a> MAY call <a><b>C1</b></a> and MUST call <a><b>C2</b></a> when the <a>Customer</a> updates their basket to add and remove items.
 
-When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s - be removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
+When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s by removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
 
 Leases may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all leases when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
 
