@@ -574,7 +574,7 @@ The `orderCreationStatus` statuses are defined as follows:
 3. https://openactive.io/OrderCreationPaymentCaptured - after successful <a>Payment Capture</a>
 4. https://openactive.io/OrderCreationComplete - after successful <a>Invoice Generation</a> and <a>Customer Notification</a>
 
-An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
+An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be ignored.
 
 
 ### Step-by-step process description
@@ -1190,7 +1190,7 @@ For each successful booking operation (where <a><b>C1</b></a>, <a><b>C2</b></a> 
 
 The tax receipt sent by the <a>Broker</a> MUST comply with any legal requirements of the jurisdiction of operation.
 
-Note by following specification, for all <a>Broker</a> modes where a <a>Seller</a> may need to supply a tax receipt manually for any reason, the <a>Seller</a> will have the details of the <a>Customer</a> and the transaction enough to generate the most recent tax receipt.
+Note that if the specification is followed correctly, for all <a>Broker</a> modes where a <a>Seller</a> may need to supply a tax receipt manually for any reason, the <a>Seller</a> will have sufficient details of the <a>Customer</a> and of the transaction to generate the most recent tax receipt.
 
 
 ## Payments and Refunds
@@ -1201,7 +1201,7 @@ If payment details were not captured due to the `prepayment` value of the select
 
 ### Virtual payments
 
-Note that this `Payment` is permitted to represent a virtual <a>Payment</a> consolidating a number of actual **Payments** to allow for a wide variety of payment methods. In the case where the <a>Seller</a> is paid monthly, the <a>Payment</a> may also represent a reference to a future invoice against which the eventual <a>Payment</a> will be paid. 
+Note that this `Payment` is permitted to represent a virtual <a>Payment</a> consolidating a number of actual **Payments** to allow for a wide variety of payment methods. In the case where the <a>Seller</a> is paid monthly, the <a>Payment</a> may refer to a future invoice against which the <a>Payment</a> will eventually be paid. 
 
 ### Basic `Payment`
 
@@ -1311,12 +1311,12 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within opportunity data specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
-Note that `taxMode` only effects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are uneffected.
+Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are unaffected.
 
 | `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
 |--------------------------------------------------------|-----------------------------|-------------------------------|
 | Price displayed                                        | Excludes tax                | Includes all applicable taxes assuming a `Person` as a `customer` |
-| Currencies usually associated                          | USD                         | EUR, AUD, GBP                 |
+| Currencies usually associated                          | USD, CAD                    | EUR, AUD, GBP                 |
 | Example price of opportunity before tax                | 10.00                       | 10.00                         |
 | Example tax rate                                       | 0.2                         | 0.2                           |
 | Price displayed to <a>Customer</a> during browsing (`Offer`)  | 10.00                       | 12.00                         |
@@ -1405,7 +1405,7 @@ The <a>Broker</a> MAY filter the `Offer`s it displays, for example based on `age
 
 The <a>Broker</a> MAY call <a><b>C1</b></a> and MUST call <a><b>C2</b></a> when the <a>Customer</a> updates their basket to add and remove items.
 
-When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s - be removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
+When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s by removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
 
 Leases may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all leases when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
 
@@ -1413,7 +1413,7 @@ For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Dele
 
 ## Cancellation after <a><b>B</b></a>
 
-Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after <a><b>B</b></a>, however `OrderItem`s cannot be replaced or added to an existing `Order` within this version of the specification.
+Either the whole `Order` or individual `OrderItem`s within the `Order` may be cancelled after <a><b>B</b></a>, however `OrderItem`s cannot be replaced or added to an existing `Order` past this point within this version of the specification.
 
 The cancellation may be requested by either the <a>Customer</a> or the <a>Seller</a>, and results in an updated `Order` item on the <a>Orders feed</a>. Once a cancellation status is placed on an `OrderItem` within an `Order` in the <a>Orders feed</a> it is assumed by the <a>Booking System</a> to have been processed, and it MUST NOT be reversed. A new `Order` will need to created to reinstate the booking.
 
@@ -1458,7 +1458,7 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 ## Orders feed: Notifications, updates and refunds
 
-An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
+An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">Section 8.6.3</a>,this list must include all, and only, <a>Order</a>s that have been updated by the <a>Booking Systen</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
 This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
@@ -1480,7 +1480,7 @@ The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from th
 
 Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
-Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>), it is the responsibility of the <a>Broker</a> to maintain a complete view of the `Order` state.
+Note that the properties included in the <a>Orders feed</a> MAY be a subset of the `Order` response from <a><b>B</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Order feed</a> in a manner that maintains a complete view of the `Order` state.
 
 <a>Brokers</a> MUST harvest the <a>Orders feed</a> with a frequency of at least once every 60 seconds to ensure expediency of updates and notifications to <a>Customers</a>.
 
