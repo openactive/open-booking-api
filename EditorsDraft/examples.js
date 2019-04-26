@@ -1,5 +1,5 @@
-var OPERATIONS_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=2";
-var FEED_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=2";
+var OPERATIONS_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
+var FEED_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
 var UUID = "e11429ea-467f-4270-ab62-e47368996fe8";
 var CONTEXT = "https://openactive.io/";
 var BASE_URL = "https://example.com";
@@ -561,7 +561,7 @@ var potentialActionExampleContent = {
         "@type": "DataDownload",
         "name": "Order",
         "additionalType": "https://schema.org/Order",
-        "encodingFormat": ["application/vnd.openactive.booking+json; version=2"],
+        "encodingFormat": ["application/vnd.openactive.booking+json; version=1.0"],
         "contentUrl": "https://example.com/api/feeds/offers"
       }
     ]

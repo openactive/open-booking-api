@@ -362,10 +362,10 @@ The functionality that is currently defined as out of scope includes:
 ## Specification dependencies
 
 Version 1.0 of the Open Booking specification depends on the following:
-- [[RPDE]] Version 1.x
-- [[Modelling-Opportunity-Data]] Version 2.x
+- [[RPDE]] Version 1.0
+- [[Modelling-Opportunity-Data]] Version 2.x (where x > 0)
 
-Note that the versions are constrained only to major version releases (breaking changes), and that the flexibility provided by supporting minor versions enables implementors to take advantage of additional features as the specifications evolve.
+Note that the versions of [[Modelling-Opportunity-Data]] are constrained only to major version releases (breaking changes), and that the flexibility provided by supporting minor versions enables implementors to take advantage of additional features as the specifications evolve.
 
 
 ## Audience
@@ -2377,13 +2377,13 @@ media type(s) defined by this specification.
 Media types will conform to the following pattern:
 
 ```
-application/vnd.openactive.booking+json; version=2
+application/vnd.openactive.booking+json; version=1.0
 ```
 
 The current media type is:
 
 ```
-application/vnd.openactive.booking+json; version=2
+application/vnd.openactive.booking+json; version=1.0
 ```
 
  <a>Brokers</a> specifying a media type without a version, such as:
@@ -2397,19 +2397,38 @@ will receive data in in the most current format.
 If you are building an application as a <a>Broker</a> and care about the stability of the response, or have a client application which is tied to a specific version you should always try to use a media type containing the version number.
 
 
-## Version Dependencies
+## Handling Specification Dependencies
 
 ### Realtime Paged Data Exchange 1.0
 
-The [[RPDE]] 1.0 specification is 'embedded' within this specification, due to the simplicity of the specification.
+The [[RPDE]] 1.0 specification is effectively embedded in this specification as-is, and future versions of [[RPDE]] are ignored for the purposes of the <a>Orders feed</a>. This is due to the simplicity of [[RPDE]] and the lack of built-in negotiation protocol for clients and servers to agree on the [[RPDE]] version to use if minor version increments were permitted. Having varience in both [[RPDE]] and the [[Modelling-Opportunity-Data]] also increases the number of permutations of implementation that require testing without a substantial enough benefit to justify the complexity.
 
-The <a>Orders feed</a> defined in this specification is an [[RPDE]] feed which conforms exactly to [[RPDE]] 1.0, except for [section 5.1.3](https://www.openactive.io/realtime-paged-data-exchange/#content-type) where instead it uses media type `vnd.openactive.booking+json; version=2`.
+The <a>Orders feed</a> defined in this specification is an [[RPDE]] feed which conforms exactly to [[RPDE]] 1.0, except for [section 5.1.3](https://www.openactive.io/realtime-paged-data-exchange/#content-type) where instead it uses media type `application/vnd.openactive.booking+json; version=1.0`.
 
-Although additional <a>Orders feed</a> conforming to later versions of the [[RPDE]] specification and even to later versions of this specification MAY be implemented in parallel, implementations that are compliant with this version of the specification MUST utilise a feed that conforms to [[RPDE]] 1.0.
+Although additional <a>Orders feed</a> conforming to later versions of the [[RPDE]] specification and even to later versions of this specification MAY be implemented in parallel, implementations that are compliant with this version of the specification MUST utilise an <a>Orders feed</a> that conforms to [[RPDE]] 1.0.
 
-### Modelling Opportunity Data 2.x
+### Modelling Opportunity Data 2.x (where x > 0)
 
-The models defined in this specification build on those defined in [[Modelling-Opportunity-Data]] 2.x. Any version of the [[Modelling-Opportunity-Data]] with a major version of 2 will be compatible with this specification.
+The model defined in this specification builds on the model defined in [[Modelling-Opportunity-Data]] 2.0. Concepts from the model fall into three categories:
+- The <a>Opportunity</a>, which is defined entirely in [[Modelling-Opportunity-Data]] and not within this specification. This is covered in below in [Opportunity data extensions](#opportunity-data-extensions).
+- The `Offer` which is defined in both [[Modelling-Opportunity-Data]] and within this specification. If any conflict exists in the definition of properties and values between this specification and future version of [[Modelling-Opportunity-Data]], the definition in this specification MUST take precedent.
+- All other overlapping types are similar in name only. For example, types such as `Organization` are defined in [[Modelling-Opportunity-Data]] and within this specification for two distinct purposes. The definition in this specification MUST take precedent, and any guidance in [[Modelling-Opportunity-Data]] related to such disjoint concepts with the same name MUST be ignored.
+
+//TODO: Copy over `prepayment` etc to this spec to ensure it is 'locked down' against this version of the spec.
+
+#### Opportunity data extensions
+
+Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor version of the [[Modelling-Opportunity-Data]] 2.x where x > 0, and properties specified in the [[OpenActive Beta Namespace]], and properties in <a>custom namespaces</a>. However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
+
+A <a>Broker</a> will remain conformant with this specification by only recognising and displaying the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0, and MAY choose to display additional properties at their discussion or on the basis of agreement with the <a>Seller</a>.
+
+#### Booking functionality extensions
+
+Any extension to the functionality of this specification MUST NOT be inferred from additional properties specified in future minor version of the [[Modelling-Opportunity-Data]]. Such additional properties serve only to provide a greater expression of the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Such functional extensions MUST belong within the scope of this specification, and hence belong to new version of it.
+
+The [[OpenActive Beta Namespace]] and properties in <a>custom namespaces</a> MAY be used to extend and experiment with new functionality for future inclusion in this specification, however all functionality should work as specified in this specification should such extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
+
+//TODO: Link to other reference to custom namespace
 
 
 ## Response formats
