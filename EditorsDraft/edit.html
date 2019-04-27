@@ -880,7 +880,7 @@ The <a>Booking System</a> and <a>Broker</a> MUST support a basic level of **Mess
 
 The <a>Seller</a> MAY send a message to the <a>Customer</a> by setting `orderSellerNote` in the `OrderProposal`, and updating the `OrderProposal` in the <a>Orders feed</a>. Any change detected in the `orderSellerNote` in the <a>Orders feed</a> MUST promptly trigger a notification from the <a>Broker</a> to the <a>Customer</a>, so that the value of `orderSellerNote` can be safely overwritten with another message. To ensure that messages are not lost in the RPDE feed, the <a>Seller</a> MAY send no more than one message every 5 minutes per `OrderProposal`.
 
-The <a>Customer</a> MAY send a message to the <a>Seller</a> by the <a>Broker</a> making a PATCH call to the OrderProposal Update endpoint to set `orderCustomerNote` in the `OrderProposal` e.g. `{"orderCustomerNote": "If you let me attend for free this time, you're on!" }`. Any such `orderCustomerNote` updates via PATCH calls MUST either trigger a notification from the <a>Booking System</a> to the <a>Seller</a>, or be stored in the <a>Booking System</a> for later reference by the <a>Seller</a>, so that the value of `orderCustomerNote` can be safely overwritten with another message.
+The <a>Customer</a> MAY send a message to the <a>Seller</a> by the <a>Broker</a> making a PATCH call to the OrderProposal Update endpoint to set `orderCustomerNote` in the `OrderProposal`. Any such `orderCustomerNote` updates via PATCH calls MUST either trigger a notification from the <a>Booking System</a> to the <a>Seller</a>, or be stored in the <a>Booking System</a> for later reference by the <a>Seller</a>, so that the value of `orderCustomerNote` can be safely overwritten with another message.
 
 Note that the `orderCustomerNote` property MUST NOT be available in the <a>Orders feed</a>, to remove unnecessary RPDE updates.
 
@@ -1636,12 +1636,6 @@ Due to the variety of barcode formats available, the specification expects the `
 
 
 
-## General extension mechanism
-
-Additional OPTIONAL extension properties MAY be included in any request and response defined within this specification using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), and the values of such extension properties MAY alter the behaviour of the API. However such extension properties MUST NOT be required and the API MUST function exactly according to this specification when these extension properties are completely omitted or ignored, in order to ensure full compatibility with this specification is retained.
-
-Any extension properties defined for an API implementation MUST be fully documented, in order to ensure that the <a>Seller</a> has a complete view of the functionality it is exposing to the <a>Broker</a>.
-
 </section>
 
 
@@ -2352,8 +2346,6 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `TooManyRequestsError`                      | 429         | Where the <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
 
-
-
 </section>
 
 
@@ -2377,7 +2369,7 @@ media type(s) defined by this specification.
 Media types will conform to the following pattern:
 
 ```
-application/vnd.openactive.booking+json; version=1.0
+application/vnd.openactive.booking+json; version=x.y
 ```
 
 The current media type is:
@@ -2397,7 +2389,7 @@ will receive data in in the most current format.
 If you are building an application as a <a>Broker</a> and care about the stability of the response, or have a client application which is tied to a specific version you should always try to use a media type containing the version number.
 
 
-## Handling Specification Dependencies
+## Handling Specification Dependencies and Extensions
 
 ### Realtime Paged Data Exchange 1.0
 
@@ -2414,21 +2406,27 @@ The model defined in this specification builds on the model defined in [[Modelli
 - The `Offer` which is defined in both [[Modelling-Opportunity-Data]] and within this specification. If any conflict exists in the definition of properties and values between this specification and future version of [[Modelling-Opportunity-Data]], the definition in this specification MUST take precedent.
 - All other overlapping types are similar in name only. For example, types such as `Organization` are defined in [[Modelling-Opportunity-Data]] and within this specification for two distinct purposes. The definition in this specification MUST take precedent, and any guidance in [[Modelling-Opportunity-Data]] related to such disjoint concepts with the same name MUST be ignored.
 
-//TODO: Copy over `prepayment` etc to this spec to ensure it is 'locked down' against this version of the spec.
+//TODO: Copy over `prepayment` etc from modelling spec to this spec to ensure it is 'locked down' against this version of the spec.
 
 #### Opportunity data extensions
 
-Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor version of the [[Modelling-Opportunity-Data]] 2.x where x > 0, and properties specified in the [[OpenActive Beta Namespace]], and properties in <a>custom namespaces</a>. However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
+Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor version of the [[Modelling-Opportunity-Data]] 2.x where x > 0, and properties specified in the [[OpenActive Beta Namespace]], and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification). However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
 
 A <a>Broker</a> will remain conformant with this specification by only recognising and displaying the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0, and MAY choose to display additional properties at their discussion or on the basis of agreement with the <a>Seller</a>.
+
 
 #### Booking functionality extensions
 
 Any extension to the functionality of this specification MUST NOT be inferred from additional properties specified in future minor version of the [[Modelling-Opportunity-Data]]. Such additional properties serve only to provide a greater expression of the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Such functional extensions MUST belong within the scope of this specification, and hence belong to new version of it.
 
-The [[OpenActive Beta Namespace]] and properties in <a>custom namespaces</a> MAY be used to extend and experiment with new functionality for future inclusion in this specification, however all functionality should work as specified in this specification should such extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
+The [[OpenActive Beta Namespace]] and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in this specification, however all functionality MUST work as specified in this specification should such extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
 
-//TODO: Link to other reference to custom namespace
+
+### General extension mechanism
+
+Additional OPTIONAL extension properties MAY be included in any request and response defined within this specification using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), and the values of such extension properties MAY alter the behaviour of the API. However such extension properties MUST NOT be required and the API MUST function exactly according to this specification when these extension properties are completely omitted or ignored, in order to ensure full compatibility with this specification is retained.
+
+Any extension properties defined for an API implementation MUST be fully documented, in order to ensure that the <a>Seller</a> has a complete view of the functionality it is exposing to the <a>Broker</a>.
 
 
 ## Response formats
@@ -2454,7 +2452,7 @@ the [[Modelling-Opportunity-Data]] data model.
 
 Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.
 
-All error responses from this API MUST be returned in a JSON-LD format subclass of the `OpenBookingError` using a content type of `application/vnd.openactive+json` (optionally including any version parameters).
+All error responses from this API MUST be returned in a JSON-LD format subclass of the `OpenBookingError` using a content type of `application/vnd.openactive.booking+json; version=1.0`.
 
 <pre class="example" title="Error response example" data-transform="dataExampleErrorResponse">
 </pre>
@@ -2466,7 +2464,7 @@ The <a>Booking System</a> MAY choose to apply rate limiting for each unique set 
 
 To allow for a broad range of API management solutions to be used, the <a>Broker</a> MUST rely only on the status code 429 when detecting and retrying a rate-limited request, as specified elsewhere in this specification. The following guidance is included to encourage convergence in implementations where possible. 
 
-All rate-limited responses from this API SHOULD return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive+json` (optionally including any version parameters) with status code 429.
+All rate-limited responses from this API SHOULD return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive.booking+json; version=1.0` with status code 429.
 
 The response SHOULD also include the `Retry-After` HTTP Header with a value set to the number of seconds after which the <a>Broker</a> SHOULD retry as per [[RFC2616]] section 14.37. 
 
@@ -2485,9 +2483,11 @@ Although this specification does not mandate a specific means of securing an API
 
 All of the API transactions described in this document MUST require authentication.
 
-The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the authentication credentials, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only authentication credentials that created an `Order` can amend and cancel the `Order`.
+The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the authentication credentials, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only authentication credentials that created an `Order` or any of its subclasses can access, amend and cancel that `Order`.
 
-Note that a client using the same authentication credentials may represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of credentials. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of credentials MUST not be able to access `Order`'s created by one set of credentials when using the other.
+//TODO: Diagram of authentication with technology partners, include a mention that this enables  intermediary technology providers to act as a catalyst, with the seller's approval
+
+Note that a client using the same authentication credentials MUST be able to represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of credentials. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of credentials MUST not be able to access `Order`'s created by one set of credentials when using the other.
 
 In terms of implementation, all data partitioning and security MUST be based on the authentication credentials; the `broker` property within the `Order` is for information only.
 
