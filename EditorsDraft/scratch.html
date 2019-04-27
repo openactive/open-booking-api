@@ -30,7 +30,6 @@ The `OrderQuote` will return `approvalNote` within each `OrderItem` that require
 
 For the case where any `OrderItem`s in an `Order` require approval (`orderItemStatus` of `https://openactive.io/OrderApprovalPending`), the whole `Order` MUST be held in a pending state by the <a>Booking System</a>, with the <a>Broker</a> storing the `Order` with an internal status of `https://openactive.io/OrderApprovalPending`.
 
-An `Order` pending approval MUST be approved or rejected atomically; partial approval is not supported in this version of the specification.
 
 While the `Order` is in `orderItemStatus` of `https://openactive.io/OrderApprovalPending`:
 - The `Order` MUST not be cancelled, and MAY only be deleted.
