@@ -115,6 +115,11 @@
                 "OpenIdConnect" : {
                     "href": "https://openid.net/connect/",
                     "title": "OpenID Connect",
+                },
+                "OpenActive-Beta-Namespace": {
+                  "href": "https://www.openactive.io/ns-beta/",
+                  "title": "OpenActive Beta Namespace",
+                  "publisher": "OpenActive Community Group"
                 }
             }
         };
@@ -2408,7 +2413,7 @@ The model defined in this specification builds on the model defined in [[Modelli
 
 #### Opportunity data extensions
 
-Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor version of the [[Modelling-Opportunity-Data]] 2.x where x > 0, and properties specified in the [[OpenActive Beta Namespace]], and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification). However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
+Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor version of the [[Modelling-Opportunity-Data]] 2.x where x > 0, and properties specified in the [[OpenActive-Beta-Namespace]], and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification). However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
 
 A <a>Broker</a> will remain conformant with this specification by only recognising and displaying the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0, and MAY choose to display additional properties at their discussion or on the basis of agreement with the <a>Seller</a>.
 
@@ -2417,7 +2422,7 @@ A <a>Broker</a> will remain conformant with this specification by only recognisi
 
 Any extension to the functionality of this specification MUST NOT be inferred from additional properties specified in future minor version of the [[Modelling-Opportunity-Data]]. Such additional properties serve only to provide a greater expression of the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Such functional extensions MUST belong within the scope of this specification, and hence belong to new version of it.
 
-The [[OpenActive Beta Namespace]] and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in this specification, however all functionality MUST work as specified in this specification should such extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
+The [[OpenActive-Beta-Namespace]] and properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in this specification, however all functionality MUST work as specified in this specification should such extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
 
 
 ### General extension mechanism
@@ -2477,30 +2482,46 @@ Although this specification does not mandate a specific means of securing an API
 
 ## Authentication
 
-### API level authentication and data security
-
 All of the API transactions described in this document MUST require authentication.
 
-The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the authentication credentials, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only authentication credentials that created an `Order` (including any of its subclasses) can access, amend and cancel that `Order`.
+<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may be a <a>Broker</a> themselves, or may be a <a>Middleware</a>.
 
-//TODO: Diagram of authentication with technology partners, include a mention that this enables  intermediary technology providers to act as a catalyst, with the seller's approval
-  
-Note that a client using the same authentication credentials MUST be able to represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of credentials. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of credentials MUST not be able to access `Order`s created by one set of credentials when using the other.
+### API level authentication and data security
 
-In terms of implementation, all data partitioning and security MUST be based on the authentication credentials; the `broker` property within the `Order` is for information only.
+The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a>, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only <a>Authentication Credentials</a> that created an `Order` (including any of its subclasses) can access, amend and cancel that `Order`.
 
-This specification does not mandate a particular authentication method, but its recommendation is that implementers SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a Javascript web application or between servers).
+This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a Javascript web application or between servers).
 
 Other server-to-server authentication mechanisms such as basic authentication, API key or bearer token based mechanisms are also appropriate.
 
-### Broker and Authenticating Party
+### Middleware as a catalyst
 
-Note that the `broker` property in the request body is to help the <a>Booking System</a> to clarify who is making request and to help them in situations such as queries to allow reconciliation of payments. It is not designed as any part of an authentication which MUST be performed outside of the JSON body of the request. Authentication tokens MUST NOT be present within the `broker` property of the submitted JSON.
+<figure>
+ <img src="authentication-credentials.png" alt="Authentication Credentials and Middleware">
+ <figcaption>Authentication Credentials may facilitate access to the Booking System directly (Broker) or indirectly (Middleware), for a specific Seller</figcaption>
+</figure>
 
-In the situation where a middleware is used for various <a>Brokers</a>, independently of API key provisioning at the <a>Booking System</a> level, the `broker` property SHOULD contain the details of the end-user <a>Broker</a> rather than the middleware.
+This specification permits a trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
 
+The definition of the <a>Middleware</a> role in this specification is intentionally broad: any scenario where the public-facing <a>Broker</a> is distinct in identity from the organisation that has acquired the <a>Authentication Credentials</a> from the <a>Seller</a>. This includes dedicated middleware technology companies, parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
 
-### <a>Customer</a> level authentication
+This specification separates the <a>Authentication Credentials</a> from the concept of a <a>Broker</a> within the <a>Booking System</a>. <a>Brokers</a> MUST notionally exist within a specific set of <a>Authentication Credentials</a>, and the introduction of a new <a>Broker</a> (as specified by the `broker` property) MUST be possible by simply including the details within the requests of this API, with no additional out-of-band registration required.
+
+The `broker` property MUST contain the details of the actual <a>Broker</a> rather than any <a>Middleware</a>.
+
+If information of the <a>Middleware</a> or other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
+
+In terms of implementation, all data partitioning and security MUST be based on the <a>Authentication Credentials</a>; the `broker` property within the `Order` is for information only.
+
+A client using the same <a>Authentication Credentials</a> MUST be able to represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of <a>Authentication Credentials</a>. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of <a>Authentication Credentials</a> MUST NOT be able to access `Order`s created by one set of <a>Authentication Credentials</a> when using the other.
+
+Note that the `broker` property in the request body is to help the <a>Booking System</a> to clarify which <a>Broker</a> is making the request and to help them in situations such as <a>Customer</a> queries. It is not designed as any part of an authentication which MUST be performed outside of the JSON body of the request. Authentication tokens MUST NOT be present within the `broker` property of the submitted JSON.
+
+The <a>Booking System</a> MAY choose to produce usage reports against <a>Authentication Credentials</a>, as well as against <a>Brokers</a>, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account in which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
+
+Any <a>Middleware</a> that conforms with this specification MUST provide data partitioning and security with respect to <a>Broker</a> access, to ensure that <a>Brokers</a> only have access to their own data.
+
+### Customer level authentication
 
 OpenID Connect ([[OpenIdConnect]]) is recommended as standard way of verifying the identity of <a>Customer</a>. It is a thin layer that sits atop OAuth2.
 
@@ -2508,8 +2529,6 @@ One principle relating to authentication and the Booking API is that `Order`s cr
 
 
 </section>
-
-
 
 
 <section class="normative">
