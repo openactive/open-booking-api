@@ -2485,15 +2485,15 @@ Although this specification does not mandate a specific means of securing an API
 
 All of the API transactions described in this document MUST require authentication.
 
-<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may be a <a>Broker</a> themselves, or may be a <a>Middleware</a>.
+<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may a <a>Broker</a>, or may be <a>Middleware</a>.
 
 ### API level authentication and data security
 
-The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a>, to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only <a>Authentication Credentials</a> that created an `Order` (including any of its subclasses) can access, amend and cancel that `Order`.
+The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`.
 
 This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a Javascript web application or between servers).
 
-Other server-to-server authentication mechanisms such as basic authentication, API key or bearer token based mechanisms are also appropriate.
+Other server-to-server authentication mechanisms such as basic authentication, API key or bearer token-based mechanisms are also appropriate.
 
 ### Middleware as a catalyst
 
@@ -2502,15 +2502,15 @@ Other server-to-server authentication mechanisms such as basic authentication, A
  <figcaption>Authentication Credentials may facilitate access to the Booking System directly (Broker) or indirectly (Middleware), for a specific Seller</figcaption>
 </figure>
 
-This specification permits a trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
+This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
 
-The definition of the <a>Middleware</a> role in this specification is intentionally broad: any scenario where the public-facing <a>Broker</a> is distinct in identity from the organisation that has acquired the <a>Authentication Credentials</a> from the <a>Seller</a>. This includes dedicated middleware technology companies, parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
+The definition of the <a>Middleware</a> role in this specification is intentionally broad: it is simply any agent required for handling <a>Authentication Credentials</a> that lies between the public-facing <a>Broker</a> and the <a>Seller</a>. 'Middleware' thus includes not only dedicated middleware technology companies, but also parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
 
-This specification separates the <a>Authentication Credentials</a> from the concept of a <a>Broker</a> within the <a>Booking System</a>. <a>Brokers</a> MUST notionally exist within a specific set of <a>Authentication Credentials</a>, and the introduction of a new <a>Broker</a> (as specified by the `broker` property) MUST be possible by simply including the details within the requests of this API, with no additional out-of-band registration required.
+This specification thus keeps <a>Authentication Credentials</a> separate from the concept of a <a>Broker</a> within the <a>Booking System</a>. <a>Brokers</a> MUST notionally exist within a specific set of <a>Authentication Credentials</a>, and the introduction of a new <a>Broker</a> (as specified by the `broker` property) MUST be possible by simply including the details within the requests of this API, with no additional out-of-band registration required.
 
 The `broker` property MUST contain the details of the actual <a>Broker</a> rather than any <a>Middleware</a>.
 
-If information of the <a>Middleware</a> or other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
+If information regarding <a>Middleware</a> or any other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
 
 In terms of implementation, all data partitioning and security MUST be based on the <a>Authentication Credentials</a>; the `broker` property within the `Order` is for information only.
 
@@ -2518,7 +2518,7 @@ A client using the same <a>Authentication Credentials</a> MUST be able to repres
 
 Note that the `broker` property in the request body is to help the <a>Booking System</a> to clarify which <a>Broker</a> is making the request and to help them in situations such as <a>Customer</a> queries. It is not designed as any part of an authentication which MUST be performed outside of the JSON body of the request. Authentication tokens MUST NOT be present within the `broker` property of the submitted JSON.
 
-The <a>Booking System</a> MAY choose to produce usage reports against <a>Authentication Credentials</a>, as well as against <a>Brokers</a>, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account in which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
+The <a>Booking System</a> MAY choose to produce usage reports against <a>Authentication Credentials</a>, as well as against <a>Brokers</a>, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account into which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
 
 Any <a>Middleware</a> that conforms with this specification MUST provide data partitioning and security with respect to <a>Broker</a> access, to ensure that <a>Brokers</a> only have access to their own data.
 
