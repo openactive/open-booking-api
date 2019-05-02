@@ -126,67 +126,32 @@ function dataExampleRateLimitResponse(utils, content) {
     });
 }
 
-// What about payments which don't support 2-phase-commit? Should we add constraints around the booking call so it doesn't trigger notifications immediately due to the order potentially being deleted after this.
 
-
-
-// Create issue around race conditions:
-//There is a race condition between the Orders feed and completion of ** B **
-//  for new Orders.
-
-//If the completion of ** B ** from the Order creation call takes longer than the time
-//for the Orders feed update to be processed an unrecognised Order would be present in the feed.
-
-//This same situation would occur as a result of a fatal error during payment authorization.
-
-// Remove last 4 from diagram!
 
 // Add to spec intro: "The commercial relationship will govern what is possible, the spec does not recommend or include ACLs that specifically disable functionality."
 
-// Make OfferOverride clearer
-
 // Specific error code for "not bookable"
 
-// Offer override to disable/exclude an offer.
-
-// Line at top of Customer cancellation diagram isn't RPDE, as it's now coming from the store based on Order response and not RPDE - it should just be "store"
-
-// Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
+// LATER Offer override to disable/exclude an offer.
+// LATER Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
+// LATER A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
 
 
-// Make issue about minimal personal data capture
-
-// Switch to including only new orders in the feed, not existing Orders - include issue on this.
-
-// Raise issue around minimal contact details captured (is this an issue already?)
-
-
-//TODO: Include rate limiting scheme!! [DONE]
-
-
-//TODO: A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
 //TODO: Read Iain's slides and stephenage notes from a while back to check we've not missed anything
-
 
 //TODO: Allow for a "lite" signup-only / no cancellation version to exist? No point, it's too simple to need a spec for that...?
 
 //TODO: Allow multiple errors only for order creation
 
-//TODO: Should we have a separate type for OrderRequest to better define the required params?
-
-//TODO: Force OrderQuote to reflect back everything, so that it can be passed back and forth, same for Order, noting that it doesn't actually need to be stored anywhere.
-
-//TODO: Add something about price checking? [DONE]
 //TODO: - You're supposed to check price is the same, so the completed OrderQuote must be passed into the Order in order to complete the Order - does this get around any reflection issues?
 // All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
 
-// To make errors easier, OrderQuantity is used for OrderQuote and response, and each acceptedOffer/offeredItem combo MUST be unique, hence no IDs are required.
-
-// The Order object will include split OrderItems out into multiple entries to allow for cancellation
+// To make errors easier, OrderQuantity is used for OrderQuote and response, and each acceptedOffer/offeredItem combo MUST be unique, hence no IDs are required. Check the errors presented for not enough space for all tickets works as expected.
 
 //TODO: Clarify **B** vs Order Creation terms throughout
 
-//TODO: Should we have ID in the request PUT?
+//TODO: Should we have ID in the request PUT? No, include this in a few places
+
 //TODO: Do we force properties to be (i) reflected back and (ii) stored as part of the Orders feed by the booking system? Cons: This would limit any extension mechanism, Pros: The complete item is being passed back and forth
 //TODO: Ensure somewhere it says for the Orders feed items are a "PATCH" of a subset of the properties from the original Order, and that GET is not REQUIRED so that the other properties do not need to be stored.
 //TODO: Create new feed column in Order model
