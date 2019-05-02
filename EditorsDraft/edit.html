@@ -318,7 +318,9 @@ Additional optional functionality includes:
 
 * __Leasing__ – temporarily reserving spaces for a <a>Customer</a> to attend an event or
 make use of a facility, whilst placing a booking.
-* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings.
+* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings, including proposal negotiation and message exchange.
+* __Attendee Details capture__ – optional capturing of attendee details.
+* __Additional Details capture__ – optional capturing of additional details per-attendee for a booking.
 
 
 ### Out of Scope in this version
@@ -390,6 +392,7 @@ This specification makes use of the compact IRI Syntax; please refer to the
 
 <section>
 
+
 # Typographical Conventions
 
 The following typographic conventions are used in this specification:
@@ -460,6 +463,7 @@ by this specification is scoped tightly to only specify interactions between the
 
 This specification includes two main booking flows: a [Simple Booking Flow](#simple-booking-flow), and a [Booking Flow with Approval](#booking-flow-with-approval) that builds on the [Simple Booking Flow](#simple-booking-flow). The two flows are largely identical, with the addition of a (possibly iterative) approval step in the [Booking Flow with Approval](#booking-flow-with-approval).
 
+
 ## Booking Flow overview 
     
 Described in the broadest possible terms, the Open Booking API defined by this specification supplies the technical means whereby a <a>Broker</a> can book a <a>Customer</a> into an <a>Opportunity</a> for a physical activity, by means of an `Offer` provided by a <a>Seller</a>. Typically, although not always, a <a>Payment</a> will have to be made for this `Order`.
@@ -474,7 +478,19 @@ The process of creating an `Order` will normally involve the processing of a <a>
 
 Additionally, transactions between <a>Customers</a>, <a>Brokers</a>, and <a>Sellers</a> may be subject to various legal and regulatory `Terms`, such as a `PrivacyPolicy` and `TermsOfUse`.
 
-    
+## Booking flow modularity
+
+This specification is designed to provide a minimal core [Simple Booking Flow](#simple-booking-flow), which should be straightforward to implement.
+
+This specification also provides optional features, which allows the minimal core implementation to be augmented depending on the <a>Booking System</a>'s requirements:
+- [Leasing](#leasing) (`Lease`)
+- [Attendee Details capture](#attendee-details-capture) (`https://openactive.io/OpenBookingAttendeeDetails`)
+- [Additional Details capture](#additional-details-capture) (`https://openactive.io/OpenBookingIntakeForm`)
+- [Minimal Proposal Implementation](#minimal-proposal-implementation) (`https://openactive.io/OpenBookingApproval`)
+- [Proposal Amendment](#proposal-amendment) (`https://openactive.io/OpenBookingNegotiation`)
+- [Message Exchange](#message-exchange) (`https://openactive.io/OpenBookingMessageExchange`)
+
+
 ## Booking pre-conditions
 
 In order to enter either of the booking flows described in this specification, the following pre-conditions must be met:
@@ -856,11 +872,11 @@ To reach the criteria to proceed to <a><b>B</b></a>, or rejection, `OrderProposa
 - The <a>Booking System</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by updating the <a>Orders feed</a>.
 - The <a>Broker</a> MUST transition the `OrderProposal` to a new `orderProposalStatus` by submitting a PATCH to the `OrderProposal` using the OrderProposal Update endpoint.
 
-#### Minimal Implementation
+#### Minimal Proposal Implementation
 
-In the **Minimal Implementation** the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
+In the **Minimal Proposal Implementation** the `OrderProposal` can either be accepted or rejected by the <a>Seller</a>, or aborted by the <a>Customer</a>.
 
-If an `Offer` requires this **Minimal Implementation**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
+If an `Offer` requires this **Minimal Proposal Implementation**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
 
 Note that when `Offer`s that require approval are mixed with `Offer`s that do not require approval in a single `OrderQuote`, the whole `OrderQuote` MUST always require approval. It is at the discretion of the <a>Broker</a> whether to issue two separate `OrderQuote`s (and hence complete two separate booking flows) that batch those `OrderItem`s that require approval separately to those that do not, or whether to instead combine them together into a single `OrderQuote` and hence complete a single [Booking Flow with Approval](#booking-flow-with-approval).
 
@@ -868,7 +884,7 @@ Note that when `Offer`s that require approval are mixed with `Offer`s that do no
 ##### Proposal Approval
 
 - If <a>Seller</a> approval is given, the <a>Booking System</a> MUST set `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, which will give the <a>Broker</a> permission to proceed to <a><b>B</b></a>.
-- For the [Minimal Implementation](#minimal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at <a><b>P</b></a>. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
+- For the [Minimal Proposal Implementation](#minimal-proposal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at <a><b>P</b></a>. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
 
 ##### Proposal Rejection
 
@@ -879,7 +895,7 @@ Following any type of rejection, the <a>Broker</a> MUST immediately withdraw any
 
 #### Proposal Amendment
 
-The <a>Booking System</a> MAY optionally support **Proposal Amendment**. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the [Minimal Implementation](#minimal-implementation) may be used without needing to consider this (as the amendments are initiated by the <a>Booking System</a>).
+The <a>Booking System</a> MAY optionally support **Proposal Amendment**. If this is not supported by the <a>Booking System</a>, the simple Approval/Rejection workflow described in the [Minimal Proposal Implementation](#minimal-proposal-implementation) may be used without needing to consider this (as the amendments are initiated by the <a>Booking System</a>).
 
 If an `Offer` may require **Proposal Amendment**, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingNegotiation` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such negotiation to easily filter out such offers from their experience.
 
@@ -887,7 +903,7 @@ If an `Offer` may require **Proposal Amendment**, the <a>Booking System</a> MUST
 
 - If the `orderProposalVersion` in the <a>Orders feed</a> has changed compared with the `orderProposalVersion` in the `OrderProposal` stored by the <a>Broker</a>, the <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed. The <a>Broker</a> MUST detect and highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
 - When the <a>Customer</a> confirms, the <a>Broker</a> MUST re-authorise the `totalPaymentDue`, if it has increased, with the <a>Payment Provider</a>, then proceed to <a><b>B</b></a> using the `orderProposalVersion` the <a>Customer</a> has agreed to.
-- The <a>Customer</a> or <a>Seller</a> MAY also choose to abort at any point as per [Minimal Implementation](#minimal-implementation).
+- The <a>Customer</a> or <a>Seller</a> MAY also choose to abort at any point as per [Minimal Proposal Implementation](#minimal-proposal-implementation).
 
 Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal may be done via messages communicated via [Message Exchange](#message-exchange).
 
@@ -994,7 +1010,7 @@ viii) "**2.2. Approve**" -  <a>Seller</a> approves the booking, after a period o
 
 - The <a>Booking System</a> must ensure that the `OrderProposal`s in the <a>Orders feed</a> represent the current state of `OrderProposal` within the system. The <a>Broker</a> MUST use these `OrderProposal`s to process `orderProposalStatus` changes and send update notifications to the <a>Customer</a>, including any new values for `orderSellerNote`.
 
-- Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see [Minimal Implementation](#minimal-implementation)) or a new `orderProposalVersion` (see [Proposal Amendment](#proposal-amendment)).
+- Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see [Minimal Proposal Implementation](#minimal-proposal-implementation)) or a new `orderProposalVersion` (see [Proposal Amendment](#proposal-amendment)).
 
 - If the `orderProposalVersion` in the <a>Orders feed</a> has changed compared with the `orderProposalVersion` in the `OrderProposal` stored by the <a>Broker</a>, the <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed. The <a>Broker</a> MUST detect and highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
 
@@ -1050,7 +1066,7 @@ Calls to <a><b>P</b></a> MUST be idempotent, based on the UUID.
 
 ## Customer Details and Additional Details capture
 
-### Customer Details
+### Customer Details capture
 
 The specification includes provision to capture of the following details related to the <a>Customer</a> (the actor who is booking), with only the e-mail address being required.
 - E-mail address (`email`)
@@ -1060,7 +1076,7 @@ The specification includes provision to capture of the following details related
 
 Note that these are _not_ the details of attendees, and that the <a>Customer</a> is not guaranteed to participate in the activity.
 
-### Attendee Details
+### Attendee Details capture
 
 If attendee details in scope of the `Person` type are captured, they MUST be captured via the `attendee` property of the `OrderItem` (and not using the `orderItemIntakeForm`). This allows attendee details to be stored and reused by the <a>Broker</a>.
 
@@ -1112,7 +1128,7 @@ If a required property within `Person` is not supplied by the <a>Broker</a> the 
 The <a>Broker</a> MAY remember the attendee data previously submitted by the <a>Customer</a>, if consent is provided.
 
 
-### Additional Details
+### Additional Details capture
 
 This version of the specification does not provide details to construct a complex additional details capture form, however it does facilitate simple text fields to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
 
