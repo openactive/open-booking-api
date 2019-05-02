@@ -296,7 +296,7 @@ allowing third-party applications ("<a>Brokers</a>"). to place bookings in their
 The specification defines the flow of HTTP requests and responses between the
 <a>Booking System</a> (server) and the <a>Broker</a> (client). This includes
 definitions of the overall application flow, detailed request and response
-formats and the potential error conditions that applications may encounter.
+formats and the potential error conditions that applications may encounter. A high-level summary of these and their relatinship to each other is provided in the <a>Booking Flow overview</a>, below.
 
 ## Scope and requirements
 
@@ -458,8 +458,22 @@ by this specification is scoped tightly to only specify interactions between the
 
 # Booking Flows
 
-This specification includes two main booking flows: a [Simple Booking Flow](#simple-booking-flow), and a [Booking Flow with Approval](#booking-flow-with-approval) that builds on the [Simple Booking Flow](#simple-booking-flow). Both have the same set of pre-conditions.
+This specification includes two main booking flows: a [Simple Booking Flow](#simple-booking-flow), and a [Booking Flow with Approval](#booking-flow-with-approval) that builds on the [Simple Booking Flow](#simple-booking-flow). The two flows are largely identical, with the addition of a (possibly iterative) approval step in the [Booking Flow with Approval] .
 
+## Booking Flow overview 
+    
+Described in the broadest possible terms, the [Booking API] supplies the technical means whereby a <a>Broker</a> can book a <a>Customer</a> into an <a>Opportunity</a> for a physical activity, by means of an <a>Offer</a> provided by a <a>Seller</a>. Typically, although not always, a <a>Payment</a> will have to be made for this <a>Order</A>.
+
+While this process is intuitively clear, some of its implications may be less so, and a number of common use-cases introduce a degree of additional complexity into the flow. For instance, a <a>Customer</a> will typically want to have an idea of how much a given <a>Offer</a> will cost before committing to attending an <a>Opportunity</a>. This means that before an <a>Order</a> can be created, an <a>OrderQuote</a> (a subclass of <a>Order</a>) needs to be provided. In addition, many <a>Seller</a>s will need to review their <a>Order</a>s before deciding to approve them because, for instance, they need to allocate shared resources such as gymnasiums to a number of <a>Customers</a>. This is the motivation for the [Booking Flow with Approval] sequence, and introduces to the flow the concept of <a>OrderProposal</a>s - another subclass of <a>Order</a>, which allows (re)modification by both parties and that requires explicit consent from both <a>Customer</a> and <a>Seller</a> before a new <a>Order</a> is created.
+
+The process of creating an <a>Order</a> online takes time, and for this reason some <a>Seller</a>s and <a>Broker</a>s may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
+
+Typically <a>Seller</a>s keep track of bookings by means of an automated <a>BookingService</a>. This raises the problem of ensuring consistency in the state of information between the <a>Seller</a>'s <a>BookingService</a> and the <a>Broker</a>'s client application. This difficulty is bridged by the concept of <a>Order</a> feeds, which publish all changes made to an <a>Order</a> by the <a>BookingSystem</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the client system.
+
+The process of creating an <a>Order</a> will normally involve the processing of a <a>Payment</a>. While <a>Payment</a>s are normally fixed, some approaches to pricing also allow for the possibility of a <a>DynamicPayment</a>, whereby the price may fluctuate based on external conditions. In addition, differences in approaches to taxation - whether because of regional variation, or because of the legal and commercial status of the <a>Broker</a>  - result in a need for some nuances in the modelling of <a>TaxChargeSpecification</a>s.
+
+Finally, transactions between <a>Customer</a>s, <a>Broker</a>s, and <a>Seller</a>s may be subject to various legal and regulatory <a>Terms</a>, such as a <a>PrivacyPolicy</a> and <a>TermsOfUse</a>.
+    
 ## Booking pre-conditions
 
 In order to enter either of the booking flows described in this specification, the following pre-conditions must be met:
