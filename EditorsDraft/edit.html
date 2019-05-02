@@ -296,7 +296,7 @@ allowing third-party applications ("<a>Brokers</a>"). to place bookings in their
 The specification defines the flow of HTTP requests and responses between the
 <a>Booking System</a> (server) and the <a>Broker</a> (client). This includes
 definitions of the overall application flow, detailed request and response
-formats and the potential error conditions that applications may encounter. A high-level summary of these and their relatinship to each other is provided in the <a>Booking Flow overview</a>, below.
+formats and the potential error conditions that applications may encounter. A high-level summary of these and their relationship to each other is provided in the [Booking Flow overview](#booking-flow-overview), below.
 
 ## Scope and requirements
 
@@ -458,21 +458,22 @@ by this specification is scoped tightly to only specify interactions between the
 
 # Booking Flows
 
-This specification includes two main booking flows: a [Simple Booking Flow](#simple-booking-flow), and a [Booking Flow with Approval](#booking-flow-with-approval) that builds on the [Simple Booking Flow](#simple-booking-flow). The two flows are largely identical, with the addition of a (possibly iterative) approval step in the [Booking Flow with Approval] .
+This specification includes two main booking flows: a [Simple Booking Flow](#simple-booking-flow), and a [Booking Flow with Approval](#booking-flow-with-approval) that builds on the [Simple Booking Flow](#simple-booking-flow). The two flows are largely identical, with the addition of a (possibly iterative) approval step in the [Booking Flow with Approval](#booking-flow-with-approval).
 
 ## Booking Flow overview 
     
-Described in the broadest possible terms, the [Booking API] supplies the technical means whereby a <a>Broker</a> can book a <a>Customer</a> into an <a>Opportunity</a> for a physical activity, by means of an <a>Offer</a> provided by a <a>Seller</a>. Typically, although not always, a <a>Payment</a> will have to be made for this <a>Order</A>.
+Described in the broadest possible terms, the Open Booking API defined by this specification supplies the technical means whereby a <a>Broker</a> can book a <a>Customer</a> into an <a>Opportunity</a> for a physical activity, by means of an `Offer` provided by a <a>Seller</a>. Typically, although not always, a <a>Payment</a> will have to be made for this `Order`.
 
-While this process is intuitively clear, some of its implications may be less so, and a number of common use-cases introduce a degree of additional complexity into the flow. For instance, a <a>Customer</a> will typically want to have an idea of how much a given <a>Offer</a> will cost before committing to attending an <a>Opportunity</a>. This means that before an <a>Order</a> can be created, an <a>OrderQuote</a> (a subclass of <a>Order</a>) needs to be provided. In addition, many <a>Seller</a>s will need to review their <a>Order</a>s before deciding to approve them because, for instance, they need to allocate shared resources such as gymnasiums to a number of <a>Customers</a>. This is the motivation for the [Booking Flow with Approval] sequence, and introduces to the flow the concept of <a>OrderProposal</a>s - another subclass of <a>Order</a>, which allows (re)modification by both parties and that requires explicit consent from both <a>Customer</a> and <a>Seller</a> before a new <a>Order</a> is created.
+While this process is intuitively clear, some of its implications may be less so, and a number of common use-cases introduce a degree of additional complexity into the flow. For instance, a <a>Customer</a> will typically want to have an idea of how much a given `Offer` will cost before committing to attending an <a>Opportunity</a>. This means that before an `Order` can be created, an `OrderQuote` (a subclass of `Order`) needs to be provided. In addition, many <a>Seller</a>s will need to review their `Order`s before deciding to approve them because, for instance, they need to allocate shared resources such as caretakers to a number of <a>Customers</a>. This is the motivation for the [Booking Flow with Approval](#booking-flow-with-approval) sequence, and introduces to the flow the concept of `OrderProposal`s - another subclass of `Order`, which allows (re)modification by both parties and that requires explicit consent from both <a>Customer</a> and <a>Seller</a> before a new `Order` is created.
 
-The process of creating an <a>Order</a> online takes time, and for this reason some <a>Seller</a>s and <a>Broker</a>s may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
+The process of creating an `Order` online takes time, and for this reason some <a>Seller</a>s and <a>Broker</a>s may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
 
-Typically <a>Seller</a>s keep track of bookings by means of an automated <a>BookingService</a>. This raises the problem of ensuring consistency in the state of information between the <a>Seller</a>'s <a>BookingService</a> and the <a>Broker</a>'s client application. This difficulty is bridged by the concept of <a>Order</a> feeds, which publish all changes made to an <a>Order</a> by the <a>BookingSystem</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the client system.
+Typically <a>Sellers</a> keep track of bookings by means of an automated <a>Booking System</a>. This raises the problem of ensuring consistency in the state of information between the <a>Booking System</a> and the <a>Broker</a>. This difficulty is bridged by the concept of `Order` feeds, which publish all changes made to an `Order` by the <a>Booking System</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the client system.
 
-The process of creating an <a>Order</a> will normally involve the processing of a <a>Payment</a>. While <a>Payment</a>s are normally fixed, some approaches to pricing also allow for the possibility of a <a>DynamicPayment</a>, whereby the price may fluctuate based on external conditions. In addition, differences in approaches to taxation - whether because of regional variation, or because of the legal and commercial status of the <a>Broker</a>  - result in a need for some nuances in the modelling of <a>TaxChargeSpecification</a>s.
+The process of creating an `Order` will normally involve the processing of a <a>Payment</a>. While <a>Payments</a> are normally fixed, some approaches to pricing also allow for the possibility of a `DynamicPayment`, whereby the price may fluctuate based on external conditions. In addition, differences in approaches to taxation - whether because of regional variation, or because of the legal and commercial status of the <a>Broker</a>  - result in a need for some nuances in the modelling of `TaxChargeSpecification`s.
 
-Finally, transactions between <a>Customer</a>s, <a>Broker</a>s, and <a>Seller</a>s may be subject to various legal and regulatory <a>Terms</a>, such as a <a>PrivacyPolicy</a> and <a>TermsOfUse</a>.
+Additionally, transactions between <a>Customers</a>, <a>Brokers</a>, and <a>Sellers</a> may be subject to various legal and regulatory `Terms`, such as a `PrivacyPolicy` and `TermsOfUse`.
+
     
 ## Booking pre-conditions
 
@@ -523,24 +524,25 @@ Note that some or all steps may be skipped, or may not be presented to the <a>Cu
 - The <a>Booking System</a> adds the `Order` to an <a>Orders feed</a> specific to the <a>Broker</a>, which the <a>Broker</a> reads to update its internal state, including those updates resulting from cancellations.
 
 
-### Proposal Leasing
+### Leasing
 
-Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contend with one another for a limited number of opportunities. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, some <a>Booking Systems</a> use the concept of a <dfn>lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey and improves the user experience overall.
+Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contend with one another for a limited number of opportunities. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, some <a>Booking Systems</a> use the concept of a <dfn>Lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey and improves the user experience overall.
 
-The design of this API supports the use of time-bound leases. Using leases is RECOMMENDED, however they are not required, in order to ensure a low barrier of entry for implementers of the specification.
+The design of this API supports the use of time-bound <a>Leases</a>. Using <a>Leases</a> is RECOMMENDED, however they are not required, in order to ensure a low barrier of entry for implementors of the specification.
 
-Individually at <a><b>C1</b></a> and <a><b>C2</b></a>, the <a>Booking System</a> can opt to create (or extend) a lease for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capacity to support leases, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. 
+Individually at <a><b>C1</b></a> and <a><b>C2</b></a>, the <a>Booking System</a> can opt to create (or extend) a <a>Lease</a> for the <a>Broker</a>. Whether they opt to do so may depend on the <a>Booking System</a>'s capacity to support <a>Leases</a>, or on the <a>Seller</a>'s configuration of the <a>Booking System</a>. 
 
-At <a><b>C1</b></a> an <dfn>anonymous lease</dfn> MAY be created i.e. a lease for a <a>Customer</a> that has not yet provided any personal details.
-At <a><b>C2</b></a> a <dfn>named lease</dfn> MAY be created i.e. a lease for a <a>Customer</a> who has identified themselves via personal details and other additional details. Any existing <a>anonymous lease</a> becomes a <a>named lease</a> when the customer's personal details are provided (even if the <a>Booking System</a> does not store them at this stage).
+At <a><b>C1</b></a> an <dfn>Anonymous Lease</dfn> MAY be created i.e. a <a>Lease</a> for a <a>Customer</a> that has not yet provided any personal details.
+
+At <a><b>C2</b></a> a <dfn>Named Lease</dfn> MAY be created i.e. a <a>Lease</a> for a <a>Customer</a> who has identified themselves via personal details and other additional details. Any existing <a>Anonymous Lease</a> becomes a <a>Named Lease</a> when the customer's personal details are provided (even if the <a>Booking System</a> does not store them at this stage).
  
-If a lease is created at <a><b>C1</b></a> and/or <a><b>C2</b></a> it is used during <a><b>B</b></a>. However, if no lease is created, or if it had expires prior to the transaction being completed, the booking completes anyway provided sufficient inventory is available.
+If a <a>Lease</a> is created at <a><b>C1</b></a> and/or <a><b>C2</b></a> it is used during <a><b>B</b></a>. However, if no <a>Lease</a> is created, or if it had expires prior to the transaction being completed, the booking completes anyway provided sufficient inventory is available.
 
-It is RECOMMENDED that if the <a>Booking System</a> supports leasing, it also guarantees the price of each leased item for the duration of the lease, so that the <a>Customer</a> is guaranteed to pay the price they have seen during <a><b>C2</b></a>.
+It is RECOMMENDED that if the <a>Booking System</a> supports leasing, it also guarantees the price of each leased item for the duration of the <a>Lease</a>, so that the <a>Customer</a> is guaranteed to pay the price they have seen during <a><b>C2</b></a>.
 
-The specification is designed to allow <a>Broker</a>s to be agnostic to leases: should a <a>Booking System</a> be upgraded to support these, it can do so without affecting the <a>Broker</a>'s implementation.
+The specification is designed to allow <a>Broker</a>s to be agnostic to <a>Leases</a>: should a <a>Booking System</a> be upgraded to support these, it can do so without affecting the <a>Broker</a>'s implementation.
 
-By design, then, the use of leases is largely transparent to the <a>Broker</a>. However, the <a>Booking System</a> MUST provide information on the lease to help improve the user experience of the customer journey as follows: when a lease is created, a `Lease` object MUST be returned in the `OrderQuote`.
+By design, then, the use of <a>Leases</a> is largely transparent to the <a>Broker</a>. However, the <a>Booking System</a> MUST provide information on the <a>Lease</a> to help improve the user experience of the customer journey as follows: when a <a>Lease</a> is created, a `Lease` object MUST be returned in the `OrderQuote`.
 
 <pre class="example" title="Example of lease">
   "lease": {
@@ -603,10 +605,10 @@ i) "**1. Select**" - <a>Customer</a> browses <a>Broker</a> site anonymously and 
 
 ii) <a><b>C1</b></a> - <a>Broker</a> call with `OrderQuote` including UUID without a `customer` object to check availability and that the combination of items requested can be purchased, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
-- <a>Booking System</a> creates <a>anonymous lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. If a lease has been created, then the `OrderQuote` in the response MUST include a `lease` property containing a valid `Lease` object.
+- <a>Booking System</a> creates <a>Anonymous Lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. If a <a>Lease</a> has been created, then the `OrderQuote` in the response MUST include a `lease` property containing a valid `Lease` object.
 - `OrderQuote` MUST include `totalPaymentDue`, which allows the <a>Broker</a> to update any UI with the total.
 - `OrderQuote` MUST include a list of `OrderItem`s which contain their respective <a>Opportunity</a> objects, including enough detail to allow the <a>Broker</a> to display information about the <a>Opportunity</a> to the <a>Customer</a> (rather than relying on the <a>Broker</a> having the most up-to-date <a>Opportunity</a> data from the open feeds at the point of purchase).
-- The <a>Booking System</a> MUST ensure that the data returned to the <a>Broker</a> in the `remainingAttendeeCapacity` and `remainingUses` properties are up-to-date, including places already booked and those currently reserved by any leases from competing `OrderQuote`s.
+- The <a>Booking System</a> MUST ensure that the data returned to the <a>Broker</a> in the `remainingAttendeeCapacity` and `remainingUses` properties are up-to-date, including places already booked and those currently reserved by any <a>Leases</a> from competing `OrderQuote`s.
 - `OrderQuote` MUST specify any additional details required to complete the booking for the selected `OrderItem`s via an `orderItemIntakeForm`.
 - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. 
 - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in its response, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
@@ -624,7 +626,7 @@ iii) "**2. Identify**" - <a>Customer</a> submits personal details and any other 
 
 iv) <a><b>C2</b></a> - <a>Broker</a> call with `OrderQuote` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
-- <a>Booking System</a> creates <a>named lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Works exactly as <a><b>C1</b></a>, except validates `payment` details, `customer` details, any `attendee` details, and the `orderItemIntakeFormResponse`.
+- <a>Booking System</a> creates <a>Named Lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Works exactly as <a><b>C1</b></a>, except validates `payment` details, `customer` details, any `attendee` details, and the `orderItemIntakeFormResponse`.
 - <a>Broker</a> presents the contents of the `OrderQuote` to the `Customer` to ensure they have the most up-to-date price and availability before proceeding with the purchase.
 - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem` - including if an `OrderItem` is no longer available, cannot be purchased in combination with another `OrderItem`, or does not contain a sufficient `orderItemIntakeFormResponse`.
 - Any `error`s must be resolved by the <a>Customer</a> or <a>Broker</a> before proceeding, by amending the `OrderItem`s included in the `OrderQuote` and resubmitting until an `OrderQuote` is returned without `error`s.
@@ -654,9 +656,9 @@ vii) <a><b>B</b></a> - <a>Broker</a> call with `Order` including UUID with a `cu
 
 - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
     
-- If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>B</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the lease is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
+- If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>B</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the <a>Lease</a> is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
 
-- If the lease has expired, or if leases are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
+- If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
 
 - If the booking succeeds only for some `OrderItem`s, the whole transaction to create the `Order` within the <a>Booking System</a> is rolled back and <a><b>B</b></a> returns an `OrderCreationFailedError` with associated status code.
 
@@ -815,15 +817,15 @@ The flow exactly mirrors the [Simple Booking Flow](#simple-booking-flow), with t
 
 Note that the `OrderProposal` at stages 2.1 and 2.2 does not constitute a booking. The whole flow MUST be completed before the <a>Customer</a> is considered "booked" onto an <a>Opportunity</a>.
 
-### Leasing
+### Proposal Leasing
 
-Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), and if a lease was acquired at <a><b>C1</b></a> or <a><b>C2</b></a> it SHOULD be carried over to the `OrderProposal` and the lease extended for a duration sufficient to cover the lifetime of the `OrderProposal`.
+Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), and if a <a>Lease</a> was acquired at <a><b>C1</b></a> or <a><b>C2</b></a> it SHOULD be carried over to the `OrderProposal` and the <a>Lease</a> extended for a duration sufficient to cover the lifetime of the `OrderProposal`.
 
-A lease is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
+A <a>Lease</a> is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the lease has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
 
-If the lease expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the lease, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
+If the <a>Lease</a> expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the <a>Lease</a>, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
 
 ### High-level type flow
@@ -967,9 +969,9 @@ vii) <a><b>P</b></a> - <a>Broker</a> call with `OrderProposal` including UUID wi
 
   - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
     
-  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>P</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the lease is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
+  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>P</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the <a>Lease</a> is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
 
-  - If the lease has expired, or if leases are not supported, then the <a>Booking System</a> attempts to create the `OrderProposal` anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>P</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
+  - If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to create the `OrderProposal` anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>P</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
 
   - If the booking succeeds only for some `OrderItem`s, the whole transaction to create the `OrderProposal` within the <a>Booking System</a> is rolled back and <a><b>P</b></a> returns an `OrderCreationFailedError` with associated status code.
 
@@ -1013,7 +1015,7 @@ x) <dfn>Payment Re-authorisation</dfn> - <a>Broker</a> pre-authorises `totalPaym
 
 xi) <a><b>B</b></a> - <a>Broker</a> makes minimal call with `Order` including just the `orderProposalVersion`, and any additional `payment` data from the re-authorisation step if necessary, <a>Booking System</a> responds with a full `Order` as per the [Simple Booking Flow](#simple-booking-flow).
 
-- If the lease has expired, or if leases are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code and the original `OrderProposal` MUST be rejected by the <a>Seller</a> as per [Proposal Leasing](#proposal-leasing). Note that this is unlikely to occur as in such cases the `OrderProposal` SHOULD have already been rejected when it could no longer be fulfilled.
+- If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code and the original `OrderProposal` MUST be rejected by the <a>Seller</a> as per [Proposal Leasing](#proposal-leasing). Note that this is unlikely to occur as in such cases the `OrderProposal` SHOULD have already been rejected when it could no longer be fulfilled.
 
 - The <a>Booking System</a> MUST reflect back all properties defined by this specification that were supplied in the <a>Broker</a>'s original `OrderProposal` request (with amendments if [Proposal Amendment](#proposal-amendment) has occurred), to acknowledge they have been recognised. The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
     
@@ -1525,9 +1527,9 @@ The <a>Broker</a> MAY filter the `Offer`s it displays, for example based on `age
 
 The <a>Broker</a> MAY call <a><b>C1</b></a> and MUST call <a><b>C2</b></a> when the <a>Customer</a> updates their basket to add and remove items.
 
-When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated lease to match the latest set of `OrderItem`s by removing those `OrderItem` that are not present in the request from the lease, and adding those `OrderItem` that have been added since the last call to the lease.
+When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated <a>Lease</a> to match the latest set of `OrderItem`s by removing those `OrderItem` that are not present in the request from the <a>Lease</a>, and adding those `OrderItem` that have been added since the last call to the <a>Lease</a>.
 
-Leases may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all leases when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
+<a>Leases</a> may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all <a>Leases</a> when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
 
 For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
 
@@ -1578,7 +1580,7 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 ## Orders feed: Notifications, updates and refunds
 
-An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">New Orders and OrderProposals</a>, this list must include all, and only, <a>Order</a>s that have been updated by the <a>Booking System</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
+An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">New Orders and OrderProposals</a>, this list must include all, and only, `Order`s that have been updated by the <a>Booking System</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
 This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
@@ -1797,7 +1799,7 @@ An `Order` with a particular UUID MUST only exist as either an `Order`, `OrderQu
 Hence the Order Status endpoint SHOULD return any stored `Order`, `OrderQuote` or `OrderProposal` with that UUID, and the <a>Orders Feed</a> MUST return both `Order` and `OrderProposal` items (noting that `OrderQuote` are not included in the <a>Orders Feed</a>).
 
 To aid the reader in their semantic reasoning, from a REST perspective, there are four resources:
-- `/order-quote-templates` and `/order-quotes` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the lease expires or an `OrderProposal` or `Order` is created.
+- `/order-quote-templates` and `/order-quotes` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the <a>Lease</a> expires or an `OrderProposal` or `Order` is created.
 - `/order-proposals` - a collection resource of `OrderProposal`s, which are deleted when a corresponding `Order` is created.
 - `/orders` - a collection resource of `Order`s which includes its subclasses `OrderQuote`s and `OrderProposal`s
 
@@ -1817,7 +1819,7 @@ The <a><b>C1</b></a> is an endpoint that accepts an `OrderQuote` without a `cust
 
 A PUT request to this endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return an `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` nearly identical to the result of <a><b>B</b></a> (except it excludes `customer`, `attendee`, `orderItemIntakeFormResponse` and the `payment` `identifier`), without any side effects (with the exception of optional leasing).
 
-Note that in a simple implementation that does not manage lease state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> MAY be exactly the same endpoint that simply validates the `email` of the `customer` only if a `customer` value is supplied. Even for complex implementations, given the similarities between <a><b>C1</b></a> and <a><b>C2</b></a>, a single endpoint can used to cover both.
+Note that in a simple implementation that does not manage <a>Lease</a> state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> MAY be exactly the same endpoint that simply validates the `email` of the `customer` only if a `customer` value is supplied. Even for complex implementations, given the similarities between <a><b>C1</b></a> and <a><b>C2</b></a>, a single endpoint can used to cover both.
 
 <pre class="example" title="OrderQuote Creation C1: example request" data-transform="dataExampleOrderQuoteCreationC1Request">
 </pre>
@@ -1848,7 +1850,7 @@ The <a><b>C2</b></a> is PUT endpoint that accepts an `OrderQuote` with a `custom
 
 A PUT request to this endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return an `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` nearly identical to the result of <a><b>B</b></a> (except it excludes `payment` `identifier`), without any side effects (with the exception of optional leasing).
 
-Note that the <a>Booking System</a> MUST NOT store any personal information of the `customer` provided for the `OrderQuote` past the expiry of any associated lease created.
+Note that the <a>Booking System</a> MUST NOT store any personal information of the `customer` provided for the `OrderQuote` past the expiry of any associated <a>Lease</a> created.
 
 <pre class="example" title="OrderQuote Creation C2: example request" data-transform="dataExampleOrderQuoteCreationC2Request">
 </pre>
@@ -1876,7 +1878,7 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>OrderQuote Deletion</dfn>        | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
 
-Deleting an `OrderQuote` releases any lease associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
+Deleting an `OrderQuote` releases any <a>Lease</a> associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
 
 <pre class="example" title="Order Deletion: example request" data-transform="dataExampleOrderDeletionRequest">
 </pre>
@@ -2093,7 +2095,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
-| [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The lease on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
+| [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The <a>Lease</a> on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:orderRequiresApproval`](https://openactive.io/orderRequiresApproval) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the [Booking Flow with Approval](#booking-flow-with-approval) MUST be used to book the set of `OrderItem`s included. MUST be `true` if any of the `OrderItem`s require approval. |
 
@@ -2265,13 +2267,13 @@ For `schema:Organization` when used for `customer` or `seller`, the following pr
 
 ### `oa:Lease`
 
-Used to represent a `lease`. Leases are defined as objects in this specification to provide for future extension.
+Used to represent a `lease`. <a>Leases</a> are defined as objects in this specification to provide for future extension.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Lease` |
-| [`oa:leaseExpires`](https://openactive.io/leaseExpires)            | - | REQUIRED | [`schema:DateTime`](https://schema.org/DateTime) | Expiry DateTime of the lease in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional identifier of the lease if useful for audit or debugging purposes. |
+| [`oa:leaseExpires`](https://openactive.io/leaseExpires)            | - | REQUIRED | [`schema:DateTime`](https://schema.org/DateTime) | Expiry DateTime of the <a>Lease</a> in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format |
+| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional identifier of the <a>Lease</a> if useful for audit or debugging purposes. |
 
 
 ### `schema:PriceSpecification`
@@ -2538,7 +2540,7 @@ A <a>Broker</a> will be conformant with this specification as long as it recogni
 
 #### Booking functionality extensions
 
-Any extension to the functionality of this specification MUST NOT be inferred from additional properties included in future minor versions of the [[Modelling-Opportunity-Data]] specification. Given the scope of the [[Modelling-Opportunity-Data]] specification, such additional properties will serve simply to provide greater expressivity to the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Functional extensions to the booking process itself fall properly within the scope of the [[Booking]] specification, and hence should be integrated with future versions of that specification.
+Any extension to the functionality of this specification MUST NOT be inferred from additional properties included in future minor versions of the [[Modelling-Opportunity-Data]] specification. Given the scope of the [[Modelling-Opportunity-Data]] specification, such additional properties will serve simply to provide greater expressivity to the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Functional extensions to the booking process itself fall properly within the scope of Open Booking API specification, and hence should be integrated with future versions of this specification.
 
 The [[OpenActive-Beta-Namespace]] and properties in custom namespaces (as described in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in this specification. However all functionality MUST work as described in this specification should these extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
 
@@ -2602,7 +2604,7 @@ Although this specification does not mandate a specific means of securing an API
 
 All of the API transactions described in this document MUST require authentication.
 
-<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may a <a>Broker</a>, or may be <a>Middleware</a>.
+<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may a <a>Broker</a>, or may be a <a>Middleware</a>.
 
 ### API level authentication and data security
 
@@ -2621,19 +2623,24 @@ Other server-to-server authentication mechanisms such as basic authentication, A
 
 This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
 
-The definition of the <a>Middleware</a> role in this specification is intentionally broad: it is simply any agent required for handling <a>Authentication Credentials</a> that lies between the public-facing <a>Broker</a> and the <a>Seller</a>. 'Middleware' thus includes not only dedicated middleware technology companies, but also parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
+The definition of the <a>Middleware</a> role in this specification is intentionally broad: it is simply any party that handles <a>Authentication Credentials</a> and lies between one or many public-facing <a>Brokers</a> and the <a>Seller</a>. 'Middleware' thus includes not only dedicated middleware technology companies, but also parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
 
-This specification thus keeps <a>Authentication Credentials</a> separate from the concept of a <a>Broker</a> within the <a>Booking System</a>. While all <a>Broker</a>s must be associated wiht a set of <a>Authenication Credentials</a> and vice-versa, note that this is a many-to-many relationship: one <a>Broker</a> may be associated wiht more than one set of <a>Authentication Credentials</a>, and one sent of <a>Authentication Credentials</a> may be used by more than one <a>Broker</a>. The introduction of a new <a>Broker</a> (as specified by the `broker` property) MUST be possible by simply including the details within the requests of this API, with no additional out-of-band registration required.
+This specification thus keeps <a>Authentication Credentials</a> separate from the concept of a <a>Broker</a> within the <a>Booking System</a>. While all <a>Brokers</a> must be associated with a set of <a>Authentication Credentials</a>, note that this is a one-to-many relationship: one set of <a>Authentication Credentials</a> MUST be able be used on behalf of many <a>Brokers</a>. The introduction of a new <a>Broker</a> (as specified by the `broker` property) MUST be possible by simply including the details within the requests of this API, with no additional out-of-band registration required.
 
-The `broker` property MUST contain the details of the actual <a>Broker</a> rather than any <a>Middleware</a>.
-
-If information regarding <a>Middleware</a> or any other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
+<figure>
+ <img src="authentication-credentials-data-isolation.png" alt="Data Isolation within Authentication Credentials">
+ <figcaption>Data is isolated between Authentication Credentials, with one set of Authentication Credentials allowing access to many Brokers</figcaption>
+</figure>
 
 In terms of implementation, all data partitioning and security MUST be based on the <a>Authentication Credentials</a>; the `broker` property within the `Order` is for information only.
 
-A client using the same <a>Authentication Credentials</a> MUST be able to represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of <a>Authentication Credentials</a>. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of <a>Authentication Credentials</a> MUST NOT be able to access `Order`s created by one set of <a>Authentication Credentials</a> when using the other.
+A client using the same <a>Authentication Credentials</a> MUST be able to represent more than one <a>Broker</a>, and the <a>Booking System</a> MUST make no assumptions regarding which <a>Broker</a> is being represented by a particular set of <a>Authentication Credentials</a>. For the avoidance of doubt: the same <a>Broker</a> accessing a <a>Booking System</a> using two sets of <a>Authentication Credentials</a> MUST NOT be able to access `Order`s created by one set of <a>Authentication Credentials</a> when using the other, and is considered as two separate identically-named <a>Brokers</a> by the <a>Booking System</a>.
 
 Note that the `broker` property in the request body is to help the <a>Booking System</a> to clarify which <a>Broker</a> is making the request and to help them in situations such as <a>Customer</a> queries. It is not designed as any part of an authentication which MUST be performed outside of the JSON body of the request. Authentication tokens MUST NOT be present within the `broker` property of the submitted JSON.
+
+The `broker` property MUST contain the details of the actual <a>Broker</a> rather than any <a>Middleware</a>.
+
+Where information regarding <a>Middleware</a> or any other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
 
 The <a>Booking System</a> MAY choose to produce usage reports against <a>Authentication Credentials</a>, as well as against <a>Brokers</a>, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account into which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
 
