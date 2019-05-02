@@ -1130,11 +1130,11 @@ The <a>Broker</a> MAY remember the attendee data previously submitted by the <a>
 
 ### Additional Details capture
 
-This version of the specification does not provide comprehensive details to construct a complex additional details capture form, however it does facilitate simple text fields, dropdowns and checkboxes to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
+This version of the specification does not provide comprehensive support for construction of a complex additional details capture form. However, it does facilitate the use of simple text fields, dropdowns and checkboxes to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
 
-If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support additional details capture to easily filter out such offers from their experience.
+If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such additional details capture to easily filter out such offers from their experience.
 
-Four types of form element are available, which sub-class `PropertyValueSpecification`:
+Four types of form element are available, all of which sub-class `PropertyValueSpecification`:
 - `ShortAnswerFormFieldSpecification`
 - `ParagraphFormFieldSpecification`
 - `DropdownFormFieldSpecification`
@@ -1179,7 +1179,7 @@ Four types of form element are available, which sub-class `PropertyValueSpecific
 
 `DropdownFormFieldSpecification` provides a list of options in a dropdown format.
 
-`valueOption`s are provided as simple strings containing display values, and are supplied back to the <a>Booking System</a> using these display values in the `orderItemIntakeFormResponse`.
+`valueOption`s are provided as an array of simple strings containing display values, and are supplied back to the <a>Booking System</a> using these display values in the `orderItemIntakeFormResponse`.
 
 <pre class="example" title="Example of orderItemIntakeForm with DropdownFormFieldSpecification provided by Booking System at C1">
   {
@@ -1267,7 +1267,7 @@ If a field with `valueRequired` is not supplied by the <a>Broker</a>, the <a>Boo
   }
 </pre>
 
-If the contents of a field supplied by the <a>Broker</a> is invalid, the <a>Booking System</a> MUST include an `InvalidIntakeFormError` against the offending `OrderItem` at <a><b>C2</b></a> which includes an `instance` that references the `id` of the specific `PropertyValueSpecification`, and a human-readable `description` of the validation constraint to allow the <a>Customer</a> to correct it.
+If the contents of a field supplied by the <a>Broker</a> are present but invalid, the <a>Booking System</a> MUST include an `InvalidIntakeFormError` against the offending `OrderItem` at <a><b>C2</b></a> which includes both an `instance` that references the `id` of the specific `PropertyValueSpecification`, and a human-readable `description` of the validation constraint to allow the <a>Customer</a> to correct it.
 
 In this version of the specification, any required field value validation MUST be implemented by the <a>Booking System</a> via `InvalidIntakeFormError`, for example if integer values are required.
 
@@ -1285,7 +1285,7 @@ In this version of the specification, any required field value validation MUST b
   }
 </pre>
 
-The <a>Broker</a> MAY remember the values previously submitted by the <a>Customer</a> based on the `id` of the `PropertyValueSpecification`, if consent is provided.
+The <a>Broker</a> MAY remember the values previously submitted by the <a>Customer</a> based on the `id` of the `PropertyValueSpecification`, if consent for such storage is provided.
 
 It is expected that future versions of the specification will support more complex field types.
 
