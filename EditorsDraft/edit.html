@@ -1130,19 +1130,29 @@ The <a>Broker</a> MAY remember the attendee data previously submitted by the <a>
 
 ### Additional Details capture
 
-This version of the specification does not provide details to construct a complex additional details capture form, however it does facilitate simple text fields to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
+This version of the specification does not provide comprehensive details to construct a complex additional details capture form, however it does facilitate simple text fields, dropdowns and checkboxes to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
 
 If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support additional details capture to easily filter out such offers from their experience.
 
-<pre class="example" title="Example of orderItemIntakeForm provided by Booking System at C1">
+Four types of form element are available, which sub-class `PropertyValueSpecification`:
+- `ShortAnswerFormFieldSpecification`
+- `ParagraphFormFieldSpecification`
+- `DropdownFormFieldSpecification`
+- `BooleanFormFieldSpecification`
+
+#### Text fields
+
+`ShortAnswerFormFieldSpecification` and `ParagraphFormFieldSpecification` are identical except that they represent a single-line text box and a multi-line text box, respectively.
+
+<pre class="example" title="Example of orderItemIntakeForm with ShortAnswerFormSpecification provided by Booking System at C1">
   {
     "type": "OrderItem",
     ...
     "orderItemIntakeForm": [
       {
-        "type": "PropertyValueSpecification",
+        "type": "ShortAnswerFormSpecification",
         "id": "https://example.com/experience",
-        "name": "More information about you",
+        "name": "Level of experience",
         "description": "Have you played before? Are you a complete beginner or seasoned pro?",
         "valueRequired": true
       }
@@ -1150,7 +1160,7 @@ If an `Offer` requires additional details capture, the <a>Booking System</a> MUS
   }
 </pre>
 
-<pre class="example" title="Example of orderItemIntakeFormResponse provided by Broker at C2">
+<pre class="example" title="Example of orderItemIntakeFormResponse for ShortAnswerFormSpecification provided by Broker at C2">
   {
     "type": "OrderItem",
     ...
@@ -1164,7 +1174,84 @@ If an `Offer` requires additional details capture, the <a>Booking System</a> MUS
   }
 </pre>
 
-If a field with `valueRequired` is not supplied by the <a>Broker</a> the <a>Booking System</a> MUST include an `IncompleteIntakeFormError` against the offending `OrderItem` at <a><b>C2</b></a> which includes an `instance` that references the `id` of the `PropertyValueSpecification`.
+
+#### Dropdown fields
+
+`DropdownFormFieldSpecification` provides a list of options in a dropdown format.
+
+`valueOption`s are provided as simple strings containing display values, and are supplied back to the <a>Booking System</a> using these display values in the `orderItemIntakeFormResponse`.
+
+<pre class="example" title="Example of orderItemIntakeForm with DropdownFormFieldSpecification provided by Booking System at C1">
+  {
+    "type": "OrderItem",
+    ...
+    "orderItemIntakeForm": [
+      {
+        "type": "DropdownFormFieldSpecification",
+        "id": "https://example.com/age",
+        "name": "Age",
+        "description": "Your age is useful for us to place you in the correct group on the day",
+        "valueOption": ["0-18", "18-30", "30+"],
+        "valueRequired": true
+      }
+    ]
+  }
+</pre>
+
+<pre class="example" title="Example of orderItemIntakeFormResponse for DropdownFormFieldSpecification provided by Broker at C2">
+  {
+    "type": "OrderItem",
+    ...
+    "orderItemIntakeFormResponse": [
+      {
+        "type": "PropertyValue",
+        "propertyID": "https://example.com/age",
+        "value": "0-18"
+      }
+    ]
+  }
+</pre>
+
+
+#### Checkbox fields
+
+`BooleanFormFieldSpecification` accepts either a `true` or `false` response, and MUST NOT be specified as `valueRequired`.
+
+<pre class="example" title="Example of orderItemIntakeForm with BooleanFormFieldSpecification provided by Booking System at C1">
+  {
+    "type": "OrderItem",
+    ...
+    "orderItemIntakeForm": [
+      {
+        "type": "BooleanFormFieldSpecification",
+        "id": "https://example.com/photoconsent",
+        "name": "Photo Consent",
+        "description": "Are you happy for us to include photos of you in our marketing materials?"
+      }
+    ]
+  }
+</pre>
+
+The `value` in the `PropertyValue` response MUST be either `true` or `false`.
+
+<pre class="example" title="Example of orderItemIntakeFormResponse for BooleanFormFieldSpecification provided by Broker at C2">
+  {
+    "type": "OrderItem",
+    ...
+    "orderItemIntakeFormResponse": [
+      {
+        "type": "PropertyValue",
+        "propertyID": "https://example.com/photoconsent",
+        "value": true
+      }
+    ]
+  }
+</pre>
+
+
+#### Form validation and auto-complete
+
+If a field with `valueRequired` is not supplied by the <a>Broker</a>, the <a>Booking System</a> MUST include an `IncompleteIntakeFormError` against the offending `OrderItem` at <a><b>C2</b></a> which includes an `instance` that references the `id` of the specific `PropertyValueSpecification`.
 
 <pre class="example" title="Example of an error for missing additional details field data">
   {
@@ -1175,6 +1262,24 @@ If a field with `valueRequired` is not supplied by the <a>Broker</a> the <a>Book
         "type": "IncompleteIntakeFormError",
         "instance": "https://example.com/experience",
         "description": "Incomplete additional details supplied"
+      }
+    ]
+  }
+</pre>
+
+If the contents of a field supplied by the <a>Broker</a> is invalid, the <a>Booking System</a> MUST include an `InvalidIntakeFormError` against the offending `OrderItem` at <a><b>C2</b></a> which includes an `instance` that references the `id` of the specific `PropertyValueSpecification`, and a human-readable `description` of the validation constraint to allow the <a>Customer</a> to correct it.
+
+In this version of the specification, any required field value validation MUST be implemented by the <a>Booking System</a> via `InvalidIntakeFormError`, for example if integer values are required.
+
+<pre class="example" title="Example of an error for invalid additional details field data">
+  {
+    "type": "OrderItem",
+    ...
+    "error": [
+      {
+        "type": "InvalidIntakeFormError",
+        "instance": "https://example.com/shoesize",
+        "description": "The provided shoe size is not a number"
       }
     ]
   }
@@ -2388,6 +2493,80 @@ Used for `termsOfService`.
 A specific subclass for Terms of Use, to help the <a>Broker</a> distinguish these types of `Terms` in their user experience.
 
 
+### `schema:PropertyValueSpecification`
+
+`schema:PropertyValueSpecification` MUST NOT be used in its abstract form, but is instead subclassed into more specific types.
+
+| Property                                                           |  Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|--------------------------|------|-------|
+| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `PropertyValueSpecification` |
+| `@id`                                                              | REQUIRED    | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the `PropertyValueSpecification` to be referenced in the `PropertyValue` response. |
+| [`schema:name`](http://schema.org/name)                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Display label for the field. |
+| [`schema:description`](http://schema.org/description)              | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Descriptive help text for the field. |
+| [`schema:valueRequired`](http://schema.org/valueRequired)          | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Specifies that a value for the field is required to proceed with the booking. |
+
+
+### `oa:ShortAnswerFormFieldSpecification`
+
+Used for `orderItemIntakeForm`.
+
+`oa:ShortAnswerFormFieldSpecification` subclasses `schema:PropertyValueSpecification`.
+
+Specifies a single-line text box field.
+
+
+### `oa:ParagraphFormFieldSpecification`
+
+Used for `orderItemIntakeForm`.
+
+`oa:ParagraphFormFieldSpecification` subclasses `schema:PropertyValueSpecification`.
+
+Specifies a multi-line text box field.
+
+
+### `oa:DropdownFormFieldSpecification`
+
+Used for `orderItemIntakeForm`.
+
+`oa:DropdownFormFieldSpecification` subclasses `schema:PropertyValueSpecification`, with the addition of `oa:valueOption`.
+
+Specifies a list of options in a dropdown format.
+
+| Property                                                           |  Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|--------------------------|------|-------|
+| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `DropdownFormFieldSpecification` |
+| [`oa:valueOption`](https://openactive.io/valueOption)              | REQUIRED    | Array of [`schema:Text`](https://schema.org/Text) | Specifies an array of display values for the dropdown. |
+
+
+### `oa:BooleanFormFieldSpecification`
+
+Used for `orderItemIntakeForm`.
+
+`oa:BooleanFormFieldSpecification` subclasses `schema:PropertyValueSpecification`, without `oa:valueRequired`.
+
+Specifies a `true` or `false` response.
+
+| Property                                                           |  Booking System Response | Type | Notes |
+|--------------------------------------------------------------------|--------------------------|------|-------|
+| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `BooleanFormFieldSpecification` |
+| [`schema:valueRequired`](http://schema.org/valueRequired)          | -           | [`schema:Text`](https://schema.org/Text) | MUST NOT be included. |
+
+
+### `schema:PropertyValue`
+
+`schema:PropertyValue` is used for a variety of purposes within this specification. Its REQUIRED properties are dependent on the context in which it is used, and are specified throughout this specification.
+
+The use here is in keeping with the Schema.org definition of [`PropertyValue`](https://schema.org/PropertyValue).
+
+| Property                                                           | Type | Notes |
+|--------------------------------------------------------------------|------|-------|
+| `@type`                                                            |  [`schema:Text`](https://schema.org/Text) | `PropertyValue` |
+| [`schema:propertyID`](http://schema.org/propertyID)                |  [`schema:Text`](https://schema.org/Text) | References the `id` of the `PropertyValueSpecification` to which this `PropertyValue` relates. |
+| [`schema:name`](http://schema.org/name)                            |  [`schema:Text`](https://schema.org/Text) | Name of the property. |
+| [`schema:description`](http://schema.org/description)              |  [`schema:Text`](https://schema.org/Text) | Additional human-readable version of the `value` of the property. |
+| [`schema:value`](http://schema.org/value)                          |  [`schema:Text`](https://schema.org/Text) | Machine-readable value of the property. |
+
+
 
 ## Error Model
 
@@ -2419,6 +2598,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
 | `IncompleteAttendeeDetailsError`            | 400         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
 | `IncompleteIntakeFormError`                 | 400         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
+| `InvalidIntakeFormError`                    | 400         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
 | `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `OrderQuote` is missing details required by the <a>Booking System</a>, or if the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
 | `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted the <a>Booking System</a> for reconciliation, e.g. `accountId`. |
