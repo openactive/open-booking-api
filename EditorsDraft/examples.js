@@ -1,7 +1,9 @@
 var OPERATIONS_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
 var FEED_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
+var EXAMPLE_EXTENSION_MEDIA_TYPE = "application/vnd.acmesystem.booking+json; version=0.3";
 var UUID = "e11429ea-467f-4270-ab62-e47368996fe8";
 var CONTEXT = "https://openactive.io/";
+var EXAMPLE_EXTENSION_CONTEXT = "https://acmesystem.example.com/api/context.jsonld";
 var BASE_URL = "https://example.com";
 var API_PATH = "/api";
 
@@ -136,6 +138,7 @@ function dataExampleRateLimitResponse(utils, content) {
 // LATER Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
 // LATER A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
 
+//TODO: Ensure additional detail capture is included in examples for C1 and C2? Or leave out as optional
 
 //TODO: Read Iain's slides and stephenage notes from a while back to check we've not missed anything
 
@@ -437,6 +440,61 @@ function dataExampleOrderStatusResponse(utils, content) {
     "payment": fullOrderExampleContent.payment
   });
 }
+
+
+function dataExampleExtensionWaitingListRequest(utils, content) {
+  return generateRequest("POST", API_PATH + "/sessions/{session-id}/waiting-list", EXAMPLE_EXTENSION_MEDIA_TYPE, {
+    "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
+    "type": "acme:WaitingListEntry",
+    "broker": fullOrderExampleContent.broker,
+    "customer": fullOrderExampleContent.customer.person
+  });
+}
+
+function dataExampleExtensionMemberBookingRequest(utils, content) {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
+    "type": "Order",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
+    "customer": {
+      "type": "acme:Member",
+      "identifier": "MLD23947233"
+    },
+    "orderedItem": [requestOrderItem],
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
+    "payment": {
+      "type": "acme:StoredPaymentMethod",
+      "identifier": 93482
+    },
+  });
+}
+
+function dataExampleExtensionBespokeAgreementDetailsRequest(utils, content) {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+    "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
+    "type": "Order",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
+    "customer": fullOrderExampleContent.customer.person,
+    "orderedItem": {
+      "type": "OrderItem",
+      "orderQuantity": fullOrderItemExampleContent.orderQuantity,
+      "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
+      "orderedItem": fullOrderItemExampleContent.orderedItem.request,
+      "acme:agreement": {
+        "type": "acme:ContractAgreement",
+        "acme:multiple": 3,
+        "acme:commissionCategory": "https://acmesystem.example.com/ns/BandA" 
+      }
+    },
+    "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
+    "payment": fullOrderExampleContent.payment
+  });
+}
+
+
+
 
 function dataExampleDatasetEmbed(utils, content) {
   return generateScriptInclude({

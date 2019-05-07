@@ -331,7 +331,7 @@ A number of additional requirements that relate to the booking of events and fac
 * more complex pricing options, e.g. membership-based pricing
 * waiting lists for events
 * collecting marketing preferences from the <a>Customer</a>
-* business-to-business tax calculation
+* mandatory business-to-business tax calculation
 * cancellation fees
 * "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
 * refunds/cancellations after the opportunity has occurred 
@@ -363,7 +363,7 @@ The functionality that is currently defined as out of scope includes:
 
 Version 1.0 of the Open Booking specification depends on the following:
 - [[RPDE]] Version 1.0
-- [[Modelling-Opportunity-Data]] Version 2.x (where x > 0)
+- [[Modelling-Opportunity-Data]] Version 2.x (where x >= 0)
 
 Note that the versions of [[Modelling-Opportunity-Data]] are constrained only to major version releases (breaking changes), and that the flexibility provided by supporting minor versions enables implementors to take advantage of additional features as the specifications evolve.
 
@@ -1438,6 +1438,8 @@ Note that if the specification is followed correctly, for all <a>Broker</a> mode
 
 ## Payments and Refunds
 
+Due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the <a>Payment Processor</a> be distinct from the <a>Booking System</a> for which this API is defined. The <a>Booking System</a> MAY separately expose its own native payment functionality as if it were a <a>Payment Processor</a>, however its use MUST be OPTIONAL.
+
 Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single `Payment` object is included in the `Order` in the `payment` property to ensure payments are fully traceable in case of audit.
 
 If payment details were not captured due to the `prepayment` value of the selected `Offer`, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included. In all other cases `payment` property MUST be included in the `Offer` at <a><b>B</b></a>.
@@ -1518,22 +1520,6 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` and `va
     }
   ],
 </pre>
-
-
-### Integrated Payments
-
-In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, <a>Payment Provider</a>, and Invoicing systems. For these circumstances the specification allows the API defined here to be extended via additional OPTIONAL properties in the `Payment` type used in <a><b>B</b></a> in a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), to facilitate a full payment.
-
-<pre class="example" title="Example of Payment extension point">
-  "payment": {
-    "type": "Payment",
-    "identifier": "12345678ABCD",
-    "paymentMethod": "stripe:StripePayment",
-    "stripe:token": "tok_KPte7942xySKBKyrBu11yEpf"
-  },
-</pre>
-
-Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be optional, and the <a>Booking System</a> MUST always accept a lack of `paymentMethod` as indication of an external <a>Payment Provider</a> being used. To maximise flexibility of this extension point, the `identifier` property within `Payment` is NOT REQUIRED if `paymentMethod` is specified.
 
 
 ## Tax calculation
@@ -2433,11 +2419,9 @@ Used for `payment`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Payment` |
 | [`schema:name`](http://schema.org/name)                            | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card"). |
 | [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | OPTIONAL | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | If using the payment extension point, this references the payment method used. If not present indicates <a>Payment</a> uses the external <a>Payment Provider</a>. |
+| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | - | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | `paymentMethod` MUST NOT be used, and is reserved for future versions of this specification. |
 | [`schema:accountId`](http://schema.org/accountId)                  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
 | [`oa:paymentProviderId`](https://openactive.io/paymentProviderId)  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference to the specific <a>Payment Provider</a> that is used. |
-
-Note that `identifier` is NOT REQUIRED if `paymentMethod` is specified, to maximise flexibility of the payments extension point.
 
 ### `oa:DynamicPayment`
 
@@ -2600,7 +2584,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `IncompleteIntakeFormError`                 | 400         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
 | `InvalidIntakeFormError`                    | 400         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
-| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `OrderQuote` is missing details required by the <a>Booking System</a>, or if the `payment` property of the `Order` is missing or does not include an `identifier` or `paymentMethod`. |
+| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `OrderQuote` is missing details required by the <a>Booking System</a>, or if the `payment` property of the `Order` is missing or does not include an `identifier`. |
 | `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted the <a>Booking System</a> for reconciliation, e.g. `accountId`. |
 | `TotalPaymentDueMismatchError`              | 400         | If the `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
 | `OrderAlreadyExistsError`                   | 500         | If the UUID used for an `OrderQuote` already represents a completed Order with a different set of `OrderItem`s to those specified (note call to <a><b>B</b></a> is idempotent for the case where `OrderItem`s match). This happens in the rare event of a UUID clash. |
@@ -2727,22 +2711,68 @@ The model defined in this specification builds on the model defined in [[Modelli
 
 #### Opportunity data extensions
 
-Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY choose to publish properties specified in future minor versions of the [[Modelling-Opportunity-Data]] 2.x (where x > 0), properties specified in the [[OpenActive-Beta-Namespace]], and/or properties in custom namespaces (as specified in the [[Modelling-Opportunity-Data]] specification). However to ensure backward compatibility with this specification, any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase) MUST be included in the core fields specified within this specification and [[Modelling-Opportunity-Data]] 2.0.
+Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY include additional properties, where such properties are either:
+- Specified in future minor versions of the [[Modelling-Opportunity-Data]] 2.x (where x > 0).
+- Defined in custom vocabularies as described in [[Modelling-Opportunity-Data]] 2.0 Section 5.13.3, including the [[OpenActive-Beta-Namespace]].
 
-A <a>Broker</a> will be conformant with this specification as long as it recognises and displays the core fields described within this specification and [[Modelling-Opportunity-Data]] 2.0. It MAY, however, also choose to display additional properties at their discretion or on the basis of agreement with the <a>Seller</a>.
+To ensure backward compatibility, within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MUST:
+- Conform to the [[Modelling-Opportunity-Data]] 2.0 specification by providing REQUIRED fields, unless otherwise stated in this specification.
+- Provide any data that is vital for the <a>Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase), using properties specified within this specification and [[Modelling-Opportunity-Data]] 2.0, and hence not rely on additional properties.
+
+A <a>Broker</a> MUST ensure that any values of properties found in the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), that are defined within this specification and [[Modelling-Opportunity-Data]] 2.0, and that are vital for the <a>Customer</a> to make an informed decision about the product they are purchasing, are communicated to the <a>Customer</a>. A <a>Broker</a> MAY, at its discretion, also choose to communicate the value of additional properties.
 
 #### Booking functionality extensions
 
 Any extension to the functionality of this specification MUST NOT be inferred from additional properties included in future minor versions of the [[Modelling-Opportunity-Data]] specification. Given the scope of the [[Modelling-Opportunity-Data]] specification, such additional properties will serve simply to provide greater expressivity to the <a>Opportunities</a> and `Offer`s the <a>Customer</a> is selecting. Functional extensions to the booking process itself fall properly within the scope of Open Booking API specification, and hence should be integrated with future versions of this specification.
 
-The [[OpenActive-Beta-Namespace]] and properties in custom namespaces (as described in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in this specification. However all functionality MUST work as described in this specification should these extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
+The [[OpenActive-Beta-Namespace]] and properties in custom namespaces (as described in the [[Modelling-Opportunity-Data]] specification) MAY be used to extend and experiment with new functionality for future inclusion in _this_ specification. However all functionality MUST work as described in this specification should these extensions be completely ignored by either the <a>Broker</a>, the <a>Booking System</a> or both. 
 
 
 ### General extension mechanism
 
-Additional OPTIONAL extension properties MAY be included in any request and response defined within this specification using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), and the values of such extension properties MAY alter the behaviour of the API. To ensure full compatibility with this specification, however, such extension properties MUST NOT be required and the API MUST function in complete conformity with this specification when such extension properties are omitted or ignored.
+Additional OPTIONAL extension terms (including properties, classes and enumerations) MAY be included in any request and response defined within this specification using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), and the presence and values of such extension terms MAY alter the behaviour of the API.
 
-Any extension properties defined for an API implementation MUST be fully documented, in order to ensure that the <a>Seller</a> has a complete view of the functionality it is exposing to the <a>Broker</a>.
+An API implementing this specification MAY also choose to define additional extension endpoints, which MUST accept and require a different media type to that defined in this specification.
+
+To ensure full compatibility with this specification, use of such extension terms and extension endpoints MUST NOT be required as part of the operations defined in this specification, and the API MUST function in complete conformity with this specification when such extension terms and extension endpoints are omitted or ignored.
+
+Any extension terms and extension endpoints defined for an API implementation MUST be fully documented, in order to ensure that the <a>Seller</a> has a complete view of the functionality it is exposing to the <a>Broker</a>.
+
+#### Extension example: Member booking
+
+The example below demonstrates hypothetical extension terms defined in <a><b>B</b></a> to allow for existing registered members to book without supplying customer details or payment details, using the custom `"acme"` namespace and associated context.
+
+<pre class="example" title="Extension Example: Member booking" data-transform="dataExampleExtensionMemberBookingRequest">
+</pre>
+
+#### Extension example: Additional information during the ordering process
+
+The example below demonstrates hypothetical extension terms defined in <a><b>B</b></a> that adds additional OPTIONAL properties to help track a bespoke agreement, using the custom `"acme"` namespace and associated context.
+
+<pre class="example" title="Extension Example: Bespoke agreement data" data-transform="dataExampleExtensionBespokeAgreementDetailsRequest">
+</pre>
+
+#### Extension example: Integrated Payments
+
+In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a>Booking System</a>, <a>Payment Provider</a>, and Invoicing systems. For these circumstances the `Payment` type may be subclassed to facilitate full payment, using a custom namespace and associated context.
+
+<pre class="example" title="Extension Example: Integrated Payments">
+  "payment": {
+    "type": "acme:IntegratedPayment",
+    "identifier": "12345678ABCD",
+    "paymentMethod": "acme:StripePayment",
+    "acme:token": "tok_KPte7942xySKBKyrBu11yEpf"
+  },
+</pre>
+
+Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a>Booking System</a> be OPTIONAL.
+
+#### Extension example: Waiting list endpoint
+
+The example below demonstrates a hypothetical extension endpoint to support waiting list registration.
+
+<pre class="example" title="Extension Example: Waiting List Endpoint" data-transform="dataExampleExtensionWaitingListRequest">
+</pre>
 
 
 ## Response formats
