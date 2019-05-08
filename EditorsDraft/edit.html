@@ -322,16 +322,17 @@ make use of a facility, whilst placing a booking.
 
 A number of additional requirements that relate to the booking of events and facilities are currently out of scope:
 
-* creating and managing accounts for <a>Customers</a>
-* more complex pricing options, e.g. membership-based pricing
-* waiting lists for events
-* collecting marketing preferences from the <a>Customer</a>
-* mandatory business-to-business tax calculation
-* cancellation fees
-* "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
-* refunds/cancellations after the <a>Opportunity</a> has occurred 
-* back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
-* fine-grained control of <a>Opportunity</a> <a>bookability</a> in the <a>Booking System</a>
+* Creating and managing accounts for <a>Customers</a>
+* More complex pricing options, e.g. membership-based pricing
+* Waiting lists for events
+* Collecting marketing preferences from the <a>Customer</a>
+* Mandatory business-to-business tax calculation
+* Cancellation fees
+* "Subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
+* Refunds/cancellations after the <a>Opportunity</a> has occurred 
+* Back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
+* Fine-grained control of <a>Opportunity</a> <a>bookability</a> in the <a>Booking System</a>
+* The ability to restrict specific API functionality for a particular <a>Broker</a> 
 
 It is possible that future versions of this specification may include support
 for these or other features. Revisions will be driven by the needs of the
@@ -1683,7 +1684,7 @@ Note that there is no provision for a <a>Customer</a> to cancel an `Order` after
 
 An <dfn>Orders feed</dfn>, which is a secure [[RPDE]] feed of `Order`s, MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authenticating <a>Broker</a>. As noted in <a href="#new-orders-and-orderproposals">New Orders and OrderProposals</a>, this list must include all, and only, `Order`s that have been updated by the <a>Booking System</a> subsequent to successful completion of <a><b>B</b></a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>.
 
-This also allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
+The <a>Booking System</a> MUST NOT communicate directly with the <a>Customer</a> using the personal details supplied by the <a>Broker</a>, and MUST instead update the <a>Orders feed</a> and <a>Opportunity data</a> to instruct the <a>Broker</a> to send appropriate notifications. This allows the <a>Broker</a> to handle refunds to cancellations, and process notifications to <a>Customers</a> in a consistent way.
 
 ### Orders Feed Inconsistencies
 
@@ -1737,6 +1738,15 @@ Note that the <a>Customer</a> MUST be notified in the event of all cancellations
 This version of the specification does not allow a refund to be processed (in full or in part) by the <a>Booking System</a> without going via the <a>Broker</a> for any `Order` that has been placed via the <a>Broker</a>. <a>Booking Systems</a> MUST disable their own refund functionality for `Order`s placed via a <a>Broker</a> - only allowing Seller requested cancellations which trigger the <a>Broker</a> to provide full item refunds - to ensure that the book keeping and invoices of the <a>Broker</a> are not invalidated.
 
 Partial refunds MAY be handled by out-of-band arrangements between the <a>Broker</a> and the <a>Seller</a> provided they do not have any affect on the Open Booking API interface. For example, the <a>Broker</a> could issue a partial refund and then reassign the remaining funds as a cancellation penalty via a new invoice handled and reconciled directly with the <a>Seller</a> outside the scope of the <a>Booking System</a> and this specification.
+
+
+### Customer notice notifications
+
+The <a>Seller</a> may provide a notice to the <a>Customer</a> ahead of an <a>Opportunity</a>, for example to inform <a>Customers</a> that they are still short of a player in case any friends are interested in attending.
+
+An `orderedItem` within the `OrderItem` of the <a>Orders feed</a> MAY be updated to include a `customerNotice`. The <a>Customer</a> MUST be notified with the contents of the `customerNotice` for the `OrderItem` if it differs from the value of `customerNotice` for that specific `orderedItem` that the <a>Broker</a> had previously stored (or if a new `Order` in the <a>Orders feed</a> includes a `customerNotice`).
+
+Note that notifications that inform the <a>Customer</a> of substantive changes to the <a>Opportunity</a> MUST be triggered by updating the <a>Opportunity Data</a>, which will trigger a [Change of logistics notification](#change-of-logistics-notifications), instead of using the `customerNotice` mechanism.
 
 
 ### Change of logistics notifications
@@ -2268,7 +2278,8 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
-| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
+| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
+| [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` |
 | [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
 | [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |

@@ -130,15 +130,9 @@ function dataExampleRateLimitResponse(utils, content) {
 
 
 
-// Add to spec intro: "The commercial relationship will govern what is possible, the spec does not recommend or include ACLs that specifically disable functionality."
-
-// Specific error code for "not bookable"
-
 // LATER Offer override to disable/exclude an offer.
 // LATER Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
 // LATER A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
-
-//TODO: Ensure additional detail capture is included in examples for C1 and C2? Or leave out as optional
 
 //TODO: Read Iain's slides and stephenage notes from a while back to check we've not missed anything
 
@@ -188,8 +182,6 @@ function dataExampleRateLimitResponse(utils, content) {
 //TODO: Include Error for `Order` specifying that that a conflict exists with the `orderedItem` requested, and that `OrderQuote` must be retried to get specific errors.
 
 //TODO: Sort through errors
-
-// Make "opportunity" a key word in the spec
 
 // How do we know which status code to use when multipe errors have conflicting status codes? Do we have an example with just one error and no array?
 
