@@ -2066,14 +2066,16 @@ For the `Order` response and the <a>Orders feed</a>, the `OrderItems` MUST inclu
 <pre class="example" title="Order Creation: example response" data-transform="dataExampleOrderCreationResponse">
 </pre>
 
-Technical or conformance issues with any properties of the `Order`, including in an `orderedItem`, MUST cause the <a>Booking System</a> to respond with only the appropriate `OpenBookingError` and associated status code. The <a>Broker</a> is expected to retry the `OrderQuote` to get specific `orderedItem` level errors.
+Technical or conformance issues with any properties of the `Order`, including in an `orderedItem`, MUST cause the <a>Booking System</a> to respond with only the appropriate `OpenBookingError` and associated status code. Following an `UnableToProcessOrderItemError` or `OpportunityHasInsufficientCapacityError`, the <a>Broker</a> is expected to retry the `OrderQuote` at <a><b>C2</b></a> to get specific `orderedItem` level errors. Any validation errors raised at <a><b>B</b></a> regarding any property values MUST also be raised at <a><b>C2</b></a> (and ideally also <a><b>C1</b></a> if relevant), so it should be very unusual to receive an error at <a><b>B</b></a>.
 
-Note that any validation errors raised at <a><b>B</b></a> regarding any property values MUST also be raised at <a><b>C2</b></a> (and ideally also <a><b>C1</b></a> if relevant), so it should be very unusual to receive an error at <a><b>B</b></a>.
+<pre class="example" title="Order Creation: example failure response" data-transform="dataExampleOrderCreationErrorResponse">
+</pre>
 
 For the [Booking Flow with Approval](#booking-flow-with-approval) specifically, the <a>Broker</a> decides to proceed from **A** to <a><b>B</b></a> by supplying a minimal `Order` to <a><b>B</b></a> that contains just the `orderProposalVersion` and any additional `payment` data if reauthorisation was required.
 
 <pre class="example" title="Order Creation: example request from OrderProposal" data-transform="dataExampleOrderCreationFromProposalRequest">
 </pre>
+
 
 ### Order Deletion
 
@@ -2585,15 +2587,14 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
-| `IncompleteAttendeeDetailsError`            | 400         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
-| `IncompleteIntakeFormError`                 | 400         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
-| `InvalidIntakeFormError`                    | 400         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
 | `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `OrderQuote` is missing details required by the <a>Booking System</a>, or if the `payment` property of the `Order` is missing or does not include an `identifier`. |
 | `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted the <a>Booking System</a> for reconciliation, e.g. `accountId`. |
 | `TotalPaymentDueMismatchError`              | 400         | If the `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
+| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in any <a>Opportunity</a> that was included the `Order`. |
+| `UnableToProcessOrderItemError`             | 409         | If any `OrderItem` errors would have been generated at <a><b>C2</b></a> with the same data presented. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
 | `OrderAlreadyExistsError`                   | 500         | If the UUID used for an `OrderQuote` already represents a completed Order with a different set of `OrderItem`s to those specified (note call to <a><b>B</b></a> is idempotent for the case where `OrderItem`s match). This happens in the rare event of a UUID clash. |
-| `OrderCreationFailedError`                  | 500         | If <a><b>B</b></a> fails for any reason other than `OpportunityHasInsufficientCapacityError`. |
+| `OrderCreationFailedError`                  | 500         | If <a><b>B</b></a> fails for any other reason not specified in this list of errors. |
 
 
 
@@ -2611,8 +2612,10 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `IncompleteAttendeeDetailsError`            | 400         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
 | `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
-| `IntakeFormOrderItemError`                  | 409         | If `orderItemIntakeFormResponse` is insufficient on the `OrderItem`. |
+| `IncompleteIntakeFormError`                 | 409         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
+| `InvalidIntakeFormError`                    | 409         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
 | `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the <a>Opportunity</a>. |
 | `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
 | `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |

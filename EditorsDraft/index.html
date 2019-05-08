@@ -3204,9 +3204,21 @@ The scope of this specification does not include the contractual relationship wi
     <span class="hljs-attr">"identifier"</span>: <span class="hljs-string">"1234567890npduy2f"</span>
   }
 }</span></code></pre>
-        </div><p>Technical or conformance issues with any properties of the <code>Order</code>, including in an <code>orderedItem</code>, <em class="rfc2119" title="MUST">MUST</em> cause the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> to respond with only the appropriate <code>OpenBookingError</code> and associated status code. The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> is expected to retry the <code>OrderQuote</code> to get specific <code>orderedItem</code> level errors.</p><p>Note that any validation errors raised at <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> regarding any property values <em class="rfc2119" title="MUST">MUST</em> also be raised at <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> (and ideally also <a href="#dfn-c1" class="internalDFN" data-link-type="dfn"><b>C1</b></a> if relevant), so it should be very unusual to receive an error at <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a>.</p><p>For the <a href="#booking-flow-with-approval">Booking Flow with Approval</a> specifically, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> decides to proceed from <strong>A</strong> to <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> by supplying a minimal <code>Order</code> to <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> that contains just the <code>orderProposalVersion</code> and any additional <code>payment</code> data if reauthorisation was required.</p><div class="example" id="example-42-order-creation-example-request-from-orderproposal">
+        </div><p>Technical or conformance issues with any properties of the <code>Order</code>, including in an <code>orderedItem</code>, <em class="rfc2119" title="MUST">MUST</em> cause the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> to respond with only the appropriate <code>OpenBookingError</code> and associated status code. Following an <code>UnableToProcessOrderItemError</code> or <code>OpportunityHasInsufficientCapacityError</code>, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> is expected to retry the <code>OrderQuote</code> at <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> to get specific <code>orderedItem</code> level errors. Any validation errors raised at <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> regarding any property values <em class="rfc2119" title="MUST">MUST</em> also be raised at <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> (and ideally also <a href="#dfn-c1" class="internalDFN" data-link-type="dfn"><b>C1</b></a> if relevant), so it should be very unusual to receive an error at <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a>.</p><div class="example" id="example-42-order-creation-example-failure-response">
           <div class="marker">
-      <a class="self-link" href="#example-42-order-creation-example-request-from-orderproposal">Example<bdi> 42</bdi></a><span class="example-title">: Order Creation: example request from OrderProposal</span>
+      <a class="self-link" href="#example-42-order-creation-example-failure-response">Example<bdi> 42</bdi></a><span class="example-title">: Order Creation: example failure response</span>
+    </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">409</span> Conflict
+<span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
+<span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
+
+<span class="json">{
+  <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>,
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"UnableToProcessOrderItemError"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"An error occurred while processing the items within this booking."</span>
+}</span></code></pre>
+        </div><p>For the <a href="#booking-flow-with-approval">Booking Flow with Approval</a> specifically, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> decides to proceed from <strong>A</strong> to <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> by supplying a minimal <code>Order</code> to <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> that contains just the <code>orderProposalVersion</code> and any additional <code>payment</code> data if reauthorisation was required.</p><div class="example" id="example-43-order-creation-example-request-from-orderproposal">
+          <div class="marker">
+      <a class="self-link" href="#example-43-order-creation-example-request-from-orderproposal">Example<bdi> 43</bdi></a><span class="example-title">: Order Creation: example request from OrderProposal</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">PUT</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
@@ -3241,16 +3253,16 @@ The scope of this specification does not include the contractual relationship wi
 <td>DELETE</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><p>Deleting an <code>Order</code> allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.</p><p>When an <code>Order</code> is deleted the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="SHOULD">SHOULD</em> hard delete it as though it had not been created in the first place, but <em class="rfc2119" title="MAY">MAY</em> soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> in all cases.</p><p>The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST NOT">MUST NOT</em> use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is defined <a href="#order-cancellation">below</a>.</p><p>The corresponding <code>Order</code> <em class="rfc2119" title="MUST">MUST</em> be marked as <code>deleted</code> in the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>.</p><div class="example" id="example-43-order-deletion-example-request">
+</tbody></table><p>Deleting an <code>Order</code> allows for the whole Booking Flow to be reversed for fatal error and testing scenarios.</p><p>When an <code>Order</code> is deleted the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="SHOULD">SHOULD</em> hard delete it as though it had not been created in the first place, but <em class="rfc2119" title="MAY">MAY</em> soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> in all cases.</p><p>The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST NOT">MUST NOT</em> use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is defined <a href="#order-cancellation">below</a>.</p><p>The corresponding <code>Order</code> <em class="rfc2119" title="MUST">MUST</em> be marked as <code>deleted</code> in the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>.</p><div class="example" id="example-44-order-deletion-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-43-order-deletion-example-request">Example<bdi> 43</bdi></a><span class="example-title">: Order Deletion: example request</span>
+      <a class="self-link" href="#example-44-order-deletion-example-request">Example<bdi> 44</bdi></a><span class="example-title">: Order Deletion: example request</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">DELETE</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.booking+json; version=1.0</code></pre>
-        </div><div class="example" id="example-44-order-deletion-example-response">
+        </div><div class="example" id="example-45-order-deletion-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-44-order-deletion-example-response">Example<bdi> 44</bdi></a><span class="example-title">: Order Deletion: example response</span>
+      <a class="self-link" href="#example-45-order-deletion-example-response">Example<bdi> 45</bdi></a><span class="example-title">: Order Deletion: example response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">204</span> No Content
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0</code></pre>
@@ -3273,9 +3285,9 @@ The scope of this specification does not include the contractual relationship wi
 <td>PATCH</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><p>Cancellation of an <code>Order</code> may be requested by the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a>. <code>OrderItem</code>s omitted from the PATCH request <em class="rfc2119" title="MUST">MUST</em> be ignored.</p><div class="example" id="example-45-order-cancellation-example-order-request">
+</tbody></table><p>Cancellation of an <code>Order</code> may be requested by the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a>. <code>OrderItem</code>s omitted from the PATCH request <em class="rfc2119" title="MUST">MUST</em> be ignored.</p><div class="example" id="example-46-order-cancellation-example-order-request">
           <div class="marker">
-      <a class="self-link" href="#example-45-order-cancellation-example-order-request">Example<bdi> 45</bdi></a><span class="example-title">: Order Cancellation: example Order request</span>
+      <a class="self-link" href="#example-46-order-cancellation-example-order-request">Example<bdi> 46</bdi></a><span class="example-title">: Order Cancellation: example Order request</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">PATCH</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
@@ -3292,15 +3304,15 @@ The scope of this specification does not include the contractual relationship wi
     }
   ]
 }</span></code></pre>
-        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-46-order-cancellation-example-success-response">
+        </div><p>The cancellation request succeeds and fails atomically.</p><div class="example" id="example-47-order-cancellation-example-success-response">
           <div class="marker">
-      <a class="self-link" href="#example-46-order-cancellation-example-success-response">Example<bdi> 46</bdi></a><span class="example-title">: Order Cancellation: example success response</span>
+      <a class="self-link" href="#example-47-order-cancellation-example-success-response">Example<bdi> 47</bdi></a><span class="example-title">: Order Cancellation: example success response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">204</span> No Content
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0</code></pre>
-        </div><div class="example" id="example-47-order-cancellation-example-error-response">
+        </div><div class="example" id="example-48-order-cancellation-example-error-response">
           <div class="marker">
-      <a class="self-link" href="#example-47-order-cancellation-example-error-response">Example<bdi> 47</bdi></a><span class="example-title">: Order Cancellation: example error response</span>
+      <a class="self-link" href="#example-48-order-cancellation-example-error-response">Example<bdi> 48</bdi></a><span class="example-title">: Order Cancellation: example error response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -3310,9 +3322,9 @@ The scope of this specification does not include the contractual relationship wi
   <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CancellationNotPermittedError"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"The horse has already been fed, and cannot be put back in the box."</span>
 }</span></code></pre>
-        </div><p>A PATCH to update <code>orderItemStatus</code> <em class="rfc2119" title="MUST">MUST</em> have the value <code>https://openactive.io/CustomerCancelled</code>, as that is the only permissible value based on the logic defined in this version of the specification. If another value for <code>orderItemStatus</code> is specified the endpoint <em class="rfc2119" title="MUST">MUST</em> return an <code>PatchNotAllowedOnProperty</code> error with its status code.</p><div class="example" id="example-48-order-cancellation-example-property-error-response">
+        </div><p>A PATCH to update <code>orderItemStatus</code> <em class="rfc2119" title="MUST">MUST</em> have the value <code>https://openactive.io/CustomerCancelled</code>, as that is the only permissible value based on the logic defined in this version of the specification. If another value for <code>orderItemStatus</code> is specified the endpoint <em class="rfc2119" title="MUST">MUST</em> return an <code>PatchNotAllowedOnProperty</code> error with its status code.</p><div class="example" id="example-49-order-cancellation-example-property-error-response">
           <div class="marker">
-      <a class="self-link" href="#example-48-order-cancellation-example-property-error-response">Example<bdi> 48</bdi></a><span class="example-title">: Order Cancellation: example property error response</span>
+      <a class="self-link" href="#example-49-order-cancellation-example-property-error-response">Example<bdi> 49</bdi></a><span class="example-title">: Order Cancellation: example property error response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -3323,9 +3335,9 @@ The scope of this specification does not include the contractual relationship wi
   <span class="hljs-attr">"instance"</span>: <span class="hljs-string">"https://openactive.io/orderItemStatus"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Only 'https://openactive.io/CustomerCancelled' is permitted for this property."</span>
 }</span></code></pre>
-        </div><p>If the PATCH request includes any properties other than <code>type</code>, <code>@context</code>, <code>id</code>, <code>orderedItem</code> and <code>orderItemStatus</code> (excluding any properties with a custom namespace), the endpoint <em class="rfc2119" title="MUST">MUST</em> return a <code>PatchContainsExcessiveProperties</code> error with its status code.</p><div class="example" id="example-49-order-cancellation-example-property-error-response-for-excessive-properties">
+        </div><p>If the PATCH request includes any properties other than <code>type</code>, <code>@context</code>, <code>id</code>, <code>orderedItem</code> and <code>orderItemStatus</code> (excluding any properties with a custom namespace), the endpoint <em class="rfc2119" title="MUST">MUST</em> return a <code>PatchContainsExcessiveProperties</code> error with its status code.</p><div class="example" id="example-50-order-cancellation-example-property-error-response-for-excessive-properties">
           <div class="marker">
-      <a class="self-link" href="#example-49-order-cancellation-example-property-error-response-for-excessive-properties">Example<bdi> 49</bdi></a><span class="example-title">: Order Cancellation: example property error response for excessive properties</span>
+      <a class="self-link" href="#example-50-order-cancellation-example-property-error-response-for-excessive-properties">Example<bdi> 50</bdi></a><span class="example-title">: Order Cancellation: example property error response for excessive properties</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -3354,16 +3366,16 @@ The scope of this specification does not include the contractual relationship wi
 <td>GET</td>
 <td><code>/orders-rpde</code></td>
 </tr>
-</tbody></table><p>This feed is described at length in the <a href="#orders-feed-notifications-updates-and-refunds">Orders feed</a> section.</p><p>An illustrative request and response is provided here.</p><div class="example" id="example-50-order-rpde-feed-example-request">
+</tbody></table><p>This feed is described at length in the <a href="#orders-feed-notifications-updates-and-refunds">Orders feed</a> section.</p><p>An illustrative request and response is provided here.</p><div class="example" id="example-51-order-rpde-feed-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-50-order-rpde-feed-example-request">Example<bdi> 50</bdi></a><span class="example-title">: Order RPDE Feed: example request</span>
+      <a class="self-link" href="#example-51-order-rpde-feed-example-request">Example<bdi> 51</bdi></a><span class="example-title">: Order RPDE Feed: example request</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders-rpde</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.booking+json; version=1.0</code></pre>
-        </div><div class="example" id="example-51-order-rpde-feed-example-response">
+        </div><div class="example" id="example-52-order-rpde-feed-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-51-order-rpde-feed-example-response">Example<bdi> 51</bdi></a><span class="example-title">: Order RPDE Feed: example response</span>
+      <a class="self-link" href="#example-52-order-rpde-feed-example-response">Example<bdi> 52</bdi></a><span class="example-title">: Order RPDE Feed: example response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -3449,16 +3461,16 @@ The scope of this specification does not include the contractual relationship wi
 <td>GET</td>
 <td><code>/orders/{uuid}</code></td>
 </tr>
-</tbody></table><p>A <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="SHOULD">SHOULD</em> provide an endpoint to allow a <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> to retrieve complete <code>Order</code>s. In future versions of the specification, endpoints may be provided which permit a <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> to see all <code>Order</code>s created by a <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a>. In this current implementation, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST">MUST</em> keep its own record of <code>Order</code>s as described elsewhere in this specification, and not rely on this <em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em> Order Status endpoint.</p><div class="example" id="example-52-order-status-example-request">
+</tbody></table><p>A <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="SHOULD">SHOULD</em> provide an endpoint to allow a <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> to retrieve complete <code>Order</code>s. In future versions of the specification, endpoints may be provided which permit a <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> to see all <code>Order</code>s created by a <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a>. In this current implementation, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST">MUST</em> keep its own record of <code>Order</code>s as described elsewhere in this specification, and not rely on this <em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em> Order Status endpoint.</p><div class="example" id="example-53-order-status-example-request">
           <div class="marker">
-      <a class="self-link" href="#example-52-order-status-example-request">Example<bdi> 52</bdi></a><span class="example-title">: Order Status: example request</span>
+      <a class="self-link" href="#example-53-order-status-example-request">Example<bdi> 53</bdi></a><span class="example-title">: Order Status: example request</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
 <span class="hljs-attribute">Accept</span>: application/vnd.openactive.booking+json; version=1.0</code></pre>
-        </div><div class="example" id="example-53-order-status-example-response">
+        </div><div class="example" id="example-54-order-status-example-response">
           <div class="marker">
-      <a class="self-link" href="#example-53-order-status-example-response">Example<bdi> 53</bdi></a><span class="example-title">: Order Status: example response</span>
+      <a class="self-link" href="#example-54-order-status-example-response">Example<bdi> 54</bdi></a><span class="example-title">: Order Status: example response</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">200</span> OK
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -4903,21 +4915,6 @@ The scope of this specification does not include the contractual relationship wi
 <td>If the <code>email</code> address of the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> is not supplied within a <code>schema:Person</code> object; or if the <code>customer</code> property supplied is not a valid <code>schema:Person</code> or <code>schema:Organization</code> object.</td>
 </tr>
 <tr>
-<td><code>IncompleteAttendeeDetailsError</code></td>
-<td>400</td>
-<td>If the <code>attendeeDetailsRequired</code> properties of the <code>attendee</code> are not supplied within a <code>schema:Person</code> object.</td>
-</tr>
-<tr>
-<td><code>IncompleteIntakeFormError</code></td>
-<td>400</td>
-<td>If the <code>orderItemIntakeFormResponse</code> is missing fields that are specified as <code>valueRequired</code> within the <code>orderItemIntakeForm</code>.</td>
-</tr>
-<tr>
-<td><code>InvalidIntakeFormError</code></td>
-<td>400</td>
-<td>If the <code>orderItemIntakeFormResponse</code> contains invalid fields that do not match those specified by the <code>orderItemIntakeForm</code>.</td>
-</tr>
-<tr>
 <td><code>IncompleteBrokerDetailsError</code></td>
 <td>400</td>
 <td>If there is insufficient detail in the <code>schema:Organisation</code> object describing the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a>; or if the <code>broker</code> property supplied is not a valid schema:Organisation object.</td>
@@ -4938,6 +4935,16 @@ The scope of this specification does not include the contractual relationship wi
 <td>If the <code>totalPaymentDue</code> property of the submitted <code>Order</code> or <code>OrderProposal</code> does not match the value calculated for that <code>Order</code> or <code>OrderProposal</code> by the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a>.</td>
 </tr>
 <tr>
+<td><code>OpportunityHasInsufficientCapacityError</code></td>
+<td>409</td>
+<td>If there are not enough available spaces in any <a href="#dfn-opportunity" class="internalDFN" data-link-type="dfn">Opportunity</a> that was included the <code>Order</code>.</td>
+</tr>
+<tr>
+<td><code>UnableToProcessOrderItemError</code></td>
+<td>409</td>
+<td>If any <code>OrderItem</code> errors would have been generated at <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> with the same data presented. The <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> is expected to retry <a href="#dfn-c2" class="internalDFN" data-link-type="dfn"><b>C2</b></a> to retrieve such errors.</td>
+</tr>
+<tr>
 <td><code>OrderAlreadyExistsError</code></td>
 <td>500</td>
 <td>If the UUID used for an <code>OrderQuote</code> already represents a completed Order with a different set of <code>OrderItem</code>s to those specified (note call to <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> is idempotent for the case where <code>OrderItem</code>s match). This happens in the rare event of a UUID clash.</td>
@@ -4945,7 +4952,7 @@ The scope of this specification does not include the contractual relationship wi
 <tr>
 <td><code>OrderCreationFailedError</code></td>
 <td>500</td>
-<td>If <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> fails for any reason other than <code>OpportunityHasInsufficientCapacityError</code>.</td>
+<td>If <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> fails for any other reason not specified in this list of errors.</td>
 </tr>
 </tbody></table></section><section id="order-cancellation-orderquote-orderproposal-and-order-error-responses"><h5 id="x10-2-2-2-order-cancellation-orderquote-orderproposal-and-order-error-responses"><bdi class="secno">10.2.2.2 </bdi>Order Cancellation - <code>OrderQuote</code>, <code>OrderProposal</code> and <code>Order</code> error responses<a class="self-link" aria-label="§" href="#order-cancellation-orderquote-orderproposal-and-order-error-responses"></a></h5><table>
 <thead>
@@ -4969,14 +4976,24 @@ The scope of this specification does not include the contractual relationship wi
 </tr>
 </thead>
 <tbody><tr>
+<td><code>IncompleteAttendeeDetailsError</code></td>
+<td>400</td>
+<td>If the <code>attendeeDetailsRequired</code> properties of the <code>attendee</code> are not supplied within a <code>schema:Person</code> object.</td>
+</tr>
+<tr>
 <td><code>IncompleteOrderItemError</code></td>
 <td>409</td>
 <td>If there is a missing <code>acceptedOffer</code> or <code>orderedItem</code> property on the <code>OrderItem</code>.</td>
 </tr>
 <tr>
-<td><code>IntakeFormOrderItemError</code></td>
+<td><code>IncompleteIntakeFormError</code></td>
 <td>409</td>
-<td>If <code>orderItemIntakeFormResponse</code> is insufficient on the <code>OrderItem</code>.</td>
+<td>If the <code>orderItemIntakeFormResponse</code> is missing fields that are specified as <code>valueRequired</code> within the <code>orderItemIntakeForm</code>.</td>
+</tr>
+<tr>
+<td><code>InvalidIntakeFormError</code></td>
+<td>409</td>
+<td>If the <code>orderItemIntakeFormResponse</code> contains invalid fields that do not match those specified by the <code>orderItemIntakeForm</code>.</td>
 </tr>
 <tr>
 <td><code>UnacceptableOfferError</code></td>
@@ -5132,9 +5149,9 @@ media type(s) defined by this specification.</p><p>Media types will conform to t
 <li>Conform to the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] 2.0 specification by providing <em class="rfc2119" title="REQUIRED">REQUIRED</em> fields, unless otherwise stated in this specification.</li>
 <li>Provide any data that is vital for the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> to make an informed decision about the product they are purchasing (such as important restrictions on purchase), using properties specified within this specification and [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] 2.0, and hence not rely on additional properties.</li>
 </ul><p>A <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST">MUST</em> ensure that any values of properties found in the <a href="#dfn-opportunity" class="internalDFN" data-link-type="dfn">Opportunity</a> (<code>orderedItem</code>) and <code>Offer</code> (<code>acceptedOffer</code>), that are defined within this specification and [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] 2.0, and that are vital for the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> to make an informed decision about the product they are purchasing, are communicated to the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a>. A <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MAY">MAY</em>, at its discretion, also choose to communicate the value of additional properties.</p></section><section id="booking-functionality-extensions"><h5 id="x11-2-2-2-booking-functionality-extensions"><bdi class="secno">11.2.2.2 </bdi>Booking functionality extensions<a class="self-link" aria-label="§" href="#booking-functionality-extensions"></a></h5><p>Any extension to the functionality of this specification <em class="rfc2119" title="MUST NOT">MUST NOT</em> be inferred from additional properties included in future minor versions of the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] specification. Given the scope of the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] specification, such additional properties will serve simply to provide greater expressivity to the <a href="#dfn-opportunity" class="internalDFN" data-link-type="dfn">Opportunities</a> and <code>Offer</code>s the <a href="#dfn-customer" class="internalDFN" data-link-type="dfn">Customer</a> is selecting. Functional extensions to the booking process itself fall properly within the scope of Open Booking API specification, and hence should be integrated with future versions of this specification.</p><p>The [<cite><a class="bibref" href="#bib-openactive-beta-namespace" title="OpenActive Beta Namespace">OpenActive-Beta-Namespace</a></cite>] and properties in custom namespaces (as described in the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] specification) <em class="rfc2119" title="MAY">MAY</em> be used to extend and experiment with new functionality for future inclusion in <em>this</em> specification. However all functionality <em class="rfc2119" title="MUST">MUST</em> work as described in this specification should these extensions be completely ignored by either the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a>, the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> or both.
-</p></section></section><section id="general-extension-mechanism"><h4 id="x11-2-3-general-extension-mechanism"><bdi class="secno">11.2.3 </bdi>General extension mechanism<a class="self-link" aria-label="§" href="#general-extension-mechanism"></a></h4><p>Additional <em class="rfc2119" title="OPTIONAL">OPTIONAL</em> extension terms (including properties, classes and enumerations) <em class="rfc2119" title="MAY">MAY</em> be included in any request and response defined within this specification using a custom namespace (as specified in the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] specification), and the presence and values of such extension terms <em class="rfc2119" title="MAY">MAY</em> alter the behaviour of the API.</p><p>An API implementing this specification <em class="rfc2119" title="MAY">MAY</em> also choose to define additional extension endpoints, which <em class="rfc2119" title="MUST">MUST</em> accept and require a different media type to that defined in this specification.</p><p>To ensure full compatibility with this specification, use of such extension terms and extension endpoints <em class="rfc2119" title="MUST NOT">MUST NOT</em> be required as part of the operations defined in this specification, and the API <em class="rfc2119" title="MUST">MUST</em> function in complete conformity with this specification when such extension terms and extension endpoints are omitted or ignored.</p><p>Any extension terms and extension endpoints defined for an API implementation <em class="rfc2119" title="MUST">MUST</em> be fully documented, in order to ensure that the <a href="#dfn-seller" class="internalDFN" data-link-type="dfn">Seller</a> has a complete view of the functionality it is exposing to the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a>.</p><section id="extension-example-member-booking"><h5 id="x11-2-3-1-extension-example-member-booking"><bdi class="secno">11.2.3.1 </bdi>Extension example: Member booking<a class="self-link" aria-label="§" href="#extension-example-member-booking"></a></h5><p>The example below demonstrates hypothetical extension terms defined in <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> to allow for existing registered members to book without supplying customer details or payment details, using the custom <code>"acme"</code> namespace and associated context.</p><div class="example" id="example-54-extension-example-member-booking">
+</p></section></section><section id="general-extension-mechanism"><h4 id="x11-2-3-general-extension-mechanism"><bdi class="secno">11.2.3 </bdi>General extension mechanism<a class="self-link" aria-label="§" href="#general-extension-mechanism"></a></h4><p>Additional <em class="rfc2119" title="OPTIONAL">OPTIONAL</em> extension terms (including properties, classes and enumerations) <em class="rfc2119" title="MAY">MAY</em> be included in any request and response defined within this specification using a custom namespace (as specified in the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] specification), and the presence and values of such extension terms <em class="rfc2119" title="MAY">MAY</em> alter the behaviour of the API.</p><p>An API implementing this specification <em class="rfc2119" title="MAY">MAY</em> also choose to define additional extension endpoints, which <em class="rfc2119" title="MUST">MUST</em> accept and require a different media type to that defined in this specification.</p><p>To ensure full compatibility with this specification, use of such extension terms and extension endpoints <em class="rfc2119" title="MUST NOT">MUST NOT</em> be required as part of the operations defined in this specification, and the API <em class="rfc2119" title="MUST">MUST</em> function in complete conformity with this specification when such extension terms and extension endpoints are omitted or ignored.</p><p>Any extension terms and extension endpoints defined for an API implementation <em class="rfc2119" title="MUST">MUST</em> be fully documented, in order to ensure that the <a href="#dfn-seller" class="internalDFN" data-link-type="dfn">Seller</a> has a complete view of the functionality it is exposing to the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a>.</p><section id="extension-example-member-booking"><h5 id="x11-2-3-1-extension-example-member-booking"><bdi class="secno">11.2.3.1 </bdi>Extension example: Member booking<a class="self-link" aria-label="§" href="#extension-example-member-booking"></a></h5><p>The example below demonstrates hypothetical extension terms defined in <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> to allow for existing registered members to book without supplying customer details or payment details, using the custom <code>"acme"</code> namespace and associated context.</p><div class="example" id="example-55-extension-example-member-booking">
           <div class="marker">
-      <a class="self-link" href="#example-54-extension-example-member-booking">Example<bdi> 54</bdi></a><span class="example-title">: Extension Example: Member booking</span>
+      <a class="self-link" href="#example-55-extension-example-member-booking">Example<bdi> 55</bdi></a><span class="example-title">: Extension Example: Member booking</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">PUT</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
@@ -5193,9 +5210,9 @@ media type(s) defined by this specification.</p><p>Media types will conform to t
     <span class="hljs-attr">"identifier"</span>: <span class="hljs-number">93482</span>
   }
 }</span></code></pre>
-        </div></section><section id="extension-example-additional-information-during-the-ordering-process"><h5 id="x11-2-3-2-extension-example-additional-information-during-the-ordering-process"><bdi class="secno">11.2.3.2 </bdi>Extension example: Additional information during the ordering process<a class="self-link" aria-label="§" href="#extension-example-additional-information-during-the-ordering-process"></a></h5><p>The example below demonstrates hypothetical extension terms defined in <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> that adds additional <em class="rfc2119" title="OPTIONAL">OPTIONAL</em> properties to help track a bespoke agreement, using the custom <code>"acme"</code> namespace and associated context.</p><div class="example" id="example-55-extension-example-bespoke-agreement-data">
+        </div></section><section id="extension-example-additional-information-during-the-ordering-process"><h5 id="x11-2-3-2-extension-example-additional-information-during-the-ordering-process"><bdi class="secno">11.2.3.2 </bdi>Extension example: Additional information during the ordering process<a class="self-link" aria-label="§" href="#extension-example-additional-information-during-the-ordering-process"></a></h5><p>The example below demonstrates hypothetical extension terms defined in <a href="#dfn-b" class="internalDFN" data-link-type="dfn"><b>B</b></a> that adds additional <em class="rfc2119" title="OPTIONAL">OPTIONAL</em> properties to help track a bespoke agreement, using the custom <code>"acme"</code> namespace and associated context.</p><div class="example" id="example-56-extension-example-bespoke-agreement-data">
           <div class="marker">
-      <a class="self-link" href="#example-55-extension-example-bespoke-agreement-data">Example<bdi> 55</bdi></a><span class="example-title">: Extension Example: Bespoke agreement data</span>
+      <a class="self-link" href="#example-56-extension-example-bespoke-agreement-data">Example<bdi> 56</bdi></a><span class="example-title">: Extension Example: Bespoke agreement data</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">PUT</span> <span class="hljs-string">/api/orders/e11429ea-467f-4270-ab62-e47368996fe8</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
@@ -5261,18 +5278,18 @@ media type(s) defined by this specification.</p><p>Media types will conform to t
     <span class="hljs-attr">"identifier"</span>: <span class="hljs-string">"1234567890npduy2f"</span>
   }
 }</span></code></pre>
-        </div></section><section id="extension-example-integrated-payments"><h5 id="x11-2-3-3-extension-example-integrated-payments"><bdi class="secno">11.2.3.3 </bdi>Extension example: Integrated Payments<a class="self-link" aria-label="§" href="#extension-example-integrated-payments"></a></h5><p>In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a>, <a href="#dfn-payment-provider" class="internalDFN" data-link-type="dfn">Payment Provider</a>, and Invoicing systems. For these circumstances the <code>Payment</code> type may be subclassed to facilitate full payment, using a custom namespace and associated context.</p><div class="example" id="example-56-extension-example-integrated-payments">
+        </div></section><section id="extension-example-integrated-payments"><h5 id="x11-2-3-3-extension-example-integrated-payments"><bdi class="secno">11.2.3.3 </bdi>Extension example: Integrated Payments<a class="self-link" aria-label="§" href="#extension-example-integrated-payments"></a></h5><p>In some limited circumstances it might also be desirable for an Open Booking API to act as a facade over a <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a>, <a href="#dfn-payment-provider" class="internalDFN" data-link-type="dfn">Payment Provider</a>, and Invoicing systems. For these circumstances the <code>Payment</code> type may be subclassed to facilitate full payment, using a custom namespace and associated context.</p><div class="example" id="example-57-extension-example-integrated-payments">
           <div class="marker">
-      <a class="self-link" href="#example-56-extension-example-integrated-payments">Example<bdi> 56</bdi></a><span class="example-title">: Extension Example: Integrated Payments</span>
+      <a class="self-link" href="#example-57-extension-example-integrated-payments">Example<bdi> 57</bdi></a><span class="example-title">: Extension Example: Integrated Payments</span>
     </div> <pre aria-busy="false"><code class="hljs javascript"><span class="hljs-string">"payment"</span>: {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"acme:IntegratedPayment"</span>,
   <span class="hljs-string">"identifier"</span>: <span class="hljs-string">"12345678ABCD"</span>,
   <span class="hljs-string">"paymentMethod"</span>: <span class="hljs-string">"acme:StripePayment"</span>,
   <span class="hljs-string">"acme:token"</span>: <span class="hljs-string">"tok_KPte7942xySKBKyrBu11yEpf"</span>
 },</code></pre>
-        </div><p>Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> be <em class="rfc2119" title="OPTIONAL">OPTIONAL</em>.</p></section><section id="extension-example-waiting-list-endpoint"><h5 id="x11-2-3-4-extension-example-waiting-list-endpoint"><bdi class="secno">11.2.3.4 </bdi>Extension example: Waiting list endpoint<a class="self-link" aria-label="§" href="#extension-example-waiting-list-endpoint"></a></h5><p>The example below demonstrates a hypothetical extension endpoint to support waiting list registration.</p><div class="example" id="example-57-extension-example-waiting-list-endpoint">
+        </div><p>Note that due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the use of any native payment functionality in the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> be <em class="rfc2119" title="OPTIONAL">OPTIONAL</em>.</p></section><section id="extension-example-waiting-list-endpoint"><h5 id="x11-2-3-4-extension-example-waiting-list-endpoint"><bdi class="secno">11.2.3.4 </bdi>Extension example: Waiting list endpoint<a class="self-link" aria-label="§" href="#extension-example-waiting-list-endpoint"></a></h5><p>The example below demonstrates a hypothetical extension endpoint to support waiting list registration.</p><div class="example" id="example-58-extension-example-waiting-list-endpoint">
           <div class="marker">
-      <a class="self-link" href="#example-57-extension-example-waiting-list-endpoint">Example<bdi> 57</bdi></a><span class="example-title">: Extension Example: Waiting List Endpoint</span>
+      <a class="self-link" href="#example-58-extension-example-waiting-list-endpoint">Example<bdi> 58</bdi></a><span class="example-title">: Extension Example: Waiting List Endpoint</span>
     </div> <pre aria-busy="false"><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/api/sessions/{session-id}/waiting-list</span> HTTP/1.1
 <span class="hljs-attribute">Host</span>: example.com
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:35 GMT
@@ -5313,16 +5330,16 @@ media type(s) defined by this specification.</p><p>Media types will conform to t
         </div></section></section></section><section id="response-formats"><h3 id="x11-3-response-formats"><bdi class="secno">11.3 </bdi>Response formats<a class="self-link" aria-label="§" href="#response-formats"></a></h3><p>Requests and response documents exchanged via this API will all be valid
 [<cite><a class="bibref" href="#bib-json-ld" title="JSON-LD 1.0">JSON-LD</a></cite>] documents, with the exception of the <a href="#dfn-orders-feed" class="internalDFN" data-link-type="dfn">Orders feed</a>, where only documents
 included in the <code>data</code> property are valid [<cite><a class="bibref" href="#bib-json-ld" title="JSON-LD 1.0">JSON-LD</a></cite>].</p><p>The [<cite><a class="bibref" href="#bib-json-ld" title="JSON-LD 1.0">JSON-LD</a></cite>] documents <em class="rfc2119" title="MUST">MUST</em> include a [<cite><a class="bibref" href="#bib-json-ld" title="JSON-LD 1.0">JSON-LD</a></cite>] <code>context</code> that refers
-to the [<cite><a class="bibref" href="#bib-openactive-vocabulary" title="OpenActive Vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-58-minimal-json-ld-document">
+to the [<cite><a class="bibref" href="#bib-openactive-vocabulary" title="OpenActive Vocabulary">OpenActive-Vocabulary</a></cite>] as follows:</p><div class="example" id="example-59-minimal-json-ld-document">
           <div class="marker">
-      <a class="self-link" href="#example-58-minimal-json-ld-document">Example<bdi> 58</bdi></a><span class="example-title">: minimal JSON-LD document</span>
+      <a class="self-link" href="#example-59-minimal-json-ld-document">Example<bdi> 59</bdi></a><span class="example-title">: minimal JSON-LD document</span>
     </div> <pre aria-busy="false"><code class="hljs json">{
   <span class="hljs-attr">"@context"</span>: <span class="hljs-string">"https://openactive.io/"</span>
 }</code></pre>
         </div><p>Unless otherwise specified the request and response documents <em class="rfc2119" title="MUST">MUST</em> conform to
-the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-4-errors"><bdi class="secno">11.4 </bdi>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive.booking+json; version=1.0</code>.</p><div class="example" id="example-59-error-response-example">
+the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Modelling Opportunity Data">Modelling-Opportunity-Data</a></cite>] data model.</p></section><section id="errors"><h3 id="x11-4-errors"><bdi class="secno">11.4 </bdi>Errors<a class="self-link" aria-label="§" href="#errors"></a></h3><p>Error responses <em class="rfc2119" title="MUST">MUST</em> be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.</p><p>All error responses from this API <em class="rfc2119" title="MUST">MUST</em> be returned in a JSON-LD format subclass of the <code>OpenBookingError</code> using a content type of <code>application/vnd.openactive.booking+json; version=1.0</code>.</p><div class="example" id="example-60-error-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-59-error-response-example">Example<bdi> 59</bdi></a><span class="example-title">: Error response example</span>
+      <a class="self-link" href="#example-60-error-response-example">Example<bdi> 60</bdi></a><span class="example-title">: Error response example</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">400</span> Bad Request
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0
@@ -5334,9 +5351,9 @@ the [<cite><a class="bibref" href="#bib-modelling-opportunity-data" title="Model
 }</span></code></pre>
         </div></section><section id="rate-limiting"><h3 id="x11-5-rate-limiting"><bdi class="secno">11.5 </bdi>Rate Limiting<a class="self-link" aria-label="§" href="#rate-limiting"></a></h3><p>The <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MAY">MAY</em> choose to apply rate limiting for each unique set of authentication credentials. In such circumstances where a request is rate limited, the <a href="#dfn-booking-system" class="internalDFN" data-link-type="dfn">Booking System</a> <em class="rfc2119" title="MUST">MUST</em> return a response with status code 429.</p><p>To allow for a broad range of API management solutions to be used, the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="MUST">MUST</em> rely only on the status code 429 when detecting and retrying a rate-limited request, as specified elsewhere in this specification. The following guidance is included to encourage convergence in implementations where possible.
 </p><p>All rate-limited responses from this API <em class="rfc2119" title="SHOULD">SHOULD</em> return a JSON-LD format <code>TooManyRequestsError</code> object using a content type of <code>application/vnd.openactive.booking+json; version=1.0</code> with status code 429.</p><p>The response <em class="rfc2119" title="SHOULD">SHOULD</em> also include the <code>Retry-After</code> HTTP Header with a value set to the number of seconds after which the <a href="#dfn-broker" class="internalDFN" data-link-type="dfn">Broker</a> <em class="rfc2119" title="SHOULD">SHOULD</em> retry as per [<cite><a class="bibref" href="#bib-rfc2616" title="Hypertext Transfer Protocol -- HTTP/1.1">RFC2616</a></cite>] section 14.37.
-</p><div class="example" id="example-60-rate-limited-response-example">
+</p><div class="example" id="example-61-rate-limited-response-example">
           <div class="marker">
-      <a class="self-link" href="#example-60-rate-limited-response-example">Example<bdi> 60</bdi></a><span class="example-title">: Rate limited response example</span>
+      <a class="self-link" href="#example-61-rate-limited-response-example">Example<bdi> 61</bdi></a><span class="example-title">: Rate limited response example</span>
     </div> <pre aria-busy="false"><code class="hljs http">HTTP/1.1 <span class="hljs-number">429</span> Too Many Requests
 <span class="hljs-attribute">Date</span>: Mon, 8 Oct 2018 20:52:36 GMT
 <span class="hljs-attribute">Content-Type</span>: application/vnd.openactive.booking+json; version=1.0

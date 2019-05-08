@@ -134,12 +134,6 @@ function dataExampleRateLimitResponse(utils, content) {
 // LATER Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
 // LATER A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
 
-//TODO: Read Iain's slides and stephenage notes from a while back to check we've not missed anything
-
-//TODO: Allow for a "lite" signup-only / no cancellation version to exist? No point, it's too simple to need a spec for that...?
-
-//TODO: Allow multiple errors only for order creation
-
 //TODO: - You're supposed to check price is the same, so the completed OrderQuote must be passed into the Order in order to complete the Order - does this get around any reflection issues?
 // All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
 
@@ -242,6 +236,15 @@ function dataExampleOrderCreationFromProposalRequest(utils, content) {
     "payment": fullOrderExampleContent.payment
   });
 }
+
+function dataExampleOrderCreationErrorResponse(utils, content) {
+  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "UnableToProcessOrderItemError",
+    "description": "An error occurred while processing the items within this booking."
+  });
+}
+
 
 
 function dataExampleOrderQuoteDeletionRequest(utils, content) {
