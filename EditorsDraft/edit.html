@@ -834,7 +834,7 @@ Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), a
 
 A <a>Lease</a> is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+If an `OrderProposal` is in an `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected`, regardless of whether or not the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If at any point this is not the case, it is the responsibility of the <a>Booking System</a> to set the `orderProposalStatus` to `https://openactive.io/SellerRejected`. For example, if an <a>Opportunity</a> becomes full or is cancelled and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
 
 If the <a>Lease</a> expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the <a>Lease</a>, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
@@ -1755,6 +1755,8 @@ The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `
 
 This specification does not require the <a>Orders feed</a> to include the full contents of the <a>Opportunities</a> within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the <a>Opportunity Data</a> feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the <a>Opportunity</a> (e.g. changes to `startDate`).
 
+Specifically, `maximumAttendeeCapacity`, `remainingAttendeeCapacity`, `maximumUses` and `remainingUses` MUST NOT be included in the <a>Orders feed</a>.
+
 
 ## Amending the Order after <a><b>B</b></a>
 
@@ -2059,7 +2061,7 @@ A PUT request to the Order Creation endpoint of the <a>Booking System</a> with a
 
 If successful the server will respond with the location of a newly created `Order` resource.
 
-For the `Order` response and the <a>Orders feed</a>, the `OrderItems` MUST include a unique `id`. This allows `OrderItem`s to be cancelled individually once the `Order` has been created.
+For the `Order` response and the <a>Orders feed</a>, the `OrderItems` MUST include a unique `id`. This allows `OrderItem`s to be referenced in subsequent PATCH calls once the `Order` has been created.
 
 <a><b>B</b></a> responses MUST reflect back properties provided by the <a>Booking System</a>, for example:
 
@@ -2184,7 +2186,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | Property                                                           | Broker Request | Booking System Response | Orders feed | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
-| `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID |
+| `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. This is NOT REQUIRED in PUT or PATCH requests. |
 | [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
 | [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | -        | REQUIRED | REQUIRED | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
@@ -2592,7 +2594,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 | `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted the <a>Booking System</a> for reconciliation, e.g. `accountId`. |
 | `TotalPaymentDueMismatchError`              | 400         | If the `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
 | `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in any <a>Opportunity</a> that was included the `Order`. |
-| `UnableToProcessOrderItemError`             | 409         | If any `OrderItem` errors would have been generated at <a><b>C2</b></a> with the same data presented. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
+| `UnableToProcessOrderItemError`             | 409         | If any `OrderItem` errors would have been generated at <a><b>C2</b></a> given the same set of `OrderItem`s. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
 | `OrderAlreadyExistsError`                   | 500         | If the UUID used for an `OrderQuote` already represents a completed Order with a different set of `OrderItem`s to those specified (note call to <a><b>B</b></a> is idempotent for the case where `OrderItem`s match). This happens in the rare event of a UUID clash. |
 | `OrderCreationFailedError`                  | 500         | If <a><b>B</b></a> fails for any other reason not specified in this list of errors. |
 
@@ -2612,7 +2614,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 | Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `IncompleteAttendeeDetailsError`            | 400         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
+| `IncompleteAttendeeDetailsError`            | 409         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
 | `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
 | `IncompleteIntakeFormError`                 | 409         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
 | `InvalidIntakeFormError`                    | 409         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
@@ -2620,9 +2622,10 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
 | `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |
 | `UnavailableOpportunityError`               | 409         | If the `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
-| `OpportunityIsInConflictError`              | 409         | If the specific `orderedItem`s against which this error is emitted are not able to be booked together. |
+| `OpportunityIsInConflictError`              | 409         | If the specific `OrderItem`s against which this error is emitted are not able to be booked together. |
 | `OpportunityIsFullError`                    | 409         | If there are no available spaces for the <a>Opportunity</a> contained in the `orderedItem` property. |
 | `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the <a>Opportunity</a> contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
+| `OpportunityCapacityIsReservedByLeaseError` | 409         | If the available capacity required to book a specific <a>Opportunity</a> is reserved by a lease held by another <a>Customer</a>. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity but which are reserved by the lease of another <a>Customer</a> - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 3, with 1 additional space held by another lease, then for an `OrderQuote` with 9 `OrderItem`s related to it, this error would only be emitted against 1 of the `OrderItem`s, with `OpportunityHasInsufficientCapacityError` emitted against the other 5 of the `OrderItem`s. This helps a <a>Customer</a> to know whether they should try again. |
 
 
 #### API authentication

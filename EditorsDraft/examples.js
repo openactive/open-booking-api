@@ -129,55 +129,19 @@ function dataExampleRateLimitResponse(utils, content) {
 }
 
 
-
 // LATER Offer override to disable/exclude an offer.
 // LATER Create a GitHub issue for 49:00 which includes pros and cons of latestCancellationBeforeStartDate vs better errors on cancellation noting "allowCustomerCancellationFullRefund"
 // LATER A page on the OA docs site summarising what you can do and can't do with the OpenActive booking specification (to talk through with operators)
+// LATER Consider allowing price in Offers to be supplied at B (taken from C2) to double-check the price of each item hasn't changed.
+// LATER All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
+// LATER Ensure somewhere it says for the Orders feed items are a "PATCH" of a subset of the properties from the original Order, and that GET is not REQUIRED so that the other properties do not need to be stored.
 
-//TODO: - You're supposed to check price is the same, so the completed OrderQuote must be passed into the Order in order to complete the Order - does this get around any reflection issues?
-// All supported properties are reflected (and stored if Order GET is implemented), however the feed is a PATCH, so essential properties should be stored by the broker and periferal properties don't need to be stored by the Booking System for more accessible implementation.
-
-// To make errors easier, OrderQuantity is used for OrderQuote and response, and each acceptedOffer/offeredItem combo MUST be unique, hence no IDs are required. Check the errors presented for not enough space for all tickets works as expected.
-
-//TODO: Clarify **B** vs Order Creation terms throughout
-
-//TODO: Should we have ID in the request PUT? No, include this in a few places
-
-//TODO: Do we force properties to be (i) reflected back and (ii) stored as part of the Orders feed by the booking system? Cons: This would limit any extension mechanism, Pros: The complete item is being passed back and forth
-//TODO: Ensure somewhere it says for the Orders feed items are a "PATCH" of a subset of the properties from the original Order, and that GET is not REQUIRED so that the other properties do not need to be stored.
-//TODO: Create new feed column in Order model
-//TODO: Order response MUST contain all properties that are actively being stored by the Booking System, as well as the REQUIRED properties of the "Order".
-
-//TODO: Add details somewhere about what level of info to include in orderedItems in general (required props? enough to describe the activity, or shall we list them in the model here?)
-//TODO: Any properties included in the Orders Feed must be linked to the modified date, which must update if any props update.
-
-//TODO: Specifically that maximumAttendeeCapacity, remainingAttendeeCapacity, maximumUses and remainingUses MUST NOT be included in the Order feed.
-
-//TODO: Can we simplify the Orders feed requirement by having the "patch" payload not full sessions, and instead reference the open data.
-
-//TODO: Open issue on this: It is the Broker's responsibility to monitor the open feeds to ensure that any updates to the events logistics (e.g. date/time) trigger notifications for the Customer.
-
-//TODO: Errors for specific OrderItems, and how they are returned. Suggest that errors are returned against the OrderQuote items, so they can be displayed to the users, rather than the OrderQuote failing.
-
-//TODO: Include a section on child booking?
-
-//TODO: Error if customer cancels bofore the cancellation windows
-//TODO: Ensure customer checks for cancellation window before attempting cancellation
+//After release: TODO: Create new feed column in Order model
+//After release: TODO: Add details somewhere about what level of info to include in orderedItems in general (required props? enough to describe the activity, or shall we list them in the model here?)
+//After release: TODO: Sort through errors
 
 //TODO: Error messages and failure modes (and HTTP status codes) for a failed Order/OrderQuote and all other operations
 
-//TODO: Add error state for "orderItem is reserved by another user, and may become available again shortly" as leases are not counted in open data availabilty. This is also designed to show if leasing is becoming an issue, as the number of these errors reported can be monitored.
-//TODO: Add error state for "this item is no longer available".
-
-//TODO: Add error state for "orderItem is not bookable" [due to x?], and reference in "Definition of an Open Booking `bookable' opportunity"
-
-//Include failure example for `Order`
-
-//TODO: Include Error for `Order` specifying that that a conflict exists with the `orderedItem` requested, and that `OrderQuote` must be retried to get specific errors.
-
-//TODO: Sort through errors
-
-// How do we know which status code to use when multipe errors have conflicting status codes? Do we have an example with just one error and no array?
 
 function dataExampleOrderCreationRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
