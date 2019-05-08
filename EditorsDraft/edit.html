@@ -275,28 +275,23 @@ contribute to the development of the specification.
 
 # Introduction
 
-The document is an output of the
-[OpenActive Community Group](https://www.w3.org/community/openactive/). As part
-of the [OpenActive](https://openactive.io) initiative, the community group is
-developing standards that will promote the publication and use of open
-[opportunity data](https://openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data)
-in helping people to become more physically active.
+The document is an output of the [OpenActive Community Group](https://www.w3.org/community/openactive/). As part of the [OpenActive](https://www.openactive.io) initiative, the community group is developing standards that will promote the publication and use of [open opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data) in helping people to become more physically active.
 
-The Community Group have already published specifications that define standard
-data models ([[Modelling-Opportunity-Data]]) and support the publication and
-harvesting of data in standard formats ([[RPDE]]). This existing work helps increase the discovery of opportunities for people to
-be active.
+The Community Group have already published specifications that define standard data models ([[Modelling-Opportunity-Data]]) and support the publication and harvesting of data in standard formats ([[RPDE]]). This existing work helps increase the discovery of opportunities for people to be active.
 
-<dfn>Opportunities</dfn> to be active (e.g. "Yoga Tuesday 14th 7pm"), which include `SessionSeries`, `FacilityUse` and `Slot` and their associated `Offer`s (e.g. "Junior (8-18) £9"), are both defined by this existing work.
+An <dfn>Opportunity</dfn> (e.g. "Yoga Tuesday 14th March at 7pm") in the context of this specification is a specific instance of an [`Event`](https://www.openactive.io/modelling-opportunity-data/#describing-events-code-schema-event-code-) (or subclass of `Event`) that a <a>Customer</a> can attend to participate in physical activity: a `ScheduledSession` within a `SessionSeries`, a `Slot` within a `FacilityUse`, a `HeadlineEvent` or a `CourseInstance` (or an `Event` within a `HeadlineEvent` or `CourseInstance`). Each <a>Opportunity</a> has associated [`Offer`](https://www.openactive.io/modelling-opportunity-data/#describing-offers-code-schema-offer-code-)s (e.g. "Junior (8-18) £9"), which may be free, and describe the commercial means of accessing the <a>Opportunity</a>.
 
-This specification builds on that work by defining an HTTP API that
-can be implemented by <a>Booking Systems</a> that are publishing opportunity data. By
+<dfn>Opportunity Data</dfn> in the context of this specification is openly published data pertaining to <a>Opportunities</a>, 
+accessible via [[RPDE]] feed(s).
+
+This specification builds on the previous work of the Community Group by defining an HTTP API that can be implemented by <a>Booking Systems</a> that are publishing <a>Opportunity Data</a>. By
 allowing third-party applications ("<a>Brokers</a>"). to place bookings in their systems, it becomes possible for more people to participate in events or make use of leisure and sporting facilities.
 
 The specification defines the flow of HTTP requests and responses between the
 <a>Booking System</a> (server) and the <a>Broker</a> (client). This includes
 definitions of the overall application flow, detailed request and response
 formats and the potential error conditions that applications may encounter. A high-level summary of these and their relationship to each other is provided in the [Booking Flow overview](#booking-flow-overview), below.
+
 
 ## Scope and requirements
 
@@ -334,9 +329,9 @@ A number of additional requirements that relate to the booking of events and fac
 * mandatory business-to-business tax calculation
 * cancellation fees
 * "subscriptions" to allow a <a>Customer</a> to participate ad-hoc in a <a>Seller</a>'s activity, with such participation recorded for later reconciliation
-* refunds/cancellations after the opportunity has occurred 
+* refunds/cancellations after the <a>Opportunity</a> has occurred 
 * back-office systems between <a>Broker</a> and <a>Booking System</a>, such as for payment reconciliation
-* fine-grained control of opportunity bookability in the <a>Booking System</a>
+* fine-grained control of <a>Opportunity</a> <a>bookability</a> in the <a>Booking System</a>
 
 It is possible that future versions of this specification may include support
 for these or other features. Revisions will be driven by the needs of the
@@ -356,7 +351,7 @@ The functionality that is currently defined as out of scope includes:
 * __API authentication and security__ – while the specification recommends some best practices relating to authentication and security it does not mandate a specific means of securing an API. Implementers are free to choose the system that offers the best security for their platform and users.
 * __Payment processing__ – the design assumes that all payment handling will be coordinated by the <a>Broker</a>, in a separate payment flow. <a>Brokers</a> are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Sellers</a> and <a>Customers</a>.
 * __API business models__ – the design is agnostic to any business models that might govern the use or provision of the API, e.g. revenue-sharing or transaction processing fees.
-* __Opportunity discovery__  – finding, filtering and searching for opportunity data. This specification assumes that the client and server applications have already shared data about the relevant opportunities, e.g. via an [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
+* __Opportunity discovery__  – finding, filtering and searching for <a>Opportunity Data</a>. This specification assumes that the client and server applications have already shared data about the relevant <a>Opportunities</a>, e.g. via an [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
 * __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
 
 ## Specification dependencies
@@ -495,15 +490,15 @@ This specification also provides optional features, which allows the minimal cor
 
 In order to enter either of the booking flows described in this specification, the following pre-conditions must be met:
 
-- The <a>Broker</a> MUST obtain opportunity data that includes descriptions of <a>Opportunities</a>, by frequently harvesting data via opportunity data [[RPDE]] open feeds provided by the <a>Booking System</a>.
+- The <a>Broker</a> MUST obtain <a>Opportunity Data</a> that includes descriptions of <a>Opportunities</a>, by frequently harvesting data via <a>Opportunity Data</a> [[RPDE]] open feeds provided by the <a>Booking System</a>.
 
 - The <a>Broker</a> MUST present an up-to-date view of availability data for the <a>Customer</a> to select items to book, as this data may change over time.
 
-- The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the opportunity data are up-to-date.
+- The <a>Booking System</a> MUST ensure that the `remainingAttendeeCapacity` and `remainingUses` properties in the <a>Opportunity Data</a> are up-to-date.
 
 - The <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `orderedItem` and `acceptedOffer` properties within the submitted `OrderItem`s, respectively.
 
-- It is not possible for opportunities from different <a>Sellers</a> or with different <a>Brokers</a> or on behalf of different <a>Customers</a> to be combined in the same `Order`.
+- It is not possible for <a>Opportunities</a> from different <a>Sellers</a> or with different <a>Brokers</a> or on behalf of different <a>Customers</a> to be combined in the same `Order`.
 
 
 ## Simple Booking Flow
@@ -542,7 +537,7 @@ Note that some or all steps may be skipped, or may not be presented to the <a>Cu
 
 ### Leasing
 
-Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contend with one another for a limited number of opportunities. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, some <a>Booking Systems</a> use the concept of a <dfn>Lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey and improves the user experience overall.
+Customers may simultaneously attempt to book the same <a>Opportunity</a> (e.g. space in an event or `Slot` of a facility), and hence contend with one another for a limited number of <a>Opportunities</a>. In order to ensure that items cannot be "stolen" from a <a>Customer</a>'s "shopping basket" by another <a>Customer</a>, some <a>Booking Systems</a> use the concept of a <dfn>Lease</dfn>, a temporary reservation that provides a window during which a <a>Customer</a> can complete their customer journey and improves the user experience overall.
 
 The design of this API supports the use of time-bound <a>Leases</a>. Using <a>Leases</a> is RECOMMENDED, however they are not required, in order to ensure a low barrier of entry for implementors of the specification.
 
@@ -602,7 +597,7 @@ The `orderCreationStatus` statuses are defined as follows:
 3. https://openactive.io/OrderCreationPaymentCaptured - after successful <a>Payment Capture</a>
 4. https://openactive.io/OrderCreationComplete - after successful <a>Invoice Generation</a> and <a>Customer Notification</a>
 
-An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be ignored.
+An `Order` MUST NOT be communicated externally by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be ignored.
 
 
 ### Step-by-step process description
@@ -615,7 +610,7 @@ An `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such 
 
 i) "**1. Select**" - <a>Customer</a> browses <a>Broker</a> site anonymously and adds something to basket
 
-- <a>Broker</a> MUST have determined at least one Open Booking <a>bookable</a> opportunity each with an associated applicable `Offer` from the <a>Customer</a>'s browsing, using the most up-to-date opportunity data.
+- <a>Broker</a> MUST have determined at least one Open Booking <a>bookable</a> <a>Opportunity</a> each with an associated applicable `Offer` from the <a>Customer</a>'s browsing, using the most up-to-date <a>Opportunity Data</a>.
 - <a>Broker</a> generates a UUID to use for the `Order`.
 - If any catastrophic failure occurs during the booking flow (any error with status code 500, or when the request consistently returns status code 503 after a number of retries) the UUID MUST be regenerated to allow for a clean retry of the booking. UUID MUST NOT be regenerated for expected errors (status code 4xx).
 
@@ -623,7 +618,7 @@ ii) <a><b>C1</b></a> - <a>Broker</a> call with `OrderQuote` including UUID witho
 
 - <a>Booking System</a> creates <a>Anonymous Lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. If a <a>Lease</a> has been created, then the `OrderQuote` in the response MUST include a `lease` property containing a valid `Lease` object.
 - `OrderQuote` MUST include `totalPaymentDue`, which allows the <a>Broker</a> to update any UI with the total.
-- `OrderQuote` MUST include a list of `OrderItem`s which contain their respective <a>Opportunity</a> objects, including enough detail to allow the <a>Broker</a> to display information about the <a>Opportunity</a> to the <a>Customer</a> (rather than relying on the <a>Broker</a> having the most up-to-date <a>Opportunity</a> data from the open feeds at the point of purchase).
+- `OrderQuote` MUST include a list of `OrderItem`s which contain their respective <a>Opportunity</a> objects, including enough detail to allow the <a>Broker</a> to communicate key information about the <a>Opportunity</a> to the <a>Customer</a> (rather than relying on the <a>Broker</a> having the most up-to-date <a>Opportunity</a> data from the open feeds at the point of purchase).
 - The <a>Booking System</a> MUST ensure that the data returned to the <a>Broker</a> in the `remainingAttendeeCapacity` and `remainingUses` properties are up-to-date, including places already booked and those currently reserved by any <a>Leases</a> from competing `OrderQuote`s.
 - `OrderQuote` MUST specify any additional details required to complete the booking for the selected `OrderItem`s via an `orderItemIntakeForm`.
 - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. 
@@ -777,9 +772,8 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Booking System</a> MUST store the UUID as part of the `Order` (and `OrderQuote` if leasing is enabled).
 - The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used UUID.
 - The <a>Booking System</a> MUST check availability and confirm pricing during <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> to ensure booking can complete.
-- The <a>Booking System</a> MUST provide an authenticated Orders Feed specific to the Broker. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
-Include sufficient pricing & avail data in opportunity feeds.
-- The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunities</a>.
+- The <a>Booking System</a> MUST provide an authenticated <a>Orders Feed</a> specific to the <a>Broker</a>. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
+- The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunity Data</a>, including pricing and availability.
 
 Calls to <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> MUST be idempotent, based on the UUID.
 
@@ -839,7 +833,7 @@ Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), a
 
 A <a>Lease</a> is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute opportunities are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+If an `OrderProposal` remains in a `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected` after the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If this is not the case, this fact needs to be explicitly asserted. For example, if an <a>Opportunity</a> becomes full and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
 
 If the <a>Lease</a> expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the <a>Lease</a>, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
@@ -974,7 +968,7 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
 
 - The <a>Broker</a> MUST NOT store an `orderCreationStatus` against the `OrderProposal`.
 
-- The `OrderProposal` MAY include an `orderCustomerNote` in order to "Ask a question about this opportunity?", as the beginning of a [Message Exchange](#message-exchange), if the `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` includes `https://openactive.io/OpenBookingMessageExchange`.
+- The `OrderProposal` MAY include an `orderCustomerNote` in order to allow the <a>Customer</a> to ask a question about this <a>Opportunity</a>, as the beginning of a [Message Exchange](#message-exchange), if the `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` includes `https://openactive.io/OpenBookingMessageExchange`.
 
 - To match much of the behaviour of <a><b>B</b></a> in the [Simple Booking Flow](#simple-booking-flow), the following also apply:
 
@@ -1308,7 +1302,7 @@ Note that this specification does not deal with contractual relationships, and s
 A reseller is a company or individual that purchases goods or services with the intention of selling them rather than consuming or using them. This is usually done for profit (but could be resold at a loss).
 
 ### Contractual Relationships
-In the context of OpenActive, a `ResellerBroker` contracts directly with the <a>Seller</a> as a business-to-business relationship to purchase access to the opportunity. It then, at a later point in time (which may only be milliseconds later), separately forms a contractual relationship with the <a>Customer</a>, who purchases access to the opportunity from the `ResellerBroker`.
+In the context of OpenActive, a `ResellerBroker` contracts directly with the <a>Seller</a> as a business-to-business relationship to purchase access to the <a>Opportunity</a>. It then, at a later point in time (which may only be milliseconds later), separately forms a contractual relationship with the <a>Customer</a>, who purchases access to the <a>Opportunity</a> from the `ResellerBroker`.
 
 <figure>
  <img src="ResellerBroker.png" alt="ResellerBroker relationships">
@@ -1438,7 +1432,7 @@ Note that if the specification is followed correctly, for all <a>Broker</a> mode
 
 ## Payments and Refunds
 
-Due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the <a>Payment Processor</a> be distinct from the <a>Booking System</a> for which this API is defined. The <a>Booking System</a> MAY separately expose its own native payment functionality as if it were a <a>Payment Processor</a>, however its use MUST be OPTIONAL.
+Due to the variety of business models available in the OpenActive ecosystem, conformance to this specification requires that the <a>Payment Provider</a> be distinct from the <a>Booking System</a> for which this API is defined. The <a>Booking System</a> MAY separately expose its own native payment functionality as if it were a <a>Payment Provider</a>, however its use MUST be OPTIONAL.
 
 Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single `Payment` object is included in the `Order` in the `payment` property to ensure payments are fully traceable in case of audit.
 
@@ -1485,7 +1479,7 @@ To use `DynamicPayment` the booking flow MUST be completed as normal with the fo
 - If the `DynamicPayment` details supplied (e.g. `accountId`) are not considered either sufficient or valid for reconciliation by the <a>Booking System</a> then an `IncompletePaymentDetailsError` or `InvalidPaymentDetailsError` MUST be returned by all calls, respectively.
 - The <a>Booking System</a> MUST NOT record any price against the `Order` or `OrderItem`s for reconciliation, as such reconciliation MUST occur completely out-of-band.
 
-The `accountId` of the `DynamicPayment` MUST be used consistently in order to allow the <a>Seller</a> to reconcile opportunities booked using a particular account.
+The `accountId` of the `DynamicPayment` MUST be used consistently in order to allow the <a>Seller</a> to reconcile <a>Opportunities</a> booked using a particular account.
 
 The `name` of the `DynamicPayment` SHOULD be used to provide information about the source of the payment that can be stored in the <a>Booking System</a>,  to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker Membership").
 
@@ -1534,11 +1528,11 @@ Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` o
 
 This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
 
-Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of the `organizer` or `provider` set to `https://openactive/TaxGross`, the `Offer`s available in the opportunity data will still be calculated as tax-inclusive for a business-to-consumer sale, and so MUST be presented by the <a>Broker</a> as such, with the business-to-business tax calculation occurring during the booking flow. If the usecase of presenting the correct price up-front gains traction, additional price data must be made available as part of the openly published opportunity data to resolve this shortcoming.
+Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of the `organizer` or `provider` set to `https://openactive/TaxGross`, the `Offer`s available in the <a>Opportunity Data</a> will still be calculated as tax-inclusive for a business-to-consumer sale, and so MUST be presented by the <a>Broker</a> as such, with the business-to-business tax calculation occurring during the booking flow. If the usecase of presenting the correct price up-front gains traction, additional price data must be made available as part of the openly published <a>Opportunity Data</a> to resolve this shortcoming.
 
 ## Tax mode
 
-The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within opportunity data specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
+The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
 Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are unaffected.
 
@@ -1546,7 +1540,7 @@ Note that `taxMode` only affects the interpretation of the `price` of the `Offer
 |--------------------------------------------------------|-----------------------------|-------------------------------|
 | Price displayed                                        | Excludes tax                | Includes all applicable taxes assuming a `Person` as a `customer` |
 | Currencies usually associated                          | USD, CAD                    | EUR, AUD, GBP                 |
-| Example price of opportunity before tax                | 10.00                       | 10.00                         |
+| Example price of <a>Opportunity</a> before tax                | 10.00                       | 10.00                         |
 | Example tax rate                                       | 0.2                         | 0.2                           |
 | Price displayed to <a>Customer</a> during browsing (`Offer`)  | 10.00                       | 12.00                         |
 | Total paid by <a>Customer</a> (`totalPaymentDue`)             | 12.00                       | 12.00                         |
@@ -1554,9 +1548,9 @@ Note that `taxMode` only affects the interpretation of the `price` of the `Offer
 
 ## Free opportunities
 
-Free opportunities, defined by those with at least one `Offer` with a `price` of `0`, MUST follow the same workflow as paid opportunities, except with no interaction with a <a>Payment Provider</a>, and no `payment` included in <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> or <a><b>B</b></a> requests.
+<dfn>Free Opportunities</dfn>, defined as those with at least one applicable `Offer` with a `price` of `0`, MUST follow the same workflow as paid <a>Opportunities</a>, except with no interaction with a <a>Payment Provider</a>, and no `payment` included in <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> or <a><b>B</b></a> requests.
      
-For free `Offer`s publishers MAY not include `priceCurrency`. If a `priceCurrency` is not available then <a>Brokers</a> SHOULD display "Free" or equivalent when displaying a zero price.
+For `Offer`s with a `price` of `0` publishers MAY not include `priceCurrency`. If a `priceCurrency` is not available then <a>Brokers</a> SHOULD communicate "Free" or equivalent when referencing a zero price.
 
 
 ## Offer overrides
@@ -1569,7 +1563,7 @@ An `OfferOverride` type may be supplied by the <a>Broker</a> to the `acceptedOff
 
 The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as it would be for a standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
 
-`OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that <a>Booking Systems</a> that only offer free opportunities MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
+`OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that <a>Booking Systems</a> that _only_ offer <a>Free Opportunities</a> MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
 
 <pre class="example" title="Example of OfferOverride">
   "acceptedOffer": {
@@ -1593,7 +1587,7 @@ The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as
 
 Before entering into the Booking Flow, the <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `acceptedOffer` and `orderedItem` properties within the `OrderItem`s.
 
-The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` with an `Offer` is deemed to be <dfn>bookable</dfn> via the Open Booking API if the `Offer` is applicable to the <a>Opportunity</a> following the principles of `Offer` inheritance contained in [[Modelling-Opportunity-Data]], and if both the <a>Opportunity</a> and `Offer` meet the criteria specified below.
+The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` with an `Offer` is deemed to be <dfn data-lt="bookability">bookable</dfn> via the Open Booking API if the `Offer` is applicable to the <a>Opportunity</a> following the principles of `Offer` inheritance contained in [[Modelling-Opportunity-Data]], and if both the <a>Opportunity</a> and `Offer` meet the criteria specified below.
 
 Bookable `Offer`s:
 
@@ -1619,15 +1613,15 @@ Bookable <a>Opportunities</a>:
 
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
-The <a>Broker</a> MUST NOT attempt to book an opportunity that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
+The <a>Broker</a> MUST NOT attempt to book an <a>Opportunity</a> that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
 
 ### Booking restrictions
 
-Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> <a>Opportunity</a> via an associated <a>bookable</a> `Offer` based on the `genderRestriction` or `ageRange` of either the <a>Opportunity</a> or `Offer`, this specification encourages the <a>Broker</a> NOT to capture additional personal data about the <a>Customer</a> (e.g. gender and date of birth) and NOT to enforce validation of these restrictions using such data, but instead to prominently display clear messaging regarding such restrictions throughout the booking process to ensure that the <a>Customer</a> is aware of these and able to make an informed decision.
+Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> <a>Opportunity</a> via an associated <a>bookable</a> `Offer` based on the `genderRestriction` or `ageRange` of either the <a>Opportunity</a> or `Offer`, this specification encourages the <a>Broker</a> NOT to capture additional personal data about the <a>Customer</a> (e.g. gender and date of birth) and NOT to enforce validation of these restrictions using such data, but instead to prominently communicate clear messaging regarding such restrictions throughout the booking process to ensure that the <a>Customer</a> is aware of these and able to make an informed decision.
 
-There may be additional restrictions placed on an <a>Opportunity</a> by the <a>Seller</a>. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as `attendeeInstructions` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST display these instructions clearly during the booking process.
+There may be additional restrictions placed on an <a>Opportunity</a> by the <a>Seller</a>. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as `attendeeInstructions` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST communicate these instructions clearly during the booking process.
 
-The <a>Broker</a> MAY filter the `Offer`s it displays, for example based on `ageRange` of the `Offer`, to increase the relevance of the `Offer`s displayed to the <a>Broker</a>'s audience.
+The <a>Broker</a> MAY filter the `Offer`s it makes available to the <a>Customer</a>, for example based on `ageRange` of the `Offer`.
 
 
 ## Amending the OrderQuote before <a><b>B</b></a>
@@ -1636,7 +1630,7 @@ The <a>Broker</a> MAY call <a><b>C1</b></a> and MUST call <a><b>C2</b></a> when 
 
 When repeated calls to <a><b>C1</b></a> or <a><b>C2</b></a> are made with the same UUID, the <a>Booking System</a> MUST update any associated <a>Lease</a> to match the latest set of `OrderItem`s by removing those `OrderItem` that are not present in the request from the <a>Lease</a>, and adding those `OrderItem` that have been added since the last call to the <a>Lease</a>.
 
-<a>Leases</a> may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all <a>Leases</a> when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an opportunity being booked with one space remaining.
+<a>Leases</a> may be cancelled by the <a>Broker</a> as a courtesy by submitting an OrderQuote Deletion request using the same UUID. The <a>Broker</a> SHOULD make a reasonable attempt to cancel all <a>Leases</a> when it is aware that a <a>Customer</a> has abandoned their journey, or if an error occurs and a new UUID is to be generated for the same customer. This increases the likelihood of an <a>Opportunity</a> being booked with one space remaining.
 
 For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
 
@@ -1648,9 +1642,9 @@ The cancellation may be requested by either the <a>Customer</a> or the <a>Seller
 
 ### Refund after the opportunity has occurred 
 
-Although a cancellation may be requested before the opportunity has occurred in order to trigger a refund, cancellation and refund after an opportunity has occurred is currently outside the scope of this specification.
+Although a cancellation may be requested before the <a>Opportunity</a> has occurred in order to trigger a refund, cancellation and refund after an <a>Opportunity</a> has occurred is currently outside the scope of this specification.
 
-Full and partial refunds after an opportunity has occurred MUST be handled out-of-band directly between the <a>Broker</a> and the <a>Seller</a>.
+Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handled out-of-band directly between the <a>Broker</a> and the <a>Seller</a>.
 
 ### Customer requested cancellation
 
@@ -1661,11 +1655,11 @@ Full and partial refunds after an opportunity has occurred MUST be handled out-o
 
 To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
-1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true` and `latestCancellationBeforeStartDate` subtracted from the opportunity `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
+1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true` and `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
 2. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
 
-3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be displayed to the <a>Customer</a>. 
+3. Submit a PATCH for the `Order` including only the `id` for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be communicated to the <a>Customer</a>. 
 
 4. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItems` will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
@@ -1715,7 +1709,7 @@ Note that the properties included in the <a>Orders feed</a> MAY be a subset of t
 
 ### New `Order`s and `OrderProposal`s
 
-A new `Order` MUST NOT be displayed by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
+A new `Order` MUST NOT be communicated externally by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
 
 New `OrderProposal`s MUST be stored by the <a>Broker</a> based on a successful response to the Order Proposal call.
 
@@ -1736,7 +1730,7 @@ The <a>Customer</a> MUST be notified after a refund is successfully processed, u
 
 If refund processing takes longer than 1 minute, and a new status of `https://openactive.io/SellerCancelled` was detected by the <a>Broker</a>, then the <a>Customer</a> must be notified immediately of a cancellation ahead of the notification of the completed refund. This ensures the <a>Seller</a> can rely on the <a>Broker</a> as a notification channel in the event of cancellation. The <a>Customer</a> MUST be notified with the `cancellationMessage` for the `OrderItem` if provided.
 
-Note that the <a>Customer</a> MUST be notified in the event of all cancellations, even if no refund is due for free opportunities.
+Note that the <a>Customer</a> MUST be notified in the event of all cancellations, even if no refund is due for <a>Free Opportunities</a>.
 
 ### Partial Refunds and out-of-band arrangements
 
@@ -1747,9 +1741,9 @@ Partial refunds MAY be handled by out-of-band arrangements between the <a>Broker
 
 ### Change of logistics notifications
 
-The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `id` reference to an opportunity, which may be found and cross-referenced with other sources of opportunity data, for example an [[RPDE]] open feed.
+The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `id` reference to an <a>Opportunity</a>, which MUST be able to be cross-referenced with other sources of <a>Opportunity Data</a>, for example an [[RPDE]] open feed.
 
-This specification does not require the <a>Orders feed</a> to include the full contents of the opportunities within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the opportunity data feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the opportunity (e.g. changes to `startDate`).
+This specification does not require the <a>Orders feed</a> to include the full contents of the <a>Opportunities</a> within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the <a>Opportunity Data</a> feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the <a>Opportunity</a> (e.g. changes to `startDate`).
 
 
 ## Amending the Order after <a><b>B</b></a>
@@ -1762,7 +1756,7 @@ For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, 
 
 2. Check the latest stored state of `Order`s from the <a>Orders feed</a> to ensure that old `OrderItem` allows `allowCustomerCancellationFullRefund`.
 
-3. Clearly display messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be displayed to the <a>Customer</a> if any price difference exists between the two `Order`s, for the <a>Customer</a> to confirm.
+3. Clearly communicate messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be communicated to the <a>Customer</a> if any price difference exists between the two `Order`s, for the <a>Customer</a> to confirm.
 
 4. Request new payment details from the <a>Customer</a> and Authorise the amount specified by <a><b>C2</b></a>, then PATCH the old `Order` via the Order Cancellation endpoint, and if successful, complete <a><b>B</b></a> as normal.
 
@@ -1801,7 +1795,7 @@ The URLs in the example are only illustrative.
 
 ## Access control
 
-For opportunities that require entry into a restricted building or area to participate, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
+For <a>Opportunities</a> that require entry into a restricted building or area to participate, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
 
 Each `accessCode` and `accessToken` MUST represent unique methods of entry, and MUST NOT be duplicated in different formats. For example, multiple formats (e.g. PNG, JPEG) of the same `accessToken` MUST NOT be supplied.
 
@@ -2169,7 +2163,7 @@ It is the responsibility of <a>Booking Systems</a> to advertise the URL for furt
 
 # Model
 
-These models are designed to be compatible with [[Modelling-Opportunity-Data]]. Conformance criteria for opportunity data used in the context of the Booking API are at some points stricter or more relaxed than are defined in the [[Modelling-Opportunity-Data]] specification itself.
+These models are designed to be compatible with [[Modelling-Opportunity-Data]]. Conformance criteria for <a>Opportunity Data</a> used in the context of the Booking API are at some points stricter or more relaxed than are defined in the [[Modelling-Opportunity-Data]] specification itself.
 
 ## Order Model
 
@@ -2274,7 +2268,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
-| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of opportunity cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
+| [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
 | [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
@@ -2291,7 +2285,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
 | [`schema:price`](http://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If an `Offer` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:name`](http://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
+| [`schema:name`](http://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:ageRange`](https://openactive.io/ageRange) | RECOMMENDED | RECOMMENDED | [`schema:QuantitativeValue`](https://schema.org/QuantitativeValue) | Indicates that an Offer is applicable to a specific age range. Specified as a [QuantitativeValue](https://schema.org/QuantitativeValue) with [minValue](https://schema.org/minValue) and [maxValue](https://schema.org/maxValue) properties. |
 | [`oa:advanceBooking`](https://openactive.io/advanceBooking) | OPTIONAL | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must book in advance, whether they must pay on attending, or have option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
 | [`oa:prepayment`](https://openactive.io/prepayment) | OPTIONAL | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must pay in advance, pay when attending, or have the option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
@@ -2313,7 +2307,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
 | [`schema:price`](http://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `Order`. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the offer suitable for display to participants. |
+| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
@@ -2608,13 +2602,13 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
 | `IntakeFormOrderItemError`                  | 409         | If `orderItemIntakeFormResponse` is insufficient on the `OrderItem`. |
-| `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the opportunity. |
+| `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the <a>Opportunity</a>. |
 | `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
-| `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an opportunity on the <a>Booking System</a>. |
+| `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |
 | `UnavailableOpportunityError`               | 409         | If the `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
 | `OpportunityIsInConflictError`              | 409         | If the specific `orderedItem`s against which this error is emitted are not able to be booked together. |
-| `OpportunityIsFullError`                    | 409         | If there are no available spaces for the opportunity contained in the `orderedItem` property. |
-| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the opportunity contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error must only be displayed against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
+| `OpportunityIsFullError`                    | 409         | If there are no available spaces for the <a>Opportunity</a> contained in the `orderedItem` property. |
+| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the <a>Opportunity</a> contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
 
 
 #### API authentication
