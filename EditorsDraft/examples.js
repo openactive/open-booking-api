@@ -140,6 +140,7 @@ function dataExampleRateLimitResponse(utils, content) {
 //After release: TODO: Add details somewhere about what level of info to include in orderedItems in general (required props? enough to describe the activity, or shall we list them in the model here?)
 //After release: TODO: Sort through errors, check all error states are covered
 //After release: TODO: Full read-through
+//After release: TODO: Fix all examples to be sensible
 //After release: TODO: Error messages and failure modes (and HTTP status codes) for all operations, ensuring that all types of failure are covered
 //After release: TODO: Extensive list of test cases for spec - what would the spec validator do? Do it in .NET and build up OA.NET at the same time.
 // - Create a: - Reference implementation of the booking spec, in .NET
