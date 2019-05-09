@@ -1648,7 +1648,7 @@ The cancellation may be requested by either the <a>Customer</a> or the <a>Seller
 
 ### Refund after the opportunity has occurred 
 
-Although a cancellation may be requested before the <a>Opportunity</a> has occurred in order to trigger a refund, cancellation and refund after an <a>Opportunity</a> has occurred is currently outside the scope of this specification.
+Although a cancellation may be requested before the <a>Opportunity</a> has occurred in order to trigger a refund, cancellation and refund after an <a>Opportunity</a> has occurred, or when an `OrderItem` has `orderItemStatus` set to `https://openactive.io/CustomerAttended`, is currently outside the scope of this specification.
 
 Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handled out-of-band directly between the <a>Broker</a> and the <a>Seller</a>.
 
@@ -1761,6 +1761,12 @@ The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `
 This specification does not require the <a>Orders feed</a> to include the full contents of the <a>Opportunities</a> within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the <a>Opportunity Data</a> feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the <a>Opportunity</a> (e.g. changes to `startDate`).
 
 Specifically, `maximumAttendeeCapacity`, `remainingAttendeeCapacity`, `maximumUses` and `remainingUses` MUST NOT be included in the <a>Orders feed</a>.
+
+
+### Opportunity attendance updates
+
+When a <a>Customer</a> has been confirmed as attending an <a>Opportunity</a> that was booked via an `Order`, the <a>Booking System</a> SHOULD update the `Order` within the <a>Orders feed</a> by setting `orderItemStatus` for the relevant `OrderItem` to `https://openactive.io/CustomerAttended`.
+
 
 
 ## Amending the Order after <a><b>B</b></a>
@@ -2285,7 +2291,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the OrderItem |
-| [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](http://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, or `https://openactive.io/OrderConfirmed` |
+| [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](http://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `Order`. |
@@ -2295,7 +2301,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
-| [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` |
+| [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` or `https://openactive.io/CustomerAttended` |
 | [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
 | [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
