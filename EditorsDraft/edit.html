@@ -1991,7 +1991,7 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>OrderQuote Deletion</dfn>        | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
 
-Deleting an `OrderQuote` releases any <a>Lease</a> associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. For <a>Booking Systems</a> that have not implemented leasing, an OrderQuote Deletion request MUST simply return a 204 success status in all cases.
+Deleting an `OrderQuote` releases any <a>Lease</a> associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. An OrderQuote Deletion request MUST simply return a 204 success status in all cases (including cases where the <a>Booking Systems</a> has not implemented leasing), as the `OrderQuote` itself is ephemeral.
 
 <pre class="example" title="OrderQuote Deletion: example request" data-transform="dataExampleOrderDeletionRequest">
 </pre>
@@ -2096,7 +2096,14 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>.
 <pre class="example" title="Order Deletion: example request" data-transform="dataExampleOrderDeletionRequest">
 </pre>
 
-<pre class="example" title="Order Deletion: example response" data-transform="dataExampleOrderDeletionResponse">
+An Order Deletion request MUST simply return a 204 success status when an `Order` is successfully deleted.
+
+<pre class="example" title="Order Deletion: example success response" data-transform="dataExampleOrderDeletionResponse">
+</pre>
+
+An Order Deletion request MUST return a 404 status when the specified `Order` is not recognised, and SHOULD return a `NotFoundError` response.
+
+<pre class="example" title="Order Deletion: example not found response" data-transform="dataExampleOrderDeletionNotFoundResponse">
 </pre>
 
 
@@ -2190,7 +2197,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
 | [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | -        | REQUIRED | REQUIRED | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
-| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. |
+| [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. If `brokerRole` is set to `https://openactive/NoBroker` this is NOT REQUIRED. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | REQUIRED | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive/AgentBroker`, `https://openactive/ResellerBroker` or `https://openactive/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
 | [`schema:orderNumber`](http://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
 | [`schema:customer`](http://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |

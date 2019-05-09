@@ -138,9 +138,13 @@ function dataExampleRateLimitResponse(utils, content) {
 
 //After release: TODO: Create new feed column in Order model
 //After release: TODO: Add details somewhere about what level of info to include in orderedItems in general (required props? enough to describe the activity, or shall we list them in the model here?)
-//After release: TODO: Sort through errors
-
-//TODO: Error messages and failure modes (and HTTP status codes) for a failed Order/OrderQuote and all other operations
+//After release: TODO: Sort through errors, check all error states are covered
+//After release: TODO: Full read-through
+//After release: TODO: Error messages and failure modes (and HTTP status codes) for all operations, ensuring that all types of failure are covered
+//After release: TODO: Extensive list of test cases for spec - what would the spec validator do? Do it in .NET and build up OA.NET at the same time.
+// - Create a: - Reference implementation of the booking spec, in .NET
+//             - Support in OA.NETs
+//             - Front-end that tests against this
 
 
 function dataExampleOrderCreationRequest(utils, content) {
@@ -226,6 +230,14 @@ function dataExampleOrderDeletionRequest(utils, content) {
 
 function dataExampleOrderDeletionResponse(utils, content) {
   return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+}
+
+function dataExampleOrderDeletionNotFoundResponse(utils, content) {
+  return generateResponse("404 Not Found", null, OPERATIONS_MEDIA_TYPE, {
+    "@context": CONTEXT,
+    "type": "NotFoundError",
+    "description": "This Order does not exist."
+  });
 }
 
 
@@ -414,8 +426,7 @@ function dataExampleExtensionMemberBookingRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
     "type": "Order",
-    "brokerRole": fullOrderExampleContent.brokerRole,
-    "broker": fullOrderExampleContent.broker,
+    "brokerRole": "https://openactive.io/NoBroker",
     "customer": {
       "type": "acme:Member",
       "identifier": "MLD23947233"
