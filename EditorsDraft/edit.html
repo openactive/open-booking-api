@@ -840,7 +840,7 @@ Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), a
 
 A <a>Lease</a> is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` is in an `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected`, regardless of whether or not the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If at any point this is not the case, it is the responsibility of the <a>Booking System</a> to set the `orderProposalStatus` to `https://openactive.io/SellerRejected`. For example, if an <a>Opportunity</a> becomes full or is cancelled and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected.
+If an `OrderProposal` is in an `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected`, regardless of whether or not the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If at any point this is not the case, it is the responsibility of the <a>Booking System</a> to set the `orderProposalStatus` to `https://openactive.io/SellerRejected`, or if `openBookingFlowRequirement` includes `https://openactive.io/OpenBookingNegotiation`, to update the `OrderProposal` to remove or replace the offending `OrderItem`(s) with an appropriate `orderSellerNote`. For example, if an <a>Opportunity</a> becomes full or is cancelled and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected or updated.
 
 If the <a>Lease</a> expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the <a>Lease</a>, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
@@ -907,7 +907,6 @@ If an `Offer` may require **Proposal Amendment**, the <a>Booking System</a> MUST
 - The <a>Customer</a> or <a>Seller</a> MAY also choose to abort at any point as per [Minimal Proposal Implementation](#minimal-proposal-implementation).
 
 Note that this specification does not support `OrderProposal` amendment by the <a>Customer</a>, and that <a>Customer</a> requests for changes to an existing proposal may be done via messages communicated via [Message Exchange](#message-exchange).
-
 
 
 #### Message Exchange
@@ -2237,8 +2236,8 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatus`](https://openactive.io/OrderProposalStatus) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
-| [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> from the <a>Seller</a> along with the `OrderProposal`. |
-| [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> from the <a>Customer</a> along with the `OrderProposal`. |
+| [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> _from_ the <a>Seller</a> along with the `OrderProposal`. |
+| [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
 
 
 ### `schema:Organization` for `seller`
