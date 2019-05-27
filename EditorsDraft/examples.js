@@ -24,7 +24,6 @@ function dataExampleOrderQuoteCreationC1Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
-    "taxMode": fullOrderExampleContent.taxMode,
     "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -38,7 +37,6 @@ function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
-    "taxMode": fullOrderExampleContent.taxMode,
     "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -74,7 +72,6 @@ function dataExampleOrderQuoteCreationC2Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
-    "taxMode": fullOrderExampleContent.taxMode,
     "seller": fullOrderExampleContent.seller,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
@@ -89,7 +86,6 @@ function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
-    "taxMode": fullOrderExampleContent.taxMode,
     "seller": fullOrderExampleContent.seller,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
@@ -167,7 +163,6 @@ function dataExampleOrderCreationResponse(utils, content) {
     "@context": CONTEXT,
     "type": "Order",
     "id": fullOrderExampleContent.id,
-    "taxMode": fullOrderExampleContent.taxMode,
     "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
@@ -184,7 +179,6 @@ function dataExampleOrderCreationResponse(utils, content) {
     "type": "Order",
     "id": fullOrderExampleContent.id,
     "orderNumber": "AB000001",
-    "taxMode": fullOrderExampleContent.taxMode,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
@@ -263,7 +257,6 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
     "id": fullOrderExampleContent.id,
     "orderNumber": "AB000001",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
-    "taxMode": fullOrderExampleContent.taxMode,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
@@ -341,7 +334,7 @@ function dataExampleOrderFeedResponse(utils, content) {
           "@context": CONTEXT,
           "type": "Order",
           "id": fullOrderExampleContent.id,
-          "taxMode": fullOrderExampleContent.taxMode,
+          "seller": fullOrderExampleContent.seller,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
           "totalTaxSpecification": fullOrderExampleContent.totalTaxSpecification.oneItem
@@ -400,7 +393,6 @@ function dataExampleOrderStatusResponse(utils, content) {
     "@context": CONTEXT,
     "type": "Order",
     "id": fullOrderExampleContent.id,
-    "taxMode": fullOrderExampleContent.taxMode,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
@@ -570,11 +562,11 @@ var fullOrderExampleContent = {
   "id": BASE_URL + API_PATH + "/orders/" + UUID,
   "orderNumber": "", //booking system generated
   "orderProposalVersion": "https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
-  "taxMode": "https://openactive/TaxGross", //booking system
   "seller": { //booking system
     "type": "Organization",
     "identifier": "CRUOZWJ1",
     "name": "Better",
+    "taxMode": "https://openactive/TaxGross", //booking system
     "legalName": "Greenwich Leisure Limited",
     "description": "A charitable social enterprise for all the community",
     "url": "https://www.better.org.uk",

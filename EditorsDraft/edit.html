@@ -270,20 +270,15 @@ and should be made via
 pull requests. The source code is available
 on [GitHub](https://github.com/openactive/open-booking-api).
 
-<div class="note">
-This document represents a complete Editors Draft. It is currently in the final stages of community review and we hope that it is nearing stability. The draft is intended to allow developers to provide feedback by developing proof-of-concept implementations. We encourage developers to explore this API and
-contribute to the development of the specification.
-</div>
-
 </section>
 
 <section class="informative">
 
 # Introduction
 
-The document is an output of the [OpenActive Community Group](https://www.w3.org/community/openactive/). As part of the [OpenActive](https://www.openactive.io) initiative, the community group is developing standards that will promote the publication and use of [open opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data) in helping people to become more physically active.
+The document is an output of the [OpenActive W3C Community Group](https://www.w3.org/community/openactive/). As part of the [OpenActive](https://www.openactive.io) initiative, the community group is developing standards that will promote the publication and use of [open opportunity data](https://www.openactive.io/modelling-opportunity-data/#categories-of-physical-activity-data) in helping people to become more physically active.
 
-The Community Group have already published specifications that define standard data models ([[Modelling-Opportunity-Data]]) and support the publication and harvesting of data in standard formats ([[RPDE]]). This existing work helps increase the discovery of opportunities for people to be active.
+The Community Group have already published specifications that define standard data models ([[Modelling-Opportunity-Data]]) and support the publication and harvesting of data in standard formats ([[RPDE]]). This existing work helps increase the discovery of opportunities for people to get more active.
 
 An <dfn>Opportunity</dfn> (e.g. "Yoga Tuesday 14th March at 7pm") in the context of this specification is a specific instance of an [`Event`](https://www.openactive.io/modelling-opportunity-data/#describing-events-code-schema-event-code-) (or subclass of `Event`) that a <a>Customer</a> can attend to participate in physical activity: a `ScheduledSession` within a `SessionSeries`, a `Slot` within a `FacilityUse`, a `HeadlineEvent` or a `CourseInstance` (or an `Event` within a `HeadlineEvent` or `CourseInstance`). Each <a>Opportunity</a> has associated [`Offer`](https://www.openactive.io/modelling-opportunity-data/#describing-offers-code-schema-offer-code-)s (e.g. "Junior (8-18) £9"), which may be free, and describe the commercial means of accessing the <a>Opportunity</a>.
 
@@ -309,7 +304,7 @@ The core functionality includes:
 * __Pricing and availability__ – checking the price and current availabilty of an event or for the use of a facility.
 * __Booking__ – recording bookings in the <a>Booking System</a>.
 * __Tax__ – tax calculation by the <a>Booking System</a> exposed to the <a>Broker</a>.
-* __Multiple order items__ - handling bookings for multiple events ("shopping carts") and for groups of attendees.
+* __Multiple order items__ - bookings for multiple events and for groups of attendees.
 * __Child booking__ - booking on behalf of a child.
 * __Dynamic pricing__ – allowing the <a>Broker</a> to vary pricing, where agreed with the <a>Seller</a>.
 * __Cancellation__ – <a>Customer</a> and <a>Seller</a> initiated cancellation .
@@ -318,8 +313,8 @@ The core functionality includes:
 Additional optional functionality includes:
 
 * __Leasing__ – temporarily reserving spaces for a <a>Customer</a> to attend an event or
-make use of a facility, whilst placing a booking.
-* __Booking approval__ – optional approval for <a>Booking Systems</a> that support or require approval for bookings, including proposal negotiation and message exchange.
+make use of a facility, whilst they are placing a booking.
+* __Booking approval__ – for <a>Booking Systems</a> that support or require approval for bookings, including proposal negotiation and message exchange.
 * __Attendee Details capture__ – optional capturing of attendee details.
 * __Additional Details capture__ – optional capturing of additional details per-attendee for a booking.
 
@@ -351,7 +346,7 @@ By design this specification will not define some types of functionality.
 
 These have been declared as permanently out of scope because they are either
 adequately covered by existing specifications, or will be covered by future
-work of the OpenActive Community Group.
+work of the OpenActive W3C Community Group.
 
 The functionality that is currently defined as out of scope includes:
 
@@ -359,7 +354,7 @@ The functionality that is currently defined as out of scope includes:
 * __Payment processing__ – the design assumes that all payment handling will be coordinated by the <a>Broker</a>, in a separate payment flow. <a>Brokers</a> are able to use the payment and reconciliation mechanisms that provide the best options for their <a>Sellers</a> and <a>Customers</a>.
 * __API business models__ – the design is agnostic to any business models that might govern the use or provision of the API, e.g. revenue-sharing or transaction processing fees.
 * __Opportunity discovery__  – finding, filtering and searching for <a>Opportunity Data</a>. This specification assumes that the client and server applications have already shared data about the relevant <a>Opportunities</a>, e.g. via an [[RPDE]] feed containing [[Modelling-Opportunity-Data]] data.
-* __API endpoint discovery__  – the <a>Broker</a> finding and connecting to the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
+* __API endpoint discovery__  – the means for a <a>Broker</a> to discover the API endpoints included in this specification are included in the [[Dataset-API-Discovery]] specification.
 
 ## Specification dependencies
 
@@ -367,7 +362,7 @@ Version 1.0 of the Open Booking specification depends on the following:
 - [[RPDE]] Version 1.0
 - [[Modelling-Opportunity-Data]] Version 2.x (where x >= 0)
 
-Note that the versions of [[Modelling-Opportunity-Data]] are constrained only to major version releases (breaking changes), and that the flexibility provided by supporting minor versions enables implementors to take advantage of additional features as the specifications evolve.
+Note that the dependency on the [[Modelling-Opportunity-Data]] specification is only constrained to the major version release, and that the flexibility provided by supporting minor versions (which do not include breaking changes) enables implementors to take advantage of additional features as the specification evolves.
 
 
 ## Audience
@@ -435,7 +430,7 @@ The content of the example is in monospace font and may be syntax colored.
 
 Of all the organisations and systems involved in a transaction, the API defined
 by this specification is scoped tightly to only specify interactions between the <a>Broker</a> and
-<a>Booking System</a>, with high level prompts for interactions with <a>Customers</a> and <a>Payment Providers</a>.
+<a>Booking System</a>, with high level prompts for interactions with <a>Customers</a>, <a>Sellers</a> and <a>Payment Providers</a>.
 
 <figure>
  <img src="actors.png" alt="Actors in scope">
@@ -445,14 +440,14 @@ by this specification is scoped tightly to only specify interactions between the
 
     <dl class="typography">
         <dt><dfn>Customer</dfn></dt>
-        <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, so e.g. a parent may book on behalf of their child.</dd>
+        <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, e.g. a parent may book on behalf of their child.</dd>
         <dt><dfn>Broker</dfn></dt>
         <dd>The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification</dd>
         <dt><dfn>Booking System</dfn></dt>
         <dd>The organisation or developer providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.
         </dd>
         <dt><dfn>Seller</dfn></dt>
-        <dd>The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes.</dd>
+        <dd>The organisation providing access to events or facilities via a <a>Booking System</a> e.g. a leisure provider running yoga classes.</dd>
         <dt><dfn>Payment Provider</dfn></dt>
         <dd>The notional service providing payment processing between the <a>Customer</a>, <a>Broker</a> and <a>Seller</a>. Although this specification refers to the <a>Payment Provider</a> as a single notional service, it may in reality be composed of multiple connected services providing the same functionality to allow for the widest variety of business models.</dd>
     </dl>
@@ -474,7 +469,7 @@ While this process is intuitively clear, some of its implications may be less so
 
 The process of creating an `Order` online takes time, and for this reason some <a>Seller</a>s and <a>Broker</a>s may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
 
-Typically <a>Sellers</a> keep track of bookings by means of an automated <a>Booking System</a>. This raises the problem of ensuring consistency in the state of information between the <a>Booking System</a> and the <a>Broker</a>. This difficulty is bridged by the concept of `Order` feeds, which publish all changes made to an `Order` by the <a>Booking System</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the client system.
+Typically <a>Sellers</a> keep track of bookings by means of an automated <a>Booking System</a>. This raises the problem of ensuring consistency in the state of information between the <a>Booking System</a> and the <a>Broker</a>. This difficulty is bridged by the concept of `Order` feeds, which publish all changes made to an `Order` by the <a>Booking System</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the <a>Broker</a>.
 
 The process of creating an `Order` will normally involve the processing of a <a>Payment</a>. While <a>Payments</a> are normally fixed, some approaches to pricing also allow for the possibility of a `DynamicPayment`, whereby the price may fluctuate based on external conditions. In addition, differences in approaches to taxation - whether because of regional variation, or because of the legal and commercial status of the <a>Broker</a>  - result in a need for some nuances in the modelling of `TaxChargeSpecification`s.
 
@@ -1530,9 +1525,9 @@ For `AgentBroker` and `NoBroker` modes, where the <a>Customer</a> is of type `Pe
 
 ### Business-to-business tax calculation by Booking System is optional
 
-Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a <a>Customer</a> of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and the `taxMode` `https://openactive/TaxNet` MUST be returned in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
+Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a <a>Customer</a> of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and the `taxCalculationExcluded` property MUST be returned as `true` in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
 
-This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
+When `taxCalculationExcluded` is `true`, all `Offer`s MUST include net `price`s (i.e. without tax included), regardless of the `taxMode`. This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
 
 Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of the `organizer` or `provider` set to `https://openactive/TaxGross`, the `Offer`s available in the <a>Opportunity Data</a> will still be calculated as tax-inclusive for a business-to-consumer sale, and so MUST be presented by the <a>Broker</a> as such, with the business-to-business tax calculation occurring during the booking flow. If the usecase of presenting the correct price up-front gains traction, additional price data must be made available as part of the openly published <a>Opportunity Data</a> to resolve this shortcoming.
 
@@ -1610,8 +1605,6 @@ Bookable <a>Opportunities</a>:
 - The `eventStatus` of the `Event`, `ScheduledSession`, or `Slot` is not `https://schema.org/EventCancelled` or `https://schema.org/EventPostponed`.
 
 - The `remainingAttendeeCapacity` or `remainingUses` is greater than the number required.
-
-- The `potentialAction` of dataset site includes an `OpenBookingAction` object.
 
 - The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` in the past. This allows for a "bookahead" window to be specified.
 
@@ -2206,8 +2199,8 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. This is NOT REQUIRED in PUT or PATCH requests. |
 | [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
-| [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
-| [`oa:taxMode`](https://openactive.io/taxMode)                      | -        | REQUIRED | REQUIRED | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
+| [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
+| [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
 | [`oa:broker`](https://openactive.io/broker)                        | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. If `brokerRole` is set to `https://openactive/NoBroker` this is NOT REQUIRED. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | REQUIRED | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive/AgentBroker`, `https://openactive/ResellerBroker` or `https://openactive/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
 | [`schema:orderNumber`](http://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
@@ -2229,7 +2222,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The <a>Lease</a> on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderRequiresApproval`](https://openactive.io/orderRequiresApproval) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the [Booking Flow with Approval](#booking-flow-with-approval) MUST be used to book the set of `OrderItem`s included. MUST be `true` if any of the `OrderItem`s require approval. |
 
 
@@ -2240,7 +2233,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatus`](https://openactive.io/OrderProposalStatus) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
 | [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> _from_ the <a>Seller</a> along with the `OrderProposal`. |
 | [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
@@ -2294,7 +2287,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](http://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
-| [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `Order`. |
+| [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only require `id` within these objects to be included; in these contexts, all other properties are ignored. |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
@@ -2316,7 +2309,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
-| [`schema:price`](http://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `Order`. |
+| [`schema:price`](http://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If an `Offer` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](http://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:ageRange`](https://openactive.io/ageRange) | RECOMMENDED | RECOMMENDED | [`schema:QuantitativeValue`](https://schema.org/QuantitativeValue) | Indicates that an Offer is applicable to a specific age range. Specified as a [QuantitativeValue](https://schema.org/QuantitativeValue) with [minValue](https://schema.org/minValue) and [maxValue](https://schema.org/maxValue) properties. |
@@ -2338,7 +2331,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
-| [`schema:price`](http://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `Order`. |
+| [`schema:price`](http://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:priceCurrency`](http://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
