@@ -442,7 +442,6 @@ function dataExampleExtensionBespokeAgreementDetailsRequest(utils, content) {
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": {
       "type": "OrderItem",
-      "orderQuantity": fullOrderItemExampleContent.orderQuantity,
       "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
       "orderedItem": fullOrderItemExampleContent.orderedItem.request,
       "acme:agreement": {
@@ -694,7 +693,6 @@ var fullOrderItemExampleContent = { //broker
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
-  "orderQuantity": 1,
   "allowCustomerCancellationFullRefund": true,
   "accessToken": [
     {
@@ -826,14 +824,12 @@ var feedOrderItem = {
 
 var requestOrderItem = {
   "type": "OrderItem",
-  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request
 }
 
 var responseOrderQuoteOrderItem = {
   "type": "OrderItem",
-  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
@@ -843,7 +839,6 @@ var responseOrderQuoteOrderItem = {
 
 var responseOrderQuoteErrorOrderItem = {
   "type": "OrderItem",
-  "orderQuantity": fullOrderItemExampleContent.orderQuantity,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
