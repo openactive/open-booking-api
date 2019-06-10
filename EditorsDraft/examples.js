@@ -254,7 +254,7 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderProposal",
-    "id": fullOrderExampleContent.id,
+    "id": BASE_URL + API_PATH + "/order-proposals/" + UUID,
     "orderNumber": "AB000001",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -560,7 +560,7 @@ var fullOrderExampleContent = {
   "type": "OrderQuote",
   "id": BASE_URL + API_PATH + "/orders/" + UUID,
   "orderNumber": "", //booking system generated
-  "orderProposalVersion": "https://api.example.com/order-proposals/358105b4-e571-43fa-b737-906d319c6a32/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
+  "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "seller": { //booking system
     "type": "Organization",
     "identifier": "CRUOZWJ1",
