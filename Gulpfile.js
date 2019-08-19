@@ -47,21 +47,22 @@ gulp.task('editorsdraft', function() {
 
   var thisDir = path.dirname(fs.realpathSync(__filename));
 
-  const src = "http://localhost:4000/EditorsDraft/edit.html";
+  const src = `file://${thisDir}/EditorsDraft/edit.html`;
   console.log(src);
   const out = "./EditorsDraft/index.html";
   const whenToHalt = {
     haltOnError: false,
     haltOnWarn: false,
   };
-  const timeout = 10000;
+  const timeout = 30000;
 
-  return fetchAndWrite(src, out, whenToHalt, timeout).then(notifyEditorsDraft);
+  return fetchAndWrite(src, out, whenToHalt, {timeout})
+    .catch(err => {console.error(err.stack);})
+    .then(notifyEditorsDraft);
 });
 
 gulp.task('watch', function() {
   gulp.watch('EditorsDraft/edit.html', ['editorsdraft']);
-  //gulp.watch('EditorsDraft/live.html', notifyLiveReload);
 });
 
 gulp.task('default', ['editorsdraft', 'express', 'livereload', 'watch'], function() {
