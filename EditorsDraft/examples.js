@@ -29,7 +29,7 @@ function dataExampleOrderQuoteCreationC1Response(utils, content) {
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem
   });
 }
 
@@ -42,7 +42,7 @@ function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteErrorOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.zeroItems,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.zeroItems
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.zeroItems
   });
 }
 
@@ -78,7 +78,7 @@ function dataExampleOrderQuoteCreationC2Response(utils, content) {
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem
   });
 }
 
@@ -92,7 +92,7 @@ function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteErrorOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.zeroItems,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.zeroItems
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.zeroItems
   });
 }
 
@@ -167,7 +167,7 @@ function dataExampleOrderCreationResponse(utils, content) {
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem,
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem,
     "payment": fullOrderExampleContent.payment
   });
 }
@@ -186,7 +186,7 @@ function dataExampleOrderCreationResponse(utils, content) {
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem,
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem,
     "payment": fullOrderExampleContent.payment
   });
 }
@@ -264,7 +264,7 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem,
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem,
     "payment": fullOrderExampleContent.payment,
     "lease": fullOrderExampleContent.lease
   });
@@ -337,7 +337,7 @@ function dataExampleOrderFeedResponse(utils, content) {
           "seller": fullOrderExampleContent.seller,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-          "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem
+          "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem
         }
       }
     ]
@@ -400,7 +400,7 @@ function dataExampleOrderStatusResponse(utils, content) {
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
-    "totalPaymentTaxSpecification": fullOrderExampleContent.totalPaymentTaxSpecification.oneItem,
+    "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem,
     "payment": fullOrderExampleContent.payment
   });
 }
@@ -657,7 +657,7 @@ var fullOrderExampleContent = {
       "priceCurrency": "GBP"
     },
   },
-  "totalPaymentTaxSpecification": {
+  "totalPaymentTax": {
     oneItem: [ //booking system
       {
         "type": "TaxChargeSpecification",

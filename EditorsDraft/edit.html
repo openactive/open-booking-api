@@ -1429,7 +1429,7 @@ The <a>Broker</a> has visibility of all components, while for simplicity of impl
 
 Due to the variety of business models in use in OpenActive, the <a>Booking System</a> MUST NOT send receipts directly to the <a>Customer</a> for `AgentBroker` and `ResellerBroker` bookings.
 
-For each successful booking operation (where <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a> together constitute a successful booking operation), the <a>Broker</a> MUST generate a new <a>Invoice</a> in the form of a tax receipt, on the basis of the <a>Orders feed</a> contents. To ensure that the <a>Customer</a> is provided with the correct tax receipt, if `totalPaymentTaxSpecification` is provided in an `Order` in the <a>Orders feed</a>, the <a>Broker</a> MUST generate a new or updated <a>Invoice</a> and either (a) send a tax receipt representation of the <a>Invoice</a> to the <a>Customer</a> and/or (b) offer a means to allow the <a>Customer</a> to easily retrieve a full tax receipt representation of the specific version of the  <a>Invoice</a> at any future date for any previous booking made. As it is ultimately the <a>Seller</a>'s responsibility to send tax receipts, they need to be confident that the <a>Broker</a> is making tax information available to its <a>Customers</a> in an accurate and timely manner.
+For each successful booking operation (where <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a> together constitute a successful booking operation), the <a>Broker</a> MUST generate a new <a>Invoice</a> in the form of a tax receipt, on the basis of the <a>Orders feed</a> contents. To ensure that the <a>Customer</a> is provided with the correct tax receipt, if `totalPaymentTax` is provided in an `Order` in the <a>Orders feed</a>, the <a>Broker</a> MUST generate a new or updated <a>Invoice</a> and either (a) send a tax receipt representation of the <a>Invoice</a> to the <a>Customer</a> and/or (b) offer a means to allow the <a>Customer</a> to easily retrieve a full tax receipt representation of the specific version of the  <a>Invoice</a> at any future date for any previous booking made. As it is ultimately the <a>Seller</a>'s responsibility to send tax receipts, they need to be confident that the <a>Broker</a> is making tax information available to its <a>Customers</a> in an accurate and timely manner.
 
 The tax receipt sent by the <a>Broker</a> MUST comply with any legal requirements of the jurisdiction of operation.
 
@@ -1479,7 +1479,7 @@ To use the `DynamicPayment` the following preconditions must be met:
 - The <a>Opportunities</a> that are selected for booking MUST be <a>bookable</a> as in the standard flow.
 
 To use `DynamicPayment` the booking flow MUST be completed as normal with the following additional requirements:
-- The `OrderQuote`, `OrderProposal` and `Order` in request, response, and in the subsequent <a>Orders feed</a> MUST NOT include `totalPaymentDue` or `totalPaymentTaxSpecification`, and `OrderItem`s MUST NOT include `acceptedOffer` or `unitTaxSpecification`.
+- The `OrderQuote`, `OrderProposal` and `Order` in request, response, and in the subsequent <a>Orders feed</a> MUST NOT include `totalPaymentDue` or `totalPaymentTax`, and `OrderItem`s MUST NOT include `acceptedOffer` or `unitTaxSpecification`.
 - The booking flow MUST be completed _as if_ `prepayment` was set to `https://openactive.io/Unavailable` for the `acceptedOffer` for all `OrderItem`s.
 - The `OrderQuote` / `OrderProposal` / `Order` submitted to <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a> (and <a><b>P</b></a> if using approval) MUST have a `payment` property that contains a `DynamicPayment`, which is consistent throughout the calls.
 - If the `DynamicPayment` details supplied (e.g. `accountId`) are not considered either sufficient or valid for reconciliation by the <a>Booking System</a> then an `IncompletePaymentDetailsError` or `InvalidPaymentDetailsError` MUST be returned by all calls, respectively.
@@ -1530,7 +1530,7 @@ For `AgentBroker` and `NoBroker` modes, where the <a>Customer</a> is of type `Pe
 
 ### Business-to-business tax calculation by Booking System is optional
 
-Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a <a>Customer</a> of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTaxSpecification` MUST NOT be included, and the `taxCalculationExcluded` property MUST be returned as `true` in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
+Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` of `ResellerBroker` is specified, or when a <a>Customer</a> of type `Organization` is specified. If tax calculation is not supported for a `ResellerBroker`, `unitTaxSpecification` and `totalPaymentTax` MUST NOT be included, and the `taxCalculationExcluded` property MUST be returned as `true` in the `OrderQuote` and `Order` (i.e. explicitly not including tax).
 
 When `taxCalculationExcluded` is `true`, all `Offer`s MUST include net `price`s (i.e. without tax included), regardless of the `taxMode`. This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
 
@@ -1540,7 +1540,7 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
-Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTaxSpecification` include only the taxes themselves so are unaffected.
+Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTax` include only the taxes themselves so are unaffected.
 
 | `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
 |--------------------------------------------------------|-----------------------------|-------------------------------|
@@ -1951,7 +1951,7 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 <pre class="example" title="OrderQuote Creation C1: example success response" data-transform="dataExampleOrderQuoteCreationC1Response">
 </pre>
 
-If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTax` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
 
 <pre class="example" title="OrderQuote Creation C1: example OrderItem error response" data-transform="dataExampleOrderQuoteCreationC1OrderItemErrorResponse">
 </pre>
@@ -1984,7 +1984,7 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 
 Note if the response includes `orderRequiresApproval` with a value of `true` the <a>Broker</a> MUST make it clear to the <a>Customer</a> of the additional process they are about to enter into, and once they are aware, move forward according to the [Booking Flow with Approval](#booking-flow-with-approval) rather than the [Simple Booking Flow](#simple-booking-flow).
 
-If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTaxSpecification` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTax` MUST be calculated _excluding_ any `OrderItem`s that include `error`s.
 
 <pre class="example" title="OrderQuote Creation C2: example OrderItem error response" data-transform="dataExampleOrderQuoteCreationC2OrderItemErrorResponse">
 </pre>
@@ -2213,7 +2213,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | [`oa:bookingService`](https://openactive.io/bookingService)        | -        | REQUIRED | -        | [`oa:BookingService`](https://openactive.io/BookingService) | Details about the <a>Booking System</a> |
 | [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](http://schema.org/OrderItem) | The items that constitute the `Order` |
 | [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
-| [`oa:totalPaymentTaxSpecification`](https://openactive.io/totalPaymentTaxSpecification) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
+| [`oa:totalPaymentTax`](https://openactive.io/totalPaymentTax) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | RECOMMENDED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
 | [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus)  | -    | -        | -        | [`oa:OrderCreationStatus`](https://openactive.io/OrderCreationStatus) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
 | [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | - | REQUIRED | - | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. |
