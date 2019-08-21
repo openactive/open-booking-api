@@ -597,7 +597,7 @@ var fullOrderExampleContent = {
       }
     ]
   },
-  "brokerRole": "https://openactive.io/BrokerAgent", //broker
+  "brokerRole": "https://openactive.io/AgentBroker", //broker
   "broker": { //broker
     "type": "Organization",
     "name": "MyFitnessApp",
