@@ -24,6 +24,8 @@ function dataExampleOrderQuoteCreationC1Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -37,6 +39,8 @@ function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -72,6 +76,8 @@ function dataExampleOrderQuoteCreationC2Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
@@ -86,6 +92,8 @@ function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
     "type": "OrderQuote",
+    "brokerRole": fullOrderExampleContent.brokerRole,
+    "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
@@ -830,7 +838,6 @@ var requestOrderItem = {
 
 var responseOrderQuoteOrderItem = {
   "type": "OrderItem",
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
