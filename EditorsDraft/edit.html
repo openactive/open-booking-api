@@ -2900,7 +2900,7 @@ Any <a>Middleware</a> that conforms with this specification MUST provide data pa
 
 OpenID Connect ([[OpenIdConnect]]) is recommended as standard way of verifying the identity of <a>Customer</a>. It is a thin layer that sits atop OAuth2.
 
-One principle relating to authentication and the Booking API is that `Order`s created by a specific <a>Customer</a> SHOULD NOT be able to be changed by any other <a>Customer</a>. It is the responsibility of the <a>Broker</a> to ensure that subsequent requests to an `Order` should only be initiated by the <a>Customer</a> which created the `Order`.
+One principle relating to authentication and the Booking API is that `Order`s created by a specific <a>Customer</a> MUST NOT be able to be changed by any other <a>Customer</a>. It is the responsibility of the <a>Broker</a> to ensure that subsequent requests to an `Order` should only be initiated by the <a>Customer</a> which created the `Order`.
 
 
 </section>
