@@ -1534,15 +1534,15 @@ Tax calculation at the <a>Booking System</a> is OPTIONAL when the `brokerRole` o
 
 When `taxCalculationExcluded` is `true`, all `Offer`s MUST include net `price`s (i.e. without tax included), regardless of the `taxMode`. This allows tax to be calculated by the `ResellerBroker` or business <a>Customer</a> and reconciled outside of this specification.
 
-Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of the `organizer` or `provider` set to `https://openactive/TaxGross`, the `Offer`s available in the <a>Opportunity Data</a> will still be calculated as tax-inclusive for a business-to-consumer sale, and so MUST be presented by the <a>Broker</a> as such, with the business-to-business tax calculation occurring during the booking flow. If the usecase of presenting the correct price up-front gains traction, additional price data must be made available as part of the openly published <a>Opportunity Data</a> to resolve this shortcoming.
+Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of the `organizer` or `provider` set to `https://openactive.io/TaxGross`, the `Offer`s available in the <a>Opportunity Data</a> will still be calculated as tax-inclusive for a business-to-consumer sale, and so MUST be presented by the <a>Broker</a> as such, with the business-to-business tax calculation occurring during the booking flow. If the usecase of presenting the correct price up-front gains traction, additional price data must be made available as part of the openly published <a>Opportunity Data</a> to resolve this shortcoming.
 
 ## Tax mode
 
-The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
+The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
 Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTax` include only the taxes themselves so are unaffected.
 
-| `taxMode`                                              | `https://openactive/TaxNet` | `https://openactive/TaxGross` |
+| `taxMode`                                              | `https://openactive.io/TaxNet` | `https://openactive.io/TaxGross` |
 |--------------------------------------------------------|-----------------------------|-------------------------------|
 | Price displayed                                        | Excludes tax                | Includes all applicable taxes assuming a `Person` as a `customer` |
 | Currencies usually associated                          | USD, CAD                    | EUR, AUD, GBP                 |
@@ -1613,7 +1613,7 @@ Bookable <a>Opportunities</a>:
 
 - The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` in the past. This allows for a "bookahead" window to be specified.
 
-- The `taxMode` (`https://openactive/TaxNet` or `https://openactive/TaxGross`) is specified within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties.
+- The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is specified within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties.
 
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
@@ -2257,7 +2257,7 @@ The `seller` is specified with each `Order` to account for scenarios where multi
 | [`schema:name`](http://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
 | [`schema:legalName`](http://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
 | [`schema:email`](http://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
-| [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive/TaxNet` or `https://openactive/TaxGross` |
+| [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
 | [`schema:vatID`](http://schema.org/vatID)                          | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
 | [`schema:telephone`](http://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
 | [`schema:url`](http://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |

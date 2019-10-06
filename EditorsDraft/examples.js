@@ -573,7 +573,7 @@ var fullOrderExampleContent = {
     "type": "Organization",
     "identifier": "CRUOZWJ1",
     "name": "Better",
-    "taxMode": "https://openactive/TaxGross", //booking system
+    "taxMode": "https://openactive.io/TaxGross", //booking system
     "legalName": "Greenwich Leisure Limited",
     "description": "A charitable social enterprise for all the community",
     "url": "https://www.better.org.uk",
