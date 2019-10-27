@@ -13,9 +13,10 @@ var API_PATH = "/api";
 function dataExampleOrderQuoteCreationC1Request(utils, content) {
   return generateRequest("PUT", API_PATH + "/order-quote-templates/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.request,
     "orderedItem": [requestOrderItem]
   });
 }
@@ -23,10 +24,10 @@ function dataExampleOrderQuoteCreationC1Request(utils, content) {
 function dataExampleOrderQuoteCreationC1Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteOrderItem],
@@ -38,10 +39,10 @@ function dataExampleOrderQuoteCreationC1Response(utils, content) {
 function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
     "orderedItem": [responseOrderQuoteErrorOrderItem],
@@ -53,7 +54,7 @@ function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
 function dataExampleOrderQuoteCreationC1ErrorResponse(utils, content) {
   return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "TemporarilyUnableToProduceOrderQuoteError",
+    "@type": "TemporarilyUnableToProduceOrderQuoteError",
     "description": "Temporary error occurred in the database"
   });
 }
@@ -64,9 +65,10 @@ function dataExampleOrderQuoteCreationC1ErrorResponse(utils, content) {
 function dataExampleOrderQuoteCreationC2Request(utils, content) {
   return generateRequest("PUT", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.request,
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": [requestOrderItem]
   });
@@ -75,10 +77,10 @@ function dataExampleOrderQuoteCreationC2Request(utils, content) {
 function dataExampleOrderQuoteCreationC2Response(utils, content) {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -91,10 +93,10 @@ function dataExampleOrderQuoteCreationC2Response(utils, content) {
 function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderQuote",
+    "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
     "lease": fullOrderExampleContent.lease,
@@ -107,7 +109,7 @@ function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
 function dataExampleOrderQuoteCreationC2ErrorResponse(utils, content) {
   return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "TemporarilyUnableToProduceOrderQuoteError",
+    "@type": "TemporarilyUnableToProduceOrderQuoteError",
     "description": "Temporary error occurred in the database"
   });
 }
@@ -118,7 +120,7 @@ function dataExampleOrderQuoteCreationC2ErrorResponse(utils, content) {
 function dataExampleErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "IncompleteCustomerDetailsError",
+    "@type": "IncompleteCustomerDetailsError",
     "description": "No customer details supplied"
   });
 }
@@ -127,7 +129,7 @@ function dataExampleRateLimitResponse(utils, content) {
   return generateResponseWithHeaders("429 Too Many Requests", null, OPERATIONS_MEDIA_TYPE,
     "Retry-After: 8", {
       "@context": CONTEXT,
-      "type": "TooManyRequestsError",
+      "@type": "TooManyRequestsError",
       "description": "Rate Limit Reached. Retry in 8 seconds."
     });
 }
@@ -155,9 +157,10 @@ function dataExampleRateLimitResponse(utils, content) {
 function dataExampleOrderCreationRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
+    "@type": "Order",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.request,
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": [requestOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -169,9 +172,9 @@ function dataExampleOrderCreationRequest(utils, content) {
 function dataExampleOrderCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
-    "id": fullOrderExampleContent.id,
-    "seller": fullOrderExampleContent.seller,
+    "@type": "Order",
+    "@id": fullOrderExampleContent['@id'],
+    "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -184,13 +187,13 @@ function dataExampleOrderCreationResponse(utils, content) {
 function dataExampleOrderCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
-    "id": fullOrderExampleContent.id,
+    "@type": "Order",
+    "@id": fullOrderExampleContent['@id'],
     "orderNumber": "AB000001",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -202,7 +205,7 @@ function dataExampleOrderCreationResponse(utils, content) {
 function dataExampleOrderCreationFromProposalRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
+    "@type": "Order",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
     "payment": fullOrderExampleContent.payment
   });
@@ -211,7 +214,7 @@ function dataExampleOrderCreationFromProposalRequest(utils, content) {
 function dataExampleOrderCreationErrorResponse(utils, content) {
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "UnableToProcessOrderItemError",
+    "@type": "UnableToProcessOrderItemError",
     "description": "An error occurred while processing the items within this booking."
   });
 }
@@ -238,7 +241,7 @@ function dataExampleOrderDeletionResponse(utils, content) {
 function dataExampleOrderDeletionNotFoundResponse(utils, content) {
   return generateResponse("404 Not Found", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "NotFoundError",
+    "@type": "NotFoundError",
     "description": "This Order does not exist."
   });
 }
@@ -248,9 +251,10 @@ function dataExampleOrderDeletionNotFoundResponse(utils, content) {
 function dataExampleOrderProposalCreationRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderProposal",
+    "@type": "OrderProposal",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.request,
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": [requestOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -261,14 +265,14 @@ function dataExampleOrderProposalCreationRequest(utils, content) {
 function dataExampleOrderProposalCreationResponse(utils, content) {
   return generateResponse("201 Created", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderProposal",
-    "id": BASE_URL + API_PATH + "/order-proposals/" + UUID,
+    "@type": "OrderProposal",
+    "@id": BASE_URL + API_PATH + "/order-proposals/" + UUID,
     "orderNumber": "AB000001",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.response,
     "customer": fullOrderExampleContent.customer.person,
-    "seller": fullOrderExampleContent.seller,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -281,7 +285,7 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
 function dataExampleOrderProposalCreationErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "IncompleteBrokerDetailsError",
+    "@type": "IncompleteBrokerDetailsError",
     "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
   });
 }
@@ -291,7 +295,7 @@ function dataExampleOrderProposalCreationErrorResponse(utils, content) {
 function dataExampleOrderProposalUpdateRequest(utils, content) {
   return generateRequest("PATCH", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "OrderProposal",
+    "@type": "OrderProposal",
     "orderProposalStatus": "https://openactive.io/CustomerRejected",
     "orderCustomerNote": "Sorry I've actually made other plans, hope you find someone!"
   });
@@ -304,7 +308,7 @@ function dataExampleOrderProposalUpdateResponse(utils, content) {
 function dataExampleOrderProposalUpdateErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "PatchNotAllowedOnProperty",
+    "@type": "PatchNotAllowedOnProperty",
     "instance": "https://openactive.io/orderProposalStatus",
     "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
   });
@@ -313,7 +317,7 @@ function dataExampleOrderProposalUpdateErrorResponse(utils, content) {
 function dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "PatchContainsExcessiveProperties",
+    "@type": "PatchContainsExcessiveProperties",
     "description": "PATCH includes unexpected properties that are not permitted."
   });
 }
@@ -336,13 +340,13 @@ function dataExampleOrderFeedResponse(utils, content) {
       {
         "state": "updated",
         "kind": "Order",
-        "id": UUID,
+        "@id": UUID,
         "modified": 1521565719,
         "data": {
           "@context": CONTEXT,
-          "type": "Order",
-          "id": fullOrderExampleContent.id,
-          "seller": fullOrderExampleContent.seller,
+          "@type": "Order",
+          "@id": fullOrderExampleContent['@id'],
+          "seller": fullOrderExampleContent.seller.response,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
           "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem
@@ -357,7 +361,7 @@ function dataExampleOrderFeedResponse(utils, content) {
 function dataExampleOrderCancellationRequest(utils, content) {
   return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
+    "@type": "Order",
     "orderedItem": [responseCancelledOrderItem]
   });
 }
@@ -370,7 +374,7 @@ function dataExampleOrderCancellationSuccessResponse(utils, content) {
 function dataExampleOrderCancellationErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "CancellationNotPermittedError",
+    "@type": "CancellationNotPermittedError",
     "description": "The horse has already been fed, and cannot be put back in the box."
   });
 }
@@ -378,7 +382,7 @@ function dataExampleOrderCancellationErrorResponse(utils, content) {
 function dataExampleOrderCancellationPatchPropertyErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "PatchNotAllowedOnProperty",
+    "@type": "PatchNotAllowedOnProperty",
     "instance": "https://openactive.io/orderItemStatus",
     "description": "Only 'https://openactive.io/CustomerCancelled' is permitted for this property."
   });
@@ -387,7 +391,7 @@ function dataExampleOrderCancellationPatchPropertyErrorResponse(utils, content) 
 function dataExampleOrderCancellationExcessivePropertiesErrorResponse(utils, content) {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "PatchContainsExcessiveProperties",
+    "@type": "PatchContainsExcessiveProperties",
     "description": "PATCH includes unexpected properties that are not permitted."
   });
 }
@@ -399,12 +403,12 @@ function dataExampleOrderStatusRequest(utils, content) {
 function dataExampleOrderStatusResponse(utils, content) {
   return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": CONTEXT,
-    "type": "Order",
-    "id": fullOrderExampleContent.id,
+    "@type": "Order",
+    "@id": fullOrderExampleContent['@id'],
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
-    "seller": fullOrderExampleContent.seller,
+    "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -417,7 +421,7 @@ function dataExampleOrderStatusResponse(utils, content) {
 function dataExampleExtensionWaitingListRequest(utils, content) {
   return generateRequest("POST", API_PATH + "/sessions/{session-id}/waiting-list", EXAMPLE_EXTENSION_MEDIA_TYPE, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
-    "type": "acme:WaitingListEntry",
+    "@type": "acme:WaitingListEntry",
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person
   });
@@ -426,16 +430,16 @@ function dataExampleExtensionWaitingListRequest(utils, content) {
 function dataExampleExtensionMemberBookingRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
-    "type": "Order",
+    "@type": "Order",
     "brokerRole": "https://openactive.io/NoBroker",
     "customer": {
-      "type": "acme:Member",
+      "@type": "acme:Member",
       "identifier": "MLD23947233"
     },
     "orderedItem": [requestOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
     "payment": {
-      "type": "acme:StoredPaymentMethod",
+      "@type": "acme:StoredPaymentMethod",
       "identifier": 93482
     },
   });
@@ -444,16 +448,17 @@ function dataExampleExtensionMemberBookingRequest(utils, content) {
 function dataExampleExtensionBespokeAgreementDetailsRequest(utils, content) {
   return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
-    "type": "Order",
+    "@type": "Order",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
+    "seller": fullOrderExampleContent.seller.request,
     "customer": fullOrderExampleContent.customer.person,
     "orderedItem": {
-      "type": "OrderItem",
+      "@type": "OrderItem",
       "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
       "orderedItem": fullOrderItemExampleContent.orderedItem.request,
       "acme:agreement": {
-        "type": "acme:ContractAgreement",
+        "@type": "acme:ContractAgreement",
         "acme:multiple": 3,
         "acme:commissionCategory": "https://acmesystem.example.com/ns/BandA" 
       }
@@ -470,7 +475,7 @@ function dataExampleDatasetEmbed(utils, content) {
   return generateScriptInclude({
     "@context": ["https://schema.org", "https://openactive.io/"],
     "@type": "Dataset",
-    "id": "https://data.example.com/",
+    "@id": "https://data.example.com/",
     "url": "https://data.example.com/",
     "name": "Acme Leisure Sessions and Facilities",
     "description": "Near real-time availability and rich descriptions relating to the sessions and facilities available from Acme Leisure, published using the OpenActive Modelling Specification 2.0.",
@@ -565,58 +570,65 @@ var potentialActionExampleContent = {
 
 var fullOrderExampleContent = {
   "@context": CONTEXT,
-  "type": "OrderQuote",
-  "id": BASE_URL + API_PATH + "/orders/" + UUID,
+  "@type": "OrderQuote",
+  "@id": BASE_URL + API_PATH + "/orders/" + UUID,
   "orderNumber": "", //booking system generated
   "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "seller": { //booking system
-    "type": "Organization",
-    "identifier": "CRUOZWJ1",
-    "name": "Better",
-    "taxMode": "https://openactive.io/TaxGross", //booking system
-    "legalName": "Greenwich Leisure Limited",
-    "description": "A charitable social enterprise for all the community",
-    "url": "https://www.better.org.uk",
-    "logo": {
-      "type": "ImageObject",
-      "url": "http://data.better.org.uk/images/logo.png"
+    request: {
+      "@type": "Organization",
+      "@id": "https://example.com/api/organisations/123"
     },
-    "telephone": "020 3457 8700",
-    "email": "customerservices@gll.org",
-    "vatID": "GB 789 1234 56",
-    "address": {
-      "type": "PostalAddress",
-      "streetAddress": "Alan Peacock Way",
-      "addressLocality": "Village East",
-      "addressRegion": "Middlesbrough",
-      "postalCode": "TS4 3AE",
-      "addressCountry": "GB"
-    },
-    "termsOfService": [
-      {
-        "type": "Terms",
-        "name": "Privacy Policy",
-        "url": "https://example.com/privacy-policy"
+    response: {
+      "@type": "Organization",
+      "@id": "https://example.com/api/organisations/123"
+      "identifier": "CRUOZWJ1",
+      "name": "Better",
+      "taxMode": "https://openactive.io/TaxGross", //booking system
+      "legalName": "Greenwich Leisure Limited",
+      "description": "A charitable social enterprise for all the community",
+      "url": "https://www.better.org.uk",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "http://data.better.org.uk/images/logo.png"
       },
-      {
-        "type": "Terms",
-        "name": "Terms and Conditions",
-        "url": "https://example.com/terms-and-conditions"
-      }
-    ]
+      "telephone": "020 3457 8700",
+      "email": "customerservices@gll.org",
+      "vatID": "GB 789 1234 56",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Alan Peacock Way",
+        "addressLocality": "Village East",
+        "addressRegion": "Middlesbrough",
+        "postalCode": "TS4 3AE",
+        "addressCountry": "GB"
+      },
+      "termsOfService": [
+        {
+          "@type": "Terms",
+          "name": "Privacy Policy",
+          "url": "https://example.com/privacy-policy"
+        },
+        {
+          "@type": "Terms",
+          "name": "Terms and Conditions",
+          "url": "https://example.com/terms-and-conditions"
+        }
+      ]
+    }
   },
   "brokerRole": "https://openactive.io/AgentBroker", //broker
   "broker": { //broker
-    "type": "Organization",
+    "@type": "Organization",
     "name": "MyFitnessApp",
     "url": "https://myfitnessapp.example.com",
     "description": "A fitness app for all the community",
     "logo": {
-      "type": "ImageObject",
+      "@type": "ImageObject",
       "url": "http://data.myfitnessapp.org.uk/images/logo.png"
     },
     "address": {
-      "type": "PostalAddress",
+      "@type": "PostalAddress",
       "streetAddress": "Alan Peacock Way",
       "addressLocality": "Village East",
       "addressRegion": "Middlesbrough",
@@ -626,41 +638,41 @@ var fullOrderExampleContent = {
   },
   "customer": { //broker
     person: {
-      "type": "Person",
+      "@type": "Person",
       "email": "geoffcapes@example.com",
       "telephone": "020 811 8055",
       "givenName": "Geoff",
       "familyName": "Capes"
     },
     organization: {
-      "type": "Organization",
+      "@type": "Organization",
       "email": "geoffcapes@example.com",
       "name": "Acme Broker"
     }
   },
   "bookingService": { //booking system
-    "type": "BookingService",
+    "@type": "BookingService",
     "name": "Playwaze",
     "url": "http://www.playwaze.com",
     "termsOfService": [
       {
-        "type": "Terms",
+        "@type": "Terms",
         "url": "https://brokerexample.com/terms.html"
       }
     ]
   },
   "lease": { // booking system
-    "type": "Lease",
+    "@type": "Lease",
     "leaseExpires": "2018-10-01T11:00:00Z"
   },
   "totalPaymentDue": { //booking system
     oneItem: {
-      "type": "PriceSpecification",
+      "@type": "PriceSpecification",
       "price": 5.00,
       "priceCurrency": "GBP"
     },
     zeroItems: {
-      "type": "PriceSpecification",
+      "@type": "PriceSpecification",
       "price": 0,
       "priceCurrency": "GBP"
     },
@@ -668,7 +680,7 @@ var fullOrderExampleContent = {
   "totalPaymentTax": {
     oneItem: [ //booking system
       {
-        "type": "TaxChargeSpecification",
+        "@type": "TaxChargeSpecification",
         "name": "VAT at 20%",
         "price": 1.00,
         "priceCurrency": "GBP",
@@ -677,7 +689,7 @@ var fullOrderExampleContent = {
     ],
     zeroItems: [ //booking system
       {
-        "type": "TaxChargeSpecification",
+        "@type": "TaxChargeSpecification",
         "name": "VAT at 20%",
         "price": 0,
         "priceCurrency": "GBP",
@@ -686,7 +698,7 @@ var fullOrderExampleContent = {
     ]
   },
   "payment": { // broker
-    "type": "Payment",
+    "@type": "Payment",
     "name": "AcmeBroker Points",
     "identifier": "1234567890npduy2f"
   }
@@ -694,8 +706,8 @@ var fullOrderExampleContent = {
 
 
 var fullOrderItemExampleContent = { //broker
-  "type": "OrderItem",
-  "id": "https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234",
+  "@type": "OrderItem",
+  "@id": "https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234",
   "orderItemStatus": { //booking system
     OrderConfirmed: "https://openactive.io/OrderConfirmed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
@@ -704,13 +716,13 @@ var fullOrderItemExampleContent = { //broker
   "allowCustomerCancellationFullRefund": true,
   "accessToken": [
     {
-      "type": "Barcode",
+      "@type": "Barcode",
       "text": "0123456789",
     }
   ],
   "unitTaxSpecification": [ //booking system otherwise
     {
-      "type": "TaxChargeSpecification",
+      "@type": "TaxChargeSpecification",
       "name": "VAT at 0% for EU transactions",
       "price": 1.00,
       "priceCurrency": "GBP",
@@ -719,12 +731,12 @@ var fullOrderItemExampleContent = { //broker
     ],
   "acceptedOffer": {
     request: {
-      "type": "Offer",
-      "id": "https://example.com/events/452#/offers/878"
+      "@type": "Offer",
+      "@id": "https://example.com/events/452#/offers/878"
     },
     response: {
-      "type": "Offer",
-      "id": "https://example.com/events/452#/offers/878",
+      "@type": "Offer",
+      "@id": "https://example.com/events/452#/offers/878",
       "description": "Winger space for Speedball.",
       "name": "Speedball winger position",
       "price": 10.00,
@@ -735,13 +747,13 @@ var fullOrderItemExampleContent = { //broker
   },
   "orderedItem": {
     request: {
-      "type": "ScheduledSession",
-      "id": "https://example.com/events/452/subEvents/132"
+      "@type": "ScheduledSession",
+      "@id": "https://example.com/events/452/subEvents/132"
     },
     orderQuoteResponse: {
-      "type": "ScheduledSession",
+      "@type": "ScheduledSession",
       "identifier": 123, //expanded by booking system
-      "id": "https://example.com/events/452/subEvents/132",
+      "@id": "https://example.com/events/452/subEvents/132",
       "eventStatus": "https://schema.org/EventScheduled",
       "maximumAttendeeCapacity": 30,
       "remainingAttendeeCapacity": 20,
@@ -749,22 +761,22 @@ var fullOrderItemExampleContent = { //broker
       "endDate": "2018-10-30T12:00:00Z",
       "duration": "PT1H",
       "superEvent": {
-        "type": "SessionSeries",
-        "id": "https://example.com/events/452",
+        "@type": "SessionSeries",
+        "@id": "https://example.com/events/452",
         "name": "Speedball",
         "duration": "PT1H",
         "organizer": {
-          "type": "Organization",
+          "@type": "Organization",
           "name": "Central Speedball Association",
           "url": "http://www.speedball-world.com"
         },
         "location": {
-          "type": "Place",
+          "@type": "Place",
           "url": "https://www.everyoneactive.com/centres/Middlesbrough-Sports-Village",
           "name": "Middlesbrough Sports Village",
           "identifier": "0140",
           "address": {
-            "type": "PostalAddress",
+            "@type": "PostalAddress",
             "streetAddress": "Alan Peacock Way",
             "addressLocality": "Village East",
             "addressRegion": "Middlesbrough",
@@ -772,7 +784,7 @@ var fullOrderItemExampleContent = { //broker
             "addressCountry": "GB"
           },
           "geo": {
-            "type": "GeoCoordinates",
+            "@type": "GeoCoordinates",
             "latitude": 54.543964,
             "longitude": -1.20978500000001
           }
@@ -780,29 +792,29 @@ var fullOrderItemExampleContent = { //broker
       }
     },
     orderResponse: {
-      "type": "ScheduledSession",
+      "@type": "ScheduledSession",
       "identifier": 123, //expanded by booking system
-      "id": "https://example.com/events/452/subEvents/132",
+      "@id": "https://example.com/events/452/subEvents/132",
       "eventStatus": "https://schema.org/EventScheduled",
       "startDate": "2018-10-30T11:00:00Z",
       "endDate": "2018-10-30T12:00:00Z",
       "duration": "PT1H",
       "superEvent": {
-        "type": "SessionSeries",
-        "id": "https://example.com/events/452",
+        "@type": "SessionSeries",
+        "@id": "https://example.com/events/452",
         "name": "Speedball",
         "organizer": {
-          "type": "Organization",
+          "@type": "Organization",
           "name": "Central Speedball Association",
           "url": "http://www.speedball-world.com"
         },
         "location": {
-          "type": "Place",
+          "@type": "Place",
           "url": "https://www.everyoneactive.com/centres/Middlesbrough-Sports-Village",
           "name": "Middlesbrough Sports Village",
           "identifier": "0140",
           "address": {
-            "type": "PostalAddress",
+            "@type": "PostalAddress",
             "streetAddress": "Alan Peacock Way",
             "addressLocality": "Village East",
             "addressRegion": "Middlesbrough",
@@ -810,7 +822,7 @@ var fullOrderItemExampleContent = { //broker
             "addressCountry": "GB"
           },
           "geo": {
-            "type": "GeoCoordinates",
+            "@type": "GeoCoordinates",
             "latitude": 54.543964,
             "longitude": -1.20978500000001
           }
@@ -821,8 +833,8 @@ var fullOrderItemExampleContent = { //broker
 };
 
 var feedOrderItem = {
-  "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
+  "@type": "OrderItem",
+  "@id": fullOrderItemExampleContent['@id'],
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
@@ -831,13 +843,13 @@ var feedOrderItem = {
 }
 
 var requestOrderItem = {
-  "type": "OrderItem",
+  "@type": "OrderItem",
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.request,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request
 }
 
 var responseOrderQuoteOrderItem = {
-  "type": "OrderItem",
+  "@type": "OrderItem",
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
@@ -845,22 +857,22 @@ var responseOrderQuoteOrderItem = {
 }
 
 var responseOrderQuoteErrorOrderItem = {
-  "type": "OrderItem",
+  "@type": "OrderItem",
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse,
   "error": [{
-    "type": "OpportunityIsFullError",
+    "@type": "OpportunityIsFullError",
     "description": "There are no spaces remaining in this opportunity"
   }]
 }
 
 
 var responseOrderItem = {
-  "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
+  "@type": "OrderItem",
+  "@id": fullOrderItemExampleContent['@id'],
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
@@ -870,8 +882,8 @@ var responseOrderItem = {
 }
 
 var responseCancelledOrderItem = {
-  "type": "OrderItem",
-  "id": fullOrderItemExampleContent.id,
+  "@type": "OrderItem",
+  "@id": fullOrderItemExampleContent['@id'],
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.CustomerCancelled
 }
 

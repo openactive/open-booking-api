@@ -564,7 +564,7 @@ By design, then, the use of <a>Leases</a> is largely transparent to the <a>Broke
 
 <pre class="example" title="Example of lease">
   "lease": {
-    "type": "Lease",
+    "@type": "Lease",
     "leaseExpires": "2018-10-01T11:00:00Z"
   }
 </pre>
@@ -1086,7 +1086,7 @@ If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST 
 
 <pre class="example" title="Example of attendeeDetailsRequired provided by Booking System at C1">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "attendeeDetailsRequired": [
       "https://schema.org/givenName",
@@ -1097,10 +1097,10 @@ If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST 
 
 <pre class="example" title="Example of attendee details provided with each OrderItem at C2">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "attendee": {
-      "type": "Person",
+      "@type": "Person",
       "email": "geoffcapes@example.com",
       "telephone": "020 811 8055",
       "givenName": "Geoff",
@@ -1113,11 +1113,11 @@ If a required property within `Person` is not supplied by the <a>Broker</a> the 
 
 <pre class="example" title="Example of an error for missing attendee property data">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "error": [
       {
-        "type": "IncompleteAttendeeDetailsError",
+        "@type": "IncompleteAttendeeDetailsError",
         "instance": "https://schema.org/givenName",
         "description": "Missing attendee first name"
       }
@@ -1146,12 +1146,12 @@ Four types of form element are available, all of which sub-class `PropertyValueS
 
 <pre class="example" title="Example of orderItemIntakeForm with ShortAnswerFormSpecification provided by Booking System at C1">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeForm": [
       {
-        "type": "ShortAnswerFormSpecification",
-        "id": "https://example.com/experience",
+        "@type": "ShortAnswerFormSpecification",
+        "@id": "https://example.com/experience",
         "name": "Level of experience",
         "description": "Have you played before? Are you a complete beginner or seasoned pro?",
         "valueRequired": true
@@ -1162,11 +1162,11 @@ Four types of form element are available, all of which sub-class `PropertyValueS
 
 <pre class="example" title="Example of orderItemIntakeFormResponse for ShortAnswerFormSpecification provided by Broker at C2">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeFormResponse": [
       {
-        "type": "PropertyValue",
+        "@type": "PropertyValue",
         "propertyID": "https://example.com/experience",
         "value": "I've played twice before, but I'm a quick learner so I hope to keep up!"
       }
@@ -1183,12 +1183,12 @@ Four types of form element are available, all of which sub-class `PropertyValueS
 
 <pre class="example" title="Example of orderItemIntakeForm with DropdownFormFieldSpecification provided by Booking System at C1">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeForm": [
       {
-        "type": "DropdownFormFieldSpecification",
-        "id": "https://example.com/age",
+        "@type": "DropdownFormFieldSpecification",
+        "@id": "https://example.com/age",
         "name": "Age",
         "description": "Your age is useful for us to place you in the correct group on the day",
         "valueOption": ["0-18", "18-30", "30+"],
@@ -1200,11 +1200,11 @@ Four types of form element are available, all of which sub-class `PropertyValueS
 
 <pre class="example" title="Example of orderItemIntakeFormResponse for DropdownFormFieldSpecification provided by Broker at C2">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeFormResponse": [
       {
-        "type": "PropertyValue",
+        "@type": "PropertyValue",
         "propertyID": "https://example.com/age",
         "value": "0-18"
       }
@@ -1219,12 +1219,12 @@ Four types of form element are available, all of which sub-class `PropertyValueS
 
 <pre class="example" title="Example of orderItemIntakeForm with BooleanFormFieldSpecification provided by Booking System at C1">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeForm": [
       {
-        "type": "BooleanFormFieldSpecification",
-        "id": "https://example.com/photoconsent",
+        "@type": "BooleanFormFieldSpecification",
+        "@id": "https://example.com/photoconsent",
         "name": "Photo Consent",
         "description": "Are you happy for us to include photos of you in our marketing materials?"
       }
@@ -1236,11 +1236,11 @@ The `value` in the `PropertyValue` response MUST be either `true` or `false`.
 
 <pre class="example" title="Example of orderItemIntakeFormResponse for BooleanFormFieldSpecification provided by Broker at C2">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "orderItemIntakeFormResponse": [
       {
-        "type": "PropertyValue",
+        "@type": "PropertyValue",
         "propertyID": "https://example.com/photoconsent",
         "value": true
       }
@@ -1255,11 +1255,11 @@ If a field with `valueRequired` is not supplied by the <a>Broker</a>, the <a>Boo
 
 <pre class="example" title="Example of an error for missing additional details field data">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "error": [
       {
-        "type": "IncompleteIntakeFormError",
+        "@type": "IncompleteIntakeFormError",
         "instance": "https://example.com/experience",
         "description": "Incomplete additional details supplied"
       }
@@ -1273,11 +1273,11 @@ In this version of the specification, any required field value validation MUST b
 
 <pre class="example" title="Example of an error for invalid additional details field data">
   {
-    "type": "OrderItem",
+    "@type": "OrderItem",
     ...
     "error": [
       {
-        "type": "InvalidIntakeFormError",
+        "@type": "InvalidIntakeFormError",
         "instance": "https://example.com/shoesize",
         "description": "The provided shoe size is not a number"
       }
@@ -1460,7 +1460,7 @@ The `name` of the `Payment` SHOULD be used to provide information about the sour
 
 <pre class="example" title="Example of Payment">
   "payment": {
-    "type": "Payment",
+    "@type": "Payment",
     "identifier": "12345678ABCD",
     "name": "Big Media Services",
     "accountId": "SN1593",
@@ -1493,7 +1493,7 @@ Note that the <a>Booking System</a> MAY choose to validate the `DynamicPayment` 
 
 <pre class="example" title="Example of DynamicPayment">
   "payment": {
-    "type": "DynamicPayment",
+    "@type": "DynamicPayment",
     "identifier": "12345678ABCD",
     "name": "MoveGB Membership",
     "accountId": "MOVE"
@@ -1509,12 +1509,12 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` and `va
 <pre class="example" title="Example of additionalProperty for OrderItem">
   "additionalProperty": [
     {
-      "type": "PropertyValue",
+      "@type": "PropertyValue",
       "name": "SiteID",
       "value": "ABC1234"
     },
     {
-      "type": "PropertyValue",
+      "@type": "PropertyValue",
       "name": "DeptID",
       "value": "D89"
     }
@@ -1573,7 +1573,7 @@ The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as
 
 <pre class="example" title="Example of OfferOverride">
   "acceptedOffer": {
-    "type": "OfferOverride",
+    "@type": "OfferOverride",
     "description": "Winger space for Speedball.",
     "name": "Speedball winger position",
     "price": 10.00,
@@ -1797,13 +1797,13 @@ Note that `termsOfService` may only be specified at the `seller`, `broker` or `b
 <pre class="example" title="Properties for Terms and Conditions and Privacy Policy">
   "termsOfService": [
     {
-      "type": "Terms",
+      "@type": "Terms",
       "name": "Privacy Policy",
       "url": "https://example.com/privacy-policy",
       "requiresExplicitConsent": false
     },
     {
-      "type": "Terms",
+      "@type": "Terms",
       "name": "Terms and Conditions",
       "url": "https://example.com/terms-and-conditions",
       "requiresExplicitConsent": true
@@ -1831,7 +1831,7 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` propert
 <pre class="example" title="Example of accessCode used for a PIN Code">
   "accessCode": [
     {
-      "type": "PropertyValue",
+      "@type": "PropertyValue",
       "name": "PIN Code",
       "description": "1234"
     }
@@ -1841,7 +1841,7 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` propert
 <pre class="example" title="Example of accessCode used for a booking reference">
   "accessCode": [
     {
-      "type": "PropertyValue",
+      "@type": "PropertyValue",
       "name": "Booking Reference",
       "description": "123456789"
     }
@@ -1857,7 +1857,7 @@ Images to be displayed to provide access, for example access tickets rendered by
 <pre class="example" title="Example of ImageObject in accessToken">
   "accessToken": [
     {
-      "type": "ImageObject",
+      "@type": "ImageObject",
       "url": "https://access.example.com/476ac24c694da79c5e33731ebbb5f1"
     }
   ],
@@ -1872,7 +1872,7 @@ Due to the variety of barcode formats available, the specification expects the `
 <pre class="example" title="Example of Barcode in accessToken">
   "accessToken": [
     {
-      "type": "Barcode",
+      "@type": "Barcode",
       "url": "https://fallback.image.example.com/476ac24c694da79c5e33731ebbb5f1",
       "text": "0123456789",
       "bookwhen:codeType": "code128"
@@ -2203,16 +2203,16 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 |--------------------------------------------------------------------|----------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. This is NOT REQUIRED in PUT or PATCH requests. |
-| [`schema:identifier`](http://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
-| [`schema:seller`](http://schema.org/seller)                        | -        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
+| [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
+| [`schema:seller`](https://schema.org/seller)                        | -        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
 | [`schema:broker`](https://schema.org/broker)                       | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. If `brokerRole` is set to `https://openactive.io/NoBroker` this is NOT REQUIRED. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | REQUIRED | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive.io/AgentBroker`, `https://openactive.io/ResellerBroker` or `https://openactive.io/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
-| [`schema:orderNumber`](http://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
-| [`schema:customer`](http://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
+| [`schema:orderNumber`](https://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
+| [`schema:customer`](https://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
 | [`oa:bookingService`](https://openactive.io/bookingService)        | -        | REQUIRED | -        | [`oa:BookingService`](https://openactive.io/BookingService) | Details about the <a>Booking System</a> |
-| [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](http://schema.org/OrderItem) | The items that constitute the `Order` |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
+| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](https://schema.org/OrderItem) | The items that constitute the `Order` |
+| [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
 | [`oa:totalPaymentTax`](https://openactive.io/totalPaymentTax) | - | REQUIRED | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. |
 | [`oa:payment`](https://openactive.io/payment)                      | RECOMMENDED | OPTIONAL | -        | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
 | [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus)  | -    | -        | -        | [`oa:OrderCreationStatus`](https://openactive.io/OrderCreationStatus) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
@@ -2227,7 +2227,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The <a>Lease</a> on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
+| [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderRequiresApproval`](https://openactive.io/orderRequiresApproval) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the [Booking Flow with Approval](#booking-flow-with-approval) MUST be used to book the set of `OrderItem`s included. MUST be `true` if any of the `OrderItem`s require approval. |
 
 
@@ -2238,7 +2238,7 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
-| [`schema:totalPaymentDue`](http://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](http://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
+| [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatus`](https://openactive.io/OrderProposalStatus) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
 | [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> _from_ the <a>Seller</a> along with the `OrderProposal`. |
 | [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
@@ -2253,17 +2253,17 @@ The `seller` is specified with each `Order` to account for scenarios where multi
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|-------------|----------|-|------|
 | `@type`                                                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Organization` |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Seller</a> used by the <a>Booking System</a>. |
-| [`schema:name`](http://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
-| [`schema:legalName`](http://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
-| [`schema:email`](http://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Seller</a> used by the <a>Booking System</a>. |
+| [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
+| [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
+| [`schema:email`](https://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
-| [`schema:vatID`](http://schema.org/vatID)                          | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
-| [`schema:telephone`](http://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
-| [`schema:url`](http://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |
-| [`schema:logo`](http://schema.org/logo)                            | - | RECOMMENDED | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Seller</a>, used on tax receipts. |
-| [`schema:address`](http://schema.org/address)                      | - | REQUIRED    | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the <a>Seller</a>, used on tax receipts. |
-| [`schema:termsOfService`](http://schema.org/termsOfService)        | - | OPTIONAL    | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Seller</a>. |
+| [`schema:vatID`](https://schema.org/vatID)                          | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
+| [`schema:telephone`](https://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
+| [`schema:url`](https://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |
+| [`schema:logo`](https://schema.org/logo)                            | - | RECOMMENDED | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Seller</a>, used on tax receipts. |
+| [`schema:address`](https://schema.org/address)                      | - | REQUIRED    | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the <a>Seller</a>, used on tax receipts. |
+| [`schema:termsOfService`](https://schema.org/termsOfService)        | - | OPTIONAL    | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Seller</a>. |
 
 ### `schema:Organization` for `broker`
 
@@ -2274,13 +2274,13 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|-------------|----------|-|------|
 | `@type`                                                            | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | `Organization` |
-| [`schema:identifier`](http://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the brand used by the <a>Broker</a>. |
-| [`schema:name`](http://schema.org/name)                            | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Broker</a>. |
-| [`schema:email`](http://schema.org/email)                          | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Support email address used to contact the <a>Broker</a>. |
-| [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Support telephone number of the <a>Broker</a>. |
-| [`schema:url`](http://schema.org/url)                              | RECOMMENDED | - | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Broker</a>. |
-| [`schema:logo`](http://schema.org/logo)                            | RECOMMENDED | - | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Broker</a>, used within the <a>Booking System</a>. |
-| [`schema:termsOfService`](http://schema.org/termsOfService)        | OPTIONAL    | - | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Broker</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the brand used by the <a>Broker</a>. |
+| [`schema:name`](https://schema.org/name)                            | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Broker</a>. |
+| [`schema:email`](https://schema.org/email)                          | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Support email address used to contact the <a>Broker</a>. |
+| [`schema:telephone`](https://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Support telephone number of the <a>Broker</a>. |
+| [`schema:url`](https://schema.org/url)                              | RECOMMENDED | - | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Broker</a>. |
+| [`schema:logo`](https://schema.org/logo)                            | RECOMMENDED | - | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Broker</a>, used within the <a>Booking System</a>. |
+| [`schema:termsOfService`](https://schema.org/termsOfService)        | OPTIONAL    | - | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Broker</a>. |
 
 
 ### `schema:OrderItem`
@@ -2289,18 +2289,18 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the OrderItem |
-| [`schema:orderItemStatus`](http://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](http://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
+| [`schema:orderItemStatus`](https://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](https://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
-| [`schema:acceptedOffer`](http://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
-| [`schema:orderedItem`](http://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only require `id` within these objects to be included; in these contexts, all other properties are ignored. |
+| [`schema:acceptedOffer`](https://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
+| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only require `id` within these objects to be included; in these contexts, all other properties are ignored. |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
-| [`oa:error`](https://openactive.io/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
+| [`schema:error`](https://schema.org/error)                          | -        | REQUIRED    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` or `https://openactive.io/CustomerAttended` |
-| [`schema:attendee`](http://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
+| [`schema:attendee`](https://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
 | [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
 | [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | OPTIONAL | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
@@ -2314,14 +2314,14 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
-| [`schema:price`](http://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
-| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If an `Offer` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:name`](http://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
+| [`schema:price`](https://schema.org/price)                          | -        | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
+| [`schema:priceCurrency`](https://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If an `Offer` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
+| [`schema:name`](https://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:ageRange`](https://openactive.io/ageRange) | RECOMMENDED | RECOMMENDED | [`schema:QuantitativeValue`](https://schema.org/QuantitativeValue) | Indicates that an Offer is applicable to a specific age range. Specified as a [QuantitativeValue](https://schema.org/QuantitativeValue) with [minValue](https://schema.org/minValue) and [maxValue](https://schema.org/maxValue) properties. |
 | [`oa:advanceBooking`](https://openactive.io/advanceBooking) | OPTIONAL | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must book in advance, whether they must pay on attending, or have option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
 | [`oa:prepayment`](https://openactive.io/prepayment) | OPTIONAL | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must pay in advance, pay when attending, or have the option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | REQUIRED | REQUIRED | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
-| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
+| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
 | [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | OPTIONAL | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
 
@@ -2336,11 +2336,11 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
-| [`schema:price`](http://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
-| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:name`](http://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
+| [`schema:price`](https://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
+| [`schema:priceCurrency`](https://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
+| [`schema:name`](https://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
-| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](http://schema.org/validFrom), to allow for Offer inheritance. |
+| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
 
 
@@ -2353,11 +2353,11 @@ The required fields below relate to a `schema:Person` when used in the `customer
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | `Person` |
-| [`schema:identifier`](http://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:email`](http://schema.org/email)                          | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a>. |
-| [`schema:givenName`](http://schema.org/givenName)                  | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
-| [`schema:familyName`](http://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
-| [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:email`](https://schema.org/email)                          | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a>. |
+| [`schema:givenName`](https://schema.org/givenName)                  | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
+| [`schema:familyName`](https://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
+| [`schema:telephone`](https://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
 
 Note that in all cases any `Person` received from the <a>Booking System</a> when it is reflected back in the response MUST only contain exactly the data that was provided by the <a>Broker</a> and MUST NOT contain any additional data that may be known about the `Person` by the <a>Booking System</a>. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
 
@@ -2374,11 +2374,11 @@ For business-to-business transactions, the `customer` MUST be a `schema:Organiza
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | `Organization` |
-| [`schema:identifier`](http://schema.org/identifier)                | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:email`](http://schema.org/email)                          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a>. |
-| [`schema:name`](http://schema.org/name)                            | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
-| [`schema:telephone`](http://schema.org/telephone)                  | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
-| [`schema:address`](http://schema.org/address)                      | REQUIRED | - | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the business <a>Customer</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:email`](https://schema.org/email)                          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a>. |
+| [`schema:name`](https://schema.org/name)                            | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
+| [`schema:telephone`](https://schema.org/telephone)                  | OPTIONAL | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
+| [`schema:address`](https://schema.org/address)                      | REQUIRED | - | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the business <a>Customer</a>. |
 
 Note that any `Organization` received from the <a>Booking System</a> when it is reflected back in the response MUST only contain exactly the data that was provided by the <a>Broker</a> and MUST NOT contain any additional data that may be known about the `Organization` by the <a>Booking System</a>.
 
@@ -2390,11 +2390,11 @@ For `schema:Organization` when used for `customer` or `seller`, the following pr
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | `PostalAddress` |
-| [`schema:streetAddress`](http://schema.org/streetAddress)          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Street address |
-| [`schema:addressLocality`](http://schema.org/addressLocality)      | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Town or other area |
-| [`schema:addressRegion`](http://schema.org/addressRegion)          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Region |
-| [`schema:postalCode`](http://schema.org/postalCode)                | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Postcode |
-| [`schema:addressCountry`](http://schema.org/addressCountry)        | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | ISO 3166-1 alpha-2 country code. |
+| [`schema:streetAddress`](https://schema.org/streetAddress)          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Street address |
+| [`schema:addressLocality`](https://schema.org/addressLocality)      | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Town or other area |
+| [`schema:addressRegion`](https://schema.org/addressRegion)          | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Region |
+| [`schema:postalCode`](https://schema.org/postalCode)                | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | Postcode |
+| [`schema:addressCountry`](https://schema.org/addressCountry)        | REQUIRED | - | [`schema:Text`](https://schema.org/Text) | ISO 3166-1 alpha-2 country code. |
 
 
 ### `oa:Lease`
@@ -2405,7 +2405,7 @@ Used to represent a `lease`. <a>Leases</a> are defined as objects in this specif
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Lease` |
 | [`oa:leaseExpires`](https://openactive.io/leaseExpires)            | - | REQUIRED | [`schema:DateTime`](https://schema.org/DateTime) | Expiry DateTime of the <a>Lease</a> in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional identifier of the <a>Lease</a> if useful for audit or debugging purposes. |
+| [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | Optional identifier of the <a>Lease</a> if useful for audit or debugging purposes. |
 
 
 ### `schema:PriceSpecification`
@@ -2415,8 +2415,8 @@ Used for `totalPaymentDue`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `PriceSpecification` |
-| [`schema:price`](http://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The total amount. |
-| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
+| [`schema:price`](https://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The total amount. |
+| [`schema:priceCurrency`](https://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 
 
 ### `oa:TaxChargeSpecification`
@@ -2428,10 +2428,10 @@ Used for `totalPaymentDue`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `TaxChargeSpecification` |
-| [`schema:price`](http://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The monetary value of the tax charge. |
-| [`schema:priceCurrency`](http://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
-| [`schema:identifier`](http://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge e.g. "VAT-20", used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
-| [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the tax charge, e.g. "VAT at 0% for EU transactions" |
+| [`schema:price`](https://schema.org/price)                          | - | REQUIRED | [`schema:Float`](https://schema.org/Float) | The monetary value of the tax charge. |
+| [`schema:priceCurrency`](https://schema.org/priceCurrency)          | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the tax charge. Specified as a 3-letter ISO 4217 value. If an tax charge has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
+| [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL | [`schema:Integer`](https://schema.org/Integer), [`schema:Text`](https://schema.org/Text), [`schema:PropertyValue`](https://schema.org/PropertyValue) or an array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | A local identifier for the tax charge e.g. "VAT-20", used to identify the type of tax within the <a>Booking System</a>. Note an array of `PropertyValue` can be used to provide multiple identifiers where available. |
+| [`schema:name`](https://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the tax charge, e.g. "VAT at 0% for EU transactions" |
 | [`oa:rate`](https://openactive.io/rate)                            | - | OPTIONAL | [`schema:Float`](https://schema.org/Float) | The rate of VAT. |
 
 
@@ -2442,10 +2442,10 @@ Used for `payment`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Payment` |
-| [`schema:name`](http://schema.org/name)                            | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card"). |
-| [`schema:identifier`](http://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:paymentMethod`](http://schema.org/paymentMethod)          | - | - | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | `paymentMethod` MUST NOT be used, and is reserved for future versions of this specification. |
-| [`schema:accountId`](http://schema.org/accountId)                  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
+| [`schema:name`](https://schema.org/name)                            | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Optional free text description of the payment method for the <a>Booking System</a>, to help the <a>Seller</a> in discussions with the <a>Customer</a> (e.g. "AcmeBroker Points" or "AcmeBroker via Credit Card"). |
+| [`schema:identifier`](https://schema.org/identifier)                | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The identifier of the payment held by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:paymentMethod`](https://schema.org/paymentMethod)          | - | - | [`schema:PaymentMethod`](https://schema.org/PaymentMethod) | `paymentMethod` MUST NOT be used, and is reserved for future versions of this specification. |
+| [`schema:accountId`](https://schema.org/accountId)                  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions, which is used to aid reconciliation. |
 | [`oa:paymentProviderId`](https://openactive.io/paymentProviderId)  | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A reference to the specific <a>Payment Provider</a> that is used. |
 
 ### `oa:DynamicPayment`
@@ -2456,7 +2456,7 @@ Used for fully dynamic pricing, where price is not known at the point of purchas
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
-| [`schema:accountId`](http://schema.org/accountId)                  | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions related, which is used to aid reconciliation. |
+| [`schema:accountId`](https://schema.org/accountId)                  | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions related, which is used to aid reconciliation. |
 
 
 ### `oa:BookingService`
@@ -2468,9 +2468,9 @@ Used for fully dynamic pricing, where price is not known at the point of purchas
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `BookingService` |
-| [`schema:name`](http://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The name of the <a>Booking System</a> |
-| [`schema:url`](http://schema.org/url)                              | - | OPTIONAL | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Booking System</a>. |
-| [`schema:termsOfService`](http://schema.org/termsOfService)        | - | OPTIONAL | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Booking System</a>. |
+| [`schema:name`](https://schema.org/name)                            | - | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The name of the <a>Booking System</a> |
+| [`schema:url`](https://schema.org/url)                              | - | OPTIONAL | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Booking System</a>. |
+| [`schema:termsOfService`](https://schema.org/termsOfService)        | - | OPTIONAL | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Booking System</a>. |
 
 ### `oa:Terms`
 
@@ -2481,8 +2481,8 @@ Used for `termsOfService`.
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
-| [`schema:name`](http://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms. The name must distinguish this from other terms fields provided, e.g. "Terms and Conditions" or "Privacy Policy" |
-| [`schema:url`](http://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
+| [`schema:name`](https://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms. The name must distinguish this from other terms fields provided, e.g. "Terms and Conditions" or "Privacy Policy" |
+| [`schema:url`](https://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
 | [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
 
 ### `oa:PrivacyPolicy`
@@ -2510,9 +2510,9 @@ A specific subclass for Terms of Use, to help the <a>Broker</a> distinguish thes
 |--------------------------------------------------------------------|--------------------------|------|-------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `PropertyValueSpecification` |
 | `@id`                                                              | REQUIRED    | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the `PropertyValueSpecification` to be referenced in the `PropertyValue` response. |
-| [`schema:name`](http://schema.org/name)                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Display label for the field. |
-| [`schema:description`](http://schema.org/description)              | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Descriptive help text for the field. |
-| [`schema:valueRequired`](http://schema.org/valueRequired)          | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Specifies that a value for the field is required to proceed with the booking. |
+| [`schema:name`](https://schema.org/name)                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Display label for the field. |
+| [`schema:description`](https://schema.org/description)              | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Descriptive help text for the field. |
+| [`schema:valueRequired`](https://schema.org/valueRequired)          | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Specifies that a value for the field is required to proceed with the booking. |
 
 
 ### `oa:ShortAnswerFormFieldSpecification`
@@ -2558,7 +2558,7 @@ Specifies a `true` or `false` response.
 | Property                                                           |  Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|--------------------------|------|-------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `BooleanFormFieldSpecification` |
-| [`schema:valueRequired`](http://schema.org/valueRequired)          | -           | [`schema:Text`](https://schema.org/Text) | MUST NOT be included. |
+| [`schema:valueRequired`](https://schema.org/valueRequired)          | -           | [`schema:Text`](https://schema.org/Text) | MUST NOT be included. |
 
 
 ### `schema:PropertyValue`
@@ -2570,10 +2570,10 @@ The use here is in keeping with the Schema.org definition of [`PropertyValue`](h
 | Property                                                           | Type | Notes |
 |--------------------------------------------------------------------|------|-------|
 | `@type`                                                            |  [`schema:Text`](https://schema.org/Text) | `PropertyValue` |
-| [`schema:propertyID`](http://schema.org/propertyID)                |  [`schema:Text`](https://schema.org/Text) | References the `id` of the `PropertyValueSpecification` to which this `PropertyValue` relates. |
-| [`schema:name`](http://schema.org/name)                            |  [`schema:Text`](https://schema.org/Text) | Name of the property. |
-| [`schema:description`](http://schema.org/description)              |  [`schema:Text`](https://schema.org/Text) | Additional human-readable version of the `value` of the property. |
-| [`schema:value`](http://schema.org/value)                          |  [`schema:Text`](https://schema.org/Text) | Machine-readable value of the property. |
+| [`schema:propertyID`](https://schema.org/propertyID)                |  [`schema:Text`](https://schema.org/Text) | References the `id` of the `PropertyValueSpecification` to which this `PropertyValue` relates. |
+| [`schema:name`](https://schema.org/name)                            |  [`schema:Text`](https://schema.org/Text) | Name of the property. |
+| [`schema:description`](https://schema.org/description)              |  [`schema:Text`](https://schema.org/Text) | Additional human-readable version of the `value` of the property. |
+| [`schema:value`](https://schema.org/value)                          |  [`schema:Text`](https://schema.org/Text) | Machine-readable value of the property. |
 
 
 
@@ -2785,7 +2785,7 @@ In some limited circumstances it might also be desirable for an Open Booking API
 
 <pre class="example" title="Extension Example: Integrated Payments">
   "payment": {
-    "type": "acme:IntegratedPayment",
+    "@type": "acme:IntegratedPayment",
     "identifier": "12345678ABCD",
     "paymentMethod": "acme:StripePayment",
     "acme:token": "tok_KPte7942xySKBKyrBu11yEpf"
