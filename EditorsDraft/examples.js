@@ -581,7 +581,7 @@ var fullOrderExampleContent = {
     },
     response: {
       "@type": "Organization",
-      "@id": "https://example.com/api/organisations/123"
+      "@id": "https://example.com/api/organisations/123",
       "identifier": "CRUOZWJ1",
       "name": "Better",
       "taxMode": "https://openactive.io/TaxGross", //booking system
@@ -752,8 +752,8 @@ var fullOrderItemExampleContent = { //broker
     },
     orderQuoteResponse: {
       "@type": "ScheduledSession",
-      "identifier": 123, //expanded by booking system
       "@id": "https://example.com/events/452/subEvents/132",
+      "identifier": 123, //expanded by booking system
       "eventStatus": "https://schema.org/EventScheduled",
       "maximumAttendeeCapacity": 30,
       "remainingAttendeeCapacity": 20,
@@ -793,8 +793,8 @@ var fullOrderItemExampleContent = { //broker
     },
     orderResponse: {
       "@type": "ScheduledSession",
-      "identifier": 123, //expanded by booking system
       "@id": "https://example.com/events/452/subEvents/132",
+      "identifier": 123, //expanded by booking system
       "eventStatus": "https://schema.org/EventScheduled",
       "startDate": "2018-10-30T11:00:00Z",
       "endDate": "2018-10-30T12:00:00Z",
