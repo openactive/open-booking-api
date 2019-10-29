@@ -7,11 +7,14 @@ var EXAMPLE_EXTENSION_CONTEXT = "https://acmesystem.example.com/api/context.json
 var BASE_URL = "https://example.com";
 var API_PATH = "/api";
 
+// Stub window if not running in the browser
+var window = window || {};
+
 
 // C1
 
-function dataExampleOrderQuoteCreationC1Request(utils, content) {
-  return generateRequest("PUT", API_PATH + "/order-quote-templates/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC1Request = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/order-quote-templates/" + UUID, OPERATIONS_MEDIA_TYPE, "c1_request_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -21,8 +24,8 @@ function dataExampleOrderQuoteCreationC1Request(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC1Response(utils, content) {
-  return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC1Response = (utils, content) => {
+  return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, "c1_response_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -36,8 +39,8 @@ function dataExampleOrderQuoteCreationC1Response(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
-  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC1OrderItemErrorResponse = (utils, content) => {
+  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, "c1_response_example_2_error", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -51,8 +54,8 @@ function dataExampleOrderQuoteCreationC1OrderItemErrorResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC1ErrorResponse(utils, content) {
-  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC1ErrorResponse = (utils, content) => {
+  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "TemporarilyUnableToProduceOrderQuoteError",
     "description": "Temporary error occurred in the database"
@@ -62,8 +65,8 @@ function dataExampleOrderQuoteCreationC1ErrorResponse(utils, content) {
 
 // C2
 
-function dataExampleOrderQuoteCreationC2Request(utils, content) {
-  return generateRequest("PUT", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC2Request = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE, "c2_request_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -74,8 +77,8 @@ function dataExampleOrderQuoteCreationC2Request(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC2Response(utils, content) {
-  return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC2Response = (utils, content) => {
+  return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, "c2_response_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -90,8 +93,8 @@ function dataExampleOrderQuoteCreationC2Response(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
-  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC2OrderItemErrorResponse = (utils, content) => {
+  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, "c2_response_example_2_error", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -106,8 +109,8 @@ function dataExampleOrderQuoteCreationC2OrderItemErrorResponse(utils, content) {
   });
 }
 
-function dataExampleOrderQuoteCreationC2ErrorResponse(utils, content) {
-  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderQuoteCreationC2ErrorResponse = (utils, content) => {
+  return generateResponse("500 Internal Server Error", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "TemporarilyUnableToProduceOrderQuoteError",
     "description": "Temporary error occurred in the database"
@@ -117,16 +120,16 @@ function dataExampleOrderQuoteCreationC2ErrorResponse(utils, content) {
 
 
 
-function dataExampleErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "IncompleteCustomerDetailsError",
     "description": "No customer details supplied"
   });
 }
 
-function dataExampleRateLimitResponse(utils, content) {
-  return generateResponseWithHeaders("429 Too Many Requests", null, OPERATIONS_MEDIA_TYPE,
+window.dataExampleRateLimitResponse = (utils, content) => {
+  return generateResponseWithHeaders("429 Too Many Requests", null, OPERATIONS_MEDIA_TYPE, null,
     "Retry-After: 8", {
       "@context": CONTEXT,
       "@type": "TooManyRequestsError",
@@ -154,8 +157,8 @@ function dataExampleRateLimitResponse(utils, content) {
 //             - Front-end that tests against this
 
 
-function dataExampleOrderCreationRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCreationRequest = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_request_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -169,8 +172,8 @@ function dataExampleOrderCreationRequest(utils, content) {
 }
 
 /*
-function dataExampleOrderCreationResponse(utils, content) {
-  return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCreationResponse = (utils, content) => {
+  return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_request_example_2", {
     "@context": CONTEXT,
     "@type": "Order",
     "@id": fullOrderExampleContent['@id'],
@@ -184,8 +187,8 @@ function dataExampleOrderCreationResponse(utils, content) {
 }
 */
 
-function dataExampleOrderCreationResponse(utils, content) {
-  return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCreationResponse = (utils, content) => {
+  return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_response_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
     "@id": fullOrderExampleContent['@id'],
@@ -202,8 +205,8 @@ function dataExampleOrderCreationResponse(utils, content) {
   });
 }
 
-function dataExampleOrderCreationFromProposalRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCreationFromProposalRequest = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_response_example_2_proposal", {
     "@context": CONTEXT,
     "@type": "Order",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
@@ -211,8 +214,8 @@ function dataExampleOrderCreationFromProposalRequest(utils, content) {
   });
 }
 
-function dataExampleOrderCreationErrorResponse(utils, content) {
-  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCreationErrorResponse = (utils, content) => {
+  return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "UnableToProcessOrderItemError",
     "description": "An error occurred while processing the items within this booking."
@@ -221,25 +224,25 @@ function dataExampleOrderCreationErrorResponse(utils, content) {
 
 
 
-function dataExampleOrderQuoteDeletionRequest(utils, content) {
-  return generateRequest("DELETE", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderQuoteDeletionRequest = (utils, content) => {
+  return generateRequest("DELETE", API_PATH + "/order-quotes/" + UUID, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderQuoteDeletionResponse(utils, content) {
-  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderQuoteDeletionResponse = (utils, content) => {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE, null);
 }
 
 
-function dataExampleOrderDeletionRequest(utils, content) {
-  return generateRequest("DELETE", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderDeletionRequest = (utils, content) => {
+  return generateRequest("DELETE", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderDeletionResponse(utils, content) {
-  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderDeletionResponse = (utils, content) => {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderDeletionNotFoundResponse(utils, content) {
-  return generateResponse("404 Not Found", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderDeletionNotFoundResponse = (utils, content) => {
+  return generateResponse("404 Not Found", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "NotFoundError",
     "description": "This Order does not exist."
@@ -248,8 +251,8 @@ function dataExampleOrderDeletionNotFoundResponse(utils, content) {
 
 
 
-function dataExampleOrderProposalCreationRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalCreationRequest = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, "p_request_example_1", {
     "@context": CONTEXT,
     "@type": "OrderProposal",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -262,8 +265,8 @@ function dataExampleOrderProposalCreationRequest(utils, content) {
   });
 }
 
-function dataExampleOrderProposalCreationResponse(utils, content) {
-  return generateResponse("201 Created", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalCreationResponse = (utils, content) => {
+  return generateResponse("201 Created", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, "p_response_example_1", {
     "@context": CONTEXT,
     "@type": "OrderProposal",
     "@id": BASE_URL + API_PATH + "/order-proposals/" + UUID,
@@ -282,8 +285,8 @@ function dataExampleOrderProposalCreationResponse(utils, content) {
   });
 }
 
-function dataExampleOrderProposalCreationErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalCreationErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "IncompleteBrokerDetailsError",
     "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
@@ -292,8 +295,8 @@ function dataExampleOrderProposalCreationErrorResponse(utils, content) {
 
 
 
-function dataExampleOrderProposalUpdateRequest(utils, content) {
-  return generateRequest("PATCH", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalUpdateRequest = (utils, content) => {
+  return generateRequest("PATCH", API_PATH + "/order-proposals/" + UUID, OPERATIONS_MEDIA_TYPE, "orderproposal_patch_example_1", {
     "@context": CONTEXT,
     "@type": "OrderProposal",
     "orderProposalStatus": "https://openactive.io/CustomerRejected",
@@ -301,12 +304,12 @@ function dataExampleOrderProposalUpdateRequest(utils, content) {
   });
 }
 
-function dataExampleOrderProposalUpdateResponse(utils, content) {
-  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderProposalUpdateResponse = (utils, content) => {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderProposalUpdateErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalUpdateErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchNotAllowedOnProperty",
     "instance": "https://openactive.io/orderProposalStatus",
@@ -314,8 +317,8 @@ function dataExampleOrderProposalUpdateErrorResponse(utils, content) {
   });
 }
 
-function dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchContainsExcessiveProperties",
     "description": "PATCH includes unexpected properties that are not permitted."
@@ -329,12 +332,12 @@ function dataExampleOrderProposalUpdateExcessivePropertiesErrorResponse(utils, c
 
 
 
-function dataExampleOrderFeedRequest(utils, content) {
-  return generateRequest("GET", API_PATH + "/orders-rpde", FEED_MEDIA_TYPE);
+window.dataExampleOrderFeedRequest = (utils, content) => {
+  return generateRequest("GET", API_PATH + "/orders-rpde", FEED_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderFeedResponse(utils, content) {
-  return generateResponse("200 OK", null, FEED_MEDIA_TYPE, {
+window.dataExampleOrderFeedResponse = (utils, content) => {
+  return generateResponse("200 OK", null, FEED_MEDIA_TYPE, "order_feed_example_1", {
     "next": API_PATH + "/orders-rpde?afterTimestamp=1521565719&afterId=" + UUID,
     "items": [
       {
@@ -358,8 +361,8 @@ function dataExampleOrderFeedResponse(utils, content) {
 
 
 
-function dataExampleOrderCancellationRequest(utils, content) {
-  return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCancellationRequest = (utils, content) => {
+  return generateRequest("PATCH", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "order_patch_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
     "orderedItem": [responseCancelledOrderItem]
@@ -367,20 +370,20 @@ function dataExampleOrderCancellationRequest(utils, content) {
 }
 
 
-function dataExampleOrderCancellationSuccessResponse(utils, content) {
-  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderCancellationSuccessResponse = (utils, content) => {
+  return generateResponse("204 No Content", null, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderCancellationErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCancellationErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "CancellationNotPermittedError",
     "description": "The horse has already been fed, and cannot be put back in the box."
   });
 }
 
-function dataExampleOrderCancellationPatchPropertyErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCancellationPatchPropertyErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchNotAllowedOnProperty",
     "instance": "https://openactive.io/orderItemStatus",
@@ -388,20 +391,20 @@ function dataExampleOrderCancellationPatchPropertyErrorResponse(utils, content) 
   });
 }
 
-function dataExampleOrderCancellationExcessivePropertiesErrorResponse(utils, content) {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderCancellationExcessivePropertiesErrorResponse = (utils, content) => {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchContainsExcessiveProperties",
     "description": "PATCH includes unexpected properties that are not permitted."
   });
 }
 
-function dataExampleOrderStatusRequest(utils, content) {
-  return generateRequest("GET", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE);
+window.dataExampleOrderStatusRequest = (utils, content) => {
+  return generateRequest("GET", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, null);
 }
 
-function dataExampleOrderStatusResponse(utils, content) {
-  return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleOrderStatusResponse = (utils, content) => {
+  return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "orderstatus_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
     "@id": fullOrderExampleContent['@id'],
@@ -418,8 +421,8 @@ function dataExampleOrderStatusResponse(utils, content) {
 }
 
 
-function dataExampleExtensionWaitingListRequest(utils, content) {
-  return generateRequest("POST", API_PATH + "/sessions/{session-id}/waiting-list", EXAMPLE_EXTENSION_MEDIA_TYPE, {
+window.dataExampleExtensionWaitingListRequest = (utils, content) => {
+  return generateRequest("POST", API_PATH + "/sessions/{session-id}/waiting-list", EXAMPLE_EXTENSION_MEDIA_TYPE, null, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
     "@type": "acme:WaitingListEntry",
     "broker": fullOrderExampleContent.broker,
@@ -427,8 +430,8 @@ function dataExampleExtensionWaitingListRequest(utils, content) {
   });
 }
 
-function dataExampleExtensionMemberBookingRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleExtensionMemberBookingRequest = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, null, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
     "@type": "Order",
     "brokerRole": "https://openactive.io/NoBroker",
@@ -445,8 +448,8 @@ function dataExampleExtensionMemberBookingRequest(utils, content) {
   });
 }
 
-function dataExampleExtensionBespokeAgreementDetailsRequest(utils, content) {
-  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, {
+window.dataExampleExtensionBespokeAgreementDetailsRequest = (utils, content) => {
+  return generateRequest("PUT", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, null, {
     "@context": [ CONTEXT, EXAMPLE_EXTENSION_CONTEXT ],
     "@type": "Order",
     "brokerRole": fullOrderExampleContent.brokerRole,
@@ -471,7 +474,7 @@ function dataExampleExtensionBespokeAgreementDetailsRequest(utils, content) {
 
 
 
-function dataExampleDatasetEmbed(utils, content) {
+window.dataExampleDatasetEmbed = (utils, content) => {
   return generateScriptInclude({
     "@context": ["https://schema.org", "https://openactive.io/"],
     "@type": "Dataset",
@@ -539,7 +542,7 @@ function dataExampleDatasetEmbed(utils, content) {
   });
 }
 
-function dataExamplePotentialAction(utils, content) {
+window.dataExamplePotentialAction = (utils, content) => {
   return `"potentialAction": ${jsonStringify(potentialActionExampleContent)}`;
 }
 
@@ -895,15 +898,18 @@ ${jsonStringify(json)}
 &#x3C;/script&#x3E;`;
 }
 
-function generateRequest(verb, path, mediaType, json) {
+function generateRequest(verb, path, mediaType, filename, json) {
+  storeJson(filename, json);
   return generateRequestHeaders(verb, path, mediaType) + (json ? "\n\n" + jsonStringify(json) : "");
 }
 
-function generateResponseWithHeaders(responseCode, path, mediaType, headers, json) {
+function generateResponseWithHeaders(responseCode, path, mediaType, filename, headers, json) {
+  storeJson(filename, json);
   return generateResponseHeaders(responseCode, path, mediaType) + "\n" + headers + (json ? "\n\n" + jsonStringify(json) : "");
 }
 
-function generateResponse(responseCode, path, mediaType, json) {
+function generateResponse(responseCode, path, mediaType, filename, json) {
+  storeJson(filename, json);
   return generateResponseHeaders(responseCode, path, mediaType) + (json ? "\n\n" + jsonStringify(json) : "");
 }
 
@@ -922,4 +928,50 @@ function generateResponseHeaders(responseCode, path, mediaType) {
   return `HTTP/1.1 ${responseCode}
 Date: Mon, 8 Oct 2018 20:52:36 GMT
 Content-Type: ${mediaType}${path ? '\nLocation: ' + path : ''}`
+}
+
+
+/***** Saving Examples To Filesystem *****/
+
+// usage: node examples.js
+
+var DATA_MODEL_OUTPUT_DIR = "../../validator/data-models/versions/2.x/examples/booking_spec_examples/";
+
+// If this is running in Node.js, then save the examples
+
+// Each generateRequest* function will write its contents if in the Node.js environment
+function storeJson(filename, json) {
+  if (typeof process === 'object' && typeof filename === 'string') {
+    writeFile(filename, jsonStringify(json));
+  }
+}
+
+var fs = null;
+
+if (typeof process === 'object') {
+  fs = require('fs');
+  
+  // Run all dataExample* functions
+  for (property in window) {
+    if(typeof window[property] === 'function' && property.indexOf('dataExample') == 0) {
+      window[property]();
+    }
+  };
+}
+
+function writeFile(name, content) {
+  var filename = name + ".json";
+  
+  console.log("NAME: " + filename);
+  console.log(content);
+
+  console.log("FILE SAVED: " + filename);
+  
+  fs.writeFile(DATA_MODEL_OUTPUT_DIR + filename, content, function (err) {
+      if (err) {
+          return console.log(err);
+      }
+
+      console.log("FILE SAVED: " + filename);
+  });
 }
