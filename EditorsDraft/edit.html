@@ -801,11 +801,21 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
 
 The steps exactly mirror the [Simple Booking Flow](#simple-booking-flow), with two additions in the 'Identify' step:
 
-1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
-2. **Identify**: <a>Customer</a> submits personal details and other requested details
-   1. **Propose**: <a>Customer</a> submits payment details, and submits a proposed booking
-   2. **Approve**: <a>Seller</a> approves the booking, after a period of time
-3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
+<ol>
+<li>
+  <b>Select</b>: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
+</li>
+<li>
+  <b>Identify</b>: <a>Customer</a> submits personal details and other requested details
+  <ol>
+    <li><b>Propose</b>: <a>Customer</a> submits payment details, and submits a proposed booking</li>
+    <li><b>Approve</b>: <a>Seller</a> approves the booking, after a period of time</li>
+  </ol>
+</li>
+<li>
+  <b>Book and Pay</b>: <a>Customer</a> confirms they are happy to proceed
+</li>
+</ol>
 
 Note that some or all steps may be skipped, or may not be presented to the <a>Customer</a>, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
