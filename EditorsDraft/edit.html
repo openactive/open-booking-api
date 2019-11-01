@@ -2595,11 +2595,11 @@ The use here is in keeping with the Schema.org definition of [`PropertyValue`](h
 | Property                                                           | Status      | Type | Notes |
 |--------------------------------------------------------------------|-------------|-|------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
-| [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization |
+| [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type, that MUST communicate the associated "Use Case" defined in this section of the specification. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. |
 | [`schema:description`](https://schema.org/description)             | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A human-readable explanation specific to this occurrence of the problem, providing specific information about why the error occurred in this particular case. |
 | [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The requested URL. |
 | [`oa:method`](https://openactive.io/method)                        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The method of the request (e.g. GET). |
-| [`oa:status`](https://openactive.io/status)                        | OPTIONAL    | [`schema:Integer`](https://schema.org/Integer) | An integer representing the HTTP status code. |
+| [`oa:statusCode`](https://openactive.io/statusCode)                | OPTIONAL    | [`schema:Integer`](https://schema.org/Integer) | An integer representing the HTTP status code, that MUST match the associated "Status Code" defined in this section of the specification. |
 | [`oa:invalidParams`](https://openactive.io/invalidParams)          | OPTIONAL    | Array of [`schema:Text`](https://schema.org/Text) | An array of invalid parameters, if appropriate. |
 | [`oa:requestId`](https://openactive.io/requestId)                  | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Used by technical support for diagnostics purposes. |
 
@@ -2612,7 +2612,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 #### Order Creation - `OrderQuote`, `OrderProposal` and `Order` error responses
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
 | `IncompleteBrokerDetailsError`              | 400         | If there is insufficient detail in the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid schema:Organisation object. |
@@ -2628,7 +2628,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 #### Order Cancellation - `OrderQuote`, `OrderProposal` and `Order` error responses
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `CancellationNotPermittedError`             | 400         | The cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the `Broker`. The `description` property of the object MUST include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |
 
@@ -2638,7 +2638,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Conflict` response, as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]] section 10.4.10.
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteAttendeeDetailsError`            | 409         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
 | `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
@@ -2656,7 +2656,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 #### API authentication
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `UnauthenticatedError`                      | 403         | If the <a>Broker</a> did not supply any form of authentication. |
 | `NoAPITokenError`                           | 403         | If the <a>Broker</a> did not supply an API key. |
@@ -2666,7 +2666,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 #### Technical errors
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `TemporarilyUnableToProduceOrderQuoteError` | 503         | If the <a>Booking System</a> is unable for technical reasons to produce an `OrderQuote` where the data provided to it is sufficient to allow it to do so. |
 | `TemporarilyUnableToCreateOrderError`       | 503         | If the <a>Booking System</a> is unable for technical reasons to create an `Order` where the data provided to it is sufficient to allow it to do so. |
@@ -2676,7 +2676,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 #### Generic errors
 
-| Error Type                                  | Status Code | Use Case                                                                                                                                                                                       |
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `UnknownOrderError`                         | 404         | Where a <a>Booking System</a> has no `Order` matching the one requested. |
 | `UnknownOrIncorrectEndpointError`           | 404         | Where a <a>Booking System</a> has no endpoint matching the one requested. |
