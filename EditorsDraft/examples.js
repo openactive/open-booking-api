@@ -28,6 +28,7 @@ window.dataExampleOrderQuoteCreationC1Response = (utils, content) => {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, "c1_response_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
+    "@id": fullOrderExampleContent['@id'].orderQuote,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -43,6 +44,7 @@ window.dataExampleOrderQuoteCreationC1OrderItemErrorResponse = (utils, content) 
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, "c1_response_example_2_error", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
+    "@id": fullOrderExampleContent['@id'].orderQuote,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -81,6 +83,7 @@ window.dataExampleOrderQuoteCreationC2Response = (utils, content) => {
   return generateResponse("200 OK", null, OPERATIONS_MEDIA_TYPE, "c2_response_example_1", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
+    "@id": fullOrderExampleContent['@id'].orderQuote,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -97,6 +100,7 @@ window.dataExampleOrderQuoteCreationC2OrderItemErrorResponse = (utils, content) 
   return generateResponse("409 Conflict", null, OPERATIONS_MEDIA_TYPE, "c2_response_example_2_error", {
     "@context": CONTEXT,
     "@type": "OrderQuote",
+    "@id": fullOrderExampleContent['@id'].orderQuote,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -176,7 +180,7 @@ window.dataExampleOrderCreationResponse = (utils, content) => {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_request_example_2", {
     "@context": CONTEXT,
     "@type": "Order",
-    "@id": fullOrderExampleContent['@id'],
+    "@id": fullOrderExampleContent['@id'].order,
     "seller": fullOrderExampleContent.seller.response,
     "bookingService": fullOrderExampleContent.bookingService,
     "orderedItem": [responseOrderItem],
@@ -191,7 +195,7 @@ window.dataExampleOrderCreationResponse = (utils, content) => {
   return generateResponse("201 Created", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "b_response_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
-    "@id": fullOrderExampleContent['@id'],
+    "@id": fullOrderExampleContent['@id'].order,
     "orderNumber": "AB000001",
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
@@ -348,7 +352,7 @@ window.dataExampleOrderFeedResponse = (utils, content) => {
         "data": {
           "@context": CONTEXT,
           "@type": "Order",
-          "@id": fullOrderExampleContent['@id'],
+          "@id": fullOrderExampleContent['@id'].order,
           "seller": fullOrderExampleContent.seller.response,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
@@ -407,7 +411,7 @@ window.dataExampleOrderStatusResponse = (utils, content) => {
   return generateResponse("200 OK", API_PATH + "/orders/" + UUID, OPERATIONS_MEDIA_TYPE, "orderstatus_example_1", {
     "@context": CONTEXT,
     "@type": "Order",
-    "@id": fullOrderExampleContent['@id'],
+    "@id": fullOrderExampleContent['@id'].order,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
@@ -475,7 +479,10 @@ window.dataExampleExtensionBespokeAgreementDetailsRequest = (utils, content) => 
 var fullOrderExampleContent = {
   "@context": CONTEXT,
   "@type": "OrderQuote",
-  "@id": BASE_URL + API_PATH + "/orders/" + UUID,
+  "@id": {
+    order: BASE_URL + API_PATH + "/orders/" + UUID,
+    orderQuote: BASE_URL + API_PATH + "/order-quotes/" + UUID
+  },
   "orderNumber": "", //booking system generated
   "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "seller": { //booking system

@@ -2012,10 +2012,10 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 
 Deleting an `OrderQuote` releases any <a>Lease</a> associated with it, which the <a>Broker</a> SHOULD do as a courtesy if the <a>Customer</a> has abandoned their journey. An OrderQuote Deletion request MUST simply return a 204 success status in all cases (including cases where the <a>Booking Systems</a> has not implemented leasing), as the `OrderQuote` itself is ephemeral.
 
-<pre class="example" title="OrderQuote Deletion: example request" data-transform="dataExampleOrderDeletionRequest">
+<pre class="example" title="OrderQuote Deletion: example request" data-transform="dataExampleOrderQuoteDeletionRequest">
 </pre>
 
-<pre class="example" title="OrderQuote Deletion: example response" data-transform="dataExampleOrderDeletionResponse">
+<pre class="example" title="OrderQuote Deletion: example response" data-transform="dataExampleOrderQuoteDeletionResponse">
 </pre>
 
 ### OrderProposal Creation P
