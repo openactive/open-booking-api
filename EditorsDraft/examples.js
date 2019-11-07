@@ -1,5 +1,5 @@
-var OPERATIONS_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
-var FEED_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1.0";
+var OPERATIONS_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1";
+var FEED_MEDIA_TYPE = "application/vnd.openactive.booking+json; version=1";
 var EXAMPLE_EXTENSION_MEDIA_TYPE = "application/vnd.acmesystem.booking+json; version=0.3";
 var UUID = "e11429ea-467f-4270-ab62-e47368996fe8";
 var CONTEXT = "https://openactive.io/";
