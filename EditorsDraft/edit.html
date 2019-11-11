@@ -801,21 +801,20 @@ The booking journey of a <a>Customer</a> is generalised into the following logic
 
 The steps exactly mirror the [Simple Booking Flow](#simple-booking-flow), with two additions in the 'Identify' step:
 
+1. **Select**: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
+
+2. **Identify**: <a>Customer</a> submits personal details and other requested details
+
 <ol>
-<li>
-  <b>Select</b>: <a>Customer</a> selects at least one <a>Opportunity</a> (e.g. `ScheduledSession` or `Slot`) and an associated `Offer` ("Junior (8-18) £9")
-</li>
-<li>
-  <b>Identify</b>: <a>Customer</a> submits personal details and other requested details
-  <ol>
-    <li><b>Propose</b>: <a>Customer</a> submits payment details, and submits a proposed booking</li>
-    <li><b>Approve</b>: <a>Seller</a> approves the booking, after a period of time</li>
-  </ol>
-</li>
-<li>
-  <b>Book and Pay</b>: <a>Customer</a> confirms they are happy to proceed
-</li>
+
+  1. **Propose**: <a>Customer</a> submits payment details, and submits a proposed booking
+
+  2. **Approve**: <a>Seller</a> approves the booking, after a period of time
+
 </ol>
+
+3. **Book and Pay**: <a>Customer</a> confirms they are happy to proceed
+
 
 Note that some or all steps may be skipped, or may not be presented to the <a>Customer</a>, e.g. if their registration or payment details are already known, or they are using a voice interface. These steps are not indicative of the user experience, and simply provide a common language around the flow.
 
@@ -949,18 +948,25 @@ i-iv) The steps **1. Select**; <a><b>C1</b></a>; **2. Identify**; and <a><b>C2</
 
 - For the avoidance of doubt, as in the [Simple Booking Flow](#simple-booking-flow):
 
-  - Additional data is supplied at <a><b>C2</b></a>  to satisfy the `orderItemIntakeForm` for all `OrderItems` in <a><b>C1</b></a>.
+<ul>
 
-  - The `totalPaymentDue` from <a><b>C2</b></a> is used for initial Payment Authorisation.
-
+    - Additional data is supplied at <a><b>C2</b></a>  to satisfy the `orderItemIntakeForm` for all `OrderItems` in <a><b>C1</b></a>.
+    
+    - The `totalPaymentDue` from <a><b>C2</b></a> is used for initial Payment Authorisation.
+    
+</ul>
 
 v) "**2.1. Propose**" - <a>Customer</a> submits payment details, and submits an initial booking in the form of an `OrderQuote`.
 
 - For the avoidance of doubt, as in the [Simple Booking Flow](#simple-booking-flow):
 
+<ul>
+
   - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
   - If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable` or `https://openactive.io/Optional`, or the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
+
+</ul>
 
 vi) <a><b>Payment Authorisation</b></a> - <a>Broker</a> pre-authorises `totalPaymentDue` from <a>Payment Provider</a>.
     
@@ -987,6 +993,8 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
 - The `OrderProposal` MAY include an `orderCustomerNote` in order to allow the <a>Customer</a> to ask a question about this <a>Opportunity</a>, as the beginning of a [Message Exchange](#message-exchange), if the `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` includes `https://openactive.io/OpenBookingMessageExchange`.
 
 - To match much of the behaviour of <a><b>B</b></a> in the [Simple Booking Flow](#simple-booking-flow), the following also apply:
+
+<ul>
 
     - The `OrderProposal` from <a><b>P</b></a> will not be present in the <a>Orders feed</a> until it is updated at least once.
 
@@ -1015,6 +1023,8 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
     - As this call is idempotent, it can be safely retried in the case of an temporary unexpected error (any error that returns status code 503) or rate limiting (any error that returns status code 429).
 
     - When the request still returns status code 503 after a number of retries the UUID MUST be regenerated to allow for a clean retry of the booking. The UUID MUST NOT be regenerated for expected errors (status code 4xx).
+
+</ul>
 
 viii) "**2.2. Approve**" -  <a>Seller</a> approves the booking after automated or manual review.
 
@@ -1548,7 +1558,7 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 ## Tax mode
 
-The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
+The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` or `Person` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
 Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTax` include only the taxes themselves so are unaffected.
 
@@ -1623,7 +1633,7 @@ Bookable <a>Opportunities</a>:
 
 - The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` in the past. This allows for a "bookahead" window to be specified.
 
-- The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is specified within the `Organization` that is included in the REQUIRED `organizer` or `provider` properties.
+- The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is specified within the `Organization` or `Person` that is included in the REQUIRED `organizer` or `provider` properties.
 
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
@@ -2214,12 +2224,12 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | `@type`                                                            | REQUIRED | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                              | -        | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. This is NOT REQUIRED in PUT or PATCH requests. |
 | [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
-| [`schema:seller`](https://schema.org/seller)                        | -        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider running yoga classes. |
+| [`schema:seller`](https://schema.org/seller)                        | -        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The organisation or person providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider or independent running a yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
 | [`schema:broker`](https://schema.org/broker)                       | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. If `brokerRole` is set to `https://openactive.io/NoBroker` this is NOT REQUIRED. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                | REQUIRED | REQUIRED | -        | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive.io/AgentBroker`, `https://openactive.io/ResellerBroker` or `https://openactive.io/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
 | [`schema:orderNumber`](https://schema.org/orderNumber)              | -        | OPTIONAL | -        | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
-| [`schema:customer`](https://schema.org/customer)                    | REQUIRED | -        | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
+| [`schema:customer`](https://schema.org/customer)                    | REQUIRED | REQUIRED | -        | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
 | [`oa:bookingService`](https://openactive.io/bookingService)        | -        | REQUIRED | -        | [`oa:BookingService`](https://openactive.io/BookingService) | Details about the <a>Booking System</a> |
 | [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | REQUIRED | Array of [`schema:OrderItem`](https://schema.org/OrderItem) | The items that constitute the `Order` |
 | [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which includes or excludes tax depending on the `taxMode`. |
@@ -2254,15 +2264,18 @@ These models are designed to be compatible with [[Modelling-Opportunity-Data]]. 
 | [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | RECOMMENDED | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
 
 
-### `schema:Organization` for `seller`
+### `schema:Organization` or `schema:Person` for `seller`
 
-The `seller` MUST be a `schema:Organization` with the following properties, in order for tax receipts to be successfully generated.
+The `seller` MUST be a `schema:Organization` or `schema:Person` with the following properties, in order for tax receipts to be successfully generated.
 
 The `seller` is specified with each `Order` to account for scenarios where multiple <a>Seller</a> brands are in use.
 
+In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `schema:Person` types support a common set of properties that capture the basic information required.
+
+
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|-------------|----------|-|------|
-| `@type`                                                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Organization` |
+| `@type`                                                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Organization` or `Person` |
 | [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Seller</a> used by the <a>Booking System</a>. |
 | [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
 | [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
@@ -2271,7 +2284,7 @@ The `seller` is specified with each `Order` to account for scenarios where multi
 | [`schema:vatID`](https://schema.org/vatID)                          | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
 | [`schema:telephone`](https://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
 | [`schema:url`](https://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |
-| [`schema:logo`](https://schema.org/logo)                            | - | RECOMMENDED | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Seller</a>, used on tax receipts. |
+| [`schema:logo`](https://schema.org/logo)                            | - | RECOMMENDED | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo or photo of the <a>Seller</a>, used on tax receipts. |
 | [`schema:address`](https://schema.org/address)                      | - | REQUIRED    | [`schema:PostalAddress`](https://schema.org/PostalAddress) | Address of the <a>Seller</a>, used on tax receipts. |
 | [`schema:termsOfService`](https://schema.org/termsOfService)        | - | OPTIONAL    | Array of [`oa:Terms`](https://openactive.io/Terms) | The terms of service of the <a>Seller</a>. |
 
@@ -2303,7 +2316,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. |
 | [`schema:acceptedOffer`](https://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
-| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] for more information on these types. Note that the Broker Request and Orders feed only require `id` within these objects to be included; in these contexts, all other properties are ignored. |
+| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the Broker Request and Orders feed only require `id` within these objects to be included; in these contexts, all other properties are ignored. |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
@@ -2708,10 +2721,10 @@ of the specification they support.
 <a>Booking Systems</a> MAY choose to support additional media types but MUST support the
 media type(s) defined by this specification.
 
-Media types will conform to the following pattern:
+Media types used in the `Accept` header of requests and `Content-Type` header of responses will conform to the following pattern, which includes only the major version of the specification:
 
 ```
-application/vnd.openactive.booking+json; version=x[.y]
+application/vnd.openactive.booking+json; version=x
 ```
 
 The current media type is:
@@ -2720,22 +2733,15 @@ The current media type is:
 application/vnd.openactive.booking+json; version=1
 ```
 
- <a>Brokers</a> specifying a media type without a version, such as:
+ <a>Brokers</a> will receive data in the most current format within that major version (e.g. 1.1, 1.2 etc).
 
-```
-application/vnd.openactive.booking+json
-```
-
-will receive data in in the most current format.
-
-If you are building an application as a <a>Broker</a> and care about the stability of the response, or have a client application which is tied to a specific version you should always try to use a media type containing the version number.
 
 
 ## Handling Specification Dependencies and Extensions
 
 ### Realtime Paged Data Exchange 1.0
 
-The <a>Orders feed</a> defined in this specification is an [[RPDE]] feed which conforms exactly to [[RPDE]] 1.0, except for [section 5.1.3](https://www.openactive.io/realtime-paged-data-exchange/#content-type) where instead it uses media type `application/vnd.openactive.booking+json; version=1.0`.
+The <a>Orders feed</a> defined in this specification is an [[RPDE]] feed which conforms exactly to [[RPDE]] 1.0, except for [section 5.1.3](https://www.openactive.io/realtime-paged-data-exchange/#content-type) where instead it uses media type `application/vnd.openactive.booking+json; version=1`.
 
 Although additional <a>Orders feed</a> conforming to later versions of the [[RPDE]] specification and even to later versions of this specification MAY be implemented in parallel, implementations that are compliant with this version of the specification MUST utilise an <a>Orders feed</a> that conforms to [[RPDE]] 1.0.
 
@@ -2835,7 +2841,7 @@ the [[Modelling-Opportunity-Data]] data model.
 
 Error responses MUST be served using an appropriate HTTP 4XX status code or HTTP 5XX status code specified in the model.
 
-All error responses from this API MUST be returned in a JSON-LD format subclass of the `OpenBookingError` using a content type of `application/vnd.openactive.booking+json; version=1.0`.
+All error responses from this API MUST be returned in a JSON-LD format subclass of the `OpenBookingError` using a content type of `application/vnd.openactive.booking+json; version=1`.
 
 <pre class="example" title="Error response example" data-transform="dataExampleErrorResponse">
 </pre>
@@ -2847,7 +2853,7 @@ The <a>Booking System</a> MAY choose to apply rate limiting for each unique set 
 
 To allow for a broad range of API management solutions to be used, the <a>Broker</a> MUST rely only on the status code 429 when detecting and retrying a rate-limited request, as specified elsewhere in this specification. The following guidance is included to encourage convergence in implementations where possible. 
 
-All rate-limited responses from this API SHOULD return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive.booking+json; version=1.0` with status code 429.
+All rate-limited responses from this API SHOULD return a JSON-LD format `TooManyRequestsError` object using a content type of `application/vnd.openactive.booking+json; version=1` with status code 429.
 
 The response SHOULD also include the `Retry-After` HTTP Header with a value set to the number of seconds after which the <a>Broker</a> SHOULD retry as per [[RFC2616]] section 14.37. 
 

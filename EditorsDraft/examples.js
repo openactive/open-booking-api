@@ -516,12 +516,12 @@ var fullOrderExampleContent = {
       },
       "termsOfService": [
         {
-          "@type": "Terms",
+          "@type": "PrivacyPolicy",
           "name": "Privacy Policy",
           "url": "https://example.com/privacy-policy"
         },
         {
-          "@type": "Terms",
+          "@type": "TermsOfUse",
           "name": "Terms and Conditions",
           "url": "https://example.com/terms-and-conditions"
         }
@@ -635,6 +635,18 @@ var fullOrderItemExampleContent = { //broker
     {
       "@type": "TaxChargeSpecification",
       "name": "VAT at 0% for EU transactions",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "name": "EUCODE",
+          "value": "TC"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "UKCODE",
+          "value": "EU0"
+        }
+      ],
       "price": 1.00,
       "priceCurrency": "GBP",
       "rate": 0.2
