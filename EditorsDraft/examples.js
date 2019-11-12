@@ -634,24 +634,12 @@ var fullOrderItemExampleContent = { //broker
   "unitTaxSpecification": [ //booking system otherwise
     {
       "@type": "TaxChargeSpecification",
-      "name": "VAT at 0% for EU transactions",
-      "identifier": [
-        {
-          "@type": "PropertyValue",
-          "name": "EUCODE",
-          "value": "TC"
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "UKCODE",
-          "value": "EU0"
-        }
-      ],
+      "name": "VAT at 20%",
       "price": 1.00,
       "priceCurrency": "GBP",
       "rate": 0.2
-      }
-    ],
+    }
+  ],
   "acceptedOffer": {
     request: {
       "@type": "Offer",
