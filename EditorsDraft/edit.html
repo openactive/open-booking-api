@@ -2276,6 +2276,7 @@ In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|-------------|----------|-|------|
 | `@type`                                                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Organization` or `Person` |
+| `@id`                                                              | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource. |
 | [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Seller</a> used by the <a>Booking System</a>. |
 | [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
 | [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
