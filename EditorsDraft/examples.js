@@ -616,7 +616,7 @@ var fullOrderExampleContent = {
 
 var fullOrderItemExampleContent = { //broker
   "@type": "OrderItem",
-  "@id": "https://example.com/api/orders/123e4567-e89b-12d3-a456-426655440000/order-items/1234",
+  "@id": "https://example.com/api/orders/" + UUID + "/order-items/1234",
   "orderItemStatus": { //booking system
     OrderConfirmed: "https://openactive.io/OrderConfirmed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
