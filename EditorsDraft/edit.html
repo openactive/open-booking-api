@@ -2603,18 +2603,17 @@ The use here is in keeping with the Schema.org definition of [`PropertyValue`](h
 
 ## Error Model
 
-
 ### `oa:OpenBookingError`
+
+This class has been modelled closely on [[!RFC7807]].
 
 | Property                                                           | Status      | Type | Notes |
 |--------------------------------------------------------------------|-------------|-|------|
 | `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
 | [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type, that MUST communicate the associated "Use Case" defined in this section of the specification. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. |
 | [`schema:description`](https://schema.org/description)             | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A human-readable explanation specific to this occurrence of the problem, providing specific information about why the error occurred in this particular case. |
-| [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The requested URL. |
-| [`oa:method`](https://openactive.io/method)                        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The method of the request (e.g. GET). |
+| [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced. |
 | [`oa:statusCode`](https://openactive.io/statusCode)                | OPTIONAL    | [`schema:Integer`](https://schema.org/Integer) | An integer representing the HTTP status code, that MUST match the associated "Status Code" defined in this section of the specification. |
-| [`oa:invalidParams`](https://openactive.io/invalidParams)          | OPTIONAL    | Array of [`schema:Text`](https://schema.org/Text) | An array of invalid parameters, if appropriate. |
 | [`oa:requestId`](https://openactive.io/requestId)                  | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Used by technical support for diagnostics purposes. |
 
 

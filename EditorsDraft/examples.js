@@ -316,7 +316,6 @@ window.dataExampleOrderProposalUpdateErrorResponse = (utils, content) => {
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchNotAllowedOnProperty",
-    "instance": "https://openactive.io/orderProposalStatus",
     "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
   });
 }
@@ -390,7 +389,6 @@ window.dataExampleOrderCancellationPatchPropertyErrorResponse = (utils, content)
   return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
     "@context": CONTEXT,
     "@type": "PatchNotAllowedOnProperty",
-    "instance": "https://openactive.io/orderItemStatus",
     "description": "Only 'https://openactive.io/CustomerCancelled' is permitted for this property."
   });
 }
