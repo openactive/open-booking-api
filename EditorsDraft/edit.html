@@ -1641,11 +1641,11 @@ The <a>Broker</a> MUST NOT attempt to book an <a>Opportunity</a> that is not <a>
 
 ### Booking restrictions
 
-Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> <a>Opportunity</a> via an associated <a>bookable</a> `Offer` based on the `genderRestriction` or `ageRange` of either the <a>Opportunity</a> or `Offer`, this specification encourages the <a>Broker</a> NOT to capture additional personal data about the <a>Customer</a> (e.g. gender and date of birth) and NOT to enforce validation of these restrictions using such data, but instead to prominently communicate clear messaging regarding such restrictions throughout the booking process to ensure that the <a>Customer</a> is aware of these and able to make an informed decision.
+Note that although the <a>Customer</a> may be ineligible to attend a <a>bookable</a> <a>Opportunity</a> via an associated <a>bookable</a> `Offer` based on the `genderRestriction` or `ageRestriction` of either the <a>Opportunity</a> or `Offer`, this specification encourages the <a>Broker</a> NOT to capture additional personal data about the <a>Customer</a> (e.g. gender and date of birth) and NOT to enforce validation of these restrictions using such data, but instead to prominently communicate clear messaging regarding such restrictions throughout the booking process to ensure that the <a>Customer</a> is aware of these and able to make an informed decision.
 
-There may be additional restrictions placed on an <a>Opportunity</a> by the <a>Seller</a>. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as `attendeeInstructions` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST communicate these instructions clearly during the booking process.
+There may be additional restrictions placed on an <a>Opportunity</a> by the <a>Seller</a>. For example, it may be that one of the party must be over a certain age as a supervising adult if some of the party are minors. It is the responsibility of the <a>Booking System</a> and <a>Seller</a> to make such restrictions available as an array of `oa:additionalAdmissionRestriction` on the `SessionSeries`, `FacilityUse`, `Event`, `HeadlineEvent` or `CourseInstance`, and the <a>Broker</a> MUST communicate these restrictions clearly during the booking process.
 
-The <a>Broker</a> MAY filter the `Offer`s it makes available to the <a>Customer</a>, for example based on `ageRange` of the `Offer`.
+The <a>Broker</a> MAY filter the `Offer`s it makes available to the <a>Customer</a>, for example based on `ageRestriction` of the `Offer`.
 
 
 ## Amending the OrderQuote before <a><b>B</b></a>
