@@ -516,12 +516,14 @@ var fullOrderExampleContent = {
         {
           "@type": "PrivacyPolicy",
           "name": "Privacy Policy",
-          "url": "https://example.com/privacy-policy"
+          "url": "https://example.com/privacy-policy",
+          "requiresExplicitConsent": false
         },
         {
           "@type": "TermsOfUse",
           "name": "Terms and Conditions",
-          "url": "https://example.com/terms-and-conditions"
+          "url": "https://example.com/terms-and-conditions",
+          "requiresExplicitConsent": true
         }
       ]
     }
@@ -566,7 +568,9 @@ var fullOrderExampleContent = {
     "termsOfService": [
       {
         "@type": "Terms",
-        "url": "https://brokerexample.com/terms.html"
+        "name": "Terms of Service",
+        "url": "https://brokerexample.com/terms.html",
+        "requiresExplicitConsent": false
       }
     ]
   },
