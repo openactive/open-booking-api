@@ -29,6 +29,7 @@ window.dataExampleOrderQuoteCreationC1Response = (utils, content) => {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "@id": fullOrderExampleContent['@id'].orderQuote,
+    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -45,6 +46,7 @@ window.dataExampleOrderQuoteCreationC1OrderItemErrorResponse = (utils, content) 
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "@id": fullOrderExampleContent['@id'].orderQuote,
+    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -84,6 +86,7 @@ window.dataExampleOrderQuoteCreationC2Response = (utils, content) => {
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "@id": fullOrderExampleContent['@id'].orderQuote,
+    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -101,6 +104,7 @@ window.dataExampleOrderQuoteCreationC2OrderItemErrorResponse = (utils, content) 
     "@context": CONTEXT,
     "@type": "OrderQuote",
     "@id": fullOrderExampleContent['@id'].orderQuote,
+    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -410,6 +414,7 @@ window.dataExampleOrderStatusResponse = (utils, content) => {
     "@context": CONTEXT,
     "@type": "Order",
     "@id": fullOrderExampleContent['@id'].order,
+    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,
@@ -482,6 +487,7 @@ var fullOrderExampleContent = {
     orderQuote: BASE_URL + API_PATH + "/order-quotes/" + UUID
   },
   "orderNumber": "", //booking system generated
+  "orderRequiresApproval": false,
   "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "seller": { //booking system
     request: {
@@ -675,14 +681,23 @@ var fullOrderItemExampleContent = { //broker
       "duration": "PT1H",
       "superEvent": {
         "@type": "SessionSeries",
-        "@id": "https://example.com/events/452",
-        "name": "Speedball",
+        "@id": "https://api.example.com/events/452",
+        "name": "Bodypump",
+        "activity": [
+          {
+            "type": "Concept",
+            "id": "https://openactive.io/activity-list#5e78bcbe-36db-425a-9064-bf96d09cc351",
+            "prefLabel": "Bodypump™",
+            "inScheme": "https://openactive.io/activity-list"
+          }
+        ],
         "duration": "PT1H",
         "organizer": {
           "@type": "Organization",
           "name": "Central Speedball Association",
           "url": "http://www.speedball-world.com"
         },
+        "url": "https://example.com/events/452",
         "location": {
           "@type": "Place",
           "url": "https://www.everyoneactive.com/centres/Middlesbrough-Sports-Village",
@@ -714,13 +729,22 @@ var fullOrderItemExampleContent = { //broker
       "duration": "PT1H",
       "superEvent": {
         "@type": "SessionSeries",
-        "@id": "https://example.com/events/452",
-        "name": "Speedball",
+        "@id": "https://api.example.com/events/452",
+        "name": "Bodypump",
+        "activity": [
+          {
+            "type": "Concept",
+            "id": "https://openactive.io/activity-list#5e78bcbe-36db-425a-9064-bf96d09cc351",
+            "prefLabel": "Bodypump™",
+            "inScheme": "https://openactive.io/activity-list"
+          }
+        ],
         "organizer": {
           "@type": "Organization",
           "name": "Central Speedball Association",
           "url": "http://www.speedball-world.com"
         },
+        "url": "https://example.com/events/452",
         "location": {
           "@type": "Place",
           "url": "https://www.everyoneactive.com/centres/Middlesbrough-Sports-Village",
