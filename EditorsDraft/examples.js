@@ -692,11 +692,6 @@ var fullOrderItemExampleContent = { //broker
           }
         ],
         "duration": "PT1H",
-        "organizer": {
-          "@type": "Organization",
-          "name": "Central Speedball Association",
-          "url": "http://www.speedball-world.com"
-        },
         "url": "https://example.com/events/452",
         "location": {
           "@type": "Place",
@@ -739,11 +734,6 @@ var fullOrderItemExampleContent = { //broker
             "inScheme": "https://openactive.io/activity-list"
           }
         ],
-        "organizer": {
-          "@type": "Organization",
-          "name": "Central Speedball Association",
-          "url": "http://www.speedball-world.com"
-        },
         "url": "https://example.com/events/452",
         "location": {
           "@type": "Place",
