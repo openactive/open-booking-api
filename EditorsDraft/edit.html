@@ -1648,6 +1648,39 @@ There may be additional restrictions placed on an <a>Opportunity</a> by the <a>S
 The <a>Broker</a> MAY filter the `Offer`s it makes available to the <a>Customer</a>, for example based on `ageRestriction` of the `Offer`.
 
 
+### Opportunity data properties
+
+The <a>Opportunity Data</a> within the `orderedItem` property of an `OrderItem` MUST correspond exactly with the model used within the <a>Opportunity Data</a> [[RPDE]] open feeds. For example if properties within a `SessionSeries` and `ScheduledSession` are used in the open feeds, corresponding properties must be used within objects of the same types within the `orderedItem`.
+
+The <a>Opportunity Data</a> MUST include the following properties:
+
+- `@type`
+- `@id`
+- `url`
+- `name`
+- `location` (including `name`, and either or ideally both of `address` or `geo`)
+- `activity`
+- `startDate`
+
+The following properties are RECOMMENDED:
+
+- `endDate`
+- `duration`
+- `ageRange`
+- `genderRestriction`
+- `eventStatus`
+- `maximumAttendeeCapacity` or `maximumUses`
+- `remainingAttendeeCapacity` or `remainingUses`
+
+The <a>Opportunity Data</a> MUST NOT include the following properties:
+
+- `offers` (as the relevant `Offer` will be returned in `acceptedOffer`)
+- `subEvent` or `event` (as the opportunity should be <a>bookable</a>, and therefore of sufficient granularity)
+- `organizer` or `provider` (as this is provided by the `seller` property of the `Order`)
+
+Where relevant it is expected that the <a>Opportunity Data</a> includes `superEvent` or `facilityUse` to allow for a `SessionSeries` or `FacilityUse` to be referenced from a `SessionSeries` or `Slot`, for example.
+
+
 ## Amending the OrderQuote before <a><b>B</b></a>
 
 The <a>Broker</a> MAY call <a><b>C1</b></a> and MUST call <a><b>C2</b></a> when the <a>Customer</a> updates their basket to add and remove items.
@@ -1776,10 +1809,9 @@ Note that notifications that inform the <a>Customer</a> of substantive changes t
 
 The `orderedItem` within the `OrderItem` of the <a>Orders feed</a> includes an `id` reference to an <a>Opportunity</a>, which MUST be able to be cross-referenced with other sources of <a>Opportunity Data</a>, for example an [[RPDE]] open feed.
 
-This specification does not require the <a>Orders feed</a> to include the full contents of the <a>Opportunities</a> within the `orderedItem`, and hence the <a>Broker</a> MUST monitor the <a>Opportunity Data</a> feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the <a>Opportunity</a> (e.g. changes to `startDate`).
+This specification requires the <a>Orders feed</a> to not include the full contents of the <a>Opportunities</a> within the `orderedItem`, and instead MUST only include the <a>Opportunity</a> `@type` and `@id`.
 
-Specifically, `maximumAttendeeCapacity`, `remainingAttendeeCapacity`, `maximumUses` and `remainingUses` MUST NOT be included in the <a>Orders feed</a>.
-
+Hence the <a>Broker</a> MUST monitor the <a>Opportunity Data</a> feeds for this information and MUST provide a notification to the <a>Customer</a> for substantive changes to the <a>Opportunity</a>; specifically: any changes to the <a>Opportunity</a> `name`, `startDate`, `endDate`, `duration` or `meetingPoint` properties, and any changes to the `name`, `address` or `geo` properties within `location`.
 
 ### Opportunity attendance updates
 
