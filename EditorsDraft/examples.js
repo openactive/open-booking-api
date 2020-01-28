@@ -414,7 +414,6 @@ window.dataExampleOrderStatusResponse = (utils, content) => {
     "@context": CONTEXT,
     "@type": "Order",
     "@id": fullOrderExampleContent['@id'].order,
-    "orderRequiresApproval": fullOrderExampleContent.orderRequiresApproval,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "customer": fullOrderExampleContent.customer.person,

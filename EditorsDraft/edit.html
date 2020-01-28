@@ -2206,6 +2206,10 @@ If the PATCH request includes any properties other than `type`, `@context`, `id`
 
 This feed is described at length in the [Orders feed](#orders-feed-notifications-updates-and-refunds) section.
 
+The <a>Orders feed</a> MUST NOT include the full contents of the <a>Opportunities</a> within the `orderedItem`, and instead MUST only include the <a>Opportunity</a> `@type` and `@id`.
+
+The `acceptedOffer` property within the <a>Orders feed</a> MUST include a snapshot of the `Offer` at the point it was booked, as it reflects the <a>Customer</a>'s purchase.
+
 An illustrative request and response is provided here.
 
 <pre class="example" title="Order RPDE Feed: example request" data-transform="dataExampleOrderFeedRequest">
@@ -2223,6 +2227,8 @@ An illustrative request and response is provided here.
 
 
 A <a>Booking System</a> SHOULD provide an endpoint to allow a <a>Broker</a> to retrieve complete `Order`s. In future versions of the specification, endpoints may be provided which permit a <a>Broker</a> to see all `Order`s created by a <a>Customer</a>. In this current implementation, the <a>Broker</a> MUST keep its own record of `Order`s as described elsewhere in this specification, and not rely on this RECOMMENDED Order Status endpoint.
+
+This endpoint MUST include the full contents of the <a>Opportunity</a> within the `orderedItem`, as per [Opportunity data properties](#opportunity-data-properties).
 
 <pre class="example" title="Order Status: example request" data-transform="dataExampleOrderStatusRequest">
 </pre>
