@@ -1650,9 +1650,9 @@ The <a>Broker</a> MAY filter the `Offer`s it makes available to the <a>Customer<
 
 ### Opportunity data properties
 
-Requests to <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a>, and <a><b>B</b></a>, and items in the <a>Orders feed</a> MUST only include the <a>Opportunity</a> properties `@type` and `@id`.
+For requests to <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a>, and <a><b>B</b></a>, and for items in the <a>Orders feed</a>, the <a>Opportunity Data</a> within the `orderedItem` property of an `OrderItem` MUST only include the properties `@type` and `@id`.
 
-For responses from <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a>, and <a><b>B</b></a>, and the <a>Order Status</a> endpoint, the <a>Opportunity Data</a> within the `orderedItem` property of an `OrderItem` MUST correspond exactly with the model used within the <a>Opportunity Data</a> [[RPDE]] open feeds. For example if properties within a `SessionSeries` and `ScheduledSession` are used in the open feeds, corresponding properties must be used within objects of the same types within the `orderedItem`.
+For responses from <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a>, and <a><b>B</b></a>, and from the <a>Order Status</a> endpoint, the <a>Opportunity Data</a> within the `orderedItem` property of an `OrderItem` MUST correspond exactly with the model used within the <a>Opportunity Data</a> [[RPDE]] open feeds. For example if properties within a `SessionSeries` and `ScheduledSession` are used in the open feeds, corresponding properties must be used within objects of the same types within the `orderedItem`.
 
 The <a>Opportunity Data</a> MUST include the following properties:
 
