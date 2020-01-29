@@ -1051,12 +1051,11 @@ x) <dfn>Payment Re-authorisation</dfn> - <a>Broker</a> re-authorises `totalPayme
 
 xi) <a><b>B</b></a> - The <a>Broker</a> makes a minimal call with an `Order` consisting of only the `orderProposalVersion` and any additional `payment` data from the re-authorisation step if necessary; the <a>Booking System</a> responds with a full `Order` as per the [Simple Booking Flow](#simple-booking-flow).
 
-- If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code and the original `OrderProposal` MUST be rejected by the <a>Seller</a> as per [Proposal Leasing](#proposal-leasing). Note that this is unlikely to occur as in such cases the `OrderProposal` SHOULD have already been rejected when it could no longer be fulfilled.
+- If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to make the booking anyway. If there are insufficient spaces available for `OrderItem`s then <a><b>B</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code and the original `OrderProposal` MUST be rejected by the <a>Seller</a> as per [Proposal Leasing](#proposal-leasing). Note that this is unlikely to occur as in such cases the `OrderProposal` SHOULD have already been rejected when it could no longer be fulfilled.
 
-- The <a>Booking System</a> MUST reflect back all properties defined by this specification that were supplied in the <a>Broker</a>'s original `OrderProposal` request (with amendments if [Proposal Amendment](#proposal-amendment) has occurred), to acknowledge they have been recognised. The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
+- The <a>Booking System</a> MUST reflect back all properties defined by this specification that were supplied in the <a>Broker</a>'s original `OrderProposal` request (with amendments if [Proposal Amendment](#proposal-amendment) has occurred), to acknowledge they have been recognised. The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them. The <a>Booking System</a> MUST NOT reflect back the `orderProposalVersion` in its response to <a><b>B</b></a>.
     
-- All other behaviour is identical to the [Simple Booking Flow](#simple-booking-flow) step vii.
-
+- All other behaviour is identical to the [Simple Booking Flow](#simple-booking-flow) step vii. The `OrderProposal` becomes an `Order` in the <a>Orders feed</a>, and the `orderProposalVersion` MUST NOT be included in the `Order`.
 
 xii-xiv) The <a>Payment Capture</a>, <a>Invoice Generation</a>, <a>Customer Notification</a>, and <a>Refunds and Cancellation</a> steps of this flow are exactly the same as [Simple Booking Flow](#simple-booking-flow) steps viii-x.
 
