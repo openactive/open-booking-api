@@ -280,6 +280,7 @@ window.dataExampleOrderProposalCreationResponse = (utils, content) => {
     "@id": BASE_URL + API_PATH + "/order-proposals/" + UUID,
     "orderNumber": "AB000001",
     "orderProposalVersion": fullOrderExampleContent.orderProposalVersion,
+    "orderProposalStatus": fullOrderExampleContent.orderProposalStatus,
     "brokerRole": fullOrderExampleContent.brokerRole,
     "broker": fullOrderExampleContent.broker,
     "seller": fullOrderExampleContent.seller.response,
@@ -488,6 +489,7 @@ var fullOrderExampleContent = {
   "orderNumber": "", //booking system generated
   "orderRequiresApproval": false,
   "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
+  "orderProposalStatus": "https://openactive.io/AwaitingSellerConfirmation",
   "seller": { //booking system
     request: {
       "@type": "Organization",
