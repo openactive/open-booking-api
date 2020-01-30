@@ -1623,7 +1623,7 @@ All `priceCurrency` values within an `Order`, `OrderQuote`, or `OrderProposal` m
 
 ## Definition of a 'bookable' Opportunity and Offer pair
 
-Before entering into the Booking Flow, the <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"). These pairs populate the `acceptedOffer` and `orderedItem` properties within the `OrderItem`s.
+Before entering into the Booking Flow, the <a>Customer</a> MUST have selected at least one <a>bookable</a> pair of an <a>Opportunity</a> ("Yoga Tuesday 14th 7pm") with an associated `Offer` ("Junior (8-18) £9"), from the <a>Opportunity Data</a> [[RPDE]] open feeds. These pairs populate the `acceptedOffer` and `orderedItem` properties within the `OrderItem`s.
 
 The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` with an `Offer` is deemed to be <dfn data-lt="bookability">bookable</dfn> via the Open Booking API if the `Offer` is applicable to the <a>Opportunity</a> following the principles of `Offer` inheritance contained in [[Modelling-Opportunity-Data]], and if both the <a>Opportunity</a> and `Offer` meet the criteria specified below.
 
