@@ -656,7 +656,7 @@ v) "**3. Book and Pay**" - <a>Customer</a> submits payment details and clicks Bo
 
 - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
-- If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable` or `https://openactive.io/Optional`, or the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
+- If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable`, or `https://openactive.io/Optional` and the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
 
 
 vi) <dfn>Payment Authorisation</dfn> - <a>Broker</a> pre-authorises `totalPaymentDue` from <a>Payment Provider</a>
@@ -670,7 +670,7 @@ vi) <dfn>Payment Authorisation</dfn> - <a>Broker</a> pre-authorises `totalPaymen
 
 vii) <a><b>B</b></a> - <a>Broker</a> call with an `Order` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed; the <a>Booking System</a> responds with an `Order`.
 
-- If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included in the `Order` request or response. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then an `InvalidPaymentDetailsError` MUST be returned.
+- If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, the `payment` property MUST NOT be included in the `Order` request or response, and the <a>Booking System</a> MUST proceed to create a payment-free `Order`. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a>Booking </a>> then an `InvalidPaymentDetailsError` MUST be returned.
 
 - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
     
@@ -964,7 +964,7 @@ v) "**2.1. Propose**" - <a>Customer</a> submits payment details, and submits an 
 
   - The <a>Customer</a> MUST only be allowed to proceed if no `OrderItem`s in the `OrderQuote` contain any `error`s.
 
-  - If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable` or `https://openactive.io/Optional`, or the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
+  - If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable`, or `https://openactive.io/Optional` and the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
 
 </ul>
 
@@ -1039,7 +1039,7 @@ ix) "**3. Book and Pay**" - <a>Customer</a> confirms booking
 
 - The <a>Broker</a> MUST only proceed when `orderProposalStatus` is set to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, and the `orderProposalVersion` is set to a value the <a>Customer</a> has agreed to (see [Proposal Amendment](#proposal-amendment)).
 
-- If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable` or `https://openactive.io/Optional`, or the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
+- If `totalPaymentDue` is `0` because all `OrderItem`s are free of charge, `prepayment` of all selected `Offer`s is either `https://openactive.io/Unavailable`, or `https://openactive.io/Optional` and the <a>Customer</a> has chosen not to pay, payment details MUST NOT be captured.
 
 
 x) <dfn>Payment Re-authorisation</dfn> - <a>Broker</a> re-authorises `totalPaymentDue` from <a>Payment Provider</a> as necessary
@@ -1584,11 +1584,17 @@ The unit price of an `OrderItem` MAY be overridden to allow for business models 
 
 The <a>Broker</a> and the <a>Seller</a> MUST have agreed an arrangement for offer overrides out-of-band, including which <a>Opportunities</a> and `Offer`s they may be applied to.
 
-An `OfferOverride` type may be supplied by the <a>Broker</a> to the `acceptedOffer` property at <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a>. When an `OfferOverride` is used, it MUST be used consistently between <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>B</b></a>, it MUST be used by the <a>Booking System</a> instead of `acceptedOffer` to calculate the tax and totals. It MAY be used for any `brokerRole`.
+An `OfferOverride` type may be supplied by the <a>Broker</a> to the `acceptedOffer` property at <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>P</b></a> or <a><b>B</b></a>. When an `OfferOverride` is used, it MUST be used consistently between <a><b>C1</b></a>, <a><b>C2</b></a> and <a><b>P</b></a> or <a><b>B</b></a>, it MUST be used by the <a>Booking System</a> instead of `acceptedOffer` to calculate the tax and totals. It MAY be used for any `brokerRole`.
 
 The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as it would be for a standard `Offer`. The `price` of the `OfferOverride` may be zero, and also may be higher or lower than the available `Offer`s that exist in the <a>Booking System</a>.
 
 `OfferOverride` MUST NOT be used when `isAccessibleForFree` is `true`, as free events cannot be overridden. Note that <a>Booking Systems</a> that _only_ offer <a>Free Opportunities</a> MUST NOT implement `OfferOverride` support, and must always throw an error when it is used.
+
+The use of `OfferOverride` always creates the behaviour equivalent to `advanceBooking` and `prepayment` both being set to `https://openactive.io/Required`, and `availableChannel` having the value of `https://openactive.io/OpenBookingPrepayment`.
+
+`latestCancellationBeforeStartDate` does not apply to `OfferOverride`, and is treated as unspecified. Hence cancellation is permissible based on the value `allowCustomerCancellationFullRefund` alone, and the <a>Broker</a> must handle any business logic for `latestCancellationBeforeStartDate`.
+
+The <a>Booking System</a> MUST include relevant `openBookingFlowRequirement` values in the `OfferOverride` response if any features of the specification that require such values are required.
 
 <pre class="example" title="Example of OfferOverride">
   "acceptedOffer": {
@@ -1722,7 +1728,7 @@ Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handle
 
 To cancel an existing OrderItem, the <a>Broker</a> MUST:
 
-1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true` and `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
+1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true`, and either `latestCancellationBeforeStartDate` is unspecified or `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
 2. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
 
@@ -2422,9 +2428,9 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 | [`schema:priceCurrency`](https://schema.org/priceCurrency)          | -        | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If an `Offer` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](https://schema.org/name)                            | -        | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
 | [`oa:ageRange`](https://openactive.io/ageRange) | -        | RECOMMENDED | [`schema:QuantitativeValue`](https://schema.org/QuantitativeValue) | Indicates that an Offer is applicable to a specific age range. Specified as a [QuantitativeValue](https://schema.org/QuantitativeValue) with [minValue](https://schema.org/minValue) and [maxValue](https://schema.org/maxValue) properties. |
-| [`oa:advanceBooking`](https://openactive.io/advanceBooking) | -        | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must book in advance, whether they must pay on attending, or have option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
-| [`oa:prepayment`](https://openactive.io/prepayment) | -        | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must pay in advance, pay when attending, or have the option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. |
-| [`oa:availableChannel`](https://openactive.io/availableChannel)    | -        | OPTIONAL | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment` |
+| [`oa:advanceBooking`](https://openactive.io/advanceBooking) | -        | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must book in advance, whether they must pay on attending, or have option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. The default behaviour of this specification is `https://openactive.io/Required`. |
+| [`oa:prepayment`](https://openactive.io/prepayment) | -        | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates whether to accept this offer, a participant must pay in advance, pay when attending, or have the option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. The default behaviour of this specification is `https://openactive.io/Required`. |
+| [`oa:availableChannel`](https://openactive.io/availableChannel)    | -        | - | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | MUST be included in <a>Opportunity Data</a> [[RPDE]] open feeds, but MUST NOT be included in other requests or responses. Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment`. |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
 | [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
@@ -2434,7 +2440,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 
 ### `schema:OfferOverride`
 
-`OfferOverride` subclasses `Offer`.
+`OfferOverride` subclasses `Offer`, but does not include the properties `availableChannel`, `advanceBooking`, `prepayment`, `ageRange`, `validFromBeforeStartDate`, `latestCancellationBeforeStartDate`.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -2443,9 +2449,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | [`schema:price`](https://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:priceCurrency`](https://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](https://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
-| [`oa:availableChannel`](https://openactive.io/availableChannel)    | - | - | - | Not included in `OfferOverride`. |
-| [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |
-| [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | OPTIONAL | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
+| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
 
 
 ### `schema:Person` for `customer`
