@@ -1731,7 +1731,7 @@ Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handle
  <figcaption>Customer requested cancellation</figcaption>
 </figure>
 
-To cancel an existing OrderItem, the <a>Broker</a> MUST:
+To cancel an existing `OrderItem`, the <a>Broker</a> MUST:
 
 1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true`, and either `latestCancellationBeforeStartDate` is unspecified or `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
@@ -1781,7 +1781,7 @@ The <a>Broker</a> MUST maintain an up-to-date store of `Order`s received from th
 
 Hence it is important for the <a>Broker</a> to consider their store of `Order`s as durable, and not simply a cache, to ensure their <a>Customers</a> always get relevant notifications.
 
-The `Order`/`OrderProposal` properties included in the <a>Orders feed</a> MUST be a subset of the `Order`/`OrderProposal` properties returned in the response from <a><b>B</b></a> or <a><b>P</b></a> (effectively making the <a>Orders feed</a> a series of PATCH requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Orders feed</a> in a manner that maintains a complete view of the `Order` state.
+The `Order`/`OrderProposal` properties included in the <a>Orders feed</a> MUST be a subset of the `Order`/`OrderProposal` properties returned in the response from <a><b>B</b></a> or <a><b>P</b></a> as specified below (effectively making the <a>Orders feed</a> a series of partial update requests for the <a>Broker</a>). It is the responsibility of the <a>Broker</a> to process the contents of the <a>Orders feed</a> in a manner that maintains a complete view of the `Order` state.
 
 The following properties of the `Order` or `OrderProposal` MUST be included in the <a>Orders feed</a>, and the <a>Broker</a> MUST overwrite its previous copy of each property when processed:
 
@@ -1790,11 +1790,12 @@ The following properties of the `Order` or `OrderProposal` MUST be included in t
 * `seller`
 * `totalPaymentTax` or `taxCalculationExcluded`
 * `totalPaymentDue`
+* `orderedItem` 
 * `payment` (if payment has been taken)
 * `orderProposalStatus` (`OrderProposal` only)
 * `orderProposalVersion` (`OrderProposal` only)
 
-All properties of the `OrderItem`s within the `orderedItem` property of the `Order` or `OrderProposal` MUST overwrite the <a>Broker</a>'s previous copy of each when processed, except for:
+All properties of the `OrderItem`s within the `orderedItem` property of the `Order` or `OrderProposal` MUST overwrite the <a>Broker</a>'s previous copy of each when processed, and if a property is no longer present the <a>Broker</a> must remove it. There are two exceptions to this:
 
 * The original `attendeeDetailsRequired`, `attendee`, `orderItemIntakeForm`, and `orderItemIntakeFormResponse` values MUST be maintained by the <a>Broker</a> and not overwritten.
 * <a>Opportunity Data</a> within `orderedItem` MUST NOT be read from the <a>Orders feed</a> except for the `@type` and `@id` properties, and must instead be updated using the <a>Opportunity Data</a> [[RPDE]] open feeds as specified in [Change of logistics notification](#change-of-logistics-notifications).
@@ -1809,7 +1810,7 @@ The following properties MUST NOT be included in the <a>Orders feed</a>:
 * `orderNumber`
 * `attendeeDetailsRequired`, `attendee`, `orderItemIntakeForm`, or `orderItemIntakeFormResponse` within `OrderItem`
 
-The <a>Broker</a> is only expected to perform a PATCH to replace properties at the `Order`/`OrderProposal` and `OrderItem` level in their entirety as specified above, and MUST NOT perform a granular PATCH of nested properties within these. 
+The <a>Broker</a> is expected to fully replace properties at the `Order`/`OrderProposal` level, in their entirety, as specified above, and MUST NOT perform a granular PATCH of nested properties within these. The rationale for this is that both [this specification](#model) and the [[Modelling-Opportunity-Data]] specification on which this specification is based do not allow for explicit null values to exist within the model, which impedes property removal, and hinders any straightforward implementation of a granular PATCH.
 
 Note that in this version of the specification, once an `Order` or `OrderProposal` has been created, only properties that are present in the <a>Orders feed</a> MAY be updated.
 
@@ -2305,6 +2306,16 @@ It is the responsibility of <a>Booking Systems</a> to advertise the URL for furt
 # Model
 
 These models are designed to be compatible with [[Modelling-Opportunity-Data]]. Conformance criteria for <a>Opportunity Data</a> used in the context of the Booking API are at some points stricter or more relaxed than are defined in the [[Modelling-Opportunity-Data]] specification itself.
+
+The following sections include more detail about the properties available to describe each type. Some properties are considered to be essential to ensure the provision of a minimally useful set of information for a successful booking to be made. These REQUIRED properties MUST be provided, unless otherwise specified in the associated notes.
+
+Other properties are marked as OPTIONAL or RECOMMENDED. Implementers SHOULD provide RECOMMENDED properties if it is feasible to do so, as they will improve the quality of the user experience that is achievable for both the <a>Customer</a> and <a>Seller</a>.
+
+Where data is not available to populate RECOMMENDED and OPTIONAL properties, publishers MUST exclude these from their requests and responses. Requests and responses MUST NOT include properties with null values, empty strings or empty arrays.
+
+Implementers MAY include additional properties, e.g. from Schema.org or other vocabularies. See the section on [Handling Specification Dependencies and Extensions](#handling-specification-dependencies-and-extensions) for more information.
+
+Applications that implement this API MUST ignore any properties that they do not understand or do not support. This allows the API to evolve as required.
 
 ## Order Model
 
