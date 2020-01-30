@@ -1629,6 +1629,8 @@ The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `Headl
 
 Bookable `Offer`s:
 
+- Include an `@id`.
+
 - `availableChannel` of the `Offer` includes `https://openactive.io/OpenBookingPrepayment`.
 
 - `advanceBooking` of the `Offer` is not equal to `https://openactive.io/Unavailable`.
@@ -1636,6 +1638,10 @@ Bookable `Offer`s:
 - The `Offer` is current based on `validFromBeforeStartDate`.
 
 Bookable <a>Opportunities</a>:
+
+- Include an `@id`.
+
+- Include an `@id` of an `Organization` or `Person` within the `organizer` or `provider` properties (i.e. the ID of the <a>Seller</a>).
 
 - The `endDate` is not already in the past (note that bookings are still possible after the `startDate`).
 
@@ -1668,17 +1674,16 @@ For responses from <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a>, and <a><
 
 See the [[Modelling-Opportunity-Data]] specification for more information on these types.
 
-The <a>Opportunity Data</a> MUST include the following properties:
+For such responses, the <a>Opportunity Data</a> MUST include the following properties:
 
 - `@type`
-- `@id`
+- `@id` and `name` of the <a>bookable</a> <a>Opportunity</a>
 - `url`
-- `name`
 - `location` (including `name`, and either or ideally both of `address` or `geo`)
 - `activity`
 - `startDate`
 
-The following properties are RECOMMENDED:
+For such responses, the following properties are RECOMMENDED:
 
 - `endDate`
 - `duration`
@@ -1688,13 +1693,13 @@ The following properties are RECOMMENDED:
 - `maximumAttendeeCapacity` or `maximumUses`
 - `remainingAttendeeCapacity` or `remainingUses`
 
-The <a>Opportunity Data</a> MUST NOT include the following properties:
+For such responses, the <a>Opportunity Data</a> MUST NOT include the following properties:
 
 - `offers` (as the relevant `Offer` will be returned in `acceptedOffer`)
 - `subEvent` or `event` (as the opportunity should be <a>bookable</a>, and therefore of sufficient granularity)
 - `organizer` or `provider` (as this is provided by the `seller` property of the `Order`)
 
-Where relevant it is expected that the <a>Opportunity Data</a> includes `superEvent` or `facilityUse` to allow for a `SessionSeries` or `FacilityUse` to be referenced from a `SessionSeries` or `Slot`, for example.
+Where relevant it is expected that the <a>Opportunity Data</a> for such responses includes `superEvent` or `facilityUse` to allow for a `SessionSeries` or `FacilityUse` to be referenced from a `SessionSeries` or `Slot`, for example.
 
 
 ## Amending the OrderQuote before <a><b>B</b></a>
@@ -2368,7 +2373,7 @@ In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `
 | [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
 | [`schema:email`](https://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
-| [`schema:vatID`](https://schema.org/vatID)                          | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
+| [`schema:vatID`](https://schema.org/vatID)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
 | [`schema:telephone`](https://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
 | [`schema:url`](https://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |
 | [`schema:logo`](https://schema.org/logo)                            | - | RECOMMENDED | [`schema:ImageObject`](https://schema.org/ImageObject) | Logo of the <a>Seller</a>, for tax receipts and display during the booking journey. |
