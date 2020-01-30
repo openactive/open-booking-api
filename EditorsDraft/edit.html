@@ -2051,7 +2051,7 @@ If successful the <a>Booking System</a> will respond with an OrderQuote:
 <pre class="example" title="OrderQuote Creation C1: example success response" data-transform="dataExampleOrderQuoteCreationC1Response">
 </pre>
 
-If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTax` MUST be calculated _including_ any `OrderItem`s that include `error`s.
+If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response (as the error is expected to be resolved, and the request resubmitted, as per [[RFC2616]]), with `error` details provided against each offending `OrderItem`. Note that `totalPaymentDue` and `totalPaymentTax` MUST be calculated _including_ any `OrderItem`s that exclusively contain `IncompleteAttendeeDetailsError` or `IncompleteIntakeFormError` `error`s, and _excluding_ any `OrderItem`s that include any other `error`s.
 
 <pre class="example" title="OrderQuote Creation C1: example OrderItem error response" data-transform="dataExampleOrderQuoteCreationC1OrderItemErrorResponse">
 </pre>
