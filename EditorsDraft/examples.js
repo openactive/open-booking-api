@@ -295,7 +295,7 @@ window.dataExampleOrderProposalCreationResponse = (utils, content) => {
 }
 
 window.dataExampleOrderProposalCreationErrorResponse = (utils, content) => {
-  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, null, {
+  return generateResponse("400 Bad Request", null, OPERATIONS_MEDIA_TYPE, "error_response_example_1", {
     "@context": CONTEXT,
     "@type": "IncompleteBrokerDetailsError",
     "description": "Only 'https://openactive.io/CustomerRejected' is permitted for this property."
