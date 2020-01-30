@@ -405,7 +405,7 @@ The following typographic conventions are used in this specification:
     <dd>Markup (elements, attributes, properties), machine processable
         values (string, characters, media types), property name, or a
         file name is in a monospace font.</dd>
-    <dt><a href="#" class="internalDFN">Definition</a></strong></dt>
+    <dt><a href="" class="internalDFN">Definition</a></strong></dt>
     <dd>A definition of a term, to be used elsewhere in this or other
         specifications, is underlined and in black.</dd>
     <dt><a href="">hyperlink</a></dt>
@@ -447,9 +447,9 @@ by this specification is scoped tightly to only specify interactions between the
         <dt><dfn>Customer</dfn></dt>
         <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, e.g. a parent may book on behalf of their child.</dd>
         <dt><dfn>Broker</dfn></dt>
-        <dd>The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification</dd>
+        <dd>The organisation providing an application that allows <a>Customers</a> to make bookings. Those applications may either be clients of the API defined in this specification, or may use the API indirectly via a <a>Middleware</a>.</dd>
         <dt><dfn>Booking System</dfn></dt>
-        <dd>The organisation or developer providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.
+        <dd>The organisation providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.
         </dd>
         <dt><dfn>Seller</dfn></dt>
         <dd>The organisation providing access to events or facilities via a <a>Booking System</a> e.g. a leisure provider running yoga classes.</dd>
@@ -716,7 +716,7 @@ ix) <dfn>Invoice Generation</dfn> and <dfn>Customer Notification</dfn> - Upon su
 
 
 x) <dfn>Refunds and Cancellation</dfn> - The <a>Broker</a> subscribes to updates from the <a>Booking System</a> to process cancellations and refunds.
-- A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the authentication credentials. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds for cancellations, and process notifications to <a>Customers</a> in a consistent way.
+- A secure <a>Orders feed</a> of `Order`s MUST be provided by the <a>Booking System</a>, with the contents of the feed specific to the <a>Authentication Credentials</a>. This allows the <a>Broker</a> to maintain an updated state of all their bookings across a number of <a>Booking Systems</a>, even when changes are made outside of the <a>Broker</a>. This also allows the <a>Broker</a> to handle refunds for cancellations, and process notifications to <a>Customers</a> in a consistent way.
 - The <a>Booking System</a> must ensure that the `Order`s in the <a>Orders feed</a> represent the current state of `OrderItem`s within the system, for the properties included in the feed. The <a>Broker</a> MUST use these `Order`s to process refunds and send update notifications to the <a>Customer</a>.
 
 
@@ -2773,6 +2773,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `GoneError`                                 | 410         | Where an `Order` has been soft-deleted by an Order Deletion request. |
 | `TooManyRequestsError`                      | 429         | Where the <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
+.
 
 </section>
 
@@ -2922,7 +2923,7 @@ All error responses from this API MUST be returned in a JSON-LD format subclass 
 
 ## Rate Limiting
 
-The <a>Booking System</a> MAY choose to apply rate limiting for each unique set of authentication credentials. In such circumstances where a request is rate limited, the <a>Booking System</a> MUST return a response with status code 429.
+The <a>Booking System</a> MAY choose to apply rate limiting for each unique set of <a>Authentication Credentials</a>. In such circumstances where a request is rate limited, the <a>Booking System</a> MUST return a response with status code 429.
 
 To allow for a broad range of API management solutions to be used, the <a>Broker</a> MUST rely only on the status code 429 when detecting and retrying a rate-limited request, as specified elsewhere in this specification. The following guidance is included to encourage convergence in implementations where possible. 
 
@@ -2949,7 +2950,7 @@ All of the API transactions described in this document MUST require authenticati
 
 The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`.
 
-This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a Javascript web application or between servers).
+This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a JavaScript web application or between servers).
 
 Other server-to-server authentication mechanisms such as basic authentication, API key or bearer token-based mechanisms are also appropriate.
 
