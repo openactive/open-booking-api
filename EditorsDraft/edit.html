@@ -771,6 +771,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Broker</a> MUST make the <a>Customer</a> aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before they commit to the booking.
 - If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
 - The <a>Broker</a> MUST handle payments and reconciliation with the <a>Seller</a> and the <a>Payment Provider</a>.
+- Calls to <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> MUST include the `@id` of the `seller` to which requested `OrderItem`s pertain.
 
 #### Booking System contract with the Broker
 
@@ -783,8 +784,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Booking System</a> MUST check availability and confirm pricing during <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> to ensure booking can complete.
 - The <a>Booking System</a> MUST provide an authenticated <a>Orders Feed</a> specific to the <a>Broker</a>. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
 - The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunity Data</a>, including pricing and availability.
-
-Calls to <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> MUST be idempotent, based on the UUID.
+- The <a>Booking System</a> MUST ensure that all endpoints defined in this specification are idempotent.
 
 With the exception of leasing, <a><b>C1</b></a> and <a><b>C2</b></a> MUST NOT have any side effects.
 
@@ -1075,15 +1075,14 @@ A summary of the key conformance criteria is included here. These apply for the 
 - The <a>Broker</a> MUST call <a><b>P</b></a> with <a>Customer</a> details as they would for <a><b>B</b></a> in the [Simple Booking Flow](#simple-booking-flow), and MUST store the resulting `OrderProposal`.
 - The <a>Broker</a> MUST process updates to the `OrderProposal` from the <a>Orders feed</a>, including **A**.
 - The <a>Broker</a> MAY negotiate on the `OrderProposal` using a OrderProposal Update call.
+- Calls to <a><b>P</b></a> MUST include the `@id` of the `seller` to which requested `OrderItem`s pertain.
+
 
 #### Booking System contract with the Broker
 
 - The <a>Booking System</a> MUST respond to <a><b>P</b></a> with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
 - Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `OrderProposal` in the <a>Orders feed</a>, including **A**.
 - The <a>Booking System</a> MAY negotiate on the `OrderProposal` using the <a>Orders feed</a>.
-
-Calls to <a><b>P</b></a> MUST be idempotent, based on the UUID.
-
 
 ## Customer Details and Additional Details capture
 
@@ -2002,6 +2001,8 @@ Due to the variety of barcode formats available, the specification expects the `
 
 This API has been defined around the concept of API discovery, using the [[Dataset-API-Discovery]] specification as a basis. This allows a <dfn>Base URI</dfn>, as defined in [[RFC3986]], to be discovered by the <a>Broker</a>, and for such a <a>Base URI</a> to vary based on the naming conventions of each <a>Booking System</a>.
 
+All <a>Booking System</a> endpoints defined in this specification MUST be idempotent.
+
 
 ## Paths and Verbs
 
@@ -2377,7 +2378,7 @@ Applications that implement this API MUST ignore any properties that they do not
 
 The `seller` MUST be a `schema:Organization` or `schema:Person` with the following properties, in order for tax receipts to be successfully generated.
 
-The `seller` is specified with each `Order` to account for scenarios where multiple <a>Seller</a> brands are in use.
+The `seller` is specified with each `Order` to allow for <a>Booking System</a>s to cater for multiple <a>Seller</a>s.
 
 In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `schema:Person` types support a common set of properties that capture the basic information required.
 
