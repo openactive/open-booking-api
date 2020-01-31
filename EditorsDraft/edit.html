@@ -1804,6 +1804,9 @@ All properties of the `OrderItem`s within the `orderedItem` property of the `Ord
 
 Additionally any properties within objects included in the properties above that were included in the original response from <a><b>B</b></a> or <a><b>P</b></a> MUST be included, with the exception of the following.
 
+The following property MUST be included in the <a>Orders feed</a> for the convenience of the <a>Broker</a>:
+* `identifier` (the UUID)
+
 The following properties MUST NOT be included in the <a>Orders feed</a>:
 * `bookingService`
 * `broker`
@@ -1997,17 +2000,23 @@ Due to the variety of barcode formats available, the specification expects the `
 
 # Endpoints
 
-This API has been defined around the concept of URL discovery, using the [[Dataset-API-Discovery]] specification as a basis. This allows resource URLs which match the naming conventions of each <a>Booking System</a>.
+This API has been defined around the concept of API discovery, using the [[Dataset-API-Discovery]] specification as a basis. This allows a <dfn>Base URI</dfn>, as defined in [[RFC3986]], to be discovered by the <a>Broker</a>, and for such a <a>Base URI</a> to vary based on the naming conventions of each <a>Booking System</a>.
+
 
 ## Paths and Verbs
 
-Due to URL discovery, the paths of the endpoints below are illustrative, as the actual paths may vary provided they are consistent within an implementation.
+Due to API discovery, the paths specified are relative to the <a>Base URI</a>. This <a>Base URI</a> must be used consistently within an implementation. It is the responsibility of the <a>Booking System</a> to advertise the <a>Base URI</a> via the [[Dataset-API-Discovery]] specification.
 
-With the exception of the <a>Orders Feed</a>, all endpoints MUST accept a UUID string representation, described in [[RFC4122]], as the final segment of their path. The value of this UUID is supplied by the <a>Broker</a>, as described throughout this specification.
+The absolute URL of the <a>Orders Feed</a> MAY be separately discoverable, independently of the <a>Base URI</a>, provided that such discovery is consistent with the [[Dataset-API-Discovery]] specification. If such an absolute URL is available, it MUST be used instead of the relative path defined within this specification.
 
-A summary of endpoints defined by this specification is provided below:
+With the exception of the <a>Orders Feed</a>, all endpoints MUST accept a UUID string representation, described in [[RFC4122]], as the final segment of their path. This is indicated by the placeholder `{uuid}` in the relative paths in the table below. The value of this UUID is supplied by the <a>Broker</a>, as described throughout this specification.
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+<a>Brokers</a> MUST only access the endpoints using the paths described in this specification, with the exception of the absolute URL of the <a>Orders Feed</a>, if available.
+
+
+A summary of endpoints defined by this specification is provided:
+
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | OrderQuote Creation <a><b>C1</b></a>   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quote-templates/{uuid}`|
 | OrderQuote Creation <a><b>C2</b></a>   | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quotes/{uuid}`         |
@@ -2020,7 +2029,7 @@ A summary of endpoints defined by this specification is provided below:
 | [Orders RPDE Feed](#orders-rpde-feed) | REQUIRED | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
 | <a>Order Status</a>               | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
-Note that for simple implementation, <a><b>C1</b></a> and <a><b>C2</b></a> can be exactly the same endpoint.
+Note that for simple implementations, <a><b>C1</b></a> and <a><b>C2</b></a> can be handled by same underlying code.
 
 ### Order Endpoint RESTful Semantics
 
@@ -2043,7 +2052,7 @@ This section includes request and response examples for each of the endpoints sp
 
 ### OrderQuote Creation C1
 
-| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | OrderQuote Creation <dfn><b>C1</b></dfn> | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quote-templates/{uuid}`|
 
@@ -2074,7 +2083,7 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 
 ### OrderQuote Creation C2
 
-| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | OrderQuote Creation <dfn><b>C2</b></dfn> | REQUIRED    | Yes  | OrderQuote       | PUT       | `/order-quotes/{uuid}`         |
 
@@ -2106,7 +2115,7 @@ If there are issues with other properties of the `OrderQuote` outside of `ordere
 
 ### OrderQuote Deletion
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>OrderQuote Deletion</dfn>        | REQUIRED    |      | OrderQuote       | DELETE    | `/order-quotes/{uuid}`         |
 
@@ -2120,7 +2129,7 @@ Deleting an `OrderQuote` releases any <a>Lease</a> associated with it, which the
 
 ### OrderProposal Creation P
 
-| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | OrderProposal Creation <dfn><b>P</b></dfn> | OPTIONAL    | Yes  | OrderProposal    | PUT       | `/order-proposals/{uuid}`      |
 
@@ -2144,7 +2153,7 @@ Note that any validation errors raised at <a><b>P</b></a> regarding any property
 
 ### OrderProposal Update
 
-| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                 | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>OrderProposal Update</dfn>       | OPTIONAL    |      | OrderProposal    | PATCH     | `/order-proposals/{uuid}`      |
 
@@ -2168,7 +2177,7 @@ If the PATCH request includes any properties other than `type`, `@context`, `ord
 
 ### Order Creation B
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | Order Creation <dfn><b>B</b></dfn>       | REQUIRED    | Yes  | Order            | PUT       | `/orders/{uuid}`               |
 
@@ -2200,7 +2209,7 @@ For the [Booking Flow with Approval](#booking-flow-with-approval) specifically, 
 
 ### Order Deletion
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>Order Deletion</dfn>         | REQUIRED    |      | Order            | DELETE    | `/orders/{uuid}`               |
 
@@ -2228,7 +2237,7 @@ An Order Deletion request MUST return a 404 status when the specified `Order` is
 
 ### Order Cancellation
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>Order Cancellation</dfn>         | REQUIRED    |      | Order            | PATCH     | `/orders/{uuid}`               |
 
@@ -2258,7 +2267,7 @@ If the PATCH request includes any properties other than `type`, `@context`, `id`
 
 ### Orders RPDE feed
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <a>Orders feed</a>           | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
 
@@ -2279,7 +2288,7 @@ An illustrative request and response is provided here.
 
 ### Order Status
 
-| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
+| Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Relative Path                   |
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <dfn>Order Status</dfn>               | RECOMMENDED | Yes  | Order            | GET       | `/orders/{uuid}`               |
 
@@ -2295,12 +2304,6 @@ This endpoint MUST include the full contents of the <a>Opportunity</a> within th
 </pre>
 
 
-
-### URL discovery
-
-Discovery of URLs is an implicit part of the design of this specification, and <a>Brokers</a> SHOULD avoid hard-coding URLs for specific actions into their applications and client libraries. <a>Brokers</a> SHOULD use most applicable URL discovered at the point in the workflow they are currently in - e.g. not use a cached URL that has been previously successfully used. They should also not attempt to create URLs for a specific action based on patterns within previously used URLs.
-
-It is the responsibility of <a>Booking Systems</a> to advertise the URL for further activity in the booking workflow at the point of need or via the [[Dataset-API-Discovery]] specification. For example they MUST advertise the URL for the `Order` resource in the Orders <a>Orders feed</a> by including the `id` property within the `Order`.
 
 </section>
 
@@ -2328,7 +2331,7 @@ Applications that implement this API MUST ignore any properties that they do not
 | Property                                                            | Broker Request | Booking System Response | Type | Notes |
 |---------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                             | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
-| `@id`                                                               | -        | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. This is NOT REQUIRED in PUT or PATCH requests. |
+| `@id`                                                               | -        | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST match the PUT URL containing the UUID. |
 | [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The UUID of the `Order` |
 | [`schema:seller`](https://schema.org/seller)                        | REQUIRED | REQUIRED |  [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The organisation or person providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider or independent running a yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |

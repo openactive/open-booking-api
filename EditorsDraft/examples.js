@@ -346,7 +346,7 @@ window.dataExampleOrderFeedRequest = (utils, content) => {
 
 window.dataExampleOrderFeedResponse = (utils, content) => {
   return generateResponse("200 OK", null, FEED_MEDIA_TYPE, "order_feed_example_1", {
-    "next": API_PATH + "/orders-rpde?afterTimestamp=1521565719&afterId=" + UUID,
+    "next": BASE_URL + API_PATH + "/orders-rpde?afterTimestamp=1521565719&afterId=" + UUID,
     "items": [
       {
         "state": "updated",
@@ -357,6 +357,7 @@ window.dataExampleOrderFeedResponse = (utils, content) => {
           "@context": CONTEXT,
           "@type": "Order",
           "@id": fullOrderExampleContent['@id'].order,
+          "identifier": UUID,
           "seller": fullOrderExampleContent.seller.response,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
