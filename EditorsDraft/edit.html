@@ -2387,7 +2387,7 @@ In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `
 | `@type`                                                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Organization` or `Person` |
 | `@id`                                                              | REQUIRED | REQUIRED | URI | A URI providing a unique identifier for the resource. |
 | [`schema:identifier`](https://schema.org/identifier)                | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Seller</a> used by the <a>Booking System</a>. |
-| [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the <a>Seller</a>. |
+| [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the `Organization`, or name of the `Person`. Note `givenName` and `familyName` MUST NOT be used for a <a>Seller</a> that is a `Person`. |
 | [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
 | [`schema:email`](https://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
 | [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
