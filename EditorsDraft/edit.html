@@ -507,6 +507,8 @@ In order to enter either of the booking flows described in this specification, t
 
 - It is not possible for <a>Opportunities</a> from different <a>Sellers</a> or with different <a>Brokers</a> or on behalf of different <a>Customers</a> to be combined in the same `Order`.
 
+- The <a>Broker</a> MUST generate a unique UUID string representation, strictly as defined in [[RFC4122]].
+
 
 ## Simple Booking Flow
 
@@ -531,7 +533,7 @@ Note that some or all steps may be skipped, or may not be presented to the <a>Cu
  <figcaption>Illustration of high level booking flow.</figcaption>
 </figure>
 
-- The <a>Broker</a> generates a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which is used to uniquely identify the `Order` throughout the process.
+- The <a>Broker</a> generates a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) string representation, strictly as defined in [[RFC4122]], which is used to uniquely identify the `Order` throughout the process.
 
 - After "**1. Select**" the <a>Broker</a> calls the <a>Booking System</a> to confirm an indicative price and the availability of the selected items using an `OrderQuote`, and retrieve a total order price. Any details that the <a>Customer</a> needs to supply to complete the booking are also specified. This is checkpoint <a><b>C1</b></a> on the diagram above.
 
@@ -618,10 +620,10 @@ An `Order` MUST NOT be communicated externally by the <a>Broker</a> and other op
 i) "**1. Select**" - <a>Customer</a> browses <a>Broker</a> site anonymously and adds something to basket
 
 - <a>Broker</a> MUST have determined at least one Open Booking <a>bookable</a> <a>Opportunity</a> each with an associated applicable `Offer` from the <a>Customer</a>'s browsing, using the most up-to-date <a>Opportunity Data</a>.
-- <a>Broker</a> generates a UUID to use for the `Order`.
+- <a>Broker</a> generates a UUID string representation to use for the `Order`, strictly as defined in [[RFC4122]].
 - If any catastrophic failure occurs during the booking flow (any error with status code 500, or when the request consistently returns status code 503 after a number of retries) the UUID MUST be regenerated to allow for a clean retry of the booking. UUID MUST NOT be regenerated for expected errors (status code 4xx).
 
-ii) <a><b>C1</b></a> - <a>Broker</a> call with `OrderQuote` including UUID without a `customer` object to check availability and that the combination of items requested can be purchased, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
+ii) <a><b>C1</b></a> - <a>Broker</a> call with `OrderQuote` including UUID, without a `customer` object, to check availability and that the combination of items requested can be purchased, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
 - <a>Booking System</a> creates <a>Anonymous Lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. An `OrderQuote` response with HTTP Status 200 will be returned if the all requested items are available. If a <a>Lease</a> has been created, then the `OrderQuote` in the response MUST include a `lease` property containing a valid `Lease` object.
 - `OrderQuote` MUST include `totalPaymentDue`, which allows the <a>Broker</a> to update any UI with the total.
@@ -642,7 +644,7 @@ iii) "**2. Identify**" - <a>Customer</a> submits personal details and any other 
 - If `prepayment` of all selected `Offer`s is `https://openactive.io/Optional` where they are not `https://openactive.io/Unavailable` then the <a>Customer</a> MAY be given the option to prepay or simply reserve a space without payment. Providing optionality of payment to the <a>Customer</a> is at the <a>Broker</a>'s discretion.
 
 
-iv) <a><b>C2</b></a> - <a>Broker</a> call with `OrderQuote` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
+iv) <a><b>C2</b></a> - <a>Broker</a> call with `OrderQuote` including UUID, with a `customer` object, and any `orderItemIntakeFormResponse` required, <a>Booking System</a> responds with an `OrderQuote` including any `error`s against each `OrderItem`.
 
 - <a>Booking System</a> creates <a>Named Lease</a> for that UUID if it is supported, otherwise it provides a simple availability and `totalPaymentDue` confirmation. Works exactly as <a><b>C1</b></a>, except validates `payment` details, `customer` details, any `attendee` details, and the `orderItemIntakeFormResponse`.
 - <a>Broker</a> presents the contents of the `OrderQuote` to the `Customer` to ensure they have the most up-to-date price and availability before proceeding with the purchase.
@@ -668,7 +670,7 @@ vi) <dfn>Payment Authorisation</dfn> - <a>Broker</a> pre-authorises `totalPaymen
 - The <a>Broker</a> MUST store the `Order` request with an `orderCreationStatus` of `https://openactive.io/OrderCreationPaymentAuthorized` at this point, even if pre-authorisation is not taken, in order to ensure that the UUID in the <a>Orders feed</a> is recognised without a race condition. Such a condition might arise in the (admittedly unlikely) event of, e.g., an `Order` that is created at <a><b>B</b></a> and then immediately cancelled by the <a>Booking System</a>, which could result in the <a>Broker</a> receiving an unrecognised `Order` in the <a>Orders feed</a> if it was retrieved before the call to <a><b>B</b></a> returned.
 
 
-vii) <a><b>B</b></a> - <a>Broker</a> call with an `Order` including UUID with a `customer` object and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed; the <a>Booking System</a> responds with an `Order`.
+vii) <a><b>B</b></a> - <a>Broker</a> call with an `Order` including UUID, with a `customer` object, and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed; the <a>Booking System</a> responds with an `Order`.
 
 - If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, the `payment` property MUST NOT be included in the `Order` request or response, and the <a>Booking System</a> MUST proceed to create a payment-free `Order`. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a>Booking </a>> then an `InvalidPaymentDetailsError` MUST be returned.
 
@@ -2001,6 +2003,8 @@ This API has been defined around the concept of URL discovery, using the [[Datas
 
 Due to URL discovery, the paths of the endpoints below are illustrative, as the actual paths may vary provided they are consistent within an implementation.
 
+With the exception of the <a>Orders Feed</a>, all endpoints MUST accept a UUID string representation, described in [[RFC4122]], as the final segment of their path. The value of this UUID is supplied by the <a>Broker</a>, as described throughout this specification.
+
 A summary of endpoints defined by this specification is provided below:
 
 | Endpoint Name                     | Status      | Returns Body | Resource | HTTP Verb | Example Path                   |
@@ -2976,6 +2980,8 @@ All of the API transactions described in this document MUST require authenticati
 ### API level authentication and data security
 
 The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`.
+
+For security, `Order` UUIDs should only be considered unique within a given set of <a>Authentication Credentials</a>. It MUST be possible for two different `Order`s that are created via two different <a>Authentication Credentials</a> to exist with the same UUID.
 
 This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a JavaScript web application or between servers).
 
