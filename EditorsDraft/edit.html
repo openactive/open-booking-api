@@ -2981,7 +2981,7 @@ All of the API transactions described in this document MUST require authenticati
 
 The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`.
 
-For security, `Order` UUIDs should only be considered unique within a given set of <a>Authentication Credentials</a>. It MUST be possible for two different `Order`s that are created via two different <a>Authentication Credentials</a> to exist with the same UUID.
+For security, `Order` UUIDs MUST only be considered unique within a given set of <a>Authentication Credentials</a>. It MUST be possible for two different `Order`s that are created via two different <a>Authentication Credentials</a> to exist with the same UUID.
 
 This specification does not mandate a particular authentication method, but its recommendation is that implementors SHOULD consider using [[OAuth2]] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a JavaScript web application or between servers).
 
