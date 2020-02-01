@@ -489,7 +489,7 @@ var fullOrderExampleContent = {
   },
   "orderNumber": "", //booking system generated
   "orderRequiresApproval": false,
-  "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/version/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
+  "orderProposalVersion": BASE_URL + API_PATH + "/order-proposals/" + UUID + "/versions/8eb1a6ce-3f5b-40b0-87a7-bddb4c5518bd", //booking system
   "orderProposalStatus": "https://openactive.io/AwaitingSellerConfirmation",
   "seller": { //booking system
     request: {
