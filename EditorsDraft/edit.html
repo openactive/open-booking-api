@@ -2371,7 +2371,6 @@ Applications that implement this API MUST ignore any properties that they do not
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
-| [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | REQUIRED | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatus`](https://openactive.io/OrderProposalStatus) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
 | [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | - | - | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> _from_ the <a>Seller</a> along with the `OrderProposal`. |
 | [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | OPTIONAL | - | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
