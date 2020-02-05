@@ -2478,24 +2478,26 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
 
 
-### `schema:Person` for `customer`
+### `schema:Person` for `customer` or `attendee`
 
 For business-to-consumer transactions, the `customer` MUST be a `schema:Person`.
 
-The required fields below relate to a `schema:Person` when used in the `customer` property.
+The required fields below relate to a `schema:Person` when used in the `customer` property. When used in the `attendee` property, required fields depend entirely on the `attendeeDetailsRequired` property.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | `Person` |
-| [`schema:identifier`](https://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
-| [`schema:email`](https://schema.org/email)                          | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a>. |
-| [`schema:givenName`](https://schema.org/givenName)                  | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
-| [`schema:familyName`](https://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a>. |
-| [`schema:telephone`](https://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | The identifier of the <a>Customer</a> or `attendee` used by the <a>Broker</a> and/or <a>Payment Provider</a>. |
+| [`schema:email`](https://schema.org/email)                          | REQUIRED    | - | [`schema:Text`](https://schema.org/Text) | Email address used to uniquely identify the <a>Customer</a> or `attendee`. |
+| [`schema:givenName`](https://schema.org/givenName)                  | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a> or `attendee`. |
+| [`schema:familyName`](https://schema.org/familyName)                | RECOMMENDED | - | [`schema:Text`](https://schema.org/Text) | Name of the <a>Customer</a> or `attendee`. |
+| [`schema:telephone`](https://schema.org/telephone)                  | OPTIONAL    | - | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Customer</a> or `attendee`. |
 
 Note that in all cases any `Person` received from the <a>Booking System</a> when it is reflected back in the response MUST only contain exactly the data that was provided by the <a>Broker</a> and MUST NOT contain any additional data that may be known about the `Person` by the <a>Booking System</a>. It is strongly RECOMMENDED that the personal data received by the <a>Booking System</a> be treated as a "guest checkout" and is not used to create a <a>Customer</a> record in the <a>Booking System</a>.
 
-In this current iteration of the Booking API specification, the programmatic matching of `Person` records provided by the <a>Broker</a> to existing records within the <a>Booking System</a> is considered to be out of scope, and is NOT RECOMMENDED.
+In this current iteration of the Booking API specification, the programmatic matching of `Person` records provided by the <a>Broker</a> to existing records within the <a>Booking System</a> is considered to be out of scope, and is NOT RECOMMENDED. 
+
+The `identifier` property MAY be provided by the <a>Broker</a> if a unique identifier for the <a>Customer</a> or `attendee` is available, to allow the <a>Booking System</a> to provide analytics based on repeat visits of the same guest. However such an `identifier` MUST only be matched within each unique set of <a>Authentication Credentials</a> to prevent identifier collisions across <a>Booking Partners</a>.
 
 For conformance with this specification the <a>Booking System</a> MUST NOT require more data about the <a>Customer</a> than is specified as REQUIRED properties above.
 
