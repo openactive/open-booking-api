@@ -2323,7 +2323,7 @@ Other properties are marked as OPTIONAL or RECOMMENDED. Implementers SHOULD prov
 
 Where data is not available to populate RECOMMENDED and OPTIONAL properties, publishers MUST exclude these from their requests and responses. Requests and responses MUST NOT include properties with null values, empty strings or empty arrays.
 
-Implementers MAY include additional properties, e.g. from Schema.org or other vocabularies. See the section on [Handling Specification Dependencies and Extensions](#handling-specification-dependencies-and-extensions) for more information.
+Implementers MAY include additional properties. See the section on [Handling Specification Dependencies and Extensions](#handling-specification-dependencies-and-extensions) for more information.
 
 Applications that implement this API MUST ignore any properties that they do not understand or do not support. This allows the API to evolve as required.
 
@@ -2825,7 +2825,21 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 This section defines some common functionality that applies to the design of the
 whole API.
 
-## Media types
+## Versioning Policy
+
+The broad goal is to ensure that future versions of this specification remain backwards compatible. This will ensure that existing implementations remain valid.
+
+New types of resource, relationships and properties can easily be added to extend the model without impacting existing functionality or interfaces. Potential breaking changes would include changing the definitions of existing properties, removing them from the specification, or changing the definition of existing interfaces.
+
+To avoid this, the goal will be to:
+
+- Evolve the definitions of existing properties to broadly retain their current meaning and legal values, and to ensure that changes remain compatible with existing interfaces.
+- Deprecate, rather than remove properties or functionality that are judged, based on implementation experience, to be less useful or confusing. Deprecated properties will be clearly marked in both the human and machine-readable versions of the OpenActive namespace.
+- Use version numbering to indicate potential for breaking changes. Minor versions, e.g. 1.1, 2.1, etc should be backwards compatible. Major versions, e.g. 2.0, 3.0 are likely to include breaking changes.
+- Proposed changes to the specification will also be communicated in advance of their formal release, through the sharing of public Editor's Drafts. This will provide opportunities for implementers to update their applications.
+
+
+### Media types
 
 Custom media types are used in this API to allow clients to choose the format
 of the data they receive, and for <a>Booking Systems</a> to stipulate which versions
@@ -2870,6 +2884,9 @@ The model defined in this specification builds on the model defined in [[Modelli
 Within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MAY include additional properties, where such properties are either:
 - Specified in future minor versions of the [[Modelling-Opportunity-Data]] 2.x (where x > 0).
 - Defined in custom vocabularies as described in [[Modelling-Opportunity-Data]] 2.0 Section 5.13.3, including the [[OpenActive-Beta-Namespace]].
+
+Within the scope of the <a>Opportunity</a> (`orderedItem`), the <a>Booking System</a> MAY include additional properties, where such properties are:
+- Defined in Schema.org as described in [[Modelling-Opportunity-Data]] 2.0 Section 5.13.2.
 
 To ensure backward compatibility, within the scope of the <a>Opportunity</a> (`orderedItem`) and `Offer` (`acceptedOffer`), the <a>Booking System</a> MUST:
 - Conform to the [[Modelling-Opportunity-Data]] 2.0 specification by providing REQUIRED fields, unless otherwise stated in this specification.
