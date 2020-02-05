@@ -286,7 +286,7 @@ window.dataExampleOrderProposalCreationResponse = (utils, content) => {
     "seller": fullOrderExampleContent.seller.response,
     "customer": fullOrderExampleContent.customer.person,
     "bookingService": fullOrderExampleContent.bookingService,
-    "orderedItem": [responseOrderItem],
+    "orderedItem": [responseOrderProposalOrderItem],
     "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
     "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem,
     "payment": fullOrderExampleContent.payment,
@@ -628,10 +628,11 @@ var fullOrderExampleContent = {
 
 var fullOrderItemExampleContent = { //broker
   "@type": "OrderItem",
-  "@id": "https://example.com/api/orders/" + UUID + "/order-items/1234",
+  "@id": "https://example.com/api/orders/" + UUID + "#/orderedItem/1234",
   "position": 0,
   "orderItemStatus": { //booking system
     OrderConfirmed: "https://openactive.io/OrderConfirmed",
+    OrderProposed: "https://openactive.io/OrderProposed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
@@ -825,6 +826,15 @@ var responseOrderItem = {
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,
   "accessToken": fullOrderItemExampleContent.accessToken
+}
+
+var responseOrderProposalOrderItem = {
+  "@type": "OrderItem",
+  "position": fullOrderItemExampleContent.position,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderProposed,
+  "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
+  "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
+  "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse
 }
 
 var requestCancelledOrderItem = {

@@ -836,7 +836,7 @@ The flow exactly mirrors the [Simple Booking Flow](#simple-booking-flow), with t
 
 - After "**2.1. Propose**", the <a>Broker</a> first _pre-authorizes_ the payment for the total order price (if required by the <a>Payment Provider</a>), then submits the proposed booking to the <a>Booking System</a> using an `OrderProposal` (<a><b>P</b></a> on the diagram above), and sends the <a>Customer</a> a notification that the proposal is under consideration. The `OrderProposal` may be negotiated between the <a>Customer</a> and <a>Seller</a> via the <a>Broker</a> at this stage.
 
-- After "**2.2. Approve**" the <a>Seller</a> approves the `OrderProposal` and the <a>Broker</a> is notified of this by the <a>Booking System</a> (**A** on the diagram above). The <a>Broker</a> can seek <a>Customer</a> permission to proceed, or simply complete the booking automatically, depending on the desired user experience.
+- After "**2.2. Approve**" the <a>Seller</a> approves the `OrderProposal` and the <a>Broker</a> is notified of this by the <a>Booking System</a> (<a><b>A</b></a> on the diagram above). The <a>Broker</a> can seek <a>Customer</a> permission to proceed, or simply complete the booking automatically, depending on the desired user experience.
 
 - After "**3. Book and Pay**", if necessary the <a>Broker</a> _re-authorizes_ the payment for the total order price (if it has changed, and if required by the <a>Payment Provider</a>), then confirms the booking with <a>Booking System</a> using an `Order` (<a><b>B</b></a> on the diagram above), and finally _captures_ the payment. The <a>Broker</a> then generates invoices, and sends <a>Customer</a> notifications.
 
@@ -1034,7 +1034,7 @@ viii) "**2.2. Approve**" -  <a>Seller</a> approves the booking after automated o
 
 - The <a>Booking System</a> must ensure that the `OrderProposal`s in the <a>Orders feed</a> represent the current state of `OrderProposal` within the system. The <a>Broker</a> MUST use these `OrderProposal`s to process `orderProposalStatus` changes and send update notifications to the <a>Customer</a>, including any new values for `orderSellerNote`.
 
-- Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (**A**), with either an unchanged `orderProposalVersion` (see [Minimal Proposal Implementation](#minimal-proposal-implementation)) or a new `orderProposalVersion` (see [Proposal Amendment](#proposal-amendment)).
+- Once approved, the <a>Booking System</a> puts the updated `OrderProposal` onto the <a>Orders feed</a> (<dfn><b>A</b></dfn>), with either an unchanged `orderProposalVersion` (see [Minimal Proposal Implementation](#minimal-proposal-implementation)) or a new `orderProposalVersion` (see [Proposal Amendment](#proposal-amendment)).
 
 - If the `orderProposalVersion` in the <a>Orders feed</a> has changed compared with the `orderProposalVersion` in the `OrderProposal` stored by the <a>Broker</a>, the <a>Broker</a> MUST notify the <a>Customer</a> that their booking requires confirmation before it can proceed. The <a>Broker</a> MUST detect and highlight any changes from their stored `OrderProposal` in the notification, based on the difference between the `OrderItem`s stored by the <a>Broker</a> and those in the feed.
 
@@ -1075,7 +1075,7 @@ A summary of the key conformance criteria is included here. These apply for the 
 #### Broker contract with Booking System
 
 - The <a>Broker</a> MUST call <a><b>P</b></a> with <a>Customer</a> details as they would for <a><b>B</b></a> in the [Simple Booking Flow](#simple-booking-flow), and MUST store the resulting `OrderProposal`.
-- The <a>Broker</a> MUST process updates to the `OrderProposal` from the <a>Orders feed</a>, including **A**.
+- The <a>Broker</a> MUST process updates to the `OrderProposal` from the <a>Orders feed</a>, including <a><b>A</b></a>.
 - The <a>Broker</a> MAY negotiate on the `OrderProposal` using a OrderProposal Update call.
 - Calls to <a><b>P</b></a> MUST include the `@id` of the `seller` to which requested `OrderItem`s pertain.
 
@@ -1083,7 +1083,7 @@ A summary of the key conformance criteria is included here. These apply for the 
 #### Booking System contract with the Broker
 
 - The <a>Booking System</a> MUST respond to <a><b>P</b></a> with an `OrderProposal`, or a relevant error. The whole creation of the `OrderProposal` MUST succeed or fails as one.
-- Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `OrderProposal` in the <a>Orders feed</a>, including **A**.
+- Upon approval or updates to the `OrderProposal` or any `OrderItem` within it, the <a>Booking System</a> MUST include the updated `OrderProposal` in the <a>Orders feed</a>, including <a><b>A</b></a>.
 - The <a>Booking System</a> MAY negotiate on the `OrderProposal` using the <a>Orders feed</a>.
 
 ## Customer Details and Additional Details capture
@@ -2219,7 +2219,7 @@ Technical or conformance issues with any properties of the `Order`, including in
 <pre class="example" title="Order Creation: example failure response" data-transform="dataExampleOrderCreationErrorResponse">
 </pre>
 
-For the [Booking Flow with Approval](#booking-flow-with-approval) specifically, the <a>Broker</a> decides to proceed from **A** to <a><b>B</b></a> by supplying a minimal `Order` to <a><b>B</b></a> that contains just the `orderProposalVersion` and any additional `payment` data if reauthorisation was required.
+For the [Booking Flow with Approval](#booking-flow-with-approval) specifically, the <a>Broker</a> decides to proceed from <a><b>A</b></a> to <a><b>B</b></a> by supplying a minimal `Order` to <a><b>B</b></a> that contains just the `orderProposalVersion` and any additional `payment` data if reauthorisation was required.
 
 <pre class="example" title="Order Creation: example request from OrderProposal" data-transform="dataExampleOrderCreationFromProposalRequest">
 </pre>
@@ -2349,7 +2349,7 @@ Applications that implement this API MUST ignore any properties that they do not
 | Property                                                            | Broker Request | Booking System Response | Type | Notes |
 |---------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                             | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
-| `@id`                                                               | -        | REQUIRED | URI | A URI providing a unique identifier for the resource, which is constructed depending on the whether the resource was created at <a><b>C1</b></a> / <a><b>C2</b></a> (`{baseUri}/order-quotes/{uuid}`), <a><b>P</b></a> (`{baseUri}/order-proposals/{uuid}`) or <a><b>B</b></a> (`{baseUri}/orders/{uuid}`), based on the <a>Base URI</a> and <a>Order UUID</a>. |
+| `@id`                                                               | -        | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST be constructed as specified depending on the whether the resource was created at <a><b>C1</b></a> / <a><b>C2</b></a> (`{baseUri}/order-quotes/{uuid}`), <a><b>P</b></a> (`{baseUri}/order-proposals/{uuid}`) or <a><b>B</b></a> (`{baseUri}/orders/{uuid}`), based on the <a>Base URI</a> and <a>Order UUID</a>. |
 | [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The <a>Order UUID</a> of the `Order`, `OrderQuote` or `OrderProposal`, which is REQUIRED within the <a>Orders Feed</a>. |
 | [`schema:seller`](https://schema.org/seller)                        | REQUIRED | REQUIRED |  [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The organisation or person providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider or independent running a yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
@@ -2438,7 +2438,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
-| `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the OrderItem. This is REQUIRED for <a><b>P</b></a> and <a><b>B</b></a> responses and MUST NOT be included for <a><b>C1</b></a> or <a><b>C2</b></a> responses. |
+| `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the `OrderItem`, which SHOULD be constructed by appending `#/orderedItem/{orderItemId}` to the `@id` of the `Order`, where `{orderItemId}` is replaced by the `identifier` of the `OrderItem`, which may be a string or an integer depending on the <a>Booking System</a>. This is REQUIRED for <a><b>B</b></a> responses and MUST NOT be included for <a><b>C1</b></a>, <a><b>C2</b></a> or <a><b>P</b></a> responses. |
 | [`schema:position`](https://schema.org/position)                    | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | An integer representing the order of `OrderItem`s within the array, as JSON-LD does not support array ordering. This allows the <a>Broker</a> to match any `error`s provided in the response to their request. The `position` of an `OrderItem` in the response MUST match the `position` for the same `OrderItem` provided in request, and implementations MUST use this value to match responses with requests instead of relying on the order of the elements in the array. This is REQUIRED for <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> and <a><b>B</b></a> requests and responses, but MUST NOT be persisted or be present in the <a>Orders Feed</a> or other endpoints. |
 | [`schema:orderItemStatus`](https://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](https://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
