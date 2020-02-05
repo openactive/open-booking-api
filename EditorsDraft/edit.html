@@ -447,10 +447,9 @@ by this specification is scoped tightly to only specify interactions between the
         <dt><dfn>Customer</dfn></dt>
         <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, e.g. a parent may book on behalf of their child.</dd>
         <dt><dfn>Broker</dfn></dt>
-        <dd>The organisation providing an application that allows <a>Customers</a> to make bookings. Those applications may either be clients of the API defined in this specification, or may use the API indirectly via a <a>Middleware</a>.</dd>
+        <dd>The organisation, independent of the <a>Seller</a>, that provides an application allowing <a>Customers</a> to make bookings. For simplicity the API client is referred to as the <a>Broker</a> throughout this specification, however other API clients are permissible, and <a>Booking Partner</a> is the collective term for different types of clients of this API.</dd>
         <dt><dfn>Booking System</dfn></dt>
-        <dd>The organisation providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.
-        </dd>
+        <dd>The organisation providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.</dd>
         <dt><dfn>Seller</dfn></dt>
         <dd>The organisation providing access to events or facilities via a <a>Booking System</a> e.g. a leisure provider running yoga classes.</dd>
         <dt><dfn>Payment Provider</dfn></dt>
@@ -2339,7 +2338,7 @@ Applications that implement this API MUST ignore any properties that they do not
 | [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The <a>Order UUID</a> of the `Order`, `OrderQuote` or `OrderProposal`, which is REQUIRED within the <a>Orders Feed</a>. |
 | [`schema:seller`](https://schema.org/seller)                        | REQUIRED | REQUIRED |  [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The organisation or person providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider or independent running a yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
-| [`schema:broker`](https://schema.org/broker)                        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation or developer providing an application that allows <a>Customers</a> to make bookings. Those applications will be clients of the API defined in this specification. If `brokerRole` is set to `https://openactive.io/NoBroker` this is NOT REQUIRED. |
+| [`schema:broker`](https://schema.org/broker)                        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation, independent of the <a>Seller</a>, that provides an application allowing <a>Customers</a> to make bookings. If `brokerRole` is set to `https://openactive.io/NoBroker` this property MUST NOT be included. |
 | [`oa:brokerRole`](https://openactive.io/brokerRole)                 | REQUIRED | REQUIRED | [`oa:BrokerType`](https://openactive.io/BrokerType) | Either `https://openactive.io/AgentBroker`, `https://openactive.io/ResellerBroker` or `https://openactive.io/NoBroker`, as agreed in advance between the <a>Broker</a> and <a>Seller</a>. |
 | [`schema:orderNumber`](https://schema.org/orderNumber)              | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The Customer-facing identifier of the `Order`. |
 | [`schema:customer`](https://schema.org/customer)                    | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The person or organization purchasing the Order. |
@@ -2982,7 +2981,10 @@ Although this specification does not mandate a specific means of securing an API
 
 All of the API transactions described in this document MUST require authentication.
 
-<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of one or many <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>. The authenticating party may a <a>Broker</a>, or may be a <a>Middleware</a>.
+<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of multiple <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>.
+
+The term <dfn>Booking Partner</dfn> is used to refer to the authenticating party represented by the <a>Authentication Credentials</a>, which is distinct from the <a>Broker</a> represented by the `broker` property. The <a>Booking Partner</a> may be a <a>Broker</a>, or a <a>Middleware</a>, or any other authenticating party (including the <a>Seller</a> if `brokerRole` is set to `NoBroker`).
+
 
 ### API level authentication and data security
 
@@ -2996,12 +2998,12 @@ Other server-to-server authentication mechanisms such as basic authentication, A
 
 ### Middleware as a catalyst
 
+This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
+
 <figure>
  <img src="authentication-credentials.png" alt="Authentication Credentials and Middleware">
  <figcaption>Authentication Credentials may facilitate access to the Booking System directly (Broker) or indirectly (Middleware), for a specific Seller</figcaption>
 </figure>
-
-This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
 
 The definition of the <a>Middleware</a> role in this specification is intentionally broad: it is simply any party that handles <a>Authentication Credentials</a> and lies between one or many public-facing <a>Brokers</a> and the <a>Seller</a>. 'Middleware' thus includes not only dedicated middleware technology companies, but also parent organisations or agencies that manage a number of brands, affiliate platforms, etc.
 
@@ -3020,9 +3022,9 @@ Note that the `broker` property in the request body is to help the <a>Booking Sy
 
 The `broker` property MUST contain the details of the actual <a>Broker</a> rather than any <a>Middleware</a>.
 
-Where information regarding <a>Middleware</a> or any other authenticating party is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
+Where information regarding the <a>Middleware</a> or any other <a>Booking Partner</a> is required for audit, this SHOULD be captured by the <a>Booking System</a> at the point of provision of <a>Authentication Credentials</a>.
 
-The <a>Booking System</a> MAY choose to produce usage reports against <a>Authentication Credentials</a>, as well as against <a>Brokers</a>, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account into which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
+The <a>Booking System</a> MAY choose to produce usage reports against <a>Booking Partners</a> via their unique <a>Authentication Credentials</a>, as well as against <a>Brokers</a> identified by the `broker` property, to report at different levels of granularity. However <a>Booking Systems</a> MUST NOT produce reconciliation reports based on anything other than the information provided to the `Payment` object, i.e. there MUST be no assumed link between the <a>Authentication Credentials</a> used for access, the <a>Broker</a> (`broker`) data provided for information to the API, and the `Payment` data detailing the account into which the money is deposited for reconciliation. It MUST be possible for the same `Payment` details to be used across multiple <a>Authentication Credentials</a> and <a>Brokers</a>.
 
 Any <a>Middleware</a> that conforms with this specification MUST provide data partitioning and security with respect to <a>Broker</a> access, to ensure that <a>Brokers</a> only have access to their own data.
 
