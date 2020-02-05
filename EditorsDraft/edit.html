@@ -631,7 +631,7 @@ ii) <a><b>C1</b></a> - <a>Broker</a> call with `OrderQuote` including the <a>Ord
 - `OrderQuote` MUST specify any additional details required to complete the booking for the selected `OrderItem`s via an `orderItemIntakeForm`.
 - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem`. 
 - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in its response, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
-- Where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, the `payment` details supplied to <a><b>C2</b></a> (e.g. `accountId`) MUST be supplied at <a><b>C1</b></a>, otherwise an `IncompletePaymentDetailsError` MUST be returned. This ensures that a viable `payment` reconciliation route is available before the <a>Customer</a> starts to enter their data. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then a `InvalidPaymentDetailsError` MUST be returned.
+- If a viable payment reconciliation route is available between the <a>Broker</a> and the <a>Seller</a> that requires more than just the `identifier` property of the `Payment` to be included in <a><b>B</b></a>, the `payment` property MUST be included at <a><b>C1</b></a>, as per [Payment reconciliation detail validation](#payment-reconciliation-detail-validation). This ensures that a viable payment reconciliation route is available before the <a>Customer</a> starts to enter their data.
 - `OrderItem`s have no `orderItemStatus`.
 
 iii) "**2. Identify**" - <a>Customer</a> submits personal details and any other additional details requested
@@ -649,7 +649,7 @@ iv) <a><b>C2</b></a> - <a>Broker</a> call with `OrderQuote` including the <a>Ord
 - <a>Broker</a> presents the contents of the `OrderQuote` to the `Customer` to ensure they have the most up-to-date price and availability before proceeding with the purchase.
 - If there are any issues with the `OrderItem`s requested in the `OrderQuote`, the <a>Booking System</a> MUST respond with a `409 Conflict` response, with `error` details provided against each offending `OrderItem` - including if an `OrderItem` is no longer available, cannot be purchased in combination with another `OrderItem`, or does not contain a sufficient `orderItemIntakeFormResponse`.
 - Any `error`s must be resolved by the <a>Customer</a> or <a>Broker</a> before proceeding, by amending the `OrderItem`s included in the `OrderQuote` and resubmitting until an `OrderQuote` is returned without `error`s.
-- In the case that payment is selected (or if the `prepayment` value of any selected `Offer` is `https://openactive.io/Required` or unspecified), the `payment` property MUST be included in the `OrderQuote` request and response including all details except the `identifier`, to express the intent to pay. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then a `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then a `InvalidPaymentDetailsError` MUST be returned.
+- If a viable payment reconciliation route is available between the <a>Broker</a> and the <a>Seller</a> that requires more than just the `identifier` property of the `Payment` to be included in <a><b>B</b></a>, the `payment` property MUST be included at <a><b>C2</b></a>, as per [Payment reconciliation detail validation](#payment-reconciliation-detail-validation).
 - `OrderItem`s have no `orderItemStatus`.
 
 
@@ -671,7 +671,7 @@ vi) <dfn>Payment Authorisation</dfn> - <a>Broker</a> pre-authorises `totalPaymen
 
 vii) <a><b>B</b></a> - <a>Broker</a> call with an `Order` including the <a>Order UUID</a>, with a `customer` object, and any `orderItemIntakeFormResponse` required, and `totalPaymentDue` including the total amount pre-authed; the <a>Booking System</a> responds with an `Order`.
 
-- If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, the `payment` property MUST NOT be included in the `Order` request or response, and the <a>Booking System</a> MUST proceed to create a payment-free `Order`. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a>Booking </a>> then an `InvalidPaymentDetailsError` MUST be returned.
+- If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, the `payment` property MUST NOT be included in the `Order` request or response, and the <a>Booking System</a> MUST proceed to create a payment-free `Order`. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` with `price` that is not `0` is `https://openactive.io/Required` or unspecified, then a `MissingPaymentDetailsError` MUST be returned. If the `payment` property does not include `identifier`, then a `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then an `InvalidPaymentDetailsError` MUST be returned.
 
 - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
     
@@ -1004,7 +1004,7 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
 
     - `totalPaymentDue` MUST be submitted to <a><b>P</b></a> and MUST match the value calculated by the <a>Booking System</a> to ensure that the `totalPaymentDue` has not changed.
 
-    - If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included in the `OrderProposal` request or response. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then an `InvalidPaymentDetailsError` MUST be returned.
+    - If payment details were not captured due to the `prepayment` value of the selected `Offer`s, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included in the `OrderProposal` request or response. If the `payment` property is omitted where `totalPaymentDue` is not `0`, and the `prepayment` value of any `Offer` is `https://openactive.io/Required` or unspecified, then an `MissingPaymentDetailsError` MUST be returned. If the `payment` property does not include `identifier`, then a `IncompletePaymentDetailsError` MUST be returned. If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then an `InvalidPaymentDetailsError` MUST be returned.
 
     - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
     
@@ -1464,7 +1464,6 @@ Due to the variety of business models available in the OpenActive ecosystem, con
 
 Although the details of <a>Payments</a> and <a>Refunds</a> are not in the scope of this specification, a single `Payment` object is included in the `Order` in the `payment` property to ensure payments are fully traceable in case of audit.
 
-If payment details were not captured due to the `prepayment` value of the selected `Offer`, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge,  the `payment` property MUST NOT be included. In all other cases `payment` property MUST be included in the `Offer` at <a><b>B</b></a>.
 
 ### Virtual payments
 
@@ -1489,6 +1488,22 @@ The `name` of the `Payment` SHOULD be used to provide information about the sour
     "paymentProviderId": "STRIPE"
   },
 </pre>
+
+#### Payment reconciliation detail validation
+
+Payment reconciliation detail validation is required if any viable payment reconciliation route exists between the <a>Broker</a> and the <a>Seller</a> that necessitates more than just the `identifier` property of the `Payment` being included in <a><b>B</b></a>. For simplicity of implementation, such validation is required even if the `totalPaymentDue` is likely to be `0` or the `prepayment` value of the selected `Offer`s indicates no payment.
+
+This ensures that a viable payment reconciliation route is available before the <a>Customer</a> starts to enter their data.
+
+To achieve such validation, the `payment` property MUST be included at <a><b>C1</b></a> and <a><b>C2</b></a> by the <a>Broker</a> in the `OrderQuote` request, including all relevant properties of `Payment` except the `identifier`.
+
+If the `payment` details supplied (e.g. `accountId`) are not considered valid for reconciliation by the <a>Booking System</a> then a `InvalidPaymentDetailsError` MUST be returned at <a><b>C1</b></a> and <a><b>C2</b></a>.
+
+For the <a>Booking System</a>, the `payment` property at <a><b>C1</b></a> and <a><b>C2</b></a> is always considered optional, as a payment reconciliation route may not exist.
+
+At <a><b>B</b></a> and <a><b>P</b></a> the `payment` property MUST only be included if a payment is actually being processed. If payment details were not captured due to the `prepayment` value of the selected `Offer`, or if `totalPaymentDue` is `0` due to all `OrderItem`s being free of charge, the `payment` property MUST NOT be included in the `Order` at <a><b>B</b></a>. In all other cases `payment` property MUST be included in the `Order` at <a><b>B</b></a>.
+
+For the simple case, if the <a>Booking System</a> does not implement properties other than the `identifier` property of the `Payment`, the `Payment` MUST simply be reflected back in the response to <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>B</b></a> and <a><b>P</b></a> with only the `identifier` property included, and no implementation of the `InvalidPaymentDetailsError` response is required.
 
 
 ### `DynamicPayment`
@@ -1522,7 +1537,7 @@ Note that the <a>Booking System</a> MAY choose to validate the `DynamicPayment` 
   },
 </pre>
 
-### Payment reconciliation
+### Payment reconciliation identifiers
 
 Although automated payment reconciliation is outside the current scope of this specification, a <a>Booking System</a> MAY include identifiers suitable for payment reconciliation to be handled out-of-band with each `OrderItem` using the `additionalProperty` property.
 
@@ -2741,8 +2756,9 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
 | `IncompleteBrokerDetailsError`              | 400         | If the `name` property is not supplied within the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid `schema:Organisation` object. |
-| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `OrderQuote` is missing details required by the <a>Booking System</a>, or if the `payment` property of the `Order` is missing or does not include an `identifier`. |
-| `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted the <a>Booking System</a> for reconciliation, e.g. `accountId`. |
+| `MissingPaymentDetailsError`                | 400         | If the `payment` property of the `Order` is missing when it is expected to be provided. |
+| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` does not include `identifier`. |
+| `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted by the <a>Booking System</a> for reconciliation, e.g. an invalid `accountId`. |
 | `TotalPaymentDueMismatchError`              | 400         | If the `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
 | `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in any <a>Opportunity</a> that was included the `Order`. |
 | `UnableToProcessOrderItemError`             | 409         | If any `OrderItem` errors would have been generated at <a><b>C2</b></a> given the same set of `OrderItem`s. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
