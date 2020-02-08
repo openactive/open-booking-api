@@ -73,7 +73,7 @@ The RECOMMENDED <a>Scopes</a> and flows are defined in the table below:
   </tbody>
 </table>
 
-In order to implement functionality to suspend bookings temporarily, the <a>Booking System</a> SHOULD temporarily revoke access to the `openactive-openbooking` scope, so that only the <a>Orders Feed</a> is accessible (and hence <a>Customers</a> are still able to recieve refunds and notifications, but cannot make new bookings or initiate cancellations).
+In order to implement functionality to suspend bookings temporarily with a particular <a>Seller</a>, the <a>Booking System</a> SHOULD temporarily revoke access to the `openactive-openbooking` scope. The <a>Seller</a>'s items SHOULD still be available in the <a>Orders Feed</a>, and hence <a>Customers</a> are still able to receive refunds and notifications, but cannot make new bookings or initiate cancellations.
 
 
 ##### Authorization Code Flow

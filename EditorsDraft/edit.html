@@ -930,11 +930,11 @@ If an `Offer` requires **Message Exchange**, the <a>Booking System</a> MUST incl
 
 **Message Exchange** is achieved using the two properties `orderSellerNote` and `orderCustomerNote`, and does not have any impact on the `orderProposalVersion`.
 
-The <a>Seller</a> MAY send a message to the <a>Customer</a> by setting `orderSellerNote` in the `OrderProposal`, and updating the `OrderProposal` in the <a>Orders feed</a>. Any change detected in the `orderSellerNote` in the <a>Orders feed</a> MUST promptly trigger a notification from the <a>Broker</a> to the <a>Customer</a>, so that the value of `orderSellerNote` can be safely overwritten with another message. To ensure that messages are not lost in the RPDE feed, the <a>Seller</a> MAY send no more than one message every 5 minutes per `OrderProposal`.
+The <a>Seller</a> MAY send a message to the <a>Customer</a> by setting `orderSellerNote` in the `OrderProposal`, and updating the `OrderProposal` in the <a>Orders feed</a>. Any change detected in the `orderSellerNote` in the <a>Orders feed</a> MUST promptly trigger a notification from the <a>Broker</a> to the <a>Customer</a>, so that the value of `orderSellerNote` can be safely overwritten with another message. To ensure that messages are not lost in the [[RPDE]] feed, the <a>Seller</a> MAY send no more than one message every 5 minutes per `OrderProposal`.
 
 The <a>Customer</a> MAY send a message to the <a>Seller</a> by the <a>Broker</a> making a PATCH call to the OrderProposal Update endpoint to set `orderCustomerNote` in the `OrderProposal`. Any such `orderCustomerNote` updates via PATCH calls MUST either trigger a notification from the <a>Booking System</a> to the <a>Seller</a>, or be stored in the <a>Booking System</a> for later reference by the <a>Seller</a>, so that the value of `orderCustomerNote` can be safely overwritten with another message.
 
-Note that the `orderCustomerNote` property MUST NOT be available in the <a>Orders feed</a>, to remove unnecessary RPDE updates.
+Note that the `orderCustomerNote` property MUST NOT be available in the <a>Orders feed</a>, to remove unnecessary [[RPDE]] updates.
 
 
 ### Step-by-step process description
@@ -2289,7 +2289,7 @@ If the PATCH request includes any properties other than `@type`, `@context`, `@i
 |-----------------------------------|-------------|------|------------------|-----------|--------------------------------|
 | <a>Orders feed</a>           | REQUIRED    | Yes  | Orders feed      | GET       | `/orders-rpde`                 |
 
-This feed is described at length in the [Orders feed](#orders-feed-notifications-updates-and-refunds) section.
+This [[RPDE]] feed is described at length in the [Orders feed](#orders-feed-notifications-updates-and-refunds) section.
 
 The <a>Orders feed</a> MUST NOT include the full contents of the <a>Opportunities</a> within the `orderedItem`, and instead MUST only include the <a>Opportunity</a> properties `@type` and `@id`.
 
@@ -3016,14 +3016,18 @@ Although this specification does not mandate a specific means of securing an API
 
 All of the API transactions described in this document MUST require authentication.
 
-<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of multiple <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a> on behalf of a specific <a>Seller</a>.
+<dfn>Authentication Credentials</dfn> to facilitate access to the Open Booking API on behalf of multiple <a>Brokers</a> are uniquely and securely provisioned to the authenticating party by the <a>Booking System</a>.
 
 The term <dfn>Booking Partner</dfn> is used to refer to the authenticating party represented by the <a>Authentication Credentials</a>, which is distinct from the <a>Broker</a> represented by the `broker` property. The <a>Booking Partner</a> may be a <a>Broker</a>, or a <a>Middleware</a>, or any other authenticating party (including the <a>Seller</a> if `brokerRole` is set to `NoBroker`).
+
+<a>Authentication Credentials</a> also grant granular authorisation for the specific <a>Booking Partner</a> to access all [endpoints](#endpoints) on behalf of explicitly consenting <a>Sellers</a>; with the exception of the <a>Orders Feed</a>, which does not require granular authorisation. Access to a single <a>Orders Feed</a> containing data items relating to all authorised <a>Sellers</a> of the <a>Booking Partner</a> MUST be available via their <a>Authentication Credentials</a>, and such data items MUST be marked as [[RPDE]] `"state": "deleted"` when such authorisation is revoked.
+
+<a>Authentication Credentials</a> MUST be capable of being reprovisioned (e.g. a new [[OAuth2]] Client Secret generated) without losing any association to their related `Order` data.
 
 
 ### API level authentication and data security
 
-The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`.
+The content and data available to all endpoints provided by the <a>Booking System</a> MUST be specific to the <a>Authentication Credentials</a> in order to ensure that bookings are secure. It is the responsibility of the <a>Booking System</a> to ensure that only the <a>Authentication Credentials</a> responsible for creating an `Order` (including any of its subclasses) can subsequently access, amend, or cancel that `Order`; and only do so if the associated <a>Seller</a>'s authorisation for that <a>Booking Partner</a> is still active.
 
 For security, <a>Order UUID</a>s MUST only be considered unique within a given set of <a>Authentication Credentials</a>. It MUST be possible for two different `Order`s that are created via two different <a>Authentication Credentials</a> to exist with the same <a>Order UUID</a>.
 
@@ -3033,7 +3037,7 @@ Other server-to-server authentication mechanisms such as basic authentication, A
 
 ### Middleware as a catalyst
 
-This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for a particular <a>Seller</a> on behalf of multiple <a>Brokers</a>, with the <a>Seller</a>'s explicit permission. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
+This specification permits trusted <dfn>Middleware</dfn> to use a single set of <a>Authentication Credentials</a> to interact with the <a>Booking System</a> for their authorised <a>Sellers</a> on behalf of multiple <a>Brokers</a>. This lowers the barrier to entry for the creation of new <a>Brokers</a> that might otherwise need to establish <a>Authentication Credentials</a> and/or relationships with a large number of <a>Sellers</a>.
 
 <figure>
  <img src="authentication-credentials.png" alt="Authentication Credentials and Middleware">
