@@ -2368,23 +2368,22 @@ Applications that implement this API MUST ignore any properties that they do not
 
 ### `oa:OrderQuote`
 
-`OrderQuote` subclasses `Order`, and includes all of the above properties as specified for `Order` with the addition of `oa:lease`, `oa:orderRequiresApproval`, and with `totalPaymentDue` only required in the response.
+`OrderQuote` subclasses `Order`, and includes all of the above properties as specified for `Order` with the addition of `oa:lease`, `oa:orderRequiresApproval`, and with `totalPaymentDue` REQUIRED only in the response.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
 | [`oa:lease`](https://openactive.io/lease)                          | -        | OPTIONAL | [`oa:Lease`](https://openactive.io/Lease) | The <a>Lease</a> on the OrderItems which lasts for the duration specified by the <a>Booking System</a>. |
-| [`schema:totalPaymentDue`](https://schema.org/totalPaymentDue)      | -        | REQUIRED | REQUIRED | [`schema:PriceSpecification`](https://schema.org/PriceSpecification) | The total price of the `Order`, which always includes tax, regardless of `taxMode`. |
 | [`oa:orderRequiresApproval`](https://openactive.io/orderRequiresApproval) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the [Booking Flow with Approval](#booking-flow-with-approval) MUST be used to book the set of `OrderItem`s included. MUST be `true` if any of the `OrderItem`s require approval. |
 
 
 ### `oa:OrderProposal`
 
-`OrderProposal` subclasses `OrderQuote`, and includes all of the above properties as specified for `OrderQuote`, with the further addition of `oa:orderProposalStatus`, `oa:orderSellerNote`, `oa:orderCustomerNote`, and with `totalPaymentDue` required in the request and response, and <a>Orders feed</a>. It does not include `oa:orderRequiresApproval`.
+`OrderProposal` subclasses `OrderQuote`, and includes all of the above properties as specified for `OrderQuote`, with the further addition of `oa:orderProposalStatus`, `oa:orderSellerNote`, `oa:orderCustomerNote`, and with `totalPaymentDue` REQUIRED in the request and response, and <a>Orders feed</a>. It does not include `oa:orderRequiresApproval`.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
-| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderQuote` |
+| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderProposal` |
 | [`oa:orderProposalStatus`](https://openactive.io/orderProposalStatus)    | REQUIRED | REQUIRED | Array of [`oa:OrderProposalStatus`](https://openactive.io/OrderProposalStatus) | Can include `https://openactive.io/AwaitingSellerConfirmation`, `https://openactive.io/SellerAccepted`, `https://openactive.io/SellerRejected`, `https://openactive.io/CustomerRejected` |
 | [`oa:orderSellerNote`](https://openactive.io/orderSellerNote) | - | - | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Customer</a> _from_ the <a>Seller</a> along with the `OrderProposal`. |
 | [`oa:orderCustomerNote`](https://openactive.io/orderCustomerNote) | OPTIONAL | - | - | [`schema:Text`](https://schema.org/Text) | A note supplied to the <a>Seller</a> _from_ the <a>Customer</a> along with the `OrderProposal`. |
@@ -2451,8 +2450,8 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:error`](https://schema.org/error)                          | -        | OPTIONAL    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` or `https://openactive.io/CustomerAttended` |
-| [`schema:attendee`](https://schema.org/attendee)                    | OPTIONAL | OPTIONAL | -        | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
-| [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | - | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
+| [`schema:attendee`](https://schema.org/attendee)                    | OPTIONAL | OPTIONAL | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
+| [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
 | [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | OPTIONAL | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
 
@@ -2485,7 +2484,7 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
-| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Offer` |
+| `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OfferOverride` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the Offer |
 | [`schema:price`](https://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:priceCurrency`](https://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
@@ -2607,7 +2606,8 @@ Used for fully dynamic pricing, where price is not known at the point of purchas
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
-| [`schema:accountId`](https://schema.org/accountId)                  | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions related, which is used to aid reconciliation. |
+| `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `DynamicPayment` |
+| [`schema:accountId`](https://schema.org/accountId)                 | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | A reference used by the <a>Seller</a> to group transactions related, which is used to aid reconciliation. |
 
 
 ### `oa:BookingService`
@@ -2634,7 +2634,7 @@ Used for `termsOfService`.
 | `@type`                                                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Terms` |
 | [`schema:name`](https://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms. The name must distinguish this from other terms fields provided, e.g. "Terms and Conditions" or "Privacy Policy" |
 | [`schema:url`](https://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
-| [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
+| [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
 
 ### `oa:PrivacyPolicy`
 
@@ -2736,7 +2736,7 @@ This class has been modelled closely on [[!RFC7807]].
 
 | Property                                                           | Status      | Type | Notes |
 |--------------------------------------------------------------------|-------------|-|------|
-| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `Error` |
+| `@type`                                                            | REQUIRED    | [`schema:Text`](https://schema.org/Text) | `OpenBookingError` |
 | [`schema:name`](https://schema.org/name)                           | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A short, human-readable summary of the problem type, that MUST communicate the associated "Use Case" defined in this section of the specification. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. |
 | [`schema:description`](https://schema.org/description)             | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | A human-readable explanation specific to this occurrence of the problem, providing specific information about why the error occurred in this particular case. |
 | [`oa:instance`](https://openactive.io/instance)                    | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced. |
