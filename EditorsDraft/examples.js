@@ -637,7 +637,7 @@ var fullOrderItemExampleContent = { //broker
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
   "allowCustomerCancellationFullRefund": true,
-  "accessToken": [
+  "accessPass": [
     {
       "@type": "Barcode",
       "text": "0123456789",
@@ -771,7 +771,7 @@ var feedOrderItem = {
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request,
-  "accessToken": fullOrderItemExampleContent.accessToken
+  "accessPass": fullOrderItemExampleContent.accessPass
 }
 
 var persistedOrderItem = {
@@ -782,7 +782,7 @@ var persistedOrderItem = {
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,
-  "accessToken": fullOrderItemExampleContent.accessToken
+  "accessPass": fullOrderItemExampleContent.accessPass
 }
 
 var requestOrderItem = {
@@ -825,7 +825,7 @@ var responseOrderItem = {
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,
-  "accessToken": fullOrderItemExampleContent.accessToken
+  "accessPass": fullOrderItemExampleContent.accessPass
 }
 
 var responseOrderProposalOrderItem = {

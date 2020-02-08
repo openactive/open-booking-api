@@ -1943,11 +1943,11 @@ The URLs in the example are only illustrative.
 
 ## Access control
 
-For <a>Opportunities</a> that require entry into a restricted building or area to participate, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessToken`. An `accessCode` SHOULD be provided for manual use in the event that an `accessToken` fails.
+For <a>Opportunities</a> that require entry into a restricted building or area to participate, it is REQUIRED that `OrderItem` include unique access control data within `accessCode` and `accessPass`. An `accessCode` SHOULD be provided for manual use in the event that an `accessPass` fails.
 
-Each `accessCode` and `accessToken` MUST represent unique methods of entry, and MUST NOT be duplicated in different formats. For example, multiple formats (e.g. PNG, JPEG) of the same `accessToken` MUST NOT be supplied.
+Each `accessCode` and `accessPass` MUST represent unique methods of entry, and MUST NOT be duplicated in different formats. For example, multiple formats (e.g. PNG, JPEG) of the same `accessPass` MUST NOT be supplied.
 
-A <a>Broker</a> MUST make all supplied `accessToken`s and `accessCode`s available to the <a>Customer</a>, with the exception of `Barcode`s that do not have fallback image `url`. `Barcode`s without a `url` MAY be ignored if the <a>Broker</a> is unable to process them. 
+A <a>Broker</a> MUST make all supplied `accessPass`es and `accessCode`s available to the <a>Customer</a>, with the exception of `Barcode`s that do not have fallback image `url`. `Barcode`s without a `url` MAY be ignored if the <a>Broker</a> is unable to process them. 
 
 ### Text-based access control
 
@@ -1977,12 +1977,12 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` propert
 
 ### Image-based access control
 
-Images to be displayed to provide access, for example access tickets rendered by the booking system, MAY be included as an `ImageObject` within the `accessToken` array.
+Images to be displayed to provide access, for example access tickets rendered by the booking system, MAY be included as an `ImageObject` within the `accessPass` array.
 
 `ImageObject` MUST NOT be used for fallback images of a `Barcode`; the `url` property of the `Barcode` MUST be used for this purpose.
 
-<pre class="example" title="Example of ImageObject in accessToken">
-  "accessToken": [
+<pre class="example" title="Example of ImageObject in accessPass">
+  "accessPass": [
     {
       "@type": "ImageObject",
       "url": "https://access.example.com/476ac24c694da79c5e33731ebbb5f1"
@@ -1992,12 +1992,12 @@ Images to be displayed to provide access, for example access tickets rendered by
 
 ### Extension point for barcode-based access control
 
-Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcode` within the `accessToken` array. Note that `Barcode` subclasses `ImageObject`, allowing it to contain a fallback rendered barcode image `url` in addition to the raw barcode details. `Barcode`s SHOULD include a fallback image `url`.
+Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcode` within the `accessPass` array. Note that `Barcode` subclasses `ImageObject`, allowing it to contain a fallback rendered barcode image `url` in addition to the raw barcode details. `Barcode`s SHOULD include a fallback image `url`.
 
 Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
 
-<pre class="example" title="Example of Barcode in accessToken">
-  "accessToken": [
+<pre class="example" title="Example of Barcode in accessPass">
+  "accessPass": [
     {
       "@type": "Barcode",
       "url": "https://fallback.image.example.com/476ac24c694da79c5e33731ebbb5f1",
@@ -2447,7 +2447,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the <a>Broker</a>'s requests and the <a>Orders feed</a> MUST only include the `@type` and `@id` within these objects; in these contexts, all other properties are ignored. See [Opportunity data properties](#opportunity-data-properties). |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
-| [`oa:accessToken`](https://openactive.io/accessToken)              | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
+| [`oa:accessPass`](https://openactive.io/accessPass)                | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`schema:error`](https://schema.org/error)                          | -        | OPTIONAL    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` or `https://openactive.io/CustomerAttended` |
