@@ -2078,7 +2078,7 @@ The <a><b>C1</b></a> is an endpoint that accepts an `OrderQuote` without a `cust
 
 A PUT request to this endpoint of the <a>Booking System</a> with an object of type `OrderQuote` will return an `OrderQuote` which represents a "dry run" of the booking, with the state of the `Order` nearly identical to the result of <a><b>B</b></a> (except it excludes `customer`, `attendee`, `orderItemIntakeFormResponse` and the `payment` `identifier`), without any side effects (with the exception of optional leasing).
 
-Note that in a simple implementation that does not manage <a>Lease</a> state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> MAY be exactly the same endpoint that simply validates the `email` of the `customer` only if a `customer` value is supplied. Even for complex implementations, given the similarities between <a><b>C1</b></a> and <a><b>C2</b></a>, a single endpoint can used to cover both.
+Note that in a simple implementation that does not manage <a>Lease</a> state, attendee details, or additional details, <a><b>C1</b></a> and <a><b>C2</b></a> can be handled by the same underlying code that simply validates the `email` of the `customer` only if a `customer` value is supplied. Even for complex implementations, given the similarities between <a><b>C1</b></a> and <a><b>C2</b></a>, much of the business logic can be shared between both.
 
 <pre class="example" title="OrderQuote Creation C1: example request" data-transform="dataExampleOrderQuoteCreationC1Request">
 </pre>
