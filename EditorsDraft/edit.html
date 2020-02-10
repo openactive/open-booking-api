@@ -471,7 +471,7 @@ Described in the broadest possible terms, the Open Booking API defined by this s
 
 While this process is intuitively clear, some of its implications may be less so, and a number of common use-cases introduce a degree of additional complexity into the flow. For instance, a <a>Customer</a> will typically want to have an idea of how much a given `Offer` will cost before committing to attending an <a>Opportunity</a>. This means that before an `Order` can be created, an `OrderQuote` (a subclass of `Order`) needs to be provided. In addition, many <a>Seller</a>s will need to review their `Order`s before deciding to approve them because, for instance, they need to allocate shared resources such as caretakers to a number of <a>Customers</a>. This is the motivation for the [Booking Flow with Approval](#booking-flow-with-approval) sequence, and introduces to the flow the concept of `OrderProposal`s - another subclass of `Order`, which allows (re)modification by both parties and that requires explicit consent from both <a>Customer</a> and <a>Seller</a> before a new `Order` is created.
 
-The process of creating an `Order` online takes time, and for this reason some <a>Seller</a>s and <a>Broker</a>s may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
+The process of creating an `Order` online takes time, and for this reason some <a>Sellers</a> and <a>Brokers</a> may optionally offer their users a <a>Lease</a> - a provisional reservation of an <a>Opportunity</a>  that prevents it from being sold while the <a>Customer</a> is in the process of booking it.
 
 Typically <a>Sellers</a> keep track of bookings by means of an automated <a>Booking System</a>. This raises the problem of ensuring consistency in the state of information between the <a>Booking System</a> and the <a>Broker</a>. This difficulty is bridged by the concept of `Order` feeds, which publish all changes made to an `Order` by the <a>Booking System</a> after its initial successful response to the client's request to create it, and which is intended for consumption only by the <a>Broker</a>.
 
@@ -559,7 +559,7 @@ If a <a>Lease</a> is created at <a><b>C1</b></a> and/or <a><b>C2</b></a> it is u
 
 It is RECOMMENDED that if the <a>Booking System</a> supports leasing, it also guarantees the price of each leased item for the duration of the <a>Lease</a>, so that the <a>Customer</a> is guaranteed to pay the price they have seen during <a><b>C2</b></a>.
 
-The specification is designed to allow <a>Broker</a>s to be agnostic to <a>Leases</a>: should a <a>Booking System</a> be upgraded to support these, it can do so without affecting the <a>Broker</a>'s implementation.
+The specification is designed to allow <a>Brokers</a> to be agnostic to <a>Leases</a>: should a <a>Booking System</a> be upgraded to support these, it can do so without affecting the <a>Broker</a>'s implementation.
 
 By design, then, the use of <a>Leases</a> is largely transparent to the <a>Broker</a>. However, the <a>Booking System</a> MUST provide information on the <a>Lease</a> to help improve the user experience of the customer journey as follows: when a <a>Lease</a> is created, a `Lease` object MUST be returned in the `OrderQuote`.
 
@@ -852,7 +852,7 @@ Leasing works as specified in the [Simple Booking Flow](#simple-booking-flow), a
 
 A <a>Lease</a> is NOT REQUIRED for this flow, as in some cases <a>Sellers</a> may prefer to manage contention for spaces manually via the approval process instead of leasing.
 
-If an `OrderProposal` is in an `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected`, regardless of whether or not the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If at any point this is not the case, it is the responsibility of the <a>Booking System</a> to set the `orderProposalStatus` to `https://openactive.io/SellerRejected`, or if `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` includes `https://openactive.io/OpenBookingNegotiation`, to update the `OrderProposal` to remove or replace the offending `OrderItem`(s) with an appropriate `orderSellerNote`. For example, if an <a>Opportunity</a> becomes full or is cancelled and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected or updated.
+If an `OrderProposal` is in an `orderProposalStatus` other than `https://openactive.io/CustomerRejected` or `https://openactive.io/SellerRejected`, regardless of whether or not the <a>Lease</a> has expired, it MUST be possible for the <a>Customer</a> to still complete the booking if they attain approval. If at any point this is not the case, it is the responsibility of the <a>Booking System</a> to set the `orderProposalStatus` to `https://openactive.io/SellerRejected`, or if the `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` request includes `https://openactive.io/OpenBookingNegotiation` within the open data, to update the `OrderProposal` to remove or replace the offending `OrderItem`(s) with an appropriate `orderSellerNote`. For example, if an <a>Opportunity</a> becomes full or is cancelled and no substitute <a>Opportunities</a> are available, then all remaining outstanding `OrderProposal`s related to that <a>Opportunity</a> would need to be automatically rejected or updated.
 
 If the <a>Lease</a> expires the <a>Booking System</a> could, for example, automatically reject the `OrderProposal` on behalf of the `Seller`, automatically renew the <a>Lease</a>, or allow the <a>Seller</a> to manually deal with the contention for spaces as part of the approval process and hence do nothing.
 
@@ -950,7 +950,7 @@ For an `Order` that requires approval, the flow differs from the [Simple Booking
 
 i-iv) The steps **1. Select**; <a><b>C1</b></a>; **2. Identify**; and <a><b>C2</b></a> of this flow are exactly the same as [Simple Booking Flow](#simple-booking-flow) steps i-iv, except that `OrderQuote` is returned at <a><b>C1</b></a> and <a><b>C2</b></a> with `orderRequiresApproval` set to `true` if any `OrderItem`s require approval. In this case, the next step after <a><b>C2</b></a> MUST be to follow the [Booking Flow with Approval](#booking-flow-with-approval). 
 
-- The <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` for any `Offer`s that require this flow. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
+- The <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingApproval` within its open data for any `Offer`s that require this flow. This allows <a>Brokers</a> that do not support approval to easily filter out such offers from their experience.
 
 - For the avoidance of doubt, as in the [Simple Booking Flow](#simple-booking-flow):
 
@@ -996,7 +996,7 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
 
 - The <a>Broker</a> MUST NOT store an `orderCreationStatus` against the `OrderProposal`.
 
-- The `OrderProposal` MAY include an `orderCustomerNote` in order to allow the <a>Customer</a> to ask a question about this <a>Opportunity</a>, as the beginning of a [Message Exchange](#message-exchange), if the `openBookingFlowRequirement` of any `Offer` referenced in the `OrderProposal` includes `https://openactive.io/OpenBookingMessageExchange`.
+- The `OrderProposal` request MAY include an `orderCustomerNote` in order to allow the <a>Customer</a> to ask a question about this <a>Opportunity</a>, as the beginning of a [Message Exchange](#message-exchange). This is only permissible if the any `Offer` referenced in the `OrderProposal` includes an `openBookingFlowRequirement` property within the open data that contains `https://openactive.io/OpenBookingMessageExchange`.
 
 - To match much of the behaviour of <a><b>B</b></a> in the [Simple Booking Flow](#simple-booking-flow), the following also apply:
 
@@ -1110,7 +1110,7 @@ If attendee details in scope of the `Person` type are captured, they MUST be cap
 
 Note that conformance with this specification requires that the <a>Booking System</a> MUST NOT _require_ attendee data to be submitted in all cases, and that configuration of which attendee details are required (if any) MUST be available to the <a>Seller</a>.
 
-If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingAttendeeDetails` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support attendee details capture to easily filter out such offers from their experience.
+If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingAttendeeDetails` in the `Offer` within its open data. This allows <a>Brokers</a> that do not support attendee details capture to easily filter out such `Offer`s from their experience.
 
 <pre class="example" title="Example of attendeeDetailsRequired provided by Booking System at C1">
   {
@@ -1160,7 +1160,7 @@ The <a>Broker</a> MAY remember the attendee data previously submitted by the <a>
 
 This version of the specification does not provide comprehensive support for construction of a complex additional details capture form. However, it does facilitate the use of simple text fields, dropdowns and checkboxes to capture additional details. These can be used for both the [Simple Booking Flow](#simple-booking-flow) and the [Booking Flow with Approval](#booking-flow-with-approval).
 
-If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer`s within its open data. This allows <a>Brokers</a> that do not support such additional details capture to easily filter out such offers from their experience.
+If an `Offer` requires additional details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingIntakeForm` in the `Offer` within its open data. This allows <a>Brokers</a> that do not support such additional details capture to easily filter out such `Offer`s from their experience.
 
 Four types of form element are available, all of which sub-class `PropertyValueSpecification`:
 - `ShortAnswerFormFieldSpecification`
@@ -1618,7 +1618,7 @@ The use of `OfferOverride` always creates the behaviour equivalent to `advanceBo
 
 `latestCancellationBeforeStartDate` does not apply to `OfferOverride`, and is treated as unspecified. Hence cancellation is permissible based on the value `allowCustomerCancellationFullRefund` alone, and the <a>Broker</a> must handle any business logic for `latestCancellationBeforeStartDate`.
 
-The <a>Booking System</a> MUST include relevant `openBookingFlowRequirement` values in the `OfferOverride` response if any features of the specification that require such values are required.
+The <a>Booking System</a> MUST document the most comprehensive expected equivalent value of `openBookingFlowRequirement` that is applicable when an `OfferOverride` is requested by the <a>Broker</a>. This allows such <a>Brokers</a> to understand the features of this specification that may be used by the <a>Booking System</a>, and hence assess whether they are capable of completing the booking flow using `OfferOverride`.
 
 <pre class="example" title="Example of OfferOverride">
   "acceptedOffer": {
@@ -1680,6 +1680,8 @@ Bookable <a>Opportunities</a>:
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
 The <a>Broker</a> MUST NOT attempt to book an <a>Opportunity</a> that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
+
+The <a>Booking System</a> MUST include the `openBookingFlowRequirement` property within the `Offer`s in the <a>Opportunity Data</a> [[RPDE]] open feeds, only if any features of the specification covered by this property are required to book the `Offer`. This allows <a>Brokers</a> that do not support the specified features to easily filter out such `Offer`s from their experience. The `openBookingFlowRequirement` property MUST NOT be included in the request or response of any of the [endpoints](#endpoints) defined within this specification. 
 
 ### Booking restrictions
 
@@ -2479,14 +2481,14 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | -        | - | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | The channels through which a booking can be made. MUST be included in <a>Opportunity Data</a> [[RPDE]] open feeds, but MUST NOT be included in other requests or responses. Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment`. |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
-| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
+| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | -       | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange`. If any features of the specification covered by this property are required to book the `Offer`, the <a>Booking System</a> MUST include this property within `Offer`s in its <a>Opportunity Data</a> [[RPDE]] open feeds. This property MUST NOT be included in the request or response of any of the [endpoints](#endpoints) defined within this specification. |
 
 Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
 
 ### `schema:OfferOverride`
 
-`OfferOverride` subclasses `Offer`, but does not include the properties `availableChannel`, `advanceBooking`, `prepayment`, `ageRange`, `validFromBeforeStartDate`, `latestCancellationBeforeStartDate`.
+`OfferOverride` subclasses `Offer`, but does not include the properties `availableChannel`, `advanceBooking`, `prepayment`, `ageRange`, `validFromBeforeStartDate`, `latestCancellationBeforeStartDate`, and `openBookingFlowRequirement`.
 
 | Property                                                           | Broker Request | Booking System Response | Type | Notes |
 |--------------------------------------------------------------------|----------|----------|-|------|
@@ -2495,7 +2497,6 @@ Note that for an `Offer` to be bookable under this specification, `availableChan
 | [`schema:price`](https://schema.org/price)                          | REQUIRED | REQUIRED | [`schema:Float`](https://schema.org/Float) | The offer price available to participants, which includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:priceCurrency`](https://schema.org/priceCurrency)          | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | The currency of the `price`. Specified as a 3-letter ISO 4217 value. If a `PriceSpecification` has a zero `price`, then this property is not required. Otherwise the `priceCurrency` MUST be specified. |
 | [`schema:name`](https://schema.org/name)                            | RECOMMENDED | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The name of the `Offer` suitable for communication to participants. |
-| [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | OPTIONAL | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange` |
 
 
 ### `schema:Person` for `customer` or `attendee`
@@ -2859,6 +2860,7 @@ To avoid this, the goal will be to:
 - Evolve the definitions of existing properties to broadly retain their current meaning and legal values, and to ensure that changes remain compatible with existing interfaces.
 - Deprecate, rather than remove properties or functionality that are judged, based on implementation experience, to be less useful or confusing. Deprecated properties will be clearly marked in both the human and machine-readable versions of the OpenActive namespace.
 - Use version numbering to indicate potential for breaking changes. Minor versions, e.g. 1.1, 2.1, etc should be backwards compatible. Major versions, e.g. 2.0, 3.0 are likely to include breaking changes.
+- Additional features within minor version specification releases that are required to complete a booking for a particular opportunity should make use of the `openBookingFlowRequirement` property in the open data feeds to allow <a>Brokers</a> to ignore such opportunities if they do not support the requisite feature.
 - Proposed changes to the specification will also be communicated in advance of their formal release, through the sharing of public Editor's Drafts. This will provide opportunities for implementers to update their applications.
 
 
