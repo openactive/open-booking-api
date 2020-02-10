@@ -2004,6 +2004,8 @@ Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcod
 
 Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
 
+Additionally where use of an existing barcode is desirable (for example, the barcode on a <a>Broker</a>'s own membership card) the <a>Broker</a> MAY include a `Barcode` in the `accessPass` property against individual `OrderItem`s in the request to <a><b>B</b></a>. If the <a>Booking System</a> is able to accept such existing barcodes, it SHOULD reflect back the specified `Barcode` in the `accessPass` array in the response along with any other valid access control options.
+
 <pre class="example" title="Example of Barcode in accessPass">
   "accessPass": [
     {
@@ -2014,7 +2016,6 @@ Due to the variety of barcode formats available, the specification expects the `
     }
   ],
 </pre>
-
 
 
 </section>
@@ -2454,7 +2455,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the <a>Broker</a>'s requests and the <a>Orders feed</a> MUST only include the `@type` and `@id` within these objects; in these contexts, all other properties are ignored. See [Opportunity data properties](#opportunity-data-properties). |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
-| [`oa:accessPass`](https://openactive.io/accessPass)                | -        | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
+| [`oa:accessPass`](https://openactive.io/accessPass)                | OPTIONAL | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
 | [`schema:error`](https://schema.org/error)                          | -        | OPTIONAL    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the OrderItem being included in the Order, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderConfirmed` or `https://openactive.io/CustomerAttended` |
