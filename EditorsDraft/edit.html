@@ -1651,7 +1651,7 @@ Before entering into the Booking Flow, the <a>Customer</a> MUST have selected at
 
 The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `HeadlineEvent`, `Slot` or `CourseInstance` with an `Offer` is deemed to be <dfn data-lt="bookability">bookable</dfn> via the Open Booking API if the `Offer` is applicable to the <a>Opportunity</a> following the principles of `Offer` inheritance contained in [[Modelling-Opportunity-Data]], and if both the <a>Opportunity</a> and `Offer` meet the criteria specified below.
 
-Bookable `Offer`s:
+<a>Bookable</a> `Offer`s:
 
 - Include an `@id`.
 
@@ -1661,7 +1661,7 @@ Bookable `Offer`s:
 
 - The `Offer` is current based on `validFromBeforeStartDate`.
 
-Bookable <a>Opportunities</a>:
+<a>Bookable</a> <a>Opportunities</a>:
 
 - Include an `@id`.
 
@@ -1679,7 +1679,7 @@ Bookable <a>Opportunities</a>:
 
 - The <a>Broker</a> has machine readable permission to access the relevant instance of a compliant Open Booking API provided by the <a>Booking System</a> via an API key or similar token.
 
-The <a>Broker</a> MUST NOT attempt to book an <a>Opportunity</a> that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `UnavailableOpportunityError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
+The <a>Broker</a> MUST NOT attempt to book an <a>Opportunity</a> that is not <a>bookable</a> by the above criteria. The <a>Booking System</a> MUST include an `error` of value `OpportunityOfferPairNotBookableError` against each `OrderItem` in the `OrderQuote` that is not <a>bookable</a>.
 
 The <a>Booking System</a> MUST include the `openBookingFlowRequirement` property within the `Offer`s in the <a>Opportunity Data</a> [[RPDE]] open feeds, only if any features of the specification covered by this property are required to book the `Offer`. This allows <a>Brokers</a> that do not support the specified features to easily filter out such `Offer`s from their experience. The `openBookingFlowRequirement` property MUST NOT be included in the request or response of any of the [endpoints](#endpoints) defined within this specification. 
 
@@ -2452,7 +2452,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. MUST NOT be included if `taxCalculationExcluded` is `true`. |
 | [`schema:acceptedOffer`](https://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
-| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific bookable Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the <a>Broker</a>'s requests and the <a>Orders feed</a> MUST only include the `@type` and `@id` within these objects; in these contexts, all other properties are ignored. See [Opportunity data properties](#opportunity-data-properties). |
+| [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific <a>bookable</a> Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the <a>Broker</a>'s requests and the <a>Orders feed</a> MUST only include the `@type` and `@id` within these objects; in these contexts, all other properties are ignored. See [Opportunity data properties](#opportunity-data-properties). |
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessPass`](https://openactive.io/accessPass)                | OPTIONAL | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
@@ -2484,7 +2484,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
 | [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | -       | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange`. If any features of the specification covered by this property are required to book the `Offer`, the <a>Booking System</a> MUST include this property within `Offer`s in its <a>Opportunity Data</a> [[RPDE]] open feeds. This property MUST NOT be included in the request or response of any of the [endpoints](#endpoints) defined within this specification. |
 
-Note that for an `Offer` to be bookable under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
+Note that for an `Offer` to be <a>bookable</a> under this specification, `availableChannel` must include `https://openactive.io/OpenBookingPrepayment`.
 
 
 ### `schema:OfferOverride`
@@ -2797,7 +2797,7 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the <a>Opportunity</a>. |
 | `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
 | `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |
-| `UnavailableOpportunityError`               | 409         | If the `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
+| `OpportunityOfferPairNotBookableError`      | 409         | If the `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
 | `OpportunityIsInConflictError`              | 409         | If the specific `OrderItem`s against which this error is emitted are not able to be booked together. |
 | `OpportunityIsFullError`                    | 409         | If there are no available spaces for the <a>Opportunity</a> contained in the `orderedItem` property. |
 | `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the <a>Opportunity</a> contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
