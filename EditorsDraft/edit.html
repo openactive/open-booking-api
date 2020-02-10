@@ -752,7 +752,7 @@ If the `orderCreationStatus` is `https://openactive.io/OrderCreationPaymentAutho
 - Cancel the associated Payment Authorisation from the <a>Payment Provider</a>.
 - Soft delete the contents of the `Order` from the <a>Broker</a> (deleting any personal data, while retaining data required for audit), retaining the <a>Order UUID</a>.
 
-Note that the <a>Order UUID</a> is retained so that any related entries in the <a>Orders Feed</a> can be appropriately assigned and ignored.
+Note that the <a>Order UUID</a> is retained so that any related entries in the <a>Orders feed</a> can be appropriately assigned and ignored.
 
 
 ### Contracts
@@ -765,7 +765,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Broker</a> MUST call <a><b>C2</b></a> (with <a>Customer</a> details), to retrieve the total order, providing all required details and resulting in no errors before calling <a><b>B</b></a>.
 - The <a>Broker</a> MUST call <a><b>B</b></a> (with payment identifier if relevant), and MUST store the resulting `Order`.
 - If <a><b>B</b></a> fails, the <a>Broker</a> MUST cancel the payment authorisation without any consequence to the <a>Customer</a> or <a>Seller</a>.
-- The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>, specifically monitoring the <a>Orders Feed</a> for cancellations.
+- The <a>Broker</a> MUST process all updates to the `Order` from the <a>Orders feed</a>, specifically monitoring the <a>Orders feed</a> for cancellations.
 - The <a>Broker</a> MUST generate an <a>Order UUID</a>, and use it consistently during the booking flow.
 - The <a>Broker</a> MUST NOT reuse <a>Order UUID</a>s across complete or incomplete `Order`s.
 - The <a>Broker</a> MUST make the <a>Customer</a> aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before they commit to the booking.
@@ -782,7 +782,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Booking System</a> MUST store the <a>Order UUID</a> as part of the `Order` (and `OrderQuote` if leasing is enabled).
 - The <a>Booking System</a> MUST refuse attempts to create new orders with a previously used <a>Order UUID</a>.
 - The <a>Booking System</a> MUST check availability and confirm pricing during <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> to ensure booking can complete.
-- The <a>Booking System</a> MUST provide an authenticated <a>Orders Feed</a> specific to the <a>Broker</a>. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
+- The <a>Booking System</a> MUST provide an authenticated <a>Orders feed</a> specific to the <a>Broker</a>. The contents of this feed will consist of all <a>Orders</a> updated by the Booking System.
 - The <a>Booking System</a> MUST provide [[RPDE]] open feeds of <a>Opportunity Data</a>, including pricing and availability.
 - The <a>Booking System</a> MUST ensure that all endpoints defined in this specification are idempotent.
 - The <a>Booking System</a> MUST include the full <a>Seller</a> details in the `seller` property of the response at <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a>, as such details are not included within the [opportunity data properties](#opportunity-data-properties).
@@ -900,7 +900,7 @@ Note that when `Offer`s that require approval are mixed with `Offer`s that do no
 ##### Proposal Approval
 
 - If <a>Seller</a> approval is given, the <a>Booking System</a> MUST set `orderProposalStatus` to `https://openactive.io/SellerAccepted` in the <a>Orders feed</a>, which will give the <a>Broker</a> permission to proceed to <a><b>B</b></a>.
-- For the [Minimal Proposal Implementation](#minimal-proposal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders Feed</a> matches the original `orderProposalVersion` returned at <a><b>P</b></a>. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
+- For the [Minimal Proposal Implementation](#minimal-proposal-implementation), the <a>Broker</a> must check that the `orderProposalVersion` received in the <a>Orders feed</a> matches the original `orderProposalVersion` returned at <a><b>P</b></a>. If this is the case the <a>Broker</a> may seek <a>Customer</a> confirmation to proceed, or may simply proceed with <a><b>B</b></a> automatically, depending on the desired user experience. If this is not the case, the scenario MUST be handled via the [Proposal Amendment](#proposal-amendment) process.
 
 ##### Proposal Rejection
 
@@ -1851,7 +1851,7 @@ Note also that the <a>Orders feed</a> is designed specifically such that it does
 
 A new `Order` MUST NOT be communicated externally by the <a>Broker</a> and other operations such as cancellation MUST NOT be possible until it has reached the `orderCreationStatus` of `https://openactive.io/OrderCreationComplete`, after which the `orderCreationStatus` can be completely ignored.
 
-New `OrderProposal`s MUST be stored by the <a>Broker</a> based on a successful response to the Order Proposal call.
+New `OrderProposal`s MUST be stored by the <a>Broker</a> based on a successful response to <a><b>P</b></a>.
 
 New `Order`s and `OrderProposal`s are not included in the feed until they have been updated at least once. This minimises the volume of `Order`s in the <a>Orders feed</a>, and allows the polling frequency of the feed to be greatly reduced, which reduces the overall load on the <a>Booking System</a>.
 
@@ -2034,11 +2034,11 @@ All <a>Booking System</a> endpoints defined in this specification MUST be idempo
 
 Due to API discovery, the paths specified are relative to the <a>Base URI</a>. This <a>Base URI</a> must be used consistently within an implementation. It is the responsibility of the <a>Booking System</a> to advertise the <a>Base URI</a> via the [[Dataset-API-Discovery]] specification.
 
-The absolute URL of the <a>Orders Feed</a> MAY be separately discoverable, independently of the <a>Base URI</a>, provided that such discovery is consistent with the [[Dataset-API-Discovery]] specification. If such an absolute URL is available, it MUST be used instead of the relative path defined within this specification.
+The absolute URL of the <a>Orders feed</a> MAY be separately discoverable, independently of the <a>Base URI</a>, provided that such discovery is consistent with the [[Dataset-API-Discovery]] specification. If such an absolute URL is available, it MUST be used instead of the relative path defined within this specification.
 
-With the exception of the <a>Orders Feed</a>, all endpoints MUST accept an <a>Order UUID</a> as the final segment of their path. This is indicated by the placeholder `{uuid}` in the relative paths in the table below. The value of this <a>Order UUID</a> is supplied by the <a>Broker</a>, as described throughout this specification.
+With the exception of the <a>Orders feed</a>, all endpoints MUST accept an <a>Order UUID</a> as the final segment of their path. This is indicated by the placeholder `{uuid}` in the relative paths in the table below. The value of this <a>Order UUID</a> is supplied by the <a>Broker</a>, as described throughout this specification.
 
-<a>Brokers</a> MUST only access the endpoints using the paths described in this specification, with the exception of the absolute URL of the <a>Orders Feed</a>, if available.
+<a>Brokers</a> MUST only access the endpoints using the paths described in this specification, with the exception of the absolute URL of the <a>Orders feed</a>, if available.
 
 
 A summary of endpoints defined by this specification is provided:
@@ -2064,7 +2064,7 @@ Note that practically all `Order` endpoints above (those that relate to `Order` 
 
 An `Order` with a particular <a>Order UUID</a> MUST only exist as either an `Order`, `OrderQuote` or `OrderProposal` at a single point in time.
 
-Hence the Order Status endpoint SHOULD return any stored `Order`, `OrderQuote` or `OrderProposal` with that <a>Order UUID</a>, and the <a>Orders Feed</a> MUST return both `Order` and `OrderProposal` items (noting that `OrderQuote` are not included in the <a>Orders Feed</a>).
+Hence the Order Status endpoint SHOULD return any stored `Order`, `OrderQuote` or `OrderProposal` with that <a>Order UUID</a>, and the <a>Orders feed</a> MUST return both `Order` and `OrderProposal` items (noting that `OrderQuote` are not included in the <a>Orders feed</a>).
 
 To aid the reader in their semantic reasoning, from a REST perspective, there are four resources:
 - `/order-quote-templates` and `/order-quotes` - both are a collection resource of `OrderQuote`s. These are always ephemeral, so are created only for the duration of the PUT request, unless the <a>Booking System</a> chooses to persist them, in which case they exist until the <a>Lease</a> expires or an `OrderProposal` or `Order` is created. If persisted, `/order-quote-templates` appear immediately in `/order-quotes`, in order that they can be deleted via [OrderQuote Deletion](#orderquote-deletion).
@@ -2359,7 +2359,7 @@ Applications that implement this API MUST ignore any properties that they do not
 |---------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                             | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `Order` |
 | `@id`                                                               | -        | REQUIRED | URI | A URI providing a unique identifier for the resource, which MUST be constructed as specified depending on the whether the resource was created at <a><b>C1</b></a> / <a><b>C2</b></a> (`{baseUri}/order-quotes/{uuid}`), <a><b>P</b></a> (`{baseUri}/order-proposals/{uuid}`) or <a><b>B</b></a> (`{baseUri}/orders/{uuid}`), based on the <a>Base URI</a> and <a>Order UUID</a>. |
-| [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The <a>Order UUID</a> of the `Order`, `OrderQuote` or `OrderProposal`, which is REQUIRED within the <a>Orders Feed</a>. |
+| [`schema:identifier`](https://schema.org/identifier)                | -        | OPTIONAL | [`schema:Text`](https://schema.org/Text) | The <a>Order UUID</a> of the `Order`, `OrderQuote` or `OrderProposal`, which is REQUIRED within the <a>Orders feed</a>. |
 | [`schema:seller`](https://schema.org/seller)                        | REQUIRED | REQUIRED |  [`schema:Organization`](https://schema.org/Organization) or a [`schema:Person`](https://schema.org/Person) | The organisation or person providing access to events or facilities via a <a>Booking System</a>. e.g. a leisure provider or independent running a yoga classes. |
 | [`oa:taxCalculationExcluded`](https://openactive.io/taxCalculationExcluded) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Set to `true` when business-to-business tax calculation is required by the `seller` or `brokerRole` settings, but not supported by the <a>Broker</a>. |
 | [`schema:broker`](https://schema.org/broker)                        | REQUIRED | REQUIRED | [`schema:Organization`](https://schema.org/Organization) | The organisation, independent of the <a>Seller</a>, that provides an application allowing <a>Customers</a> to make bookings. If `brokerRole` is set to `https://openactive.io/NoBroker` this property MUST NOT be included. |
@@ -2372,7 +2372,7 @@ Applications that implement this API MUST ignore any properties that they do not
 | [`oa:totalPaymentTax`](https://openactive.io/totalPaymentTax)       | -        | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the Order. MUST NOT be included if `taxCalculationExcluded` is `true`. |
 | [`oa:payment`](https://openactive.io/payment)                       | RECOMMENDED | OPTIONAL | [`oa:Payment`](https://openactive.io/Payment) | The payment associated with the Order by the <a>Broker</a>. It is REQUIRED for cases where a payment has been taken. |
 | [`oa:orderCreationStatus`](https://openactive.io/orderCreationStatus) | -      | -        | [`oa:OrderCreationStatus`](https://openactive.io/OrderCreationStatus) | Can include `https://openactive.io/OrderCreationPaymentAuthorized`, `https://openactive.io/OrderCreationPaymentDue`, `https://openactive.io/OrderCreationPaymentCaptured`, `https://openactive.io/OrderCreationComplete`. This property is internal to the <a>Broker</a> in this version of the specification. |
-| [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | -    | -        | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. This URL MUST be constructed by appending `/versions/{versionUUID}` to the `@id` of the `OrderProposal`, where `{versionUUID}` is replaced by the <a>OrderProposal Version UUID</a>. This property MUST only be included in the `OrderProposal` responses from the <a>Booking System</a> and in the <a>Orders Feed</a>, and in the `Order` request at <a><b>B</b></a>. It MUST NOT be included in `OrderQuote` requests or responses, or in `Order` responses. |
+| [`oa:orderProposalVersion`](https://openactive.io/orderProposalVersion) | -    | -        | [`schema:URL`](https://schema.org/URL) | The unique URL representing this version of the `OrderProposal`, or the version of the `OrderProposal` to which this `Order` is related. This URL MUST be constructed by appending `/versions/{versionUUID}` to the `@id` of the `OrderProposal`, where `{versionUUID}` is replaced by the <a>OrderProposal Version UUID</a>. This property MUST only be included in the `OrderProposal` responses from the <a>Booking System</a> and in the <a>Orders feed</a>, and in the `Order` request at <a><b>B</b></a>. It MUST NOT be included in `OrderQuote` requests or responses, or in `Order` responses. |
 
 
 ### `oa:OrderQuote`
@@ -2447,7 +2447,7 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 |--------------------------------------------------------------------|----------|----------|-|------|
 | `@type`                                                            | REQUIRED | REQUIRED | [`schema:Text`](https://schema.org/Text) | `OrderItem` |
 | `@id`                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the `OrderItem`, which SHOULD be constructed by appending `#/orderedItem/{orderItemId}` to the `@id` of the `Order`, where `{orderItemId}` is replaced by the `identifier` of the `OrderItem`, which may be a string or an integer depending on the <a>Booking System</a>. This is REQUIRED for <a><b>B</b></a> responses and MUST NOT be included for <a><b>C1</b></a>, <a><b>C2</b></a> or <a><b>P</b></a> responses. |
-| [`schema:position`](https://schema.org/position)                    | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | An integer representing the order of `OrderItem`s within the array, as JSON-LD does not support array ordering. This allows the <a>Broker</a> to match any `error`s provided in the response to their request. The `position` of an `OrderItem` in the response MUST match the `position` for the same `OrderItem` provided in request, and implementations MUST use this value to match responses with requests instead of relying on the order of the elements in the array. This is REQUIRED for <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> and <a><b>B</b></a> requests and responses, but MUST NOT be persisted or be present in the <a>Orders Feed</a> or other endpoints. |
+| [`schema:position`](https://schema.org/position)                    | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | An integer representing the order of `OrderItem`s within the array, as JSON-LD does not support array ordering. This allows the <a>Broker</a> to match any `error`s provided in the response to their request. The `position` of an `OrderItem` in the response MUST match the `position` for the same `OrderItem` provided in request, and implementations MUST use this value to match responses with requests instead of relying on the order of the elements in the array. This is REQUIRED for <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> and <a><b>B</b></a> requests and responses, but MUST NOT be persisted or be present in the <a>Orders feed</a> or other endpoints. |
 | [`schema:orderItemStatus`](https://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderStatus`](https://schema.org/OrderStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderProposed`, `https://openactive.io/OrderConfirmed`, or `https://openactive.io/CustomerAttended` |
 | [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. MUST NOT be included if `taxCalculationExcluded` is `true`. |
@@ -3030,7 +3030,7 @@ All of the API transactions described in this document MUST require authenticati
 
 The term <dfn>Booking Partner</dfn> is used to refer to the authenticating party represented by the <a>Authentication Credentials</a>, which is distinct from the <a>Broker</a> represented by the `broker` property. The <a>Booking Partner</a> may be a <a>Broker</a>, or a <a>Middleware</a>, or any other authenticating party (including the <a>Seller</a> if `brokerRole` is set to `NoBroker`).
 
-<a>Authentication Credentials</a> also grant granular authorisation for the specific <a>Booking Partner</a> to access all [endpoints](#endpoints) on behalf of explicitly consenting <a>Sellers</a>; with the exception of the <a>Orders Feed</a>, which does not require granular authorisation. Access to a single <a>Orders Feed</a> containing data items relating to all authorised <a>Sellers</a> of the <a>Booking Partner</a> MUST be available via their <a>Authentication Credentials</a>, and such data items MUST be marked as [[RPDE]] `"state": "deleted"` when such authorisation is revoked.
+<a>Authentication Credentials</a> also grant granular authorisation for the specific <a>Booking Partner</a> to access all [endpoints](#endpoints) on behalf of explicitly consenting <a>Sellers</a>; with the exception of the <a>Orders feed</a>, which does not require granular authorisation. Access to a single <a>Orders feed</a> containing data items relating to all authorised <a>Sellers</a> of the <a>Booking Partner</a> MUST be available via their <a>Authentication Credentials</a>, and such data items MUST be marked as [[RPDE]] `"state": "deleted"` when such authorisation is revoked.
 
 <a>Authentication Credentials</a> MUST be capable of being reprovisioned (e.g. a new [[OAuth2]] Client Secret generated) without losing any association to their related `Order` data.
 
