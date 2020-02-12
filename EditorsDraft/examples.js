@@ -358,7 +358,6 @@ window.dataExampleOrderFeedResponse = (utils, content) => {
           "@type": "Order",
           "@id": fullOrderExampleContent['@id'].order,
           "identifier": UUID,
-          "seller": fullOrderExampleContent.seller.response,
           "orderedItem": [feedOrderItem],
           "totalPaymentDue": fullOrderExampleContent.totalPaymentDue.oneItem,
           "totalPaymentTax": fullOrderExampleContent.totalPaymentTax.oneItem
