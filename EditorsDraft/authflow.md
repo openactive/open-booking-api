@@ -6,7 +6,7 @@ ODI
 
 Although the specification currently recommends OAuth2 for API implementation, it does not give concrete recommendations around how this should be implemented.
 
-Such recommendations would allow for convergence of authentication between booking systems, which would greatly simplify the broker's integration requirements and lower the barrier to entry for them
+Such recommendations would allow for convergence of authentication between booking systems, which would greatly simplify the broker's integration requirements and lower the barrier to entry for them: especially for Booking Systems that support multiple Sellers.
 
 ## Proposal
 
@@ -14,29 +14,31 @@ This proposal suggests updates to the specification as follows, based on the pri
 
 ### 11.7.1 API level authentication and data security
 
-This specification does not mandate a particular authentication method, but its recommendation is that implementors should consider using [OAuth2] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a JavaScript web application or between servers). For <a>Booking Systems</a> that support multiple <a>Sellers</a>, OpenID Connect ([[OpenIdConnect]]) is recommended in addition to this for the <a>Booking Partner</a> to access a particular <a>Seller</a>.
+This specification does not mandate a particular authentication method, but its recommendation is that implementers should consider using [OAuth2] as it is well-defined, widely supported and can be used in a variety of different application flows (e.g. via a JavaScript web application or between servers). For <a>Booking Systems</a> that support multiple <a>Sellers</a>, OpenID Connect ([[OpenIdConnect]]) is recommended in addition to this for the <a>Booking Partner</a> to access a particular <a>Seller</a>.
 
-### 11.7.4 OpenID Connect for Multiple Seller Systems
+### 11.7.4 OpenID Connect Booking Partner Authentication for Multiple Seller Systems
 
 For <a>Booking Systems</a> that support multiple <a>Sellers</a>, OpenID Connect ([[OpenIdConnect]]) is recommended when providing the <a>Booking Partner</a> access to a particular <a>Seller</a>.
 
 In order to support convergence amongst implementations, a number of recommendations are included below, which include recommended terms for names of <a>Scopes</a> and <a>Claims</a>.
 
+This section requires a basic understanding of OpenID Connect.
+
 #### OAuth Flows and Scopes
 
-The objective of an OAuth flow is for the <a>Booking Partner</a> to aquire an <dfn>Access Token<dfn>, which is the <a>Authentication Credential</a> that allow for access to a subset the Open Booking API endpoints of the <a>Booking System</a> for a particular <a>Seller</a>.
+The objective of an OAuth flow is for the <a>Booking Partner</a> to acquire an <dfn>Access Token</dfn>, which is an <a>Authentication Credential</a> that provides access to a subset the Open Booking API [endpoints](#endpoints) of the <a>Booking System</a> for a particular <a>Seller</a>, or to the <a>Orders feed</a> for all authorised <a>Sellers</a>.
 
-The <a>Access Token</a> SHOULD be included in the `Authorization` header of the request to access the Open Booking API endpoints.
+The <a>Booking Partner</a> SHOULD include the relevant <a>Access Token</a> in the `Authorization` header when accessing the Open Booking API endpoints.
 
-An expiry duration of 15 minutes is RECOMMENDED for <a>Access Token</a> expiry, to give the <a>Seller</a> control over the relationship.
+An expiry duration of 15 minutes is RECOMMENDED for <a>Access Token</a>, to ensure the <a>Seller</a> has sufficient control.
 
 The recommended flows are as following:
 
-- <a>Authorization Code Flow</a> for <a>Sellers</a> to approve <a>Booking Partners</a> to interact with bookings.
+- <a>Authorization Code Flow</a> for <a>Sellers</a> to approve <a>Booking Partners</a> to interact with bookings on their behalf.
 
-- <a>Client Credentials Flow</a> to provide access to the <a>Orders feed</a>.
+- <a>Client Credentials Flow</a> to provide access to a single <a>Orders feed</a> for all authorised <a>Sellers</a>.
 
-An OAuth <dfn>Scope<dfn> defines access to a set of endpoints, and also expectations about <a>Claims</a> returned. <a>Access Token</a> can be requested that includes a number of scopes, via the relevant OAuth flow.
+An OAuth <dfn>Scope</dfn> defines access to a set of endpoints, and also expectations about <a>Claims</a> returned. An <a>Access Token</a> can be requested that includes a number of scopes, via the relevant OAuth flow.
 
 The RECOMMENDED <a>Scopes</a> and flows are defined in the table below:
 
@@ -78,9 +80,14 @@ In order to implement functionality to suspend bookings temporarily with a parti
 
 ##### Authorization Code Flow
 
-To access any of the [endpoints](#endpoints) defined in this specification other than the [Orders RPDE Feed](#orders-rpde-feed), the <a>Booking Partner</a> SHOULD first acquire a valid <a>Access Token<a> with an `openactive-openbooking` <a>Scope</a>, by having a particular <a>Seller</a> complete the <a>Authorization Code Flow</a>. <a>Sellers</a> will be familiar with this flow from websites that offer "Login with my social media account".
+To access any of the [endpoints](#endpoints) defined in this specification other than the [Orders RPDE Feed](#orders-rpde-feed), the <a>Booking Partner</a> SHOULD first acquire a valid <a>Access Token</a> with an `openactive-openbooking` <a>Scope</a>, by having a particular <a>Seller</a> complete the <dfn>Authorization Code Flow</dfn>.
 
-![Example authorization page for a booking partner, presented by a booking system.](../../../.gitbook/assets/seller-authentication-diagram-1.png)
+This flow presents the <a>Seller</a> with an authentication and consent prompt, that they will be familiar from websites that offer "Login with my social media account" functionality:
+
+<figure>
+ <img src="seller-authentication.png" alt="Seller Authentication Page">
+ <figcaption>Example authorization page for a Booking Partner, presented by a Booking System.</figcaption>
+</figure>
 
 A <dfn>Refresh Token</dfn> SHOULD also be also provided during this flow, which allows the <a>Booking Partner</a> to request another <a>Access Token</a> once it has expired, without the <a>Seller</a> needing to reauthenticate.
 
@@ -88,9 +95,12 @@ Additionally, a "one-time usage" <dfn>ID Token</dfn> SHOULD be provided during t
 
 The Authorization Request of this flow SHOULD include the `openactive-openbooking`, `openid`, and `offline_access` <a>Scopes</a>, to ensure that an <a>Access Token</a>, <a>ID Token</a> and <a>Refresh Token</a> are all returned for the authenticating <a>Seller</a>.
 
-For this flow, it is RECOMMENDED that the OpenID Connect subject is not the end user who is following the OAuth flow, but is instead the <a>Seller</a> that they represent - such that if, for example, the end user no longer works for the <a>Seller</a> and deletes their account, their authentication grants remain unaffected. This recommendation conforms with OpenID Connect from a technical perspective, which is useful when leveraging existing libraries.
+For this flow, it is RECOMMENDED that the OpenID Connect subject is not the end user who is following the OAuth flow, but is instead the <a>Seller</a> that they represent - such that if, for example, the end user no longer works for the <a>Seller</a> and deletes their account, their authentication grants remain unaffected. This recommendation conforms with OpenID Connect from a technical perspective, which is useful when utilising existing libraries.
 
-![Authorization Code Flow](../../../.gitbook/assets/authorization-code-flow-1.png)
+<figure>
+ <img src="authorization-code-flow.png" alt="Authorization Code Flow">
+ <figcaption>Authorization Code Flow</figcaption>
+</figure>
 
 
 ##### Client Credentials Flow
@@ -99,7 +109,10 @@ The straightforward <dfn>Client Credentials Flow</dfn> SHOULD be used to retriev
 
 The Authorization Request of the flow SHOULD include only the `openactive-ordersfeed` <a>Scope</a>.
 
-![Client Credentials Flow](../../../.gitbook/assets/client-credentials-flow.png)
+<figure>
+ <img src="client-credentials-flow.png" alt="Client Credentials Flow">
+ <figcaption>Client Credentials Flow</figcaption>
+</figure>
 
 
 #### Custom Claims
@@ -148,7 +161,7 @@ The <a>Access Token</a> is only read internally by the <a>Booking System</a>, an
         href="https://tools.ietf.org/html/draft-ietf-oauth-token-exchange-19#section-4.3">future OAuth 2.0 specification</a>, and it is RECOMMENDED that the newly specified claim is used in preference to this one, once ratified.</td>
       <td
       style="text-align:left">
-        <p><code>openactive-openbooking</code> and <code>openactive-ordersfeed </code>
+        <p><code>openactive-openbooking</code> and <code>openactive-ordersfeed</code>
         </p>
         </td>
     </tr>
