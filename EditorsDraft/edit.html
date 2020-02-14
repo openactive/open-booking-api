@@ -443,18 +443,18 @@ by this specification is scoped tightly to only specify interactions between the
  of this specification being between <a>Broker</a> and <a>Booking System</a>.</figcaption>
 </figure>
 
-    <dl class="typography">
-        <dt><dfn>Customer</dfn></dt>
-        <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, e.g. a parent may book on behalf of their child.</dd>
-        <dt><dfn>Broker</dfn></dt>
-        <dd>The organisation, independent of the <a>Seller</a>, that provides an application allowing <a>Customers</a> to make bookings. For simplicity the API client is referred to as the <a>Broker</a> throughout this specification, however other API clients are permissible, and <a>Booking Partner</a> is the collective term for different types of clients of this API.</dd>
-        <dt><dfn>Booking System</dfn></dt>
-        <dd>The organisation providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.</dd>
-        <dt><dfn>Seller</dfn></dt>
-        <dd>The organisation providing access to events or facilities via a <a>Booking System</a> e.g. a leisure provider running yoga classes.</dd>
-        <dt><dfn>Payment Provider</dfn></dt>
-        <dd>The notional service providing payment processing between the <a>Customer</a>, <a>Broker</a> and <a>Seller</a>. Although this specification refers to the <a>Payment Provider</a> as a single notional service, it may in reality be composed of multiple connected services providing the same functionality to allow for the widest variety of business models.</dd>
-    </dl>
+<dl class="typography">
+    <dt><dfn>Customer</dfn></dt>
+    <dd>The user who places a booking using an application provided by a <a>Broker</a>. The <a>Customer</a> is not necessarily the attendee, e.g. a parent may book on behalf of their child.</dd>
+    <dt><dfn>Broker</dfn></dt>
+    <dd>The organisation, independent of the <a>Seller</a>, that provides an application allowing <a>Customers</a> to make bookings. For simplicity the API client is referred to as the <a>Broker</a> throughout this specification, however other API clients are permissible, and <a>Booking Partner</a> is the collective term for different types of clients of this API.</dd>
+    <dt><dfn>Booking System</dfn></dt>
+    <dd>The organisation providing an application that maintains bookable inventory on behalf of the <a>Seller</a>. The platform or service that provides a server-side implementation of this API.</dd>
+    <dt><dfn>Seller</dfn></dt>
+    <dd>The organisation providing access to events or facilities via a <a>Booking System</a> e.g. a leisure provider running yoga classes.</dd>
+    <dt><dfn>Payment Provider</dfn></dt>
+    <dd>The notional service providing payment processing between the <a>Customer</a>, <a>Broker</a> and <a>Seller</a>. Although this specification refers to the <a>Payment Provider</a> as a single notional service, it may in reality be composed of multiple connected services providing the same functionality to allow for the widest variety of business models.</dd>
+</dl>
 
 </section>
 
@@ -958,10 +958,10 @@ i-iv) The steps **1. Select**; <a><b>C1</b></a>; **2. Identify**; and <a><b>C2</
 
 <ul>
 
-    - Additional data is supplied at <a><b>C2</b></a>  to satisfy the `orderItemIntakeForm` for all `OrderItem`s in <a><b>C1</b></a>.
-    
-    - The `totalPaymentDue` from <a><b>C2</b></a> is used for initial Payment Authorisation.
-    
+  - Additional data is supplied at <a><b>C2</b></a>  to satisfy the `orderItemIntakeForm` for all `OrderItem`s in <a><b>C1</b></a>.
+
+  - The `totalPaymentDue` from <a><b>C2</b></a> is used for initial Payment Authorisation.
+
 </ul>
 
 v) "**2.1. Propose**" - <a>Customer</a> submits payment details, and submits an initial booking in the form of an `OrderQuote`.
@@ -1004,35 +1004,35 @@ vii) <a><b>P</b></a> - The <a>Broker</a> makes a request containing its newly-cr
 
 <ul>
 
-    - The `OrderProposal` from <a><b>P</b></a> MUST NOT be present in the <a>Orders feed</a> until it is updated at least once.
+  - The `OrderProposal` from <a><b>P</b></a> MUST NOT be present in the <a>Orders feed</a> until it is updated at least once.
 
-    - `totalPaymentDue` MUST be submitted to <a><b>P</b></a> and MUST match the value calculated by the <a>Booking System</a> to ensure that the `totalPaymentDue` has not changed.
+  - `totalPaymentDue` MUST be submitted to <a><b>P</b></a> and MUST match the value calculated by the <a>Booking System</a> to ensure that the `totalPaymentDue` has not changed.
 
-    - If [payment was not initiated](#booking-without-payment) or `totalPaymentDue` is `0`, the `payment` property MUST NOT be included in the `OrderProposal` request or response. 
+  - If [payment was not initiated](#booking-without-payment) or `totalPaymentDue` is `0`, the `payment` property MUST NOT be included in the `OrderProposal` request or response. 
 
-    - Error responses MUST be returned for any [Payment Error Conditions](#payment-error-conditions).
+  - Error responses MUST be returned for any [Payment Error Conditions](#payment-error-conditions).
 
-    - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
-    
-    - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>P</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the <a>Lease</a> is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
+  - The `identifier` of the `Payment` is taken from the payment pre-authorization, which must be able to be matched against any payment reports produced by the <a>Payment Provider</a> for the purposes of audit and/or reconciliation.
+  
+  - If the `totalPaymentDue` included in the `Order` object is different to the current `totalPaymentDue` (which might have changed since <a><b>C2</b></a>, e.g. if the headline price is changed in the <a>Booking System</a> between these two steps), <a><b>P</b></a> returns an `TotalPaymentDueMismatchError` with associated status code, but the <a>Lease</a> is sustained so that the <a>Customer</a> can be prompted whether they want to continue with the new amount.
 
-    - If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to create the `OrderProposal` anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>P</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
+  - If the <a>Lease</a> has expired, or if <a>Leases</a> are not supported, then the <a>Booking System</a> attempts to create the `OrderProposal` anyway. If there are insufficient spaces available for `OrderItem`s the <a><b>P</b></a> returns an `OpportunityHasInsufficientCapacityError` with associated status code.
 
-    - If the booking succeeds only for some `OrderItem`s, the whole transaction to create the `OrderProposal` within the <a>Booking System</a> is rolled back and <a><b>P</b></a> returns an `OrderCreationFailedError` with associated status code.
+  - If the booking succeeds only for some `OrderItem`s, the whole transaction to create the `OrderProposal` within the <a>Booking System</a> is rolled back and <a><b>P</b></a> returns an `OrderCreationFailedError` with associated status code.
 
-    - If there's a network failure, e.g. no response from server, then the <a>Broker</a> can resubmit with same <a>Order UUID</a>. As the call is idempotent, the <a>Booking System</a> will need to track the <a>Order UUID</a> supplied by <a>Broker</a> against any successfully created `OrderProposal`s, to ensure that it can return the same `OrderProposal` for subsequent requests. The <a>Broker</a> MUST NOT reuse UUIDs across multiple `OrderProposal`s.
+  - If there's a network failure, e.g. no response from server, then the <a>Broker</a> can resubmit with same <a>Order UUID</a>. As the call is idempotent, the <a>Booking System</a> will need to track the <a>Order UUID</a> supplied by <a>Broker</a> against any successfully created `OrderProposal`s, to ensure that it can return the same `OrderProposal` for subsequent requests. The <a>Broker</a> MUST NOT reuse UUIDs across multiple `OrderProposal`s.
 
-    - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in the `OrderProposal` returned from this call, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
+  - The <a>Booking System</a> MUST reflect back all properties defined by this specification that are supplied by the <a>Broker</a>'s request in the `OrderProposal` returned from this call, including `broker` and `brokerRole`, to acknowledge they have been recognised (even if they have not actually been stored by the <a>Booking System</a>). The <a>Booking System</a> MUST NOT reflect back extension properties outside of this specification unless it explicitly supports them.
 
-    - The `OrderProposal` returned from this call MUST be stored by the <a>Broker</a>, to be subsequently updated by the <a>Orders feed</a>. The <a>Orders feed</a> contains only partial-updates of the `OrderProposal` stored by the <a>Broker</a>, and the <a>Broker</a> is the only actor guaranteed to maintain a complete view of the `OrderProposal`. The <a>Booking System</a> MAY store the full `OrderProposal` if desired.
+  - The `OrderProposal` returned from this call MUST be stored by the <a>Broker</a>, to be subsequently updated by the <a>Orders feed</a>. The <a>Orders feed</a> contains only partial-updates of the `OrderProposal` stored by the <a>Broker</a>, and the <a>Broker</a> is the only actor guaranteed to maintain a complete view of the `OrderProposal`. The <a>Booking System</a> MAY store the full `OrderProposal` if desired.
 
-    - It is the responsibility of the <a>Broker</a> to store any additional state it requires that is not included in the `OrderProposal` returned from this call, and RECOMMENDED that such state is stored alongside the <a>Broker</a>'s persisted `Order`.
+  - It is the responsibility of the <a>Broker</a> to store any additional state it requires that is not included in the `OrderProposal` returned from this call, and RECOMMENDED that such state is stored alongside the <a>Broker</a>'s persisted `Order`.
 
-    - This call is idempotent, and hence if the <a>Order UUID</a> used for an `OrderProposal` already represents a completed `OrderProposal` with the same set of `OrderItem`s for the same `customer` as those specified, the success response is returned as normal. If any differences exist in the `OrderProposal`s, a <a>Order UUID</a> clash is assumed, a 500 response of with `OrderAlreadyExistsError` is returned by the <a>Booking System</a>, and a new <a>Order UUID</a> must be generated by the <a>Broker</a> to retry the call.
+  - This call is idempotent, and hence if the <a>Order UUID</a> used for an `OrderProposal` already represents a completed `OrderProposal` with the same set of `OrderItem`s for the same `customer` as those specified, the success response is returned as normal. If any differences exist in the `OrderProposal`s, a <a>Order UUID</a> clash is assumed, a 500 response of with `OrderAlreadyExistsError` is returned by the <a>Booking System</a>, and a new <a>Order UUID</a> must be generated by the <a>Broker</a> to retry the call.
 
-    - As this call is idempotent, it can be safely retried in the case of an temporary unexpected error (any error that returns status code 503) or rate limiting (any error that returns status code 429).
+  - As this call is idempotent, it can be safely retried in the case of an temporary unexpected error (any error that returns status code 503) or rate limiting (any error that returns status code 429).
 
-    - When the request still returns status code 503 after a number of retries the <a>Order UUID</a> MUST be regenerated to allow for a clean retry of the booking. The <a>Order UUID</a> MUST NOT be regenerated for expected errors (status code 4xx).
+  - When the request still returns status code 503 after a number of retries the <a>Order UUID</a> MUST be regenerated to allow for a clean retry of the booking. The <a>Order UUID</a> MUST NOT be regenerated for expected errors (status code 4xx).
 
 </ul>
 
