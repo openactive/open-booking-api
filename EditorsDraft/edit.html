@@ -639,7 +639,7 @@ iii) "**2. Identify**" - <a>Customer</a> submits personal details and any other 
 
 - The <a>Customer</a> MUST have been informed that their personal information is being submitted to the <a>Seller</a>.
 - The <a>Customer</a> MUST have been made aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before submitting their personal details.
-- If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
+- If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to consent to the most recently modified version of such terms. The <a>Broker</a> MAY remember the consent previously given by the <a>Customer</a> based on the `url` and `dateModified` of the `Terms`, only if `dateModified` is provided, and if consent for storing such preferences is given by the <a>Customer</a>.
 - `attendee` and `orderItemIntakeFormResponse` data is be captured at this stage if specified via `attendeeDetailsRequired` and `orderItemIntakeForm` in the <a><b>C1</b></a> response, respectively.
 - If [payment initiation is optional](#booking-without-payment), the <a>Customer</a> MAY be given the option to prepay or simply reserve a space without payment. Providing optionality of payment to the <a>Customer</a> is at the <a>Broker</a>'s discretion.
 
@@ -771,7 +771,7 @@ A summary of the key conformance criteria for the <a>Broker</a> and <a>Booking S
 - The <a>Broker</a> MUST generate an <a>Order UUID</a>, and use it consistently during the booking flow.
 - The <a>Broker</a> MUST NOT reuse <a>Order UUID</a>s across complete or incomplete `Order`s.
 - The <a>Broker</a> MUST make the <a>Customer</a> aware of any relevant `termsOfService`, for example by displaying a link to them prominently, before they commit to the booking.
-- If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to assent to such terms.
+- If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to consent to the most recently modified version of such terms, identified by `dateModified` and the `url`.
 - The <a>Broker</a> MUST handle payments and reconciliation with the <a>Seller</a> and the <a>Payment Provider</a>.
 - Calls to <a><b>C1</b></a>, <a><b>C2</b></a>, and <a><b>B</b></a> MUST include the <a>`@id`</a> of the `seller` to which requested `OrderItem`s pertain, noting that it is not possible for <a>Opportunities</a> from different <a>Sellers</a> to be combined in the same `Order`.
 
@@ -2047,7 +2047,9 @@ The new `Order` is completed as described in the [Simple Booking Flow](#simple-b
 
 The <a>Broker</a> MUST make the <a>Customer</a> aware of any `termsOfService` provided within the `seller`, `broker`, and `bookingService` (which may include Terms and Conditions and Privacy Policy) before the <a>Customer</a> confirms their purchase.
 
-If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST have explicitly acted to assent to such terms before the <a>Customer</a> completes <a><b>B</b></a>.
+If `requiresExplicitConsent` is `true` for any `termsOfService` then the <a>Customer</a> MUST only be allowed to proceed if they have explicitly acted to consent to the most recently modified version of such terms, identified by `dateModified` and the `url`, before the <a>Customer</a> completes <a><b>B</b></a>.
+
+The <a>Broker</a> MAY remember the consent previously given by the <a>Customer</a> based on the `url` and `dateModified` of the `Terms`, only if `dateModified` is provided, and if consent for storing such preferences is given by the <a>Customer</a>.
 
 Since, during booking, the details of the <a>Customer</a> are provided to the <a>Booking System</a> and the <a>Seller</a>, the <a>Broker</a> MUST inform the <a>Customer</a> of any implications with respect to the GDPR or other data protection legislation.
 
@@ -2065,6 +2067,7 @@ Note that `termsOfService` may only be specified at the `seller`, `broker` or `b
       "@type": "Terms",
       "name": "Terms and Conditions",
       "url": "https://example.com/terms-and-conditions",
+      "dateModified": "2020-02-16T20:31:13Z",
       "requiresExplicitConsent": true
     }
   ]
@@ -2767,6 +2770,8 @@ Used for `termsOfService`.
 | [`schema:name`](https://schema.org/name)                            | - | REQUIRED | [`schema:Text`](https://schema.org/Text) | The name of the terms. The name must distinguish this from other terms fields provided, e.g. "Terms and Conditions" or "Privacy Policy" |
 | [`schema:url`](https://schema.org/url)                              | - | REQUIRED | [`schema:URL`](https://schema.org/URL) | The URL of the webpage containing the contents of the terms. |
 | [`oa:requiresExplicitConsent`](https://openactive.io/requiresExplicitConsent) | - | REQUIRED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the <a>Customer</a> MUST provide explicit consent to these terms before the booking is confirmed. |
+| [`schema:dateModified`](https://schema.org/dateModified)            | - | OPTIONAL | [`schema:DateTime`](https://schema.org/DateTime) | The date and time at which the webpage containing the contents of the terms, located at the `url`, was last updated. This property is RECOMMENDED when `requiresExplicitConsent` is `true`. |
+
 
 ### `oa:PrivacyPolicy`
 

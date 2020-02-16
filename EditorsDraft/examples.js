@@ -530,6 +530,7 @@ var fullOrderExampleContent = {
           "@type": "TermsOfUse",
           "name": "Terms and Conditions",
           "url": "https://example.com/terms-and-conditions",
+          "dateModified": "2019-04-16T20:31:13Z",
           "requiresExplicitConsent": true
         }
       ]
