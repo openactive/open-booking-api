@@ -631,8 +631,8 @@ var fullOrderItemExampleContent = { //broker
   "@id": "https://example.com/api/orders/" + UUID + "#/orderedItem/1234",
   "position": 0,
   "orderItemStatus": { //booking system
-    OrderConfirmed: "https://openactive.io/OrderConfirmed",
-    OrderProposed: "https://openactive.io/OrderProposed",
+    OrderItemConfirmed: "https://openactive.io/OrderItemConfirmed",
+    OrderItemProposed: "https://openactive.io/OrderItemProposed",
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
@@ -766,7 +766,7 @@ var fullOrderItemExampleContent = { //broker
 var feedOrderItem = {
   "@type": "OrderItem",
   "@id": fullOrderItemExampleContent['@id'],
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
@@ -777,7 +777,7 @@ var feedOrderItem = {
 var persistedOrderItem = {
   "@type": "OrderItem",
   "@id": fullOrderItemExampleContent['@id'],
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
@@ -804,7 +804,7 @@ var responseOrderQuoteOrderItem = {
 var responseOrderQuoteErrorOrderItem = {
   "@type": "OrderItem",
   "position": fullOrderItemExampleContent.position,
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
@@ -820,7 +820,7 @@ var responseOrderItem = {
   "@type": "OrderItem",
   "@id": fullOrderItemExampleContent['@id'],
   "position": fullOrderItemExampleContent.position,
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderConfirmed,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
   "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
@@ -831,7 +831,7 @@ var responseOrderItem = {
 var responseOrderProposalOrderItem = {
   "@type": "OrderItem",
   "position": fullOrderItemExampleContent.position,
-  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderProposed,
+  "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemProposed,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse
