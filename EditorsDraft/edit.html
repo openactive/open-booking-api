@@ -1114,6 +1114,8 @@ Note that these are _not_ the details of attendees, and that the <a>Customer</a>
 
 If attendee details in scope of the `Person` type are captured, they MUST be captured via the `attendee` property of the `OrderItem` (and not using the `orderItemIntakeForm`). This allows attendee details to be stored and reused by the <a>Broker</a>.
 
+If the same `attendee` is used across multiple `OrderItem`s, a duplicate `Person` MUST be provided for each of these `OrderItem`s. The <a>Broker</a> may choose to design their user interface to minimise repeat data entry (e.g. by allowing the <a>Customer</a> to enter attendee details first, then later assigning them to `OrderItem`s), however this is outside the scope of the specification.
+
 Note that conformance with this specification requires that the <a>Booking System</a> MUST NOT _require_ attendee data to be submitted in all cases, and that configuration of which attendee details are required (if any) MUST be available to the <a>Seller</a>.
 
 If an `Offer` requires attendee details capture, the <a>Booking System</a> MUST include the `openBookingFlowRequirement` of `https://openactive.io/OpenBookingAttendeeDetails` in the `Offer` within its open data. This allows <a>Brokers</a> that do not support attendee details capture to easily filter out such `Offer`s from their experience.
