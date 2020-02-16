@@ -1796,7 +1796,9 @@ The cancellation may be requested by either the <a>Customer</a> or the <a>Seller
 
 ### Refund after the opportunity has occurred 
 
-Although a cancellation may be requested before the <a>Opportunity</a> has occurred in order to trigger a refund, cancellation and refund after an <a>Opportunity</a> has occurred, or when an `OrderItem` has `orderItemStatus` set to `https://openactive.io/CustomerAttended`, is currently outside the scope of this specification.
+Although a cancellation may be requested before the <a>Opportunity</a> has occurred in order to trigger a refund, cancellation and refund after an <a>Opportunity</a> has occurred, or when an `OrderItem` has `orderItemStatus` set to `https://openactive.io/CustomerAttended` (e.g. when an attendee arrives early), is currently outside the scope of this specification.
+
+Hence within this version of the specification any `OrderItem` <a>`@id`</a> submitted to the <a>Order Cancellation</a> endpoint MUST reference an <a>Opportunity</a> with a `startDate` in the future.
 
 Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handled out-of-band directly between the <a>Broker</a> and the <a>Seller</a>.
 
@@ -1809,11 +1811,11 @@ Full and partial refunds after an <a>Opportunity</a> has occurred MUST be handle
 
 To cancel an existing `OrderItem`, the <a>Broker</a> MUST:
 
-1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `allowCustomerCancellationFullRefund` is `true`, and either `latestCancellationBeforeStartDate` is unspecified or `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
+1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `orderItemStatus` is not yet set to `https://openactive.io/CustomerAttended`, and `allowCustomerCancellationFullRefund` is `true`, and either `latestCancellationBeforeStartDate` is unspecified and `startDate` is in the future, or `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
 2. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
 
-3. Submit a PATCH for the `Order` including only the <a>`@id`</a> for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be communicated to the <a>Customer</a>. 
+3. Submit a PATCH to the <a>Order Cancellation</a> endpoint for the `Order` including only the <a>`@id`</a> for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be communicated to the <a>Customer</a>. 
 
 4. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItem`s will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
@@ -2038,7 +2040,7 @@ For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, 
 
 3. Clearly communicate messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be communicated to the <a>Customer</a> if any price difference exists between the two `Order`s, for the <a>Customer</a> to confirm.
 
-4. Request new payment details from the <a>Customer</a> and Authorise the amount specified by <a><b>C2</b></a>, then PATCH the old `Order` via the Order Cancellation endpoint, and if successful, complete <a><b>B</b></a> as normal.
+4. Request new payment details from the <a>Customer</a> and Authorise the amount specified by <a><b>C2</b></a>, then PATCH the old `Order` via the <a>Order Cancellation</a> endpoint, and if successful, complete <a><b>B</b></a> as normal.
 
 The new `Order` is completed as described in the [Simple Booking Flow](#simple-booking-flow), and the existing `OrderItem` is cancelled with the refund processed as described elsewhere.
 
