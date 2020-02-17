@@ -2345,11 +2345,9 @@ A PUT request to the Order Creation endpoint of the <a>Booking System</a> with a
 <pre class="example" title="Order Creation: example request" data-transform="dataExampleOrderCreationRequest">
 </pre>
 
-If successful the server will respond with the location of a newly created `Order` resource.
-
 For the `Order` response and the <a>Orders feed</a>, the `OrderItem`s MUST include a unique <a>`@id`</a>. This allows `OrderItem`s to be referenced in subsequent PATCH calls once the `Order` has been created.
 
-<a><b>B</b></a> responses MUST reflect back properties provided by the <a>Booking System</a>, for example:
+If successful the <a>Booking System</a> will respond with a newly created `Order` resource:
 
 <pre class="example" title="Order Creation: example response" data-transform="dataExampleOrderCreationResponse">
 </pre>
