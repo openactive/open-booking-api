@@ -1589,7 +1589,7 @@ Note that for business-to-business sales for a <a>Seller</a> with `taxMode` of t
 
 ## Tax mode
 
-The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level, and MUST be reflected within the `Organization` or `Person` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]]. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
+The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is REQUIRED to be specified at the <a>Seller</a> level. It MUST be reflected within the `Organization` or `Person` that is included in the REQUIRED `organizer` or `provider` properties within <a>Opportunity Data</a> specified in [[Modelling-Opportunity-Data]], and within the REQUIRED `seller` property in the responses from <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> and <a><b>B</b></a>. It MUST also be consistent for all `Order`s originating from that <a>Seller</a>.
 
 Note that `taxMode` only affects the interpretation of the `price` of the `Offer`. `totalPaymentDue` is always Gross (tax inclusive), and `unitTaxSpecification` and `totalPaymentTax` include only the taxes themselves so are unaffected.
 
@@ -2546,7 +2546,7 @@ In line with [[Modelling-Opportunity-Data]], both the `schema:Organization` or `
 | [`schema:name`](https://schema.org/name)                            | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Trading name of the `Organization`, or name of the `Person`. Note `givenName` and `familyName` MUST NOT be used for a <a>Seller</a> that is a `Person`. |
 | [`schema:legalName`](https://schema.org/legalName)                  | - | REQUIRED    | [`schema:Text`](https://schema.org/Text) | Legal name of the <a>Seller</a>, used on tax receipts. |
 | [`schema:email`](https://schema.org/email)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | Email address used to contact the <a>Seller</a>. |
-| [`oa:taxMode`](https://openactive.io/taxMode)                      | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
+| [`oa:taxMode`](https://openactive.io/taxMode)                       | - | REQUIRED    | [`oa:TaxMode`](https://openactive.io/TaxMode) | Either `https://openactive.io/TaxNet` or `https://openactive.io/TaxGross` |
 | [`schema:vatID`](https://schema.org/vatID)                          | - | RECOMMENDED | [`schema:Text`](https://schema.org/Text) | The Value-added Tax ID of the of the <a>Seller</a>. |
 | [`schema:telephone`](https://schema.org/telephone)                  | - | OPTIONAL    | [`schema:Text`](https://schema.org/Text) | Telephone number of the <a>Seller</a>. |
 | [`schema:url`](https://schema.org/url)                              | - | RECOMMENDED | [`schema:URL`](https://schema.org/URL) | The URL of the website of the <a>Seller</a>. |
