@@ -2377,7 +2377,7 @@ The corresponding `Order` MUST be marked as `deleted` in the <a>Orders feed</a>,
 
 When an `Order` is deleted the <a>Booking System</a> SHOULD hard delete it as though it had not been created in the first place (with only a stub `deleted` record remaining, for the <a>Orders feed</a>, if necessary), but MAY soft delete it providing all related personal data is purged. The audit for the deletion is guaranteed to be stored in the <a>Broker</a> in all cases.
 
-The <a>Booking System</a> MUST return an `OrderAlreadyExistsError` in response to <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> or <a><b>B</b></a> if the request includes a soft deleted or stubbed <a>Order UUID</a>.
+The <a>Booking System</a> MUST return an `OrderAlreadyExistsError` in response to <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> or <a><b>B</b></a> if the request includes a soft deleted or stubbed  <a>Order UUID</a>.
 
 The <a>Broker</a> MUST NOT use Order Deletion for cancellation, but instead only use it in the unusual case of a fatal error or testing. An appropriate approach for cancellation is defined <a href="#order-cancellation">below</a>.
 
@@ -2897,18 +2897,18 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `IncompleteCustomerDetailsError`            | 400         | If the `email` address of the <a>Customer</a> is not supplied within a `schema:Person` object; or if the `customer` property supplied is not a valid `schema:Person` or `schema:Organization` object. |
-| `IncompleteBrokerDetailsError`              | 400         | If the `name` property is not supplied within the `schema:Organisation` object describing the <a>Broker</a>; or if the `broker` property supplied is not a valid `schema:Organisation` object. |
-| `UnnecessaryPaymentDetailsError`            | 400         | If the `payment` property of the `Order` is provided when it is expected to be absent. |
-| `MissingPaymentDetailsError`                | 400         | If the `payment` property of the `Order` is absent when it is expected to be provided. |
-| `IncompletePaymentDetailsError`             | 400         | If the `payment` property of the `Order` does not include `identifier`. |
-| `InvalidPaymentDetailsError`                | 400         | If the `payment` property of the `OrderQuote` or `Order` contains data that is not accepted by the <a>Booking System</a> for reconciliation, e.g. an invalid `accountId`. |
-| `TotalPaymentDueMismatchError`              | 400         | If the `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
-| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in any <a>Opportunity</a> that was included the `Order`. |
-| `UnableToProcessOrderItemError`             | 409         | If any `OrderItem` errors would have been generated at <a><b>C2</b></a> given the same set of `OrderItem`s. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
-| `OrderAlreadyExistsError`                   | 500         | If the <a>Order UUID</a> used for an `OrderQuote` already represents a completed `Order` with a different set of `OrderItem`s to those specified (note call to <a><b>B</b></a> is idempotent for the case where `OrderItem`s match). This happens in the rare event of a <a>Order UUID</a> clash. |
-| `OrderProposalVersionOutdatedError`         | 500         | If <a><b>B</b></a> fails due to a newer version of the `OrderProposal` existing than that specified by the <a>Broker</a> in `orderProposalVersion`. |
-| `OrderCreationFailedError`                  | 500         | If <a><b>B</b></a> fails for any other reason not specified in this list of errors. |
+| `IncompleteCustomerDetailsError`            | 400         | The `email` address of the <a>Customer</a> is not supplied within a `Person` object; or the `customer` property supplied is not a valid `Person` or `Organization` object. |
+| `IncompleteBrokerDetailsError`              | 400         | The `name` property is not supplied within the `Organisation` object describing the <a>Broker</a>; or the `broker` property supplied is not a valid `Organisation` object. |
+| `UnnecessaryPaymentDetailsError`            | 400         | The `payment` property of the `Order` is provided when it is expected to be absent. |
+| `MissingPaymentDetailsError`                | 400         | The `payment` property of the `Order` is absent when it is expected to be provided. |
+| `IncompletePaymentDetailsError`             | 400         | The `payment` property of the `Order` does not include `identifier`. |
+| `InvalidPaymentDetailsError`                | 400         | The `payment` property of the `OrderQuote` or `Order` contains data that is not accepted by the <a>Booking System</a> for reconciliation, e.g. an invalid `accountId`. |
+| `TotalPaymentDueMismatchError`              | 400         | The `totalPaymentDue` property of the submitted `Order` or `OrderProposal` does not match the value calculated for that `Order` or `OrderProposal` by the <a>Booking System</a>. |
+| `OpportunityHasInsufficientCapacityError`   | 409         | There are not enough available spaces in any <a>Opportunity</a> that was included the `Order`. |
+| `UnableToProcessOrderItemError`             | 409         | `OrderItem` errors would have been generated at <a><b>C2</b></a> given the same set of `OrderItem`s. The <a>Broker</a> is expected to retry <a><b>C2</b></a> to retrieve such errors. |
+| `OrderAlreadyExistsError`                   | 500         | The <a>Order UUID</a> used for an `OrderQuote` already represents a completed `Order` with a different set of `OrderItem`s to those specified (note call to <a><b>B</b></a> is idempotent for the case where `OrderItem`s match). This happens in the rare event of a <a>Order UUID</a> clash. |
+| `OrderProposalVersionOutdatedError`         | 500         | <a><b>B</b></a> failed due to a newer version of the `OrderProposal` existing than that specified by the <a>Broker</a> in `orderProposalVersion`. |
+| `OrderCreationFailedError`                  | 500         | <a><b>B</b></a> failed for a reason not specified by a defined type of error in the Open Booking API specification. |
 
 
 
@@ -2916,7 +2916,7 @@ A number of `OpenBookingError` subclasses are specified to identify the problem 
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `CancellationNotPermittedError`             | 400         | The cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the `Broker`. The `description` property of the object MUST include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |
+| `CancellationNotPermittedError`             | 400         | Cancellation is not permitted due to internal rules of the <a>Booking System</a> not otherwise exposed to the <a>Broker</a>. <br> The `description` property of the object MUST include a <a>Customer</a>-facing description of the reason that cancellation is not permitted. |
 
 
 
@@ -2926,52 +2926,52 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `IncompleteAttendeeDetailsError`            | 409         | If the `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `schema:Person` object. |
-| `IncompleteOrderItemError`                  | 409         | If there is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
-| `IncompleteIntakeFormError`                 | 409         | If the `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
-| `InvalidIntakeFormError`                    | 409         | If the `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
-| `UnacceptableOfferError`                    | 409         | If the `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the <a>Opportunity</a>. |
-| `UnknownOfferError`                         | 409         | If the `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
-| `UnknownOpportunityDetailsError`            | 409         | If the `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |
-| `OpportunityOfferPairNotBookableError`      | 409         | If the `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
-| `OpportunityIsInConflictError`              | 409         | If the specific `OrderItem`s against which this error is emitted are not able to be booked together. |
-| `OpportunityIsFullError`                    | 409         | If there are no available spaces for the <a>Opportunity</a> contained in the `orderedItem` property. |
-| `OpportunityHasInsufficientCapacityError`   | 409         | If there are not enough available spaces in the <a>Opportunity</a> contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
-| `OpportunityCapacityIsReservedByLeaseError` | 409         | If the available capacity required to book a specific <a>Opportunity</a> is reserved by a lease held by another <a>Customer</a>. If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity but which are reserved by the lease of another <a>Customer</a> - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 3, with 1 additional space held by another lease, then for an `OrderQuote` with 9 `OrderItem`s related to it, this error would only be emitted against 1 of the `OrderItem`s, with `OpportunityHasInsufficientCapacityError` emitted against the other 5 of the `OrderItem`s. This helps a <a>Customer</a> to know whether they should try again. |
+| `IncompleteAttendeeDetailsError`            | 409         | The `attendeeDetailsRequired` properties of the `attendee` are not supplied within a `Person` object. |
+| `IncompleteOrderItemError`                  | 409         | There is a missing `acceptedOffer` or `orderedItem` property on the `OrderItem`. |
+| `IncompleteIntakeFormError`                 | 409         | The `orderItemIntakeFormResponse` is missing fields that are specified as `valueRequired` within the `orderItemIntakeForm`. |
+| `InvalidIntakeFormError`                    | 409         | The `orderItemIntakeFormResponse` contains invalid fields that do not match those specified by the `orderItemIntakeForm`. |
+| `UnacceptableOfferError`                    | 409         | The `acceptedOffer` is not a URL which corresponds to an applicable `Offer` for the <a>Opportunity</a>. |
+| `UnknownOfferError`                         | 409         | The `acceptedOffer` is not a URL which corresponds to an `Offer` within the <a>Booking System</a>. |
+| `UnknownOpportunityDetailsError`            | 409         | The `orderedItem` is not a URL which corresponds to an <a>Opportunity</a> within the <a>Booking System</a>. |
+| `OpportunityOfferPairNotBookableError`      | 409         | The `orderedItem` and `acceptedOffer` combination specified are not <a>bookable</a>. |
+| `OpportunityIsInConflictError`              | 409         | The specific `OrderItem`s against which this error is emitted are not able to be booked together. |
+| `OpportunityIsFullError`                    | 409         | There are no available spaces for the <a>Opportunity</a> contained in the `orderedItem` property. |
+| `OpportunityHasInsufficientCapacityError`   | 409         | There are not enough available spaces in the <a>Opportunity</a> contained in the `orderedItem` property of the `OrderItem` to fulfil the number of repeated `OrderItem`s. <br> If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 2 and with 5 `OrderItem`s related to it, this error would only be emitted against 3 of the `OrderItem`s. |
+| `OpportunityCapacityIsReservedByLeaseError` | 409         | The available capacity required to book a specific <a>Opportunity</a> is reserved by a lease held by another <a>Customer</a>. <br> If the `OrderItem` is repeated (for multiple attendees) this error MUST only be included in the API response against the `OrderItem`s which are in excess of the capacity but which are reserved by the lease of another <a>Customer</a> - for example in an <a>Opportunity</a> with a `remainingAttendeeCapacity` of 3, with 1 additional space held by another lease, then for an `OrderQuote` with 9 `OrderItem`s related to it, this error would only be emitted against 1 of the `OrderItem`s, with `OpportunityHasInsufficientCapacityError` emitted against the other 5 of the `OrderItem`s. This helps a <a>Customer</a> to know whether they should try again. |
 
 
 #### API authentication
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `UnauthenticatedError`                      | 403         | If the <a>Broker</a> did not supply any form of authentication. |
-| `NoAPITokenError`                           | 403         | If the <a>Broker</a> did not supply an API key. |
-| `InvalidAPITokenError`                      | 401         | If the <a>Broker</a> supplied an invalid API key, either malformed or expired. |
-| `InvalidAuthorizationDetailsError`          | 401         | If the <a>Broker</a> supplied an invalid set of authorization details, either malformed or expired. |
+| `UnauthenticatedError`                      | 403         | The <a>Broker</a> did not supply any form of authentication. |
+| `NoAPITokenError`                           | 403         | The <a>Broker</a> did not supply an API key. |
+| `InvalidAPITokenError`                      | 401         | The <a>Broker</a> supplied an invalid API key, either malformed or expired. |
+| `InvalidAuthorizationDetailsError`          | 401         | The <a>Broker</a> supplied an invalid set of authorization details, either malformed or expired. |
 
 
 #### Technical errors
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `TemporarilyUnableToProduceOrderQuoteError` | 503         | If the <a>Booking System</a> is unable for technical reasons to produce an `OrderQuote` where the data provided to it is sufficient to allow it to do so. |
-| `TemporarilyUnableToCreateOrderError`       | 503         | If the <a>Booking System</a> is unable for technical reasons to create an `Order` where the data provided to it is sufficient to allow it to do so. |
-| `TemporarilyUnableToUpdateOrderError`       | 503         | If the <a>Booking System</a> is unable for technical reasons to update an `Order` (which includes attempting to PATCH for cancellation) where the data provided to it is sufficient to allow it to do so. |
-| `TemporarilyUnableToDeleteOrderError`       | 503         | If the <a>Booking System</a> is unable for technical reasons to delete an `Order` where the data provided to it is sufficient to allow it to do so |
+| `TemporarilyUnableToProduceOrderQuoteError` | 503         | The <a>Booking System</a> is unable for technical reasons to produce an `OrderQuote` where the data provided to it is sufficient to allow it to do so. |
+| `TemporarilyUnableToCreateOrderError`       | 503         | The <a>Booking System</a> is unable for technical reasons to create an `Order` where the data provided to it is sufficient to allow it to do so. |
+| `TemporarilyUnableToUpdateOrderError`       | 503         | The <a>Booking System</a> is unable for technical reasons to update an `Order` (which includes processing the PATCH for cancellation) where the data provided to it is sufficient to allow it to do so. |
+| `TemporarilyUnableToDeleteOrderError`       | 503         | The <a>Booking System</a> is unable for technical reasons to delete an `Order` where the data provided to it is sufficient to allow it to do so. |
 
 
 #### Generic errors
 
 | Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
 |---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `UnknownOrderError`                         | 404         | Where a <a>Booking System</a> has no `Order` matching the one requested. |
-| `UnknownOrIncorrectEndpointError`           | 404         | Where a <a>Booking System</a> has no endpoint matching the one requested. |
-| `NotFoundError`                             | 404         | Where a <a>Booking System</a> does not have the generic resource specified. |
-| `MethodNotAllowed`                          | 405         | Where a <a>Booking System</a> does not recognise a specific HTTP method for the endpoint requested with that specific HTTP verb. |
-| `PatchContainsExcessiveProperties`          | 400         | Where a <a>Booking System</a> recognises a PATCH request but the request object contains properties that the <a>Broker</a> is not permitted to update. Custom namespace properties are always excluded from consideration. |
-| `PatchNotAllowedOnProperty`                 | 400         | Where a <a>Booking System</a> recognises a PATCH request but the request object contains one or many properties that the <a>Broker</a> is not permitted to update to the requested value. |
-| `GoneError`                                 | 410         | Where an `Order` has been soft-deleted by an Order Deletion request. |
-| `TooManyRequestsError`                      | 429         | Where the <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
+| `UnknownOrderError`                         | 404         | The <a>Booking System</a> has no `Order` matching the one requested. |
+| `UnknownOrIncorrectEndpointError`           | 404         | The <a>Booking System</a> has no endpoint matching the one requested. |
+| `NotFoundError`                             | 404         | The <a>Booking System</a> does not have the generic resource specified. |
+| `MethodNotAllowed`                          | 405         | The <a>Booking System</a> does not recognise the specific HTTP verb used for the endpoint requested. |
+| `PatchContainsExcessiveProperties`          | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains properties that the <a>Broker</a> is not permitted to update. Custom namespace properties are always excluded from consideration. |
+| `PatchNotAllowedOnProperty`                 | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains one or many properties that the <a>Broker</a> is not permitted to update to the requested value. |
+| `GoneError`                                 | 410         | An `Order` has been soft-deleted by an Order Deletion request. |
+| `TooManyRequestsError`                      | 429         | The <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
 .
 
