@@ -2135,7 +2135,7 @@ Access barcodes to be rendered by the <a>Broker</a> MAY be included as a `Barcod
 
 Due to the variety of barcode formats available, the specification expects the `Barcode` to include additional properties using a custom namespace (as specified in the [[Modelling-Opportunity-Data]] specification), enough to allow the barcode to be reproduced by the <a>Broker</a>. This will help inform future versions of the specification.
 
-Additionally where use of an existing barcode is desirable (for example, the barcode on a <a>Broker</a>'s own membership card) the <a>Broker</a> MAY include a `Barcode` in the `accessPass` property against individual `OrderItem`s in the request to <a><b>B</b></a>. If the <a>Booking System</a> is able to accept such existing barcodes, it SHOULD reflect back the specified `Barcode` in the `accessPass` array in the response along with any other valid access control options.
+Additionally where use of an existing barcode is desirable (for example, the barcode on a <a>Broker</a>'s own membership card) the <a>Broker</a> MAY include a `Barcode` in the `accessPass` property against individual `OrderItem`s in the request to <a><b>B</b></a>. If the <a>Booking System</a> is able to accept such existing barcodes, it MUST reflect back the specified `Barcode` in the `accessPass` array in the response along with any other valid access control options.
 
 <pre class="example" title="Example of Barcode in accessPass">
   "accessPass": [
