@@ -1884,7 +1884,7 @@ The `Order`/`OrderProposal` properties included in the <a>Orders feed</a> MUST b
 
 The following properties of the `Order` or `OrderProposal` MUST be included in the <a>Orders feed</a>, and the <a>Broker</a> MUST overwrite its previous copy of each property when processed:
 
-* `totalPaymentTax` (if `taxCalculationExcluded` is not `true`)
+* `totalPaymentTax` (if at least one `TaxChargeSpecification` exists for `totalPaymentTax`, and `taxCalculationExcluded` is not `true`)
 * `totalPaymentDue`
 * `orderProposalStatus` (`OrderProposal` only)
 * `orderProposalVersion` (`OrderProposal` only)
