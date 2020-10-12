@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Checkout specification 
       uses: actions/checkout@v2
-    - name: Install ReSpec dependencies
+    - name: Setup Node 12.x
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
@@ -22,7 +22,7 @@ jobs:
         PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
     - run: npm install
     - run: gulp render
-    - run: mkdir out
+    - run: mkdir -p out/EditorsDraft/1.0CR3/
     - run: cp -r snapshots/* out/
     - run: cp -r snapshots/1.0/* out/
     - run: cp -r snapshots/1.0CR2/* out/EditorsDraft/
