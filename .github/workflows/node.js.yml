@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,10 +23,10 @@ jobs:
     - run: npm install
     - run: gulp render
     - run: mkdir out
-    - run: cp -r snapshots/* out/*
-    - run: cp -r snapshots/1.0/* out/*
-    - run: cp -r snapshots/1.0CR2/* out/EditorsDraft/*
-    - run: cp -r render/* out/EditorsDraft/1.0CR3/*
+    - run: cp -r snapshots/* out/
+    - run: cp -r snapshots/1.0/* out/
+    - run: cp -r snapshots/1.0CR2/* out/EditorsDraft/
+    - run: cp -r render/* out/EditorsDraft/1.0CR3/
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
