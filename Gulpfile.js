@@ -1,5 +1,8 @@
 const gulp = require('gulp');
 const {render, serve, watch} = require('gulp-respec')({});
 
+// For use in development
 gulp.task('default', gulp.series(render, serve, watch));
-gulp.task('render', render);
+
+// For use by CI
+gulp.task('render', renderOrFail);
