@@ -18,9 +18,6 @@ jobs:
       with:
         node-version: 12.x
     - run: npm install
-      env:
-        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 1
-        PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
     - name: Render EditorsDraft
       run: gulp render
     - name: Copy files
