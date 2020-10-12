@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout specification 
+      uses: actions/checkout@v2
+    - name: Install ReSpec dependencies
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+      env:
+        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 1
+        PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+    - run: gulp render
+    - run: mkdir out
+    - run: cp -r snapshots/* out/*
+    - run: cp -r snapshots/1.0/* out/*
+    - run: cp -r snapshots/1.0CR2/* out/EditorsDraft/*
+    - run: cp -r render/* out/EditorsDraft/1.0CR3/*
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        force_orphan: true
+        enable_jekyll: true
+
