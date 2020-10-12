@@ -1,6 +1,7 @@
 {
   "version": "1.0.0",
   "homepage": "https://www.openactive.io/",
+  "main": "./tools/examples.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/openactive/open-booking-api/"
@@ -9,12 +10,7 @@
     "url": "https://github.com/openactive/open-booking-api/issues"
   },
   "devDependencies": {
-    "connect-livereload": "^0.5.4",
-    "express": "^4.13.4",
-    "gulp": "^3.9.1",
-    "livereload": "^0.4.1",
-    "respec": "github:w3c/respec",
-    "striptags": "^3.1.1",
-    "tiny-lr": "^0.2.1"
+    "gulp": "^4.0.2",
+    "gulp-respec": "github:openactive/gulp-respec"
   }
 }
