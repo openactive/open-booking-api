@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout specification 
+      uses: actions/checkout@v2
+    - name: Setup Node 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm install
+    - name: Render EditorsDraft
+      run: gulp render
+    - name: Copy files
+      run: |
+        mkdir -p out/EditorsDraft/1.0CR3/
+        cp -r snapshots/* out/
+        cp -r snapshots/1.0/* out/
+        cp -r snapshots/1.0CR2/* out/EditorsDraft/
+        cp -r render/* out/EditorsDraft/1.0CR3/
+        mv out/EditorsDraft/1.0CR3/edit.html out/EditorsDraft/1.0CR3/index.html
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        force_orphan: true
+        enable_jekyll: true
+
