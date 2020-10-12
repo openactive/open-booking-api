@@ -27,6 +27,7 @@ jobs:
         cp -r snapshots/1.0/* out/
         cp -r snapshots/1.0CR2/* out/EditorsDraft/
         cp -r render/* out/EditorsDraft/1.0CR3/
+        mv out/EditorsDraft/1.0CR3/edit.html out/EditorsDraft/1.0CR3/index.html
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
