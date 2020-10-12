@@ -1,0 +1,50 @@
+# Booking flow with approval (OLD)
+
+
+
+
+## Selection-based approval
+
+The `OrderQuote` will return `approvalNote` within each `OrderItem` that requires approval which contains  `name` and `description` properties.
+
+<pre class="example" title="Example of OfferOverride">
+    "orderItemIntakeForm": [
+      [
+        {
+          "type": "PropertyValueSpecification",
+          "id": "https://example.com/height",
+          "name": "More information about you",
+          "description": "Have you played before? Are you a complete beginner or seasoned pro?",
+          "valueRequired": false
+        }
+      ]
+    ],
+  "approvalNote": {
+    "type": "PropertyValue",
+    "name": "More information about you",
+    "description": "Have you played before? Are you a complete beginner or seasoned pro?",
+  }
+</pre>
+
+## First-come-first-served approval
+
+For the case where any `OrderItem`s in an `Order` require approval (`orderItemStatus` of `https://openactive.io/OrderApprovalPending`), the whole `Order` MUST be held in a pending state by the <a>Booking System</a>, with the <a>Broker</a> storing the `Order` with an internal status of `https://openactive.io/OrderApprovalPending`.
+
+
+While the `Order` is in `orderItemStatus` of `https://openactive.io/OrderApprovalPending`:
+- The `Order` MUST not be cancelled, and MAY only be deleted.
+- All `OrderItem` MUST be leased, to ensure that they are not 
+
+For an `Order` that requires approval, the flow differs from the above as follows:
+
+- `OrderQuote` is returned at **C1** and **C2** with any `OrderItem`s that require approval having with `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. The <a>Customer</a> MAY then be prompted to supply an `orderApprovalRequestNote` to display to the seller, which can be included with the `Order` at **B**.
+- `Order` is returned at **B** with any `OrderItem`s that require approval having an `orderItemStatus` of `https://openactive.io/OrderApprovalPending`. If this is the case, the <a>Customer</a> MUST be notified that the `Order` is awaiting approval.
+- If approval is given, the <a>Booking System</a> updates the `Order` in the <a>Orders feed</a> setting all `OrderItem`s to an `https://openactive.io/OrderConfirmed` state. The <a>Broker</a> receives this update from the <a>Orders feed</a> and completes the remaining steps of **Capture Payment**, **Invoice Generation** and **Customer Notification** as in the original flow above.
+- If approval is not given, the <a>Booking System</a> MUST make the `Order` available in an RPDE `deleted` state in the <a>Orders feed</a> and the <a>Broker</a> MUST notify the <a>Customer</a> that their booking was not approved, and any payment authorisation MUST be withdrawn.
+
+A <a>Broker</a> MAY cancel an `Order` before it has been approved by using the Order Deletion endpoint.
+
+<figure>
+ <img src="sequencediagramwithapproval.png" alt="Sequence diagram with approval">
+ <figcaption>Sequence diagram showing API interactions, with approval step</figcaption>
+</figure>
