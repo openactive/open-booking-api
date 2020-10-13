@@ -42,7 +42,7 @@ function createErrorFromTemplate(errorName, statusCode, useCase) {
 
   let firstLineOfUseCaseIndex = useCase.indexOf('<br>');
   let firstLineOfUseCase = firstLineOfUseCaseIndex > -1 ? useCase.substring(0, firstLineOfUseCaseIndex) : useCase; 
-  var shortDescription = striptags(firstLineOfUseCase).replace(/"/g,'').replace(/`/g,'\'').trim();
+  var shortDescription = striptags(firstLineOfUseCase).replace(/"/g,'\\"').replace(/`/g,'\'').trim();
   
   return `{
   "type": "${errorName}",
