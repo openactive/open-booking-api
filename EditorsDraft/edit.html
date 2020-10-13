@@ -2970,9 +2970,9 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `UnknownOrderError`                         | 404         | The <a>Booking System</a> has no `Order` matching the one requested. |
 | `UnknownOrIncorrectEndpointError`           | 404         | The <a>Booking System</a> has no endpoint matching the one requested. |
 | `NotFoundError`                             | 404         | The <a>Booking System</a> does not have the generic resource specified. |
-| `MethodNotAllowed`                          | 405         | The <a>Booking System</a> does not recognise the specific HTTP verb used for the endpoint requested. |
-| `PatchContainsExcessiveProperties`          | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains properties that the <a>Broker</a> is not permitted to update. Custom namespace properties are always excluded from consideration. |
-| `PatchNotAllowedOnProperty`                 | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains one or many properties that the <a>Broker</a> is not permitted to update to the requested value. |
+| `MethodNotAllowedError`                     | 405         | The <a>Booking System</a> does not recognise the specific HTTP verb used for the endpoint requested. |
+| `PatchContainsExcessivePropertiesError`     | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains properties that the <a>Broker</a> is not permitted to update. Custom namespace properties are always excluded from consideration. |
+| `PatchNotAllowedOnPropertyError`            | 400         | The <a>Booking System</a> recognises a PATCH request but the request object contains one or many properties that the <a>Broker</a> is not permitted to update to the requested value. |
 | `GoneError`                                 | 410         | An `Order` has been soft-deleted by an Order Deletion request. |
 | `TooManyRequestsError`                      | 429         | The <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
