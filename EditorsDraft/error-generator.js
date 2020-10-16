@@ -44,9 +44,11 @@ function createErrorFromTemplate(errorName, statusCode, useCase) {
   let firstLineOfUseCase = firstLineOfUseCaseIndex > -1 ? useCase.substring(0, firstLineOfUseCaseIndex) : useCase; 
   var shortDescription = striptags(firstLineOfUseCase).replace(/"/g,'\\"').replace(/`/g,'\'').trim();
   
+  var errorType = errorName.indexOf('Internal') === 0 ? 'OpenBookingInternalError' : 'OpenBookingError';
+
   return `{
   "type": "${errorName}",
-  "subClassOf": "#OpenBookingError",
+  "subClassOf": "#${errorType}",
   "description": {
     "sections": [
       {

@@ -2976,7 +2976,19 @@ Note that all `OrderItem` errors for an `OrderQuote` request result in a `409 Co
 | `GoneError`                                 | 410         | An `Order` has been soft-deleted by an Order Deletion request. |
 | `TooManyRequestsError`                      | 429         | The <a>Booking System</a> is rate-limiting the <a>Broker</a>. |
 
-.
+### `oa:OpenBookingInternalError` subclasses
+
+`OpenBookingInternalError` subclasses `OpenBookingError`, and is designed to be used to report the origin of unexpected exceptions.
+
+A number of `OpenBookingInternalError` subclasses are specified to identify the problem type.
+
+| Error Type (`@type`)                        | Status Code (`oa:statusCode`) | Use Case (`schema:name`)                                                                                                                                                     |
+|---------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `OpenBookingInternalError`                  | 500         | A generic internal error type, which is not intended to be used directly. |
+| `InternalApplicationError`                  | 500         | An unexpected exception has been thrown by the application. |
+| `InternalLibraryError`                      | 500         | An unexpected exception has been thrown by an OpenActive SDK library or component. |
+| `InternalLibraryConfigurationError`         | 500         | An exception has been thrown due to the misconfiguration of an OpenActive SDK library or component. |
+
 
 </section>
 
