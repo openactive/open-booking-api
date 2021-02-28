@@ -1720,7 +1720,7 @@ The pairing of an <a>Opportunity</a> of type `Event`, `ScheduledSession`, `Headl
 
 - The `remainingAttendeeCapacity` or `remainingUses` is greater than the number required.
 
-- The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` in the past. This allows for a "bookahead" window to be specified.
+- The `validFromBeforeStartDate` duration (if provided) subtracted from the `startDate` is in the past. This allows for a "bookahead" window to be specified.
 
 - The `taxMode` (`https://openactive.io/TaxNet` or `https://openactive.io/TaxGross`) is specified within the `Organization` or `Person` that is included in the REQUIRED `organizer` or `provider` properties.
 
@@ -1893,6 +1893,7 @@ For `OrderItem` in both `Order` and `OrderProposal`:
 * `allowCustomerCancellationFullRefund`
 * `accessPass`
 * `accessCode`
+* `accessChannel`
 * `additionalProperty`
 * `cancellationMessage`
 * `customerNotice`
@@ -2018,7 +2019,7 @@ When a <a>Customer</a> has been confirmed as attending an <a>Opportunity</a> tha
 
 The following properties within `Order`s in the <a>Orders feed</a> MAY also be updated by the <a>Booking System</a>, and MUST trigger the <a>Broker</a> to notify the <a>Customer</a>: 
 
-* `accessCode` and/or `accessPass` - A notification that the access details for the <a>Opportunity</a> have changed
+* `accessCode`, `accessPass` and/or `accessChannel` - A notification that the access details for the <a>Opportunity</a> have changed
 
 The following properties within `Order`s in the <a>Orders feed</a> MAY be updated by the <a>Booking System</a>, and MUST be reflected to the <a>Customer</a> in any user interface during their normal interaction with the <a>Broker</a>:
 
@@ -2085,7 +2086,9 @@ For <a>Opportunities</a> that require entry into a restricted building or area t
 
 Each `accessCode` and `accessPass` MUST represent unique methods of entry, and MUST NOT be duplicated in different formats. For example, multiple formats (e.g. PNG, JPEG) of the same `accessPass` MUST NOT be supplied.
 
-A <a>Broker</a> MUST make all supplied `accessPass`es and `accessCode`s available to the <a>Customer</a>, with the exception of `Barcode`s that do not have fallback image `url`. `Barcode`s without a `url` MAY be ignored if the <a>Broker</a> is unable to process them. 
+For remotely accessible <a>Opportunities</a>, an `accessChannel` MUST be provided.
+
+A <a>Broker</a> MUST make all supplied `accessPass`es, `accessCode`s and `accessChannel`s available to the <a>Customer</a>, with the exception of `Barcode`s that do not have fallback image `url`. `Barcode`s without a `url` MAY be ignored if the <a>Broker</a> is unable to process them. 
 
 ### Text-based access control
 
@@ -2115,7 +2118,7 @@ In keeping with the Schema.org definition of `PropertyValue`, the `name` propert
 
 ### Image-based access control
 
-Images to be displayed to provide access, for example access tickets rendered by the booking system, MAY be included as an `ImageObject` within the `accessPass` array.
+Images to be displayed to provide access, for example access tickets rendered by the <a>Booking System</a>, MAY be included as an `ImageObject` within the `accessPass` array.
 
 `ImageObject` MUST NOT be used for fallback images of a `Barcode`; the `url` property of the `Barcode` MUST be used for this purpose.
 
@@ -2142,9 +2145,30 @@ Additionally where use of an existing barcode is desirable (for example, the bar
       "@type": "Barcode",
       "url": "https://fallback.image.example.com/476ac24c694da79c5e33731ebbb5f1",
       "text": "0123456789",
-      "bookwhen:codeType": "code128"
+      "beta:codeType": "code128"
     }
   ],
+</pre>
+
+### Remote access control
+
+A `VirtualLocation` provides remote participants with a means of attending an <a>Opportunity</a>. The `url` SHOULD include encoded access credentials where possible. Manual access credentials `name`, `accessId` and `accessCode` SHOULD also be supplied to ensure the <a>Customer</a> can access the <a>Opportunity</a> from any device. `description` SHOULD include any other information necessary for the <a>Customer</a> to easily access the <a>Opportunity</a>.
+
+For <a>Opportunities</a> that are accessible remotely, the `attendeeInstructions` of the <a>Opportunity</a> SHOULD include instructions that explain the remote set up, including how the <a>Customer</a> should participate in the <a>Opportunity</a>.
+
+If an `accessChannel` is not available to the <a>Customer</a> immediately upon booking via the <a><b>B</b></a> response, and only accessible via [notification](#other-notifications), a `customerNotice` must be included in <a><b>B</b></a> that includes details of when the means of access will be shared with the <a>Customer</a>, for example "Details of a Zoom room will be sent 1 hour prior to the class starting".
+
+The <a>Broker</a> MUST send an automatic reminder to the <a>Customer</a> that includes the details of the `accessChannel` 30 minutes prior to the class starting.
+
+<pre class="example" title="Example of VirtualLocation in accessChannel">
+  "accessChannel": {
+    "@type": "VirtualLocation",
+    "url": "https://zoom.us/j/1234567890?pwd=SlBzaVpJaGY0UGJVMX",
+    "name": "Zoom Video Chat",
+    "accessId" : "1234567890",
+    "accessCode" : "211277",
+    "description": "Please log into Zoom a few minutes before the event"
+  },
 </pre>
 
 
@@ -2586,11 +2610,12 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | [`schema:additionalProperty`](https://schema.org/additionalProperty)  | -     | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value useful for reconciliation. |
 | [`schema:accessCode`](https://schema.org/accessCode)               | -        | RECOMMENDED | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue` that contains a text value usable for entrance. Not applicable for an `OrderQuote`. |
 | [`oa:accessPass`](https://openactive.io/accessPass)                | OPTIONAL | RECOMMENDED | Array of [`schema:ImageObject`](https://schema.org/ImageObject) | `ImageObject` or `Barcode` that contains reference to an asset (e.g. Barcode, QR code image or PDF) usable for entrance. Not applicable for an `OrderQuote`. |
+| [`oa:accessChannel`](https://openactive.io/accessChannel)          | OPTIONAL | RECOMMENDED | [`schema:VirtualLocation`](https://schema.org/VirtualLocation) | Channel through which the user can participate in the Opportunity. Not applicable for an `OrderQuote`. |
 | [`schema:error`](https://schema.org/error)                          | -        | OPTIONAL    | Array of [`oa:OpenBookingError`](https://openactive.io/OpenBookingError) | Array of errors related to the `OrderItem` being included in the `Order`, only applicable for an `OrderQuote`. |
 | [`oa:cancellationMessage`](https://openactive.io/cancellationMessage) | -     | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> in the event of <a>Opportunity</a> cancellation, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/SellerCancelled` |
 | [`oa:customerNotice`](https://openactive.io/customerNotice)        | -        | -        | [`schema:Text`](https://schema.org/Text) | A message set by the <a>Seller</a> to trigger a notification to the <a>Customer</a>, only applicable for an `Order` and where the `OrderItem` has `orderItemStatus` set to `https://openactive.io/OrderItemConfirmed` or `https://openactive.io/CustomerAttended` |
 | [`schema:attendee`](https://schema.org/attendee)                    | OPTIONAL | OPTIONAL | [`schema:Person`](https://schema.org/Person) | The person attending the <a>Opportunity</a> related to the `OrderItem`. |
-| [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required for this `OrderItem`. |
+| [`oa:attendeeDetailsRequired`](http://openactive.io/attendeeDetailsRequired) | OPTIONAL | OPTIONAL | Array of [`schema:Property`](https://schema.org/Property) | The properties of `schema:Person` that are required to describe an `attendee` for this `OrderItem`. |
 | [`oa:orderItemIntakeForm`](https://openactive.io/orderItemIntakeForm) | -        | OPTIONAL | Array of [`schema:PropertyValueSpecification`](https://schema.org/PropertyValueSpecification) | `PropertyValueSpecification`s that describe fields in the `orderItemIntakeForm`. |
 | [`oa:orderItemIntakeFormResponse`](https://openactive.io/orderItemIntakeFormResponse) | OPTIONAL | OPTIONAL | Array of [`schema:PropertyValue`](https://schema.org/PropertyValue) | `PropertyValue`s that contains a text value responses to the `orderItemIntakeForm`. |
 
