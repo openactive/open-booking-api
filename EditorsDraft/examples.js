@@ -636,7 +636,6 @@ var fullOrderItemExampleContent = { //broker
     CustomerCancelled: "https://openactive.io/CustomerCancelled",
     SellerCancelled: "https://openactive.io/SellerCancelled",
   },
-  "allowCustomerCancellationFullRefund": true,
   "accessPass": [
     {
       "@type": "Barcode",
@@ -665,6 +664,7 @@ var fullOrderItemExampleContent = { //broker
       "price": 10.00,
       "priceCurrency": "GBP",
       "validFromBeforeStartDate": "P6D",
+      "allowCustomerCancellationFullRefund": true,
       "latestCancellationBeforeStartDate": "P1D"
     }
   },
@@ -767,7 +767,6 @@ var feedOrderItem = {
   "@type": "OrderItem",
   "@id": fullOrderItemExampleContent['@id'],
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
-  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.request,
@@ -778,7 +777,6 @@ var persistedOrderItem = {
   "@type": "OrderItem",
   "@id": fullOrderItemExampleContent['@id'],
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
-  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,
@@ -795,7 +793,6 @@ var requestOrderItem = {
 var responseOrderQuoteOrderItem = {
   "@type": "OrderItem",
   "position": fullOrderItemExampleContent.position,
-  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse
@@ -805,7 +802,6 @@ var responseOrderQuoteErrorOrderItem = {
   "@type": "OrderItem",
   "position": fullOrderItemExampleContent.position,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
-  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderQuoteResponse,
@@ -821,7 +817,6 @@ var responseOrderItem = {
   "@id": fullOrderItemExampleContent['@id'],
   "position": fullOrderItemExampleContent.position,
   "orderItemStatus": fullOrderItemExampleContent.orderItemStatus.OrderItemConfirmed,
-  "allowCustomerCancellationFullRefund": true,
   "unitTaxSpecification": fullOrderItemExampleContent.unitTaxSpecification,
   "acceptedOffer": fullOrderItemExampleContent.acceptedOffer.response,
   "orderedItem": fullOrderItemExampleContent.orderedItem.orderResponse,

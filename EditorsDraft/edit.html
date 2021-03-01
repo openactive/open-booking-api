@@ -1663,7 +1663,7 @@ The `unitTaxSpecification` is calculated by the <a>Booking System</a> exactly as
 
 The use of `OfferOverride` always creates the behaviour equivalent to `advanceBooking` and `prepayment` both being set to `https://openactive.io/Required`, and `availableChannel` having the value of `https://openactive.io/OpenBookingPrepayment`.
 
-`latestCancellationBeforeStartDate` does not apply to `OfferOverride`, and is treated as unspecified. Hence cancellation is permissible based on the value `allowCustomerCancellationFullRefund` alone.
+`allowCustomerCancellationFullRefund` and `latestCancellationBeforeStartDate` do not apply to `OfferOverride`, and hence the <a>Customer</a> may always [request](#customer-requested-cancellation) cancellation.
 
 The <a>Booking System</a> MUST document the most comprehensive expected equivalent value of `openBookingFlowRequirement` that is applicable when an `OfferOverride` is requested by the <a>Broker</a>. This allows such <a>Brokers</a> to understand the features of this specification that may be used by the <a>Booking System</a>, and hence assess whether they are capable of completing the booking flow using `OfferOverride`.
 
@@ -1814,11 +1814,13 @@ To cancel an existing `OrderItem`, the <a>Broker</a> MUST:
 
 1. Use the latest state of the `Order` stored during the booking flow and updated via the <a>Orders feed</a> to determine which `OrderItem`s may be cancelled and refunded. If `orderItemStatus` is not yet set to `https://openactive.io/CustomerAttended`, and `allowCustomerCancellationFullRefund` is `true`, and either `latestCancellationBeforeStartDate` is unspecified and `startDate` is in the future, or `latestCancellationBeforeStartDate` subtracted from the <a>Opportunity</a> `startDate` is in the future, a PATCH against the `Order` including the `OrderItem` with `"orderItemStatus": "https://openactive.io/CustomerCancelled"` SHOULD succeed.
 
-2. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
+2. Offer the <a>Customer</a> an interface to "Request Cancellation". Cancellation requested by the <a>Customer</a> cannot be guaranteed due to potentially opaque cancellation rules within the <a>Booking System</a> for exceptional cases, therefore it is important that expectations are set accordingly.
 
-3. Submit a PATCH to the <a>Order Cancellation</a> endpoint for the `Order` including only the <a>`@id`</a> for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response will be received, without any body. On failure a status code 400 response will be received, containing a `CancellationNotPermittedError` error including a `description` of the reason, which SHOULD be communicated to the <a>Customer</a>. 
+3. Inform the <a>Customer</a> of the refund being requested before they commit to cancellation, using the existing data available in the stored `Order` to communicate the `OrderItem`s that are included in the full refund request. 
 
-4. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItem`s will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
+4. Submit a PATCH to the <a>Order Cancellation</a> endpoint for the `Order` including only the <a>`@id`</a> for each of the `OrderItem`s to be cancelled, with an `"orderItemStatus": "https://openactive.io/CustomerCancelled"` set on each. On success, a status code 204 response MUST be returned, without any body. On failure due to opaque cancellation rules, a status code 400 response MUST be returned, containing a `CancellationNotPermittedError` error including a `description` of the reason, which MUST be communicated to the <a>Customer</a>. The PATCH request is atomic, and therefore the cancellation succeeds or fails entirely.
+
+5. Process any refunds based on the resulting updates to the <a>Orders feed</a>, based on the updated `totalPaymentDue`. Successfully cancelled `OrderItem`s will have `orderItemStatus` set to `https://openactive.io/CustomerCancelled`. Note refunds MUST NOT be processed except in response to updates in the <a>Orders feed</a>.
 
 To cancel an entire `Order`, the PATCH request MUST include `"orderItemStatus": "https://openactive.io/CustomerCancelled"` for each `OrderItem` within it.
 
@@ -1890,7 +1892,6 @@ Additionally, the `orderedItem` property of the `Order` or `OrderProposal` MUST 
 
 For `OrderItem` in both `Order` and `OrderProposal`:
 * `orderItemStatus`
-* `allowCustomerCancellationFullRefund`
 * `accessPass`
 * `accessCode`
 * `accessChannel`
@@ -2021,10 +2022,6 @@ The following properties within `Order`s in the <a>Orders feed</a> MAY also be u
 
 * `accessCode`, `accessPass` and/or `accessChannel` - A notification that the access details for the <a>Opportunity</a> have changed
 
-The following properties within `Order`s in the <a>Orders feed</a> MAY be updated by the <a>Booking System</a>, and MUST be reflected to the <a>Customer</a> in any user interface during their normal interaction with the <a>Broker</a>:
-
-* `allowCustomerCancellationFullRefund` - Automated cancellation with a full refund is no longer possible via the <a>Broker</a>.
-
 The following properties within `Order`s in the <a>Orders feed</a> MAY also be updated by the <a>Booking System</a>, and MUST be used subsequently by the <a>Broker</a> for their internal operations:
 
 * `additionalProperty` - The details to use for payment reconciliation have changed
@@ -2038,7 +2035,7 @@ For the common case of rescheduling a `SessionSeries` or `FacilityUse` booking, 
 
 1. Request an `OrderQuote` for the new `orderItem`s with a newly generated <a>Order UUID</a>, using <a><b>C2</b></a>.
 
-2. Check the latest stored state of `Order`s from the <a>Orders feed</a> to ensure that old `OrderItem` allows `allowCustomerCancellationFullRefund`.
+2. Check the latest stored state of `Order`s from the <a>Orders feed</a> to ensure that the `acceptedOffer` of the old `OrderItem` has `allowCustomerCancellationFullRefund` set to `true`, as this may have been updated in the case of a <a>Replacement</a>.
 
 3. Clearly communicate messaging to the <a>Customer</a> that explains that this transaction will involve a refund and new purchase, and so they will expect a refund for the old item and a new transaction for the new one. Information should be communicated to the <a>Customer</a> if any price difference exists between the two `Order`s, for the <a>Customer</a> to confirm.
 
@@ -2156,7 +2153,7 @@ A `VirtualLocation` provides remote participants with a means of attending an <a
 
 For <a>Opportunities</a> that are accessible remotely, the `attendeeInstructions` of the <a>Opportunity</a> SHOULD include instructions that explain the remote set up, including how the <a>Customer</a> should participate in the <a>Opportunity</a>.
 
-If an `accessChannel` is not available to the <a>Customer</a> immediately upon booking via the <a><b>B</b></a> response, and only accessible via [notification](#other-notifications), a `customerNotice` must be included in <a><b>B</b></a> that includes details of when the means of access will be shared with the <a>Customer</a>, for example "Details of a Zoom room will be sent 1 hour prior to the class starting".
+If an `accessChannel` is not available to the <a>Customer</a> immediately upon booking via the <a><b>B</b></a> response, and only accessible via [notification](#other-notifications), a `customerNotice` MUST be included in <a><b>B</b></a> that includes details of when the means of access will be shared with the <a>Customer</a>, for example "Details of a Zoom room will be sent 1 hour prior to the class starting".
 
 The <a>Broker</a> MUST send an automatic reminder to the <a>Customer</a> that includes the details of the `accessChannel` 30 minutes prior to the class starting.
 
@@ -2427,10 +2424,12 @@ Cancellation of an `Order` may be requested by the <a>Customer</a>. `OrderItem`s
 <pre class="example" title="Order Cancellation: example Order request" data-transform="dataExampleOrderCancellationRequest">
 </pre>
 
-The cancellation request succeeds and fails atomically.
+The request is idempotent, and hence the <a>Booking System</a> MUST return the same success response if any of the provided `OrderItem`s have already been cancelled. The cancellation request succeeds and fails atomically.
 
 <pre class="example" title="Order Cancellation: example success response" data-transform="dataExampleOrderCancellationSuccessResponse">
 </pre>
+
+In the case of cancellation failure due to cancellation rules within the <a>Booking System</a> the endpoint MUST return a `CancellationNotPermittedError` including a `description` of the reason, which MUST be communicated to the <a>Customer</a>.
 
 <pre class="example" title="Order Cancellation: example error response" data-transform="dataExampleOrderCancellationErrorResponse">
 </pre>
@@ -2603,7 +2602,6 @@ The `broker` is specified with each `Order` to account for scenarios where multi
 | <a>`@id`</a>                                                              | REQUIRED | REQUIRED | [`schema:URL`](https://schema.org/URL) | A URI providing a unique identifier for the `OrderItem`, which SHOULD be constructed by appending `#/orderedItem/{orderItemId}` to the <a>`@id`</a> of the `Order`, where `{orderItemId}` is replaced by the `identifier` of the `OrderItem`, which may be a string or an integer depending on the <a>Booking System</a>. This property is REQUIRED for <a><b>B</b></a> responses and MUST NOT be included for <a><b>C1</b></a>, <a><b>C2</b></a> or <a><b>P</b></a> responses. |
 | [`schema:position`](https://schema.org/position)                    | REQUIRED | REQUIRED | [`schema:Integer`](https://schema.org/Integer) | An integer representing the order of `OrderItem`s within the array, as JSON-LD does not support array ordering. This allows the <a>Broker</a> to match any `error`s provided in the response to their request. The `position` of an `OrderItem` in the response MUST match the `position` for the same `OrderItem` provided in request, and implementations MUST use this value to match responses with requests instead of relying on the order of the elements in the array. This is REQUIRED for <a><b>C1</b></a>, <a><b>C2</b></a>, <a><b>P</b></a> and <a><b>B</b></a> requests and responses, but MUST NOT be persisted or be present in the <a>Orders feed</a> or other endpoints. |
 | [`schema:orderItemStatus`](https://schema.org/orderItemStatus)      | -        | REQUIRED | [`schema:OrderItemStatus`](https://schema.org/OrderItemStatus) | Either `https://openactive.io/SellerCancelled`, `https://openactive.io/CustomerCancelled`, `https://openactive.io/OrderItemProposed`, `https://openactive.io/OrderItemConfirmed`, or `https://openactive.io/CustomerAttended` |
-| [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the event can be cancelled. |
 | [`oa:unitTaxSpecification`](https://openactive.io/unitTaxSpecification) | -   | REQUIRED | Array of [`oa:TaxChargeSpecification`](https://openactive.io/TaxChargeSpecification) | Breakdown of tax payable for the OrderItem. MUST NOT be included if `taxCalculationExcluded` is `true`. |
 | [`schema:acceptedOffer`](https://schema.org/acceptedOffer)          | REQUIRED | REQUIRED | [`schema:Offer`](https://schema.org/Offer) | The offer from the associated `orderedItem` that has been selected by the <a>Customer</a>. The price of this includes or excludes tax depending on the `taxMode` of the `seller`. |
 | [`schema:orderedItem`](https://schema.org/orderedItem)              | REQUIRED | REQUIRED | [`oa:ScheduledSession`](https://openactive.io/ScheduledSession), [`oa:Slot`](https://openactive.io/Slot), [`oa:HeadlineEvent`](https://openactive.io/HeadlineEvent), [`schema:Event`](https://schema.org/Event) or [`schema:CourseInstance`](https://schema.org/CourseInstance) | The specific <a>bookable</a> Thing that has been selected by the <a>Customer</a>. See the [[Modelling-Opportunity-Data]] specification for more information on these types. Note that the <a>Broker</a>'s requests and the <a>Orders feed</a> MUST only include the `@type` and <a>`@id`</a> within these objects; in these contexts, all other properties are ignored. See [Opportunity data properties](#opportunity-data-properties). |
@@ -2636,6 +2634,7 @@ Use of properties of `Offer` defined in the [[Modelling-Opportunity-Data]] is al
 | [`oa:prepayment`](https://openactive.io/prepayment) | -        | OPTIONAL | [`oa:RequiredStatusType`](https://openactive.io/RequiredStatusType) | Indicates if accepting this `Offer` requires a <a>Customer</a> to pay in advance, pay when attending, or have the option to do either. Values MUST be one of `https://openactive.io/Required`, `https://openactive.io/Optional` or `https://openactive.io/Unavailable`. The default behaviour of this specification is `https://openactive.io/Unavailable` for `Offer`s with a `price` of `0`, and `https://openactive.io/Required` otherwise. If an `Offer`s has a `price` of `0` the value of this property MUST be either `https://openactive.io/Unavailable` or unspecified. |
 | [`oa:availableChannel`](https://openactive.io/availableChannel)    | -        | - | Array of [`oa:AvailableChannelType`](https://openactive.io/AvailableChannelType) | The channels through which a booking can be made. MUST be included in <a>Opportunity Data</a> [[RPDE]] open feeds, but MUST NOT be included in other requests or responses. Can include `https://openactive.io/OpenBookingPrepayment`, `https://openactive.io/TelephoneAdvanceBooking`, `https://openactive.io/TelephonePrepayment`, `https://openactive.io/OnlinePrepayment`. |
 | [`oa:validFromBeforeStartDate`](https://openactive.io/validFromBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` for which this Offer is valid, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. This is a relatively-defined equivalent of [`schema:validFrom`](https://schema.org/validFrom), to allow for Offer inheritance. |e
+| [`oa:allowCustomerCancellationFullRefund`](https://openactive.io/allowCustomerCancellationFullRefund) | - | RECOMMENDED | [`schema:Boolean`](https://schema.org/Boolean) | Whether the opportunity can be cancelled with a full refund at any time before the `startDate`, or before the `latestCancellationBeforeStartDate` if provided. |
 | [`oa:latestCancellationBeforeStartDate`](https://openactive.io/latestCancellationBeforeStartDate) | - | OPTIONAL | [`schema:Duration`](https://schema.org/Duration) | The duration before the `startDate` during which this Offer may **not** be cancelled, given in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. |
 | [`oa:openBookingFlowRequirement`](https://openactive.io/openBookingFlowRequirement)    | -        | -       | Array of [`oa:OpenBookingFlowRequirement`](https://openactive.io/OpenBookingFlowRequirement) | Can include `https://openactive.io/OpenBookingIntakeForm`, `https://openactive.io/OpenBookingAttendeeDetails`, `https://openactive.io/OpenBookingApproval`, `https://openactive.io/OpenBookingNegotiation`, `https://openactive.io/OpenBookingMessageExchange`. If any features of the specification covered by this property are required to book the `Offer`, the <a>Booking System</a> MUST include this property within `Offer`s in its <a>Opportunity Data</a> [[RPDE]] open feeds. This property MUST NOT be included in the request or response of any of the [endpoints](#endpoints) defined within this specification. |
 
